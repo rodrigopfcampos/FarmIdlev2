@@ -1,0 +1,57 @@
+{
+  "generated_by": "tools/sim/run.ts",
+  "work_per_character_hour": 2.67,
+  "profiles": {
+    "casual": {
+      "level30_day": 45.9,
+      "level50_day": 157.1,
+      "map_complete_day": 112.8,
+      "max_gold_wait_days": 3.8,
+      "salaries_share": 0.169,
+      "tool_repairs_share": 0.074,
+      "armory_bonus_day160": 0.164,
+      "armory_all_partial_week_median": 45,
+      "cards": 83.8,
+      "vehicles": {
+        "carroca": "mythic",
+        "carro": "legendary",
+        "picape": "legendary",
+        "caminhao": "legendary"
+      }
+    },
+    "regular": {
+      "level30_day": 33.2,
+      "level50_day": 113.1,
+      "map_complete_day": 78,
+      "max_gold_wait_days": 2.5,
+      "salaries_share": 0.123,
+      "tool_repairs_share": 0.08,
+      "armory_bonus_day160": 0.188,
+      "armory_all_partial_week_median": 33,
+      "cards": 122.6,
+      "vehicles": {
+        "carroca": "mythic",
+        "carro": "mythic",
+        "picape": "legendary",
+        "caminhao": "legendary"
+      }
+    },
+    "dedicated": {
+      "level30_day": 30.5,
+      "level50_day": 103.3,
+      "map_complete_day": 71.3,
+      "max_gold_wait_days": 2.4,
+      "salaries_share": 0.113,
+      "tool_repairs_share": 0.074,
+      "armory_bonus_day160": 0.2,
+      "armory_all_partial_week_median": 30,
+      "cards": 136,
+      "vehicles": {
+        "carroca": "mythic",
+        "carro": "mythic",
+        "picape": "legendary",
+        "caminhao": "legendary"
+      }
+    }
+  }
+}

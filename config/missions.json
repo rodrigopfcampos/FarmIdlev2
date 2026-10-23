@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 11",
+  "daily": {
+    "count": 5,
+    "gold_hours_of_income": 0.4,
+    "xp_hours_of_production": 0.5,
+    "free_rerolls": 1,
+    "pack_when_all_done": 1,
+    "max_packs_per_week": 4
+  },
+  "weekly": {
+    "count": 5,
+    "cards_at_3": 1,
+    "bonus_card_at_5": 1,
+    "deed_at_5": 1
+  }
+}

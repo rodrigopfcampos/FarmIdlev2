@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 10",
+  "average_bonus": {
+    "income": 0.11,
+    "xp": 0.07,
+    "note": "clima + evento noturno, média já embutida nas metas"
+  },
+  "day_parts": {
+    "day": [
+      "06:00",
+      "17:59"
+    ],
+    "dusk": [
+      "18:00",
+      "18:59"
+    ],
+    "night": [
+      "19:00",
+      "05:59"
+    ]
+  },
+  "block_hours": 3,
+  "chances": {
+    "sunny": 0.4,
+    "hot_sun": 0.15,
+    "cloudy": 0.2,
+    "rain": 0.17,
+    "fog": 0.08
+  },
+  "limits": {
+    "hot_sun": [
+      "09:00",
+      "18:00"
+    ],
+    "fog": [
+      "03:00",
+      "12:00"
+    ]
+  },
+  "effects": {
+    "hot_sun": {
+      "growth_speed_pct": 10
+    },
+    "rain": {
+      "account_xp_pct": 10
+    },
+    "fog": {
+      "account_xp_pct": 10,
+      "character_xp_pct": 10
+    },
+    "night": {
+      "sales_gold_pct": 5
+    }
+  },
+  "night_event": {
+    "window": [
+      "19:00",
+      "21:00"
+    ],
+    "start_latest": "20:15",
+    "step_minutes": 5,
+    "duration_minutes": 45,
+    "warning_minutes": 10,
+    "events": [
+      {
+        "id": "chuva_de_bencaos",
+        "name_pt": "Chuva de Bênçãos",
+        "account_xp_pct": 50
+      },
+      {
+        "id": "calor_dourado",
+        "name_pt": "Calor Dourado",
+        "growth_speed_pct": 50
+      },
+      {
+        "id": "neblina_mistica",
+        "name_pt": "Neblina Mística",
+        "account_xp_pct": 35,
+        "character_xp_pct": 35
+      },
+      {
+        "id": "lua_cheia",
+        "name_pt": "Lua Cheia",
+        "sales_gold_pct": 40,
+        "cap_R_ratio": 0.041667
+      }
+    ]
+  },
+  "timezone_change_days": 30,
+  "min_hours_between_events": 20
+}

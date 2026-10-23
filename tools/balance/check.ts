@@ -201,5 +201,41 @@ const missing = keys.filter((k: string) => !sprites[k]);
 if (missing.length) console.log('   faltam:', missing.join(', '));
 check(!missing.length, `as ${keys.length} artes citadas na config existem em public/assets/sprites`);
 
+// ---------- simulador (seção 14): critérios de aceite ----------
+const rep = read('tools/sim/report.json');
+const P = rep.profiles;
+check(P.regular.map_complete_day >= 65 && P.regular.map_complete_day <= 85, `simulador: regular completa o mapa no dia ${P.regular.map_complete_day} (65 a 85)`);
+check(P.regular.level50_day >= 95 && P.regular.level50_day <= 125, `simulador: regular no nível 50 no dia ${P.regular.level50_day} (95 a 125)`);
+check(P.casual.max_gold_wait_days <= 8, `simulador: casual espera no máximo ${P.casual.max_gold_wait_days} dias por um lote (até 8)`);
+check(P.regular.salaries_share >= 0.08 && P.regular.salaries_share <= 0.18, `simulador: salários do regular = ${(P.regular.salaries_share * 100).toFixed(1)}% da renda (8% a 18%)`);
+check(P.regular.armory_all_partial_week_median >= 25 && P.regular.armory_all_partial_week_median <= 40, `simulador: bônus parcial nas 10 cartas na semana ${P.regular.armory_all_partial_week_median} (25 a 40, sem mercado)`);
+// as metas publicadas (seção 14) com até 10% de diferença
+const near = (v: number, t: number) => Math.abs(v / t - 1) <= 0.1;
+check(near(P.regular.map_complete_day, 77) && near(P.casual.map_complete_day, 108) && near(P.dedicated.map_complete_day, 71) && near(P.regular.level30_day, 33) && near(P.regular.level50_day, 113),
+  'simulador reproduz as metas da seção 14 com até 10% de diferença');
+check(crops.length > 0 && cropsCfg.rules.work_units.per_character_per_hour === rep.work_per_character_hour, `capacidade de trabalho calibrada (${rep.work_per_character_hour}) gravada em crops.json`);
+// o relatório tem de ser da config atual: roda o regular de novo (1 semente) e compara
+{
+  const { simulate } = await import('../sim/model.ts');
+  const Rnow: number[] = []; for (const l of levels.levels) Rnow[l.level] = l.reference_income_per_day;
+  const r = simulate('regular', { workPerHour: rep.work_per_character_hour, R: Rnow, seed: 7 });
+  check(Math.abs(r.mapCompleteDay - P.regular.map_complete_day) <= 3 && Math.abs((r.levelDay[50] ?? 999) - P.regular.level50_day) <= 3,
+    `relatório do simulador está em dia com a config (regular: mapa ${r.mapCompleteDay.toFixed(1)}, nível 50 ${(r.levelDay[50] ?? 0).toFixed(1)})`);
+}
+
+// ---------- expedições (seção 8) ----------
+const ex = read('config/expeditions.json');
+const evRoute = (r: any) => r.price_multiplier * (r.success + (1 - r.success) * (1 - (r.loss[0] + r.loss[1]) / 2));
+const evs = ex.routes.map(evRoute);
+check(evs.every((v: number, i: number) => i === 0 || v > evs[i - 1]), `valor médio por rota sempre cresce da Feira à Exportação (${evs.map((v: number) => v.toFixed(2)).join(' < ')})`);
+const insOk = ex.routes.filter((r: any) => r.insurance_pct).every((r: any) => {
+  const fail = 1 - r.success, lossAbove = (r.loss[0] + r.loss[1]) / 2 - 0.10;
+  return fail * lossAbove - r.insurance_pct / 100 < 0;
+});
+check(insOk, 'seguro nunca tem média positiva');
+check(ex.minigame.result_pts.perfect <= 3 && ex.minigame.result_pts.failed >= -10, 'minigame: Perfeita até +3, não concluir até −10');
+const lua = read('config/weather.json').night_event.events.find((e: any) => e.id === 'lua_cheia');
+check((lua.sales_gold_pct / 100) * lua.cap_R_ratio <= 0.02, 'Lua Cheia rende no máximo 2% da renda para quem segura vendas');
+
 if (fails) { console.log(`\n${fails} falha(s)`); process.exit(1); }
 console.log('\ntudo verde');

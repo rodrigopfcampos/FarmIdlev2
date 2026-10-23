@@ -14,8 +14,8 @@
     "work_units": {
       "plant_and_harvest": 1,
       "extra_harvest_recurring_or_tree": 0.5,
-      "per_character_per_hour": null,
-      "per_character_per_hour_note": "calibrar no simulador da fase 0"
+      "per_character_per_hour": 2.67,
+      "per_character_per_hour_note": "calibrado pelo simulador da fase 0 (tools/sim): regular no nível 50 no dia 113"
     },
     "golden_harvest": {
       "multiplier": 2.5,

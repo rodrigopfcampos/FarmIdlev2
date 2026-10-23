@@ -1,0 +1,235 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 8",
+  "stall_price_ratio": 0.7,
+  "crit": {
+    "chance": 0.05,
+    "bonus_value": 0.25,
+    "item_rolls": 2
+  },
+  "success_cap": 0.95,
+  "bad_luck_protection": {
+    "after_failures": 2,
+    "bonus_pts": 25
+  },
+  "auto_repeat_max": 2,
+  "wear_per_trip_pct": 4,
+  "low_wear_threshold_pct": 30,
+  "low_wear_success_pts": -5,
+  "manager": {
+    "success_pts": 8,
+    "duration_multiplier": 0.9
+  },
+  "weather_success_pts": {
+    "rain": -4,
+    "cart_in_rain": -8,
+    "fog": -4,
+    "night": -2
+  },
+  "routes": [
+    {
+      "id": "feira",
+      "name_pt": "Feira da Vila",
+      "unlock_level": 1,
+      "hours": 0.5,
+      "price_multiplier": 1.0,
+      "success": 0.97,
+      "loss": [
+        0.1,
+        0.25
+      ],
+      "item_chance": 0.04,
+      "insurance_pct": null,
+      "deed_chance": 0,
+      "kit_chance": 0.02,
+      "kit_rarity": {
+        "uncommon": 1.0
+      }
+    },
+    {
+      "id": "cidade",
+      "name_pt": "Cidade Vizinha",
+      "unlock_level": 6,
+      "hours": 1.5,
+      "price_multiplier": 1.2,
+      "success": 0.92,
+      "loss": [
+        0.15,
+        0.35
+      ],
+      "item_chance": 0.08,
+      "insurance_pct": 2.4,
+      "deed_chance": 0,
+      "kit_chance": 0.04,
+      "kit_rarity": {
+        "uncommon": 0.8,
+        "rare": 0.2
+      }
+    },
+    {
+      "id": "capital",
+      "name_pt": "Capital",
+      "unlock_level": 16,
+      "hours": 3,
+      "price_multiplier": 1.45,
+      "success": 0.85,
+      "loss": [
+        0.2,
+        0.45
+      ],
+      "item_chance": 0.14,
+      "insurance_pct": 6.9,
+      "deed_chance": 0.03,
+      "kit_chance": 0.06,
+      "kit_rarity": {
+        "uncommon": 0.55,
+        "rare": 0.35,
+        "legendary": 0.1
+      }
+    },
+    {
+      "id": "porto",
+      "name_pt": "Porto",
+      "unlock_level": 26,
+      "hours": 5,
+      "price_multiplier": 1.75,
+      "success": 0.76,
+      "loss": [
+        0.25,
+        0.55
+      ],
+      "item_chance": 0.22,
+      "insurance_pct": 16.9,
+      "deed_chance": 0.05,
+      "kit_chance": 0.08,
+      "kit_rarity": {
+        "uncommon": 0.4,
+        "rare": 0.38,
+        "legendary": 0.18,
+        "mythic": 0.04
+      }
+    },
+    {
+      "id": "exportacao",
+      "name_pt": "Exportação",
+      "unlock_level": 36,
+      "hours": 8,
+      "price_multiplier": 2.1,
+      "success": 0.66,
+      "loss": [
+        0.3,
+        0.6
+      ],
+      "item_chance": 0.32,
+      "insurance_pct": 33,
+      "deed_chance": 0.08,
+      "kit_chance": 0.1,
+      "kit_rarity": {
+        "uncommon": 0.3,
+        "rare": 0.37,
+        "legendary": 0.25,
+        "mythic": 0.08
+      }
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "carroca",
+      "name_pt": "Carroça",
+      "unlock_level": 1,
+      "capacity": 60,
+      "duration_multiplier": 1.3,
+      "safety_pts": 0,
+      "max_route": "cidade",
+      "cost": 0,
+      "reference_cost": 33000
+    },
+    {
+      "id": "carro",
+      "name_pt": "Carro",
+      "unlock_level": 6,
+      "capacity": 120,
+      "duration_multiplier": 0.8,
+      "safety_pts": 3,
+      "max_route": "capital",
+      "cost": 33000
+    },
+    {
+      "id": "picape",
+      "name_pt": "Caminhão pequeno (picape)",
+      "unlock_level": 16,
+      "capacity": 250,
+      "duration_multiplier": 0.9,
+      "safety_pts": 5,
+      "max_route": "porto",
+      "cost": 620000
+    },
+    {
+      "id": "caminhao",
+      "name_pt": "Caminhão grande",
+      "unlock_level": 30,
+      "capacity": 500,
+      "duration_multiplier": 1.0,
+      "safety_pts": 8,
+      "max_route": "exportacao",
+      "cost": 5600000
+    }
+  ],
+  "refurbish": [
+    {
+      "rarity": "uncommon",
+      "min_level": 8,
+      "cost_ratio": 0.3,
+      "hours": 2
+    },
+    {
+      "rarity": "rare",
+      "min_level": 16,
+      "cost_ratio": 0.6,
+      "hours": 4
+    },
+    {
+      "rarity": "legendary",
+      "min_level": 26,
+      "cost_ratio": 1.2,
+      "hours": 8
+    },
+    {
+      "rarity": "mythic",
+      "min_level": 36,
+      "cost_ratio": 2.4,
+      "hours": 12
+    }
+  ],
+  "kit_merge": 3,
+  "minigame": {
+    "arrows": {
+      "feira": 4,
+      "cidade": 5,
+      "capital": 6,
+      "porto": 7,
+      "exportacao": 8
+    },
+    "seconds": {
+      "feira": 6,
+      "cidade": 6,
+      "capital": 6.5,
+      "porto": 7,
+      "exportacao": 7.5
+    },
+    "result_pts": {
+      "perfect": 3,
+      "done": 0,
+      "incomplete": -5,
+      "failed": -10
+    },
+    "manager_extra_seconds": 1,
+    "convoy_extra_arrows": 2,
+    "convoy_extra_seconds": 1.5,
+    "calm_mode_time_multiplier": 1.5
+  },
+  "daily_demand": {
+    "bonus": 0.2,
+    "products": 3
+  }
+}

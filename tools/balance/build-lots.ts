@@ -8,8 +8,8 @@ import { evaluate } from './lots-search.ts';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const map = JSON.parse(readFileSync(join(root, 'config', 'mapConfig.json'), 'utf8'));
 
-// Parâmetros escolhidos pela busca (lots-search.ts): mesmas metas da seção 14 com 29 compras
-const PARAMS = { k: 1.44, growth: 1.105, base: 0.29, purchases: 29 };
+// Parâmetros escolhidos pela busca com o simulador completo (tools/sim): metas da seção 14 com 29 compras
+const PARAMS = { k: 1.46, growth: 1.1, base: 0.28, purchases: 29 };
 const DEED_FROM = 20; // Escritura da 20ª compra em diante: continuam 10 Escrituras no total
 const TYPE_FLOOR: Record<string, number> = { pasto_galinheiro: 3, pasto_celeiro: 8, pomar: 10, pasto_lago: 11 };
 const CLEANUP = { base_minutes: 60, per_purchase_minutes: 12, other_class_multiplier: 2, neighbor_help_reduction: 0.1, max_neighbor_helps_per_day: 5 };

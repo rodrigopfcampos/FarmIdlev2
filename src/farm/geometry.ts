@@ -35,3 +35,10 @@ export function stageFor(progress: number, thresholds: number[]): number {
 export function windOffset(timeS: number, x: number, speed: number, strength: number): number {
   return Math.round(Math.sin(timeS * speed + x * 0.4) * strength);
 }
+
+/** Limites da câmera: no lado em que o mapa cabe na tela, a área cresce igual para os dois lados,
+ *  assim o mapa fica centralizado; no lado em que não cabe, dá para arrastar até a borda do mapa. */
+export function cameraBounds(mapW: number, mapH: number, viewW: number, viewH: number, zoom: number): [number, number, number, number] {
+  const w = Math.max(mapW, viewW / zoom), h = Math.max(mapH, viewH / zoom);
+  return [(mapW - w) / 2, (mapH - h) / 2, w, h];
+}

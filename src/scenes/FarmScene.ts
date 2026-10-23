@@ -6,7 +6,7 @@ import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { CROPS, FARM, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { stageSprite } from '../farm/art';
-import { pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
+import { cameraBounds, pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
 import { lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
@@ -194,13 +194,14 @@ export class FarmScene extends Phaser.Scene {
     }
   }
 
-  // ---------- câmera: zoom inteiro e arrastar quando o mapa não cabe ----------
+  // ---------- câmera: zoom inteiro, mapa centralizado e arrastar quando ele não cabe ----------
   private setupCamera(): void {
     const fit = () => {
       const { width, height } = this.scale.gameSize;
       const zoom = Math.max(1, Math.floor(Math.min(width / MAP_W, height / MAP_H)));
       const cam = this.cameras.main.setZoom(zoom).setRoundPixels(true);
-      if (MAP_W * zoom <= width && MAP_H * zoom <= height) cam.removeBounds(); else cam.setBounds(0, 0, MAP_W, MAP_H);
+      // antes, quando só a altura não cabia, os limites prendiam o mapa na esquerda (vídeo da fase 2)
+      cam.setBounds(...cameraBounds(MAP_W, MAP_H, width, height, zoom));
       cam.centerOn(MAP_W / 2, MAP_H / 2);
     };
     fit();

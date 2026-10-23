@@ -47,3 +47,15 @@ describe('canteiros', () => {
     expect(stageSprite(m, 'cenoura', 3)).toBe('crop_cenoura_ready');
   });
 });
+
+describe('câmera centraliza o mapa', () => {
+  it('tela larga e baixa: centraliza na largura e deixa arrastar na altura', async () => {
+    const { cameraBounds } = await import('../src/farm/geometry');
+    // tela do vídeo: 1920 de largura, ~917 de altura; mapa 1672 × 940
+    expect(cameraBounds(1672, 940, 1920, 917, 1)).toEqual([-124, 0, 1920, 940]);
+  });
+  it('mapa cabe nos dois lados: sobra igual dos dois lados', async () => {
+    const { cameraBounds } = await import('../src/farm/geometry');
+    expect(cameraBounds(1672, 940, 3840, 2160, 2)).toEqual([-124, -70, 1920, 1080]);
+  });
+});

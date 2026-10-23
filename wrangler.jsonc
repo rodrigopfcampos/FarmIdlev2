@@ -1,0 +1,9 @@
+// Cloudflare (Workers Builds): publica só os arquivos estáticos gerados em dist/ por "npm run build".
+{
+  "name": "farmidlev2",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

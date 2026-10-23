@@ -25,8 +25,8 @@
 - Ferramenta perde 2,5/h. Hospedagem: Cloudflare (Workers Builds). Supabase grátis em São Paulo.
 
 ## C. Pendências do dono
-1. Cloudflare: cadastrar `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` (build) e refazer o build.
-2. Supabase (produção): Site URL = endereço do site no Cloudflare.
+1. ✅ Cloudflare com as variáveis do Supabase; site em https://farmidlev2.2mailife.workers.dev (conectado ao projeto de produção).
+2. ✅ Supabase (produção): Site URL = endereço do site.
 3. Testar em produção: criar conta, confirmar e-mail, entrar, ver 2.000 de ouro, sair.
 4. Dar o "ok" da fase 0.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.

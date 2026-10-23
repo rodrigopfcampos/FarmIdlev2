@@ -147,5 +147,59 @@ for (const c of crops) {
 }
 check(s6ok, 'tabela de cultivos da seção 6 do GDD bate com config/crops.json');
 
+// ---------- cartas (seção 11) ----------
+const cards = read('config/cards.json');
+check(cards.cards.length === 10 && new Set(cards.cards.map((c: any) => c.illustration_slot)).size === 10, '10 cartas, cada uma com 1 ilustração');
+const pct = (v: number) => `${v}%`;
+let cardsOk = true;
+for (const c of cards.cards) {
+  // primeiro número de cada raridade na linha da carta no GDD (ex.: "| Sol de Verão | ... | +15% | +20% |")
+  const line = gdd.split('\n').find((l) => l.startsWith(`| ${c.name_pt} `) && l.split('|').length >= 9);
+  if (!line) { cardsOk = false; console.log('   carta sem linha no GDD:', c.name_pt); continue; }
+  const cellsTxt = line.split('|').slice(3, 8).map((t) => t.trim());
+  const rar = ['common', 'uncommon', 'rare', 'legendary', 'mythic'];
+  rar.forEach((r, k) => {
+    const first = Object.values(c.buff_effects[r])[0] as number;
+    const nums = (cellsTxt[k].match(/\d+/g) ?? []).map(Number);
+    const special = cellsTxt[k].includes('sem'); // "sem perda" / "sem gasto" = 100
+    if (!(nums.includes(first) || (special && first === 100))) { cardsOk = false; console.log(`   ${c.name_pt} ${r}: config ${pct(first)} x GDD "${cellsTxt[k]}"`); }
+  });
+}
+check(cardsOk, 'buffs de config/cards.json batem com a tabela da seção 11');
+check(cards.rarities.common.duration_minutes === 60 && cards.rarities.mythic.duration_minutes === 150, 'duração dos buffs: Comum 1 h, Mítico 2 h 30');
+
+// ---------- ferramentas e itens (seção 7) ----------
+const tools = read('config/tools_and_items.json');
+let toolsOk = true;
+for (const m of tools.tool_materials) {
+  const row = new RegExp(`\\| ${m.name_pt} \\| ${m.unlock_level} \\| ×${m.work_capacity_multiplier.toFixed(1).replace(".", ",")} \\| ${m.upgrade_cost_gold ? fmt(m.upgrade_cost_gold).replace(/\./g, '\\.') : 'inicial'} \\|`);
+  if (!row.test(gdd)) { toolsOk = false; console.log('   material diferente no GDD:', m.name_pt); }
+}
+check(toolsOk, 'materiais das ferramentas batem com a tabela da seção 7');
+check(tools.tool_durability_rules.loss_per_work_hour === 2.5, 'ferramenta perde 2,5 de durabilidade por hora');
+
+// ---------- raridade global (seção 9) ----------
+const rarity = read('config/rarity.json');
+const multTxt = rarity.tiers.map((t: any) => `| ${t.name_pt} | ${t.color_hex} | ×${String(t.multiplier).replace('.', ',')} |`);
+check(multTxt.every((t: string) => gdd.includes(t)), 'multiplicadores de raridade batem com a seção 9');
+const odds = Object.values(rarity.animals.purchase_odds) as number[];
+check(Math.abs(odds.reduce((a, b) => a + b, 0) - 1) < 1e-9, 'chances de raridade dos animais somam 100%');
+const avg = rarity.tiers.reduce((s: number, t: any) => s + t.multiplier * rarity.animals.purchase_odds[t.id], 0);
+check(gdd.includes(`×${avg.toFixed(2).replace('.', ',')}`), `média dos animais ×${avg.toFixed(3)} citada no GDD`);
+
+// ---------- artes: toda chave usada na config existe no manifest ----------
+const sprites = read('public/assets/sprites/manifest.json').sprites;
+const keys = [
+  ...cards.cards.flatMap((c: any) => [c.sprite_key, c.icon_key]), ...Object.values(cards.frames),
+  ...tools.class_tool_cards.flatMap((t: any) => tools.tool_materials.map((m: any) => `${t.id}_${m.id}`)),
+  ...['clothing_cards', 'amulet_cards', 'snack_cards'].flatMap((k) => tools[k].map((i: any) => i.id)),
+  ...crops.flatMap((c: any) => [c.art.ready_sprite, c.art.seed_bag].filter(Boolean)),
+  ...['carroca', 'carro', 'picape', 'caminhao'].flatMap((v) => [`vehicle_${v}_idle`, ...rarity.tiers.map((t: any) => `vehicle_${v}_${t.id}`)]),
+  'building_celeiro', 'building_galinheiro', 'tree_leafy_sapling', 'tree_leafy_adult', 'tree_palm_sapling', 'tree_palm_adult',
+];
+const missing = keys.filter((k: string) => !sprites[k]);
+if (missing.length) console.log('   faltam:', missing.join(', '));
+check(!missing.length, `as ${keys.length} artes citadas na config existem em public/assets/sprites`);
+
 if (fails) { console.log(`\n${fails} falha(s)`); process.exit(1); }
 console.log('\ntudo verde');

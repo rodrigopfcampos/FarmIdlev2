@@ -1,0 +1,2116 @@
+{
+  "version": 1,
+  "generated_by": "tools/slice-assets.js",
+  "sprites": {
+    "card_art_01_sun": {
+      "file": "sprites/cards/card_art_01_sun.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_02_basket": {
+      "file": "sprites/cards/card_art_02_basket.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_03_flock": {
+      "file": "sprites/cards/card_art_03_flock.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_04_owl": {
+      "file": "sprites/cards/card_art_04_owl.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_05_hourglass": {
+      "file": "sprites/cards/card_art_05_hourglass.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_06_storm": {
+      "file": "sprites/cards/card_art_06_storm.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_07_horseshoe": {
+      "file": "sprites/cards/card_art_07_horseshoe.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_08_stamina_gear": {
+      "file": "sprites/cards/card_art_08_stamina_gear.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_09_clover": {
+      "file": "sprites/cards/card_art_09_clover.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_art_10_coin": {
+      "file": "sprites/cards/card_art_10_coin.png",
+      "size": [
+        44,
+        64
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_01_sun": {
+      "file": "sprites/cards/card_icon_01_sun.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_02_basket": {
+      "file": "sprites/cards/card_icon_02_basket.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_03_flock": {
+      "file": "sprites/cards/card_icon_03_flock.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_04_owl": {
+      "file": "sprites/cards/card_icon_04_owl.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_05_hourglass": {
+      "file": "sprites/cards/card_icon_05_hourglass.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_06_storm": {
+      "file": "sprites/cards/card_icon_06_storm.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_07_horseshoe": {
+      "file": "sprites/cards/card_icon_07_horseshoe.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_08_stamina_gear": {
+      "file": "sprites/cards/card_icon_08_stamina_gear.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_09_clover": {
+      "file": "sprites/cards/card_icon_09_clover.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_icon_10_coin": {
+      "file": "sprites/cards/card_icon_10_coin.png",
+      "size": [
+        12,
+        12
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_frame_common": {
+      "file": "sprites/cards/card_frame_common.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_frame_uncommon": {
+      "file": "sprites/cards/card_frame_uncommon.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_frame_rare": {
+      "file": "sprites/cards/card_frame_rare.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_frame_legendary": {
+      "file": "sprites/cards/card_frame_legendary.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_frame_mythic": {
+      "file": "sprites/cards/card_frame_mythic.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "card_back": {
+      "file": "sprites/cards/card_back.png",
+      "size": [
+        64,
+        96
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "ui_binder_book": {
+      "file": "sprites/ui/ui_binder_book.png",
+      "size": [
+        540,
+        300
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hoe_wood": {
+      "file": "sprites/items/tool_hoe_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hoe_copper": {
+      "file": "sprites/items/tool_hoe_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hoe_iron": {
+      "file": "sprites/items/tool_hoe_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hoe_gold": {
+      "file": "sprites/items/tool_hoe_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hoe_crystal": {
+      "file": "sprites/items/tool_hoe_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_watering_can_wood": {
+      "file": "sprites/items/tool_watering_can_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_watering_can_copper": {
+      "file": "sprites/items/tool_watering_can_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_watering_can_iron": {
+      "file": "sprites/items/tool_watering_can_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_watering_can_gold": {
+      "file": "sprites/items/tool_watering_can_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_watering_can_crystal": {
+      "file": "sprites/items/tool_watering_can_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hammer_wood": {
+      "file": "sprites/items/tool_hammer_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hammer_copper": {
+      "file": "sprites/items/tool_hammer_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hammer_iron": {
+      "file": "sprites/items/tool_hammer_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hammer_gold": {
+      "file": "sprites/items/tool_hammer_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_hammer_crystal": {
+      "file": "sprites/items/tool_hammer_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_scale_wood": {
+      "file": "sprites/items/tool_scale_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_scale_copper": {
+      "file": "sprites/items/tool_scale_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_scale_iron": {
+      "file": "sprites/items/tool_scale_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_scale_gold": {
+      "file": "sprites/items/tool_scale_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_scale_crystal": {
+      "file": "sprites/items/tool_scale_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_clipboard_wood": {
+      "file": "sprites/items/tool_clipboard_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_clipboard_copper": {
+      "file": "sprites/items/tool_clipboard_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_clipboard_iron": {
+      "file": "sprites/items/tool_clipboard_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_clipboard_gold": {
+      "file": "sprites/items/tool_clipboard_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_clipboard_crystal": {
+      "file": "sprites/items/tool_clipboard_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_magnifying_glass_wood": {
+      "file": "sprites/items/tool_magnifying_glass_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_magnifying_glass_copper": {
+      "file": "sprites/items/tool_magnifying_glass_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_magnifying_glass_iron": {
+      "file": "sprites/items/tool_magnifying_glass_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_magnifying_glass_gold": {
+      "file": "sprites/items/tool_magnifying_glass_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "tool_magnifying_glass_crystal": {
+      "file": "sprites/items/tool_magnifying_glass_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "cloth_hat": {
+      "file": "sprites/items/cloth_hat.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "cloth_boots": {
+      "file": "sprites/items/cloth_boots.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "cloth_gloves": {
+      "file": "sprites/items/cloth_gloves.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "item_deed": {
+      "file": "sprites/items/item_deed.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "amulet_horseshoe": {
+      "file": "sprites/items/amulet_horseshoe.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "amulet_clover": {
+      "file": "sprites/items/amulet_clover.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "amulet_pocket_watch": {
+      "file": "sprites/items/amulet_pocket_watch.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "amulet_feather": {
+      "file": "sprites/items/amulet_feather.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "snack_cheese_bread": {
+      "file": "sprites/items/snack_cheese_bread.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "snack_coffee": {
+      "file": "sprites/items/snack_coffee.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "snack_lunchbox": {
+      "file": "sprites/items/snack_lunchbox.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "item_repair_kit": {
+      "file": "sprites/items/item_repair_kit.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crop_generic_stage1": {
+      "file": "sprites/crops/crop_generic_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_generic_stage2": {
+      "file": "sprites/crops/crop_generic_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_generic_stage3": {
+      "file": "sprites/crops/crop_generic_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_leafy_sapling": {
+      "file": "sprites/trees/tree_leafy_sapling.png",
+      "size": [
+        24,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_leafy_adult": {
+      "file": "sprites/trees/tree_leafy_adult.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_leafy_fruit": {
+      "file": "sprites/trees/tree_leafy_fruit.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_celeiro": {
+      "file": "sprites/buildings/building_celeiro.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_palm_sapling": {
+      "file": "sprites/trees/tree_palm_sapling.png",
+      "size": [
+        24,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_palm_adult": {
+      "file": "sprites/trees/tree_palm_adult.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_palm_fruit": {
+      "file": "sprites/trees/tree_palm_fruit.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cenoura_ready": {
+      "file": "sprites/crops/crop_cenoura_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_batata_ready": {
+      "file": "sprites/crops/crop_batata_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_morango_ready": {
+      "file": "sprites/crops/crop_morango_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_trigo_ready": {
+      "file": "sprites/crops/extras/crop_trigo_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_milho_ready": {
+      "file": "sprites/crops/crop_milho_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_tomate_ready": {
+      "file": "sprites/crops/crop_tomate_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abobora_ready": {
+      "file": "sprites/crops/crop_abobora_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melancia_ready": {
+      "file": "sprites/crops/crop_melancia_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_girassol_ready": {
+      "file": "sprites/crops/extras/crop_girassol_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_repolho_ready": {
+      "file": "sprites/crops/crop_repolho_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cebola_ready": {
+      "file": "sprites/crops/crop_cebola_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimenta_ready": {
+      "file": "sprites/crops/crop_pimenta_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_algodao_ready": {
+      "file": "sprites/crops/extras/crop_algodao_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abacaxi_ready": {
+      "file": "sprites/crops/crop_abacaxi_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "seedbag_maca": {
+      "file": "sprites/crops/seedbag_maca.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_maca_verde": {
+      "file": "sprites/crops/seedbag_maca_verde.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_banana": {
+      "file": "sprites/crops/seedbag_banana.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_laranja": {
+      "file": "sprites/crops/seedbag_laranja.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_uva": {
+      "file": "sprites/crops/seedbag_uva.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_mirtilo": {
+      "file": "sprites/crops/seedbag_mirtilo.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_amora": {
+      "file": "sprites/crops/seedbag_amora.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_pessego": {
+      "file": "sprites/crops/seedbag_pessego.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_cereja": {
+      "file": "sprites/crops/seedbag_cereja.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crop_maca_stage1": {
+      "file": "sprites/crops/crop_maca_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_stage2": {
+      "file": "sprites/crops/crop_maca_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_stage3": {
+      "file": "sprites/crops/crop_maca_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_ready": {
+      "file": "sprites/crops/crop_maca_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_verde_stage1": {
+      "file": "sprites/crops/crop_maca_verde_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_verde_stage2": {
+      "file": "sprites/crops/crop_maca_verde_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_verde_stage3": {
+      "file": "sprites/crops/crop_maca_verde_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_maca_verde_ready": {
+      "file": "sprites/crops/crop_maca_verde_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_banana_stage1": {
+      "file": "sprites/crops/crop_banana_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_banana_stage2": {
+      "file": "sprites/crops/crop_banana_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_banana_stage3": {
+      "file": "sprites/crops/crop_banana_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_banana_ready": {
+      "file": "sprites/crops/crop_banana_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_laranja_stage1": {
+      "file": "sprites/crops/crop_laranja_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_laranja_stage2": {
+      "file": "sprites/crops/crop_laranja_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_laranja_stage3": {
+      "file": "sprites/crops/crop_laranja_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_laranja_ready": {
+      "file": "sprites/crops/crop_laranja_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_uva_stage1": {
+      "file": "sprites/crops/crop_uva_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_uva_stage2": {
+      "file": "sprites/crops/crop_uva_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_uva_stage3": {
+      "file": "sprites/crops/crop_uva_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_uva_ready": {
+      "file": "sprites/crops/crop_uva_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_mirtilo_stage1": {
+      "file": "sprites/crops/crop_mirtilo_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_mirtilo_stage2": {
+      "file": "sprites/crops/crop_mirtilo_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_mirtilo_stage3": {
+      "file": "sprites/crops/crop_mirtilo_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_mirtilo_ready": {
+      "file": "sprites/crops/crop_mirtilo_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_amora_stage1": {
+      "file": "sprites/crops/crop_amora_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_amora_stage2": {
+      "file": "sprites/crops/crop_amora_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_amora_stage3": {
+      "file": "sprites/crops/crop_amora_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_amora_ready": {
+      "file": "sprites/crops/crop_amora_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pessego_stage1": {
+      "file": "sprites/crops/crop_pessego_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pessego_stage2": {
+      "file": "sprites/crops/crop_pessego_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pessego_stage3": {
+      "file": "sprites/crops/crop_pessego_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pessego_ready": {
+      "file": "sprites/crops/crop_pessego_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cereja_stage1": {
+      "file": "sprites/crops/crop_cereja_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cereja_stage2": {
+      "file": "sprites/crops/crop_cereja_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cereja_stage3": {
+      "file": "sprites/crops/crop_cereja_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cereja_ready": {
+      "file": "sprites/crops/crop_cereja_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carroca_idle": {
+      "file": "sprites/vehicles/vehicle_carroca_idle.png",
+      "size": [
+        384,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 4,
+      "frame_size": [
+        96,
+        64
+      ]
+    },
+    "vehicle_carro_idle": {
+      "file": "sprites/vehicles/vehicle_carro_idle.png",
+      "size": [
+        384,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 4,
+      "frame_size": [
+        96,
+        64
+      ]
+    },
+    "vehicle_picape_idle": {
+      "file": "sprites/vehicles/vehicle_picape_idle.png",
+      "size": [
+        384,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 4,
+      "frame_size": [
+        96,
+        64
+      ]
+    },
+    "vehicle_caminhao_idle": {
+      "file": "sprites/vehicles/vehicle_caminhao_idle.png",
+      "size": [
+        384,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 4,
+      "frame_size": [
+        96,
+        64
+      ]
+    },
+    "vehicle_carroca_common": {
+      "file": "sprites/vehicles/vehicle_carroca_common.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carroca_uncommon": {
+      "file": "sprites/vehicles/vehicle_carroca_uncommon.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carroca_rare": {
+      "file": "sprites/vehicles/vehicle_carroca_rare.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carroca_legendary": {
+      "file": "sprites/vehicles/vehicle_carroca_legendary.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carroca_mythic": {
+      "file": "sprites/vehicles/vehicle_carroca_mythic.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carro_common": {
+      "file": "sprites/vehicles/vehicle_carro_common.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carro_uncommon": {
+      "file": "sprites/vehicles/vehicle_carro_uncommon.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carro_rare": {
+      "file": "sprites/vehicles/vehicle_carro_rare.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carro_legendary": {
+      "file": "sprites/vehicles/vehicle_carro_legendary.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_carro_mythic": {
+      "file": "sprites/vehicles/vehicle_carro_mythic.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_picape_common": {
+      "file": "sprites/vehicles/vehicle_picape_common.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_picape_uncommon": {
+      "file": "sprites/vehicles/vehicle_picape_uncommon.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_picape_rare": {
+      "file": "sprites/vehicles/vehicle_picape_rare.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_picape_legendary": {
+      "file": "sprites/vehicles/vehicle_picape_legendary.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_picape_mythic": {
+      "file": "sprites/vehicles/vehicle_picape_mythic.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_caminhao_common": {
+      "file": "sprites/vehicles/vehicle_caminhao_common.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_caminhao_uncommon": {
+      "file": "sprites/vehicles/vehicle_caminhao_uncommon.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_caminhao_rare": {
+      "file": "sprites/vehicles/vehicle_caminhao_rare.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_caminhao_legendary": {
+      "file": "sprites/vehicles/vehicle_caminhao_legendary.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "vehicle_caminhao_mythic": {
+      "file": "sprites/vehicles/vehicle_caminhao_mythic.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "lot_tilled_dry": {
+      "file": "sprites/map/lot_tilled_dry.png",
+      "size": [
+        204,
+        118
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "lot_tilled_wet": {
+      "file": "sprites/map/lot_tilled_wet.png",
+      "size": [
+        204,
+        118
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fence_straight": {
+      "file": "sprites/map/fence_straight.png",
+      "size": [
+        48,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fence_corner": {
+      "file": "sprites/map/fence_corner.png",
+      "size": [
+        48,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fence_end": {
+      "file": "sprites/map/fence_end.png",
+      "size": [
+        16,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "lot_sign": {
+      "file": "sprites/map/lot_sign.png",
+      "size": [
+        24,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "debris_rock": {
+      "file": "sprites/map/debris_rock.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "debris_stump_big": {
+      "file": "sprites/map/debris_stump_big.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "debris_stump_small": {
+      "file": "sprites/map/debris_stump_small.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_celeiro_silo_a": {
+      "file": "sprites/buildings/building_celeiro_silo_a.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_celeiro_silo_b": {
+      "file": "sprites/buildings/building_celeiro_silo_b.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_celeiro_silo_c": {
+      "file": "sprites/buildings/building_celeiro_silo_c.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_galinheiro": {
+      "file": "sprites/buildings/building_galinheiro.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_estufa": {
+      "file": "sprites/buildings/building_estufa.png",
+      "size": [
+        112,
+        112
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_pine": {
+      "file": "sprites/buildings/tree_pine.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "building_pier": {
+      "file": "sprites/buildings/building_pier.png",
+      "size": [
+        96,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_leafy_alt": {
+      "file": "sprites/buildings/tree_leafy_alt.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_apple_alt": {
+      "file": "sprites/buildings/tree_apple_alt.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tree_palm_alt": {
+      "file": "sprites/buildings/tree_palm_alt.png",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "route_village": {
+      "file": "sprites/ui/route_village.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "route_city": {
+      "file": "sprites/ui/route_city.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "route_port": {
+      "file": "sprites/ui/route_port.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_cargo_burned": {
+      "file": "sprites/ui/result_cargo_burned.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_cargo_stolen": {
+      "file": "sprites/ui/result_cargo_stolen.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_empty": {
+      "file": "sprites/ui/result_empty.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_coins": {
+      "file": "sprites/ui/result_coins.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_chest": {
+      "file": "sprites/ui/result_chest.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "result_jackpot": {
+      "file": "sprites/ui/result_jackpot.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

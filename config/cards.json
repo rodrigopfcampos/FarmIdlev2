@@ -1,0 +1,536 @@
+{
+  "version": 2,
+  "source": "GDD v2 seção 4 e seção 11 (ilustrações conferidas com a prancha Cartas buff.png)",
+  "dimensions": {
+    "card_base": [
+      64,
+      96
+    ],
+    "center_illustration": [
+      44,
+      64
+    ],
+    "mini_icon_pack": [
+      12,
+      12
+    ],
+    "hud_icon": [
+      24,
+      24
+    ]
+  },
+  "rules": {
+    "max_active_buffs": 3,
+    "active_buff_distinct_cards": true,
+    "replace_rule": "same_card_requires_equal_or_higher_rarity_and_resets_timer",
+    "runs_offline": true,
+    "weekly_mission_packs": {
+      "daily_all_5_completed_pack": 1,
+      "max_daily_packs_per_week": 4,
+      "weekly_3_completed_cards": 1,
+      "weekly_5_completed_bonus_cards": 1,
+      "weekly_5_completed_deeds": 1,
+      "max_cards_per_week": 6
+    }
+  },
+  "binder": {
+    "initial_slots": 60,
+    "expansion_slots": 20,
+    "max_slots": 200,
+    "expansion_cost_reference_income_ratio": 0.5,
+    "inbox_overflow_retention_days": 7
+  },
+  "gacha": {
+    "opens_immediately": true,
+    "requires_serial_number": true,
+    "base_rates": {
+      "common": 0.5,
+      "uncommon": 0.3,
+      "rare": 0.14,
+      "legendary": 0.05,
+      "mythic": 0.01
+    },
+    "pity_thresholds": {
+      "rare_or_better": 10,
+      "legendary_or_better": 40,
+      "mythic": 120
+    },
+    "effective_rates_with_pity": {
+      "common": 0.48,
+      "uncommon": 0.29,
+      "rare": 0.155,
+      "legendary": 0.059,
+      "mythic": 0.0155
+    }
+  },
+  "rarities": {
+    "common": {
+      "name_pt": "Comum",
+      "color_hex": "#9E9E9E",
+      "duration_minutes": 60,
+      "target_production_minutes_value": 6,
+      "collector_sell_reference_income_ratio": 0.002,
+      "frame_style": "simple_gray"
+    },
+    "uncommon": {
+      "name_pt": "Incomum",
+      "color_hex": "#4CAF50",
+      "duration_minutes": 80,
+      "target_production_minutes_value": 12,
+      "collector_sell_reference_income_ratio": 0.004,
+      "frame_style": "green_branches"
+    },
+    "rare": {
+      "name_pt": "Raro",
+      "color_hex": "#2F7BE5",
+      "duration_minutes": 100,
+      "target_production_minutes_value": 22,
+      "collector_sell_reference_income_ratio": 0.008,
+      "frame_style": "blue_stars"
+    },
+    "legendary": {
+      "name_pt": "Lendário",
+      "color_hex": "#F2C230",
+      "duration_minutes": 120,
+      "target_production_minutes_value": 38,
+      "collector_sell_reference_income_ratio": 0.013,
+      "frame_style": "gold_animated_shine"
+    },
+    "mythic": {
+      "name_pt": "Mítico",
+      "color_hex": "#E5383B",
+      "duration_minutes": 150,
+      "target_production_minutes_value": 65,
+      "collector_sell_reference_income_ratio": 0.023,
+      "frame_style": "red_animated_aura_holographic"
+    }
+  },
+  "cards": [
+    {
+      "id": "sol_de_verao",
+      "name_pt": "Sol de Verão",
+      "illustration_slot": 1,
+      "sprite_key": "card_art_01_sun",
+      "description_pt": "Aumenta a velocidade de crescimento da lavoura e do pomar.",
+      "buff_effects": {
+        "common": {
+          "crop_and_orchard_growth_speed_pct": 15
+        },
+        "uncommon": {
+          "crop_and_orchard_growth_speed_pct": 20
+        },
+        "rare": {
+          "crop_and_orchard_growth_speed_pct": 30
+        },
+        "legendary": {
+          "crop_and_orchard_growth_speed_pct": 40
+        },
+        "mythic": {
+          "crop_and_orchard_growth_speed_pct": 60
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "crop_and_orchard_growth_speed_pct": 1.0
+        },
+        "complete_gold": {
+          "crop_and_orchard_growth_speed_pct": 2.5
+        }
+      },
+      "icon_key": "card_icon_01_sun"
+    },
+    {
+      "id": "cesta_dourada",
+      "name_pt": "Cesta Dourada",
+      "illustration_slot": 2,
+      "sprite_key": "card_art_02_basket",
+      "description_pt": "Aumenta a chance de Colheita Dourada (vale 2,5x) na lavoura e no pomar.",
+      "buff_effects": {
+        "common": {
+          "golden_harvest_chance_pct": 10
+        },
+        "uncommon": {
+          "golden_harvest_chance_pct": 13
+        },
+        "rare": {
+          "golden_harvest_chance_pct": 20
+        },
+        "legendary": {
+          "golden_harvest_chance_pct": 28
+        },
+        "mythic": {
+          "golden_harvest_chance_pct": 40
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "golden_harvest_chance_pct": 1.5
+        },
+        "complete_gold": {
+          "golden_harvest_chance_pct": 3.5
+        }
+      },
+      "icon_key": "card_icon_02_basket"
+    },
+    {
+      "id": "rebanho_feliz",
+      "name_pt": "Rebanho Feliz",
+      "illustration_slot": 3,
+      "sprite_key": "card_art_03_flock",
+      "description_pt": "Aumenta a produção de todos os animais no Galinheiro e Celeiro.",
+      "buff_effects": {
+        "common": {
+          "animal_production_pct": 40
+        },
+        "uncommon": {
+          "animal_production_pct": 60
+        },
+        "rare": {
+          "animal_production_pct": 90
+        },
+        "legendary": {
+          "animal_production_pct": 130
+        },
+        "mythic": {
+          "animal_production_pct": 175
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "animal_production_pct": 8.0
+        },
+        "complete_gold": {
+          "animal_production_pct": 20.0
+        }
+      },
+      "icon_key": "card_icon_03_flock"
+    },
+    {
+      "id": "coruja_sabia",
+      "name_pt": "Coruja Sábia",
+      "illustration_slot": 4,
+      "sprite_key": "card_art_04_owl",
+      "description_pt": "Aumenta o XP ganho pela conta e pelos personagens.",
+      "post_level_50_rule": "converts_account_xp_bonus_to_village_stars",
+      "buff_effects": {
+        "common": {
+          "account_and_character_xp_pct": 15
+        },
+        "uncommon": {
+          "account_and_character_xp_pct": 22
+        },
+        "rare": {
+          "account_and_character_xp_pct": 32
+        },
+        "legendary": {
+          "account_and_character_xp_pct": 45
+        },
+        "mythic": {
+          "account_and_character_xp_pct": 62
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "account_xp_pct": 2.5
+        },
+        "complete_gold": {
+          "account_xp_pct": 6.0
+        }
+      },
+      "icon_key": "card_icon_04_owl"
+    },
+    {
+      "id": "ampulheta",
+      "name_pt": "Ampulheta",
+      "illustration_slot": 5,
+      "sprite_key": "card_art_05_hourglass",
+      "description_pt": "Acelera lavoura, pomar, animais e limpeza de lote.",
+      "buff_effects": {
+        "common": {
+          "all_speed_pct": 10
+        },
+        "uncommon": {
+          "all_speed_pct": 15
+        },
+        "rare": {
+          "all_speed_pct": 22
+        },
+        "legendary": {
+          "all_speed_pct": 32
+        },
+        "mythic": {
+          "all_speed_pct": 43
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "crop_orchard_animal_speed_pct": 0.8
+        },
+        "complete_gold": {
+          "crop_orchard_animal_speed_pct": 2.0
+        }
+      },
+      "icon_key": "card_icon_05_hourglass"
+    },
+    {
+      "id": "tempestade",
+      "name_pt": "Tempestade",
+      "illustration_slot": 6,
+      "sprite_key": "card_art_06_storm",
+      "description_pt": "Aumenta os bônus de clima e do evento noturno.",
+      "buff_effects": {
+        "common": {
+          "weather_and_night_event_boost_pct": 35
+        },
+        "uncommon": {
+          "weather_and_night_event_boost_pct": 65
+        },
+        "rare": {
+          "weather_and_night_event_boost_pct": 120
+        },
+        "legendary": {
+          "weather_and_night_event_boost_pct": 190
+        },
+        "mythic": {
+          "weather_and_night_event_boost_pct": 300
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "weather_and_night_event_boost_pct": 25
+        },
+        "complete_gold": {
+          "weather_and_night_event_boost_pct": 60
+        }
+      },
+      "icon_key": "card_icon_06_storm"
+    },
+    {
+      "id": "estrada_livre",
+      "name_pt": "Estrada Livre",
+      "illustration_slot": 7,
+      "sprite_key": "card_art_07_horseshoe",
+      "description_pt": "Expedições lançadas no buff ganham chance de sucesso, menor perda na falha e chance de crítico.",
+      "applies_on": "expedition_departure",
+      "buff_effects": {
+        "common": {
+          "expedition_success_pts": 3,
+          "expedition_loss_reduction_pct": 10,
+          "expedition_crit_pts": 0
+        },
+        "uncommon": {
+          "expedition_success_pts": 5,
+          "expedition_loss_reduction_pct": 20,
+          "expedition_crit_pts": 2
+        },
+        "rare": {
+          "expedition_success_pts": 8,
+          "expedition_loss_reduction_pct": 35,
+          "expedition_crit_pts": 7
+        },
+        "legendary": {
+          "expedition_success_pts": 12,
+          "expedition_loss_reduction_pct": 60,
+          "expedition_crit_pts": 16
+        },
+        "mythic": {
+          "expedition_success_pts": 16,
+          "expedition_loss_reduction_pct": 100,
+          "expedition_crit_pts": 36
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "expedition_success_pts": 2
+        },
+        "complete_gold": {
+          "expedition_success_pts": 5
+        }
+      },
+      "icon_key": "card_icon_07_horseshoe"
+    },
+    {
+      "id": "folego",
+      "name_pt": "Fôlego",
+      "illustration_slot": 8,
+      "sprite_key": "card_art_08_stamina_gear",
+      "description_pt": "Reduz o gasto de energia em campo, acelera a recuperação no banco e aumenta o XP dos personagens.",
+      "buff_effects": {
+        "common": {
+          "energy_cost_reduction_pct": 30,
+          "energy_recovery_boost_pct": 30,
+          "character_xp_pct": 15
+        },
+        "uncommon": {
+          "energy_cost_reduction_pct": 45,
+          "energy_recovery_boost_pct": 45,
+          "character_xp_pct": 22
+        },
+        "rare": {
+          "energy_cost_reduction_pct": 60,
+          "energy_recovery_boost_pct": 60,
+          "character_xp_pct": 32
+        },
+        "legendary": {
+          "energy_cost_reduction_pct": 80,
+          "energy_recovery_boost_pct": 80,
+          "character_xp_pct": 45
+        },
+        "mythic": {
+          "energy_cost_reduction_pct": 100,
+          "energy_recovery_boost_pct": 100,
+          "character_xp_pct": 62
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "energy_recovery_boost_pct": 15,
+          "character_xp_pct": 10
+        },
+        "complete_gold": {
+          "energy_recovery_boost_pct": 40,
+          "character_xp_pct": 25
+        }
+      },
+      "icon_key": "card_icon_08_stamina_gear"
+    },
+    {
+      "id": "trevo_quatro_folhas",
+      "name_pt": "Trevo de Quatro Folhas",
+      "illustration_slot": 9,
+      "sprite_key": "card_art_09_clover",
+      "description_pt": "Expedições lançadas no buff ganham chance de crítico, valor do crítico e chance de item e Kit de Reforma.",
+      "applies_on": "expedition_departure",
+      "buff_effects": {
+        "common": {
+          "expedition_crit_pts": 4,
+          "expedition_crit_value_pct": 10,
+          "item_and_kit_drop_boost_pct": 20
+        },
+        "uncommon": {
+          "expedition_crit_pts": 6,
+          "expedition_crit_value_pct": 15,
+          "item_and_kit_drop_boost_pct": 35
+        },
+        "rare": {
+          "expedition_crit_pts": 9,
+          "expedition_crit_value_pct": 22,
+          "item_and_kit_drop_boost_pct": 50
+        },
+        "legendary": {
+          "expedition_crit_pts": 12,
+          "expedition_crit_value_pct": 32,
+          "item_and_kit_drop_boost_pct": 75
+        },
+        "mythic": {
+          "expedition_crit_pts": 16,
+          "expedition_crit_value_pct": 42,
+          "item_and_kit_drop_boost_pct": 100
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "expedition_crit_pts": 2,
+          "item_drop_boost_pct": 10
+        },
+        "complete_gold": {
+          "expedition_crit_pts": 5,
+          "item_drop_boost_pct": 25
+        }
+      },
+      "icon_key": "card_icon_09_clover"
+    },
+    {
+      "id": "moeda_da_sorte",
+      "name_pt": "Moeda da Sorte",
+      "illustration_slot": 10,
+      "sprite_key": "card_art_10_coin",
+      "description_pt": "Paga ouro bônus ao fim do buff sobre tudo que for produzido durante o efeito (a preço da Feira).",
+      "payout_rule": "on_buff_end_based_on_production_fair_value",
+      "buff_effects": {
+        "common": {
+          "production_gold_bonus_pct": 13
+        },
+        "uncommon": {
+          "production_gold_bonus_pct": 20
+        },
+        "rare": {
+          "production_gold_bonus_pct": 30
+        },
+        "legendary": {
+          "production_gold_bonus_pct": 42
+        },
+        "mythic": {
+          "production_gold_bonus_pct": 58
+        }
+      },
+      "armory_bonus": {
+        "partial_silver": {
+          "sales_gold_pct": 1.5
+        },
+        "complete_gold": {
+          "sales_gold_pct": 3.5
+        }
+      },
+      "icon_key": "card_icon_10_coin"
+    }
+  ],
+  "bonus_caps": {
+    "growth_speed_pct": {
+      "permanent": 100,
+      "absolute": 150
+    },
+    "account_xp_pct": {
+      "permanent": 100,
+      "absolute": 200
+    },
+    "sales_gold_pct": {
+      "permanent": 50,
+      "absolute": 50
+    },
+    "animal_production_pct": {
+      "permanent": 60,
+      "absolute": 250
+    },
+    "double_harvest_chance_pct": {
+      "permanent": 25,
+      "absolute": 25
+    },
+    "golden_harvest_chance_pct": {
+      "permanent": 20,
+      "absolute": 60
+    },
+    "expedition_success_pct": {
+      "permanent": 95,
+      "absolute": 95
+    },
+    "expedition_crit_pct": {
+      "permanent": 25,
+      "absolute": 60
+    },
+    "salary_reduction_pct": {
+      "permanent": 40,
+      "absolute": 40
+    },
+    "seed_sapling_feed_cost_reduction_pct": {
+      "permanent": 40,
+      "absolute": 40
+    },
+    "energy_recovery_boost_pct": {
+      "permanent": 100,
+      "absolute": 200
+    },
+    "energy_cost_reduction_pct": {
+      "permanent": 40,
+      "absolute": 100
+    }
+  },
+  "frames": {
+    "common": "card_frame_common",
+    "uncommon": "card_frame_uncommon",
+    "rare": "card_frame_rare",
+    "legendary": "card_frame_legendary",
+    "mythic": "card_frame_mythic",
+    "back": "card_back"
+  }
+}

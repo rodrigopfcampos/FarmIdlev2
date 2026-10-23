@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 7 (ferramentas, roupas, amuletos, lanches) · desgaste reduzido pela metade (decisão do dono)",
+  "tool_durability_rules": {
+    "max_durability": 100,
+    "loss_per_work_hour": 2.5,
+    "low_durability_threshold": 30,
+    "low_durability_capacity_penalty_multiplier": 0.5,
+    "broken_durability_capacity_penalty_multiplier": 0.5,
+    "repair_cost_ratio_of_material_cost": 0.1,
+    "wood_repair_flat_cost_gold": 100
+  },
+  "tool_materials": [
+    {
+      "id": "wood",
+      "name_pt": "Madeira",
+      "unlock_level": 1,
+      "work_capacity_multiplier": 1.0,
+      "upgrade_cost_gold": 0,
+      "repair_cost_gold": 100,
+      "card_border_hex": "#9E9E9E"
+    },
+    {
+      "id": "copper",
+      "name_pt": "Cobre",
+      "unlock_level": 8,
+      "work_capacity_multiplier": 1.4,
+      "upgrade_cost_gold": 13000,
+      "repair_cost_gold": 1300,
+      "card_border_hex": "#4CAF50"
+    },
+    {
+      "id": "iron",
+      "name_pt": "Ferro",
+      "unlock_level": 18,
+      "work_capacity_multiplier": 1.8,
+      "upgrade_cost_gold": 230000,
+      "repair_cost_gold": 23000,
+      "card_border_hex": "#2F7BE5"
+    },
+    {
+      "id": "gold",
+      "name_pt": "Ouro",
+      "unlock_level": 30,
+      "work_capacity_multiplier": 2.3,
+      "upgrade_cost_gold": 1600000,
+      "repair_cost_gold": 160000,
+      "card_border_hex": "#F2C230"
+    },
+    {
+      "id": "crystal",
+      "name_pt": "Cristal",
+      "unlock_level": 42,
+      "work_capacity_multiplier": 3.0,
+      "upgrade_cost_gold": 7300000,
+      "repair_cost_gold": 730000,
+      "card_border_hex": "#E5383B"
+    }
+  ],
+  "class_tool_cards": [
+    {
+      "id": "tool_hoe",
+      "name_pt": "Enxada",
+      "class_id": "agricultor",
+      "class_name_pt": "Agricultor",
+      "primary_role_pt": "Plantar e colher a lavoura (100% eficiência)"
+    },
+    {
+      "id": "tool_watering_can",
+      "name_pt": "Regador",
+      "class_id": "rancheira",
+      "class_name_pt": "Rancheira",
+      "primary_role_pt": "Animais e pomar (100% eficiência)"
+    },
+    {
+      "id": "tool_hammer",
+      "name_pt": "Martelo",
+      "class_id": "ferreiro",
+      "class_name_pt": "Ferreiro",
+      "primary_role_pt": "Limpar lotes, ferramentas e consertar veículos"
+    },
+    {
+      "id": "tool_scale",
+      "name_pt": "Balança",
+      "class_id": "comerciante",
+      "class_name_pt": "Comerciante",
+      "primary_role_pt": "Barraca e vendas (mercado, quando existir)"
+    },
+    {
+      "id": "tool_clipboard",
+      "name_pt": "Prancheta",
+      "class_id": "gerente",
+      "class_name_pt": "Gerente",
+      "primary_role_pt": "Conduz expedições (+8 pts sucesso, -10% duração)"
+    },
+    {
+      "id": "tool_magnifying_glass",
+      "name_pt": "Lupa",
+      "class_id": "botanica",
+      "class_name_pt": "Botânica",
+      "primary_role_pt": "Pesquisa e bônus de crescimento"
+    }
+  ],
+  "equipment_rarities": {
+    "common": {
+      "multiplier": 1.0,
+      "color_hex": "#9E9E9E",
+      "merge_count_to_upgrade": 3
+    },
+    "uncommon": {
+      "multiplier": 1.3,
+      "color_hex": "#4CAF50",
+      "merge_count_to_upgrade": 3
+    },
+    "rare": {
+      "multiplier": 1.6,
+      "color_hex": "#2F7BE5",
+      "merge_count_to_upgrade": 3
+    },
+    "legendary": {
+      "multiplier": 2.0,
+      "color_hex": "#F2C230",
+      "merge_count_to_upgrade": 3
+    },
+    "mythic": {
+      "multiplier": 2.5,
+      "color_hex": "#E5383B",
+      "merge_count_to_upgrade": null
+    }
+  },
+  "clothing_cards": [
+    {
+      "id": "cloth_hat",
+      "name_pt": "Chapéu de Palha",
+      "base_effect": {
+        "max_energy_bonus": 15
+      }
+    },
+    {
+      "id": "cloth_boots",
+      "name_pt": "Botas de Couro",
+      "base_effect": {
+        "energy_cost_reduction_pct": 8
+      }
+    },
+    {
+      "id": "cloth_gloves",
+      "name_pt": "Luvas de Trabalho",
+      "base_effect": {
+        "work_capacity_pct": 10
+      }
+    }
+  ],
+  "amulet_cards": [
+    {
+      "id": "amulet_horseshoe",
+      "name_pt": "Ferradura da Sorte",
+      "base_effect": {
+        "expedition_success_pts_when_leading": 2
+      }
+    },
+    {
+      "id": "amulet_clover",
+      "name_pt": "Trevo do Campo",
+      "base_effect": {
+        "double_harvest_chance_pct": 2
+      }
+    },
+    {
+      "id": "amulet_pocket_watch",
+      "name_pt": "Relógio de Bolso",
+      "base_effect": {
+        "character_xp_pct": 8
+      }
+    },
+    {
+      "id": "amulet_feather",
+      "name_pt": "Pena Dourada",
+      "base_effect": {
+        "animal_production_pct": 3
+      }
+    }
+  ],
+  "snack_cards": [
+    {
+      "id": "snack_cheese_bread",
+      "name_pt": "Pão de Queijo",
+      "energy_restore": 25,
+      "auto_trigger_below_energy_pct": 15,
+      "max_stack_in_slot": 5
+    },
+    {
+      "id": "snack_coffee",
+      "name_pt": "Café Quente",
+      "energy_restore": 40,
+      "auto_trigger_below_energy_pct": 15,
+      "max_stack_in_slot": 5
+    },
+    {
+      "id": "snack_lunchbox",
+      "name_pt": "Marmita da Fazenda",
+      "energy_restore": 70,
+      "auto_trigger_below_energy_pct": 15,
+      "max_stack_in_slot": 5
+    }
+  ],
+  "sprites": {
+    "tool": "tool_{tool}_{material}",
+    "note": "ex.: tool_hoe_wood; roupas, amuletos e lanches usam o próprio id"
+  }
+}

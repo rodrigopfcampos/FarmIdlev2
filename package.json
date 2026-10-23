@@ -2,10 +2,30 @@
   "name": "villageidlefarm",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "assets": "node tools/slice-assets.js",
     "balance:calibrate": "tsx tools/balance/land-model.ts",
     "balance:search": "tsx tools/balance/lots-search.ts",
     "balance:lots": "tsx tools/balance/build-lots.ts",
-    "balance:check": "tsx tools/balance/check.ts"
+    "balance:check": "tsx tools/balance/check.ts",
+    "sim": "tsx tools/sim/run.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "sharp": "0.35.5",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   }
 }

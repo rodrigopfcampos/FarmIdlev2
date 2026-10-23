@@ -1,0 +1,931 @@
+{
+  "version": 1,
+  "raw_dir": "assets/raw",
+  "output_dir": "public/assets/sprites",
+  "default_tolerance": 18,
+  "default_min_speck": 6,
+  "sheets": [
+    {
+      "id": "cards_buff",
+      "file": "Cartas buff.png",
+      "regions": [
+        {
+          "name": "ilustrações",
+          "rect": [
+            0,
+            275,
+            1678,
+            530
+          ],
+          "rows": 1,
+          "cols": 10,
+          "size": [
+            44,
+            64
+          ],
+          "fit": "fill",
+          "align": "center",
+          "dir": "cards",
+          "names": [
+            [
+              "card_art_01_sun",
+              "card_art_02_basket",
+              "card_art_03_flock",
+              "card_art_04_owl",
+              "card_art_05_hourglass",
+              "card_art_06_storm",
+              "card_art_07_horseshoe",
+              "card_art_08_stamina_gear",
+              "card_art_09_clover",
+              "card_art_10_coin"
+            ]
+          ]
+        },
+        {
+          "name": "mini-ícones",
+          "rect": [
+            0,
+            620,
+            1678,
+            760
+          ],
+          "rows": 1,
+          "cols": 10,
+          "size": [
+            12,
+            12
+          ],
+          "align": "center",
+          "dir": "cards",
+          "names": [
+            [
+              "card_icon_01_sun",
+              "card_icon_02_basket",
+              "card_icon_03_flock",
+              "card_icon_04_owl",
+              "card_icon_05_hourglass",
+              "card_icon_06_storm",
+              "card_icon_07_horseshoe",
+              "card_icon_08_stamina_gear",
+              "card_icon_09_clover",
+              "card_icon_10_coin"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "card_frames",
+      "file": "raridade das cartas.png",
+      "holes_min_area": 3000,
+      "regions": [
+        {
+          "name": "molduras",
+          "rows": 2,
+          "cols": 3,
+          "size": [
+            64,
+            96
+          ],
+          "fit": "fill",
+          "align": "center",
+          "dir": "cards",
+          "names": [
+            [
+              "card_frame_common",
+              "card_frame_uncommon",
+              "card_frame_rare"
+            ],
+            [
+              "card_frame_legendary",
+              "card_frame_mythic",
+              "card_back"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "album",
+      "file": "Álbum de Cartas (Página do Livro de Coleção).jpg",
+      "regions": [
+        {
+          "name": "fichário",
+          "rows": 1,
+          "cols": 1,
+          "size": [
+            540,
+            300
+          ],
+          "align": "center",
+          "dir": "ui",
+          "names": [
+            [
+              "ui_binder_book"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tools_rarity",
+      "file": "raridade das ferramentas.png",
+      "remove_dark_shadow": true,
+      "regions": [
+        {
+          "name": "ferramentas",
+          "rows": 6,
+          "cols": 5,
+          "size": [
+            32,
+            32
+          ],
+          "align": "center",
+          "dir": "items",
+          "names": [
+            [
+              "tool_hoe_wood",
+              "tool_hoe_copper",
+              "tool_hoe_iron",
+              "tool_hoe_gold",
+              "tool_hoe_crystal"
+            ],
+            [
+              "tool_watering_can_wood",
+              "tool_watering_can_copper",
+              "tool_watering_can_iron",
+              "tool_watering_can_gold",
+              "tool_watering_can_crystal"
+            ],
+            [
+              "tool_hammer_wood",
+              "tool_hammer_copper",
+              "tool_hammer_iron",
+              "tool_hammer_gold",
+              "tool_hammer_crystal"
+            ],
+            [
+              "tool_scale_wood",
+              "tool_scale_copper",
+              "tool_scale_iron",
+              "tool_scale_gold",
+              "tool_scale_crystal"
+            ],
+            [
+              "tool_clipboard_wood",
+              "tool_clipboard_copper",
+              "tool_clipboard_iron",
+              "tool_clipboard_gold",
+              "tool_clipboard_crystal"
+            ],
+            [
+              "tool_magnifying_glass_wood",
+              "tool_magnifying_glass_copper",
+              "tool_magnifying_glass_iron",
+              "tool_magnifying_glass_gold",
+              "tool_magnifying_glass_crystal"
+            ]
+          ]
+        }
+      ],
+      "holes_min_area": 120
+    },
+    {
+      "id": "items",
+      "file": "ferramentas.png",
+      "remove_dark_shadow": true,
+      "regions": [
+        {
+          "name": "itens",
+          "rows": 3,
+          "cols": 4,
+          "size": [
+            32,
+            32
+          ],
+          "align": "center",
+          "dir": "items",
+          "names": [
+            [
+              "cloth_hat",
+              "cloth_boots",
+              "cloth_gloves",
+              "item_deed"
+            ],
+            [
+              "amulet_horseshoe",
+              "amulet_clover",
+              "amulet_pocket_watch",
+              "amulet_feather"
+            ],
+            [
+              "snack_cheese_bread",
+              "snack_coffee",
+              "snack_lunchbox",
+              "item_repair_kit"
+            ]
+          ]
+        }
+      ],
+      "holes_min_area": 120
+    },
+    {
+      "id": "tree_growth",
+      "file": "Arvore crescendo.jpg",
+      "regions": [
+        {
+          "name": "estágios genéricos",
+          "rect": [
+            0,
+            0,
+            1024,
+            420
+          ],
+          "rows": 1,
+          "cols": 3,
+          "size": [
+            16,
+            16
+          ],
+          "scale": "row",
+          "dir": "crops",
+          "names": [
+            [
+              "crop_generic_stage1",
+              "crop_generic_stage2",
+              "crop_generic_stage3"
+            ]
+          ]
+        },
+        {
+          "name": "árvore folhosa",
+          "rect": [
+            0,
+            450,
+            1024,
+            1024
+          ],
+          "rows": 1,
+          "cols": 3,
+          "dir": "trees",
+          "sizes_by_col": [
+            [
+              24,
+              32
+            ],
+            [
+              48,
+              64
+            ],
+            [
+              48,
+              64
+            ]
+          ],
+          "names": [
+            [
+              "tree_leafy_sapling",
+              "tree_leafy_adult",
+              "tree_leafy_fruit"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "barn_palms",
+      "file": "Celeiro e Palmeiras.png",
+      "regions": [
+        {
+          "name": "celeiro",
+          "rect": [
+            0,
+            0,
+            820,
+            941
+          ],
+          "rows": 1,
+          "cols": 1,
+          "size": [
+            112,
+            112
+          ],
+          "dir": "buildings",
+          "names": [
+            [
+              "building_celeiro"
+            ]
+          ]
+        },
+        {
+          "name": "palmeiras",
+          "rect": [
+            820,
+            0,
+            1671,
+            941
+          ],
+          "rows": 1,
+          "cols": 3,
+          "dir": "trees",
+          "sizes_by_col": [
+            [
+              24,
+              32
+            ],
+            [
+              48,
+              64
+            ],
+            [
+              48,
+              64
+            ]
+          ],
+          "names": [
+            [
+              "tree_palm_sapling",
+              "tree_palm_adult",
+              "tree_palm_fruit"
+            ]
+          ],
+          "min_gap": 3
+        }
+      ]
+    },
+    {
+      "id": "crops14",
+      "file": "prancha dos 14 cultivos.png",
+      "regions": [
+        {
+          "name": "cultivos maduros",
+          "rows": 2,
+          "cols": 7,
+          "size": [
+            16,
+            16
+          ],
+          "dir": "crops",
+          "names": [
+            [
+              "crop_cenoura_ready",
+              "crop_batata_ready",
+              "crop_morango_ready",
+              "extras/crop_trigo_ready",
+              "crop_milho_ready",
+              "crop_tomate_ready",
+              "crop_abobora_ready"
+            ],
+            [
+              "crop_melancia_ready",
+              "extras/crop_girassol_ready",
+              "crop_repolho_ready",
+              "crop_cebola_ready",
+              "crop_pimenta_ready",
+              "extras/crop_algodao_ready",
+              "crop_abacaxi_ready"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fruits",
+      "file": "Frutas 1.jpg",
+      "regions": [
+        {
+          "name": "sacos de muda",
+          "rect": [
+            0,
+            12,
+            200,
+            765
+          ],
+          "rows": 9,
+          "cols": 1,
+          "size": [
+            16,
+            16
+          ],
+          "align": "center",
+          "dir": "crops",
+          "names": [
+            [
+              "seedbag_maca"
+            ],
+            [
+              "seedbag_maca_verde"
+            ],
+            [
+              "seedbag_banana"
+            ],
+            [
+              "seedbag_laranja"
+            ],
+            [
+              "seedbag_uva"
+            ],
+            [
+              "seedbag_mirtilo"
+            ],
+            [
+              "seedbag_amora"
+            ],
+            [
+              "seedbag_pessego"
+            ],
+            [
+              "seedbag_cereja"
+            ]
+          ],
+          "uniform_rows": true
+        },
+        {
+          "name": "estágios das frutas",
+          "rect": [
+            200,
+            12,
+            1024,
+            765
+          ],
+          "rows": 9,
+          "cols": 4,
+          "size": [
+            16,
+            16
+          ],
+          "scale": "row",
+          "dir": "crops",
+          "names": [
+            [
+              "crop_maca_stage1",
+              "crop_maca_stage2",
+              "crop_maca_stage3",
+              "crop_maca_ready"
+            ],
+            [
+              "crop_maca_verde_stage1",
+              "crop_maca_verde_stage2",
+              "crop_maca_verde_stage3",
+              "crop_maca_verde_ready"
+            ],
+            [
+              "crop_banana_stage1",
+              "crop_banana_stage2",
+              "crop_banana_stage3",
+              "crop_banana_ready"
+            ],
+            [
+              "crop_laranja_stage1",
+              "crop_laranja_stage2",
+              "crop_laranja_stage3",
+              "crop_laranja_ready"
+            ],
+            [
+              "crop_uva_stage1",
+              "crop_uva_stage2",
+              "crop_uva_stage3",
+              "crop_uva_ready"
+            ],
+            [
+              "crop_mirtilo_stage1",
+              "crop_mirtilo_stage2",
+              "crop_mirtilo_stage3",
+              "crop_mirtilo_ready"
+            ],
+            [
+              "crop_amora_stage1",
+              "crop_amora_stage2",
+              "crop_amora_stage3",
+              "crop_amora_ready"
+            ],
+            [
+              "crop_pessego_stage1",
+              "crop_pessego_stage2",
+              "crop_pessego_stage3",
+              "crop_pessego_ready"
+            ],
+            [
+              "crop_cereja_stage1",
+              "crop_cereja_stage2",
+              "crop_cereja_stage3",
+              "crop_cereja_ready"
+            ]
+          ],
+          "uniform_rows": true
+        }
+      ]
+    },
+    {
+      "id": "vehicles_idle",
+      "file": "Imagem dos veiculos em movimento.png",
+      "regions": [
+        {
+          "name": "veículos parados",
+          "rows": 4,
+          "cols": 4,
+          "size": [
+            96,
+            64
+          ],
+          "scale": "row",
+          "align_x": "left_common",
+          "dir": "vehicles",
+          "strip": [
+            "vehicle_carroca_idle",
+            "vehicle_carro_idle",
+            "vehicle_picape_idle",
+            "vehicle_caminhao_idle"
+          ],
+          "names": [
+            [
+              "carroca_f1",
+              "carroca_f2",
+              "carroca_f3",
+              "carroca_f4"
+            ],
+            [
+              "carro_f1",
+              "carro_f2",
+              "carro_f3",
+              "carro_f4"
+            ],
+            [
+              "picape_f1",
+              "picape_f2",
+              "picape_f3",
+              "picape_f4"
+            ],
+            [
+              "caminhao_f1",
+              "caminhao_f2",
+              "caminhao_f3",
+              "caminhao_f4"
+            ]
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "vehicles_rarity",
+      "file": "raridade dos carros.png",
+      "regions": [
+        {
+          "name": "veículos por raridade",
+          "rows": 4,
+          "cols": 5,
+          "size": [
+            96,
+            64
+          ],
+          "scale": "row",
+          "dir": "vehicles",
+          "names": [
+            [
+              "vehicle_carroca_common",
+              "vehicle_carroca_uncommon",
+              "vehicle_carroca_rare",
+              "vehicle_carroca_legendary",
+              "vehicle_carroca_mythic"
+            ],
+            [
+              "vehicle_carro_common",
+              "vehicle_carro_uncommon",
+              "vehicle_carro_rare",
+              "vehicle_carro_legendary",
+              "vehicle_carro_mythic"
+            ],
+            [
+              "vehicle_picape_common",
+              "vehicle_picape_uncommon",
+              "vehicle_picape_rare",
+              "vehicle_picape_legendary",
+              "vehicle_picape_mythic"
+            ],
+            [
+              "vehicle_caminhao_common",
+              "vehicle_caminhao_uncommon",
+              "vehicle_caminhao_rare",
+              "vehicle_caminhao_legendary",
+              "vehicle_caminhao_mythic"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "structures",
+      "file": "layout das estruturas.png",
+      "regions": [
+        {
+          "name": "lotes arados",
+          "rect": [
+            0,
+            100,
+            900,
+            420
+          ],
+          "rows": 1,
+          "cols": 2,
+          "size": [
+            204,
+            118
+          ],
+          "dir": "map",
+          "names": [
+            [
+              "lot_tilled_dry",
+              "lot_tilled_wet"
+            ]
+          ]
+        },
+        {
+          "name": "cercas e entulho",
+          "dir": "map",
+          "sizes": [
+            [
+              [
+                48,
+                32
+              ],
+              [
+                48,
+                32
+              ],
+              [
+                16,
+                24
+              ]
+            ],
+            [
+              [
+                24,
+                32
+              ],
+              [
+                32,
+                32
+              ],
+              [
+                32,
+                32
+              ],
+              [
+                24,
+                24
+              ]
+            ]
+          ],
+          "names": [
+            [
+              "fence_straight",
+              "fence_corner",
+              "fence_end"
+            ],
+            [
+              "lot_sign",
+              "debris_rock",
+              "debris_stump_big",
+              "debris_stump_small"
+            ]
+          ],
+          "cells": [
+            [
+              [
+                905,
+                50,
+                230,
+                192
+              ],
+              [
+                1180,
+                70,
+                260,
+                172
+              ],
+              [
+                1485,
+                120,
+                115,
+                125
+              ]
+            ],
+            [
+              [
+                905,
+                243,
+                140,
+                185
+              ],
+              [
+                1060,
+                250,
+                205,
+                180
+              ],
+              [
+                1290,
+                262,
+                195,
+                155
+              ],
+              [
+                1505,
+                288,
+                130,
+                128
+              ]
+            ]
+          ]
+        },
+        {
+          "name": "celeiros com silo",
+          "rect": [
+            0,
+            440,
+            1672,
+            941
+          ],
+          "rows": 1,
+          "cols": 3,
+          "size": [
+            112,
+            112
+          ],
+          "dir": "buildings",
+          "names": [
+            [
+              "building_celeiro_silo_a",
+              "building_celeiro_silo_b",
+              "building_celeiro_silo_c"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coop_trees",
+      "file": "Galinheiro, Estufa, Píer e Árvores.jpg",
+      "regions": [
+        {
+          "name": "prédios e árvores",
+          "dir": "buildings",
+          "sizes": [
+            [
+              [
+                112,
+                112
+              ],
+              [
+                112,
+                112
+              ],
+              [
+                48,
+                64
+              ]
+            ],
+            [
+              [
+                96,
+                64
+              ],
+              [
+                48,
+                64
+              ],
+              [
+                48,
+                64
+              ],
+              [
+                48,
+                64
+              ]
+            ]
+          ],
+          "names": [
+            [
+              "building_galinheiro",
+              "building_estufa",
+              "tree_pine"
+            ],
+            [
+              "building_pier",
+              "tree_leafy_alt",
+              "tree_apple_alt",
+              "tree_palm_alt"
+            ]
+          ],
+          "cells": [
+            [
+              [
+                20,
+                3,
+                410,
+                290
+              ],
+              [
+                475,
+                12,
+                305,
+                300
+              ],
+              [
+                830,
+                18,
+                160,
+                275
+              ]
+            ],
+            [
+              [
+                20,
+                305,
+                400,
+                228
+              ],
+              [
+                428,
+                312,
+                200,
+                250
+              ],
+              [
+                645,
+                325,
+                170,
+                237
+              ],
+              [
+                825,
+                305,
+                180,
+                257
+              ]
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "expedition",
+      "file": "Exploração (3 Destinos + 6 Ícones de Resultado).jpg",
+      "regions": [
+        {
+          "name": "destinos",
+          "rect": [
+            0,
+            20,
+            1024,
+            250
+          ],
+          "rows": 1,
+          "cols": 3,
+          "size": [
+            48,
+            48
+          ],
+          "align": "center",
+          "dir": "ui",
+          "names": [
+            [
+              "route_village",
+              "route_city",
+              "route_port"
+            ]
+          ]
+        },
+        {
+          "name": "resultados",
+          "rect": [
+            0,
+            270,
+            1024,
+            440
+          ],
+          "rows": 1,
+          "cols": 6,
+          "size": [
+            32,
+            32
+          ],
+          "align": "center",
+          "dir": "ui",
+          "names": [
+            [
+              "result_cargo_burned",
+              "result_cargo_stolen",
+              "result_empty",
+              "result_coins",
+              "result_chest",
+              "result_jackpot"
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

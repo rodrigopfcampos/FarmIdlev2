@@ -1,6 +1,6 @@
 # Village Idle Farm — Documento do Jogo (GDD) v2
 
-Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa). Junta o documento atual (seções 1 a 6) com a ideia anterior (seções 7 a 15), adaptada à ideia atual. **🆕** marca o que é novo ou mudou nesta versão.
+Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa) e em 22/10/2026 (raridade global, cartas, ferramentas e artes recortadas). Junta o documento atual (seções 1 a 6) com a ideia anterior (seções 7 a 15), adaptada à ideia atual. **🆕** marca o que é novo ou mudou nesta versão.
 
 ## O que mudou na v2
 
@@ -28,11 +28,17 @@ Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa). Junta o 
 | Lago | +10% nas aves | **+10% nas aves e +2 vagas no Galinheiro** (só aves) |
 | Capacidade de trabalho | não definida | **calibrada no simulador da fase 0** |
 | Arte das árvores do pomar | uma árvore por fruta | 2 bases que já existem (folhosa e palmeira) + frutas desenhadas por código |
+| Cartas | 8 ilustrações para 10 cartas | **10 ilustrações** + 5 molduras + verso; a carta 6 passa a se chamar **Tempestade** (mesmo efeito da antiga Lua Prateada) |
+| Raridade | só cartas, veículos e itens | **raridade global** também em sementes, mudas e animais: ×1 / ×1,2 / ×1,5 / ×2 / ×3 (seção 9) |
+| Raridade dos veículos | +2 a +8 pontos de sucesso e menos desgaste | **capacidade, velocidade e segurança ×1,2 a ×3** (seção 8) |
+| Animais | sempre iguais | raridade sorteada na compra: 75% / 18% / 5% / 1,5% / 0,5% (média ×1,09 na produção) |
+| Ferramentas | sem desgaste | **durabilidade**: −2,5 por hora de trabalho; abaixo de 30% trabalha a 50%; conserto na Forja |
+| Hospedagem | Cloudflare Pages ou Vercel | **Cloudflare Pages** (deploy automático pelo GitHub) |
 
 ## Pendências para fechar o documento
 
-1. **Cartas:** há 8 ilustrações para 10 cartas. Falta dizer qual ilustração é qual carta e gerar as 2 que faltam.
-2. **Artes novas:** 2 mudas de árvore, o prédio do Celeiro, a animação de parado dos 4 veículos e os estágios de 14 cultivos (especificações exatas na seção 4).
+1. **Artes que ainda faltam** (seção 4): estágios e ícone de Beterraba, Batata-doce, Mandioca, Pepino, Quiabo e Maracujá; ícone de Tomate, Mamão, Goiaba, Acerola e Jabuticaba; 2 medalhões de rota (Capital e Exportação).
+2. **Chance de semente rara:** quanto cai na pesquisa da Lupa, nos pacotes e nos eventos (fases 3, 6 e 7). Até lá o balanceamento supõe tudo Comum.
 3. **Mercado entre jogadores:** decidir o que pode ser negociado, antes da fase 8.
 4. **Renda de Referência (R):** foi medida com o mapa de 25 lotes. O simulador da fase 0 remede com 30; preços e salários são calculados sobre R e acompanham sozinhos.
 5. **Capacidade de trabalho:** unidades de trabalho por personagem por hora, calibradas no simulador da fase 0.
@@ -95,7 +101,7 @@ O jogo roda no **navegador** (PC e celular), instalável como app (PWA), e todo 
 | Jogo | Phaser 4 (versão estável mais recente) + TypeScript + Vite, PWA |
 | Servidor e banco | Supabase: Postgres, Auth, Row Level Security, Edge Functions, Realtime, Storage, pg_cron |
 | Painel admin | App web separado (React + Vite) no mesmo Supabase, só para contas admin com 2FA |
-| Hospedagem do jogo | Site estático (Cloudflare Pages ou Vercel) |
+| Hospedagem do jogo | Site estático no **Cloudflare Pages** 🆕 (`npm run build` → pasta `dist`, deploy a cada push na `main`) |
 | Alertas | Webhook do painel para Discord, Telegram ou n8n |
 
 Toda ação passa pelas funções do servidor; o banco só aceita escrita vinda delas.
@@ -133,12 +139,13 @@ profiles, farms, lots, plots, plantings, trees, buildings, animals, characters, 
 | Personagens | 6 classes: frente, costas, lado, andando e 2 quadros de ação | Pose frontal/3/4 parada + 2 quadros de ação (32×48) nos cards dos Slots de Campo e Banco; descartar costas e caminhada |
 | Pets | Cachorro, gato e papagaio em várias poses | 1 pose em loop de 2 quadros (32×32) no ponto do pet, na frente da Casa 🆕 |
 | Veículos | Carroça, carro vermelho, picape verde, caminhão amarelo; 4 ângulos | 1 ângulo 3/4 fixo (96×64) na vaga da Garagem e na faixa de Expedição, com animação de parado 🆕 |
-| Mapa da fazenda | Fazenda completa | Camada de fundo: `assets/map/farm_base_map.png`, 1672×940, terraços do pomar já sem árvores 🆕 |
+| Mapa da fazenda | Fazenda completa | Camada de fundo: `public/assets/map/farm_base_map.png`, 1672×940, terraços do pomar já sem árvores 🆕 |
+| Pranchas de 22/10 🆕 | 10 ilustrações e 10 mini-ícones de carta, 5 molduras + verso, fichário, ferramentas em 5 materiais, roupas/amuletos/lanches/Escritura/Kit, 3 estágios genéricos, árvore folhosa e palmeira (muda, adulta, com frutos), Celeiro, 14 cultivos maduros, 9 frutas (saco + 4 estágios), 4 veículos parados (4 quadros) e em 5 raridades, lotes arados, cercas, placa, entulho, 3 celeiros com silo, Galinheiro, estufa, píer, pinheiro, 3 destinos e 6 resultados de expedição | Recortadas por `npm run assets` em 190 PNGs em `public/assets/sprites` + `manifest.json` (tamanho e âncora de cada um). Trigo, Girassol e Algodão ficam guardados em `crops/extras`, sem uso |
 | Estágios de crescimento (4 planilhas) 🆕 | 36 cultivos: saco de semente + 4 estágios | Mudas 16×16 no canteiro; saco de semente na Barraca e no Silo |
 | Galinheiro, estufa, píer e árvores 🆕 | Galinheiro, estufa, píer, árvore folhosa, macieira, palmeira e pinheiro | Galinheiro no C1 (112×112); árvore folhosa e palmeira são a base das árvores do pomar (48×64). Estufa sem uso por enquanto |
 | Produtos dos animais e insumos 🆕 | 7 produtos + galão, saco de ração e chave inglesa | Ícones 32×32 no Silo. Leite de cabra, Lã de alpaca e Ovo de ganso saem por variação de cor (script) |
 
-**Preparação das artes (script automático):** remover o fundo escuro, recortar cada sprite por contorno, padronizar tamanho (ícone de cultivo 32×32, muda 16×16, árvore 48×64, prédio de pasto 112×112, personagem 32×48 por quadro, animal 48×48, pet 32×32, veículo 96×64), escalar só por número inteiro sem suavizar (NEAREST / `image-rendering: pixelated`), âncora na base inferior (`origin(0.5, 1.0)`) para não tremer, gerar spritesheets + atlas JSON e nomes padronizados (`crop_alface_ready.png`).
+**Preparação das artes (script automático, `tools/slice-assets.js` + `tools/assets/sheets.json`) 🆕:** remover o fundo escuro (cor lida na borda de cada prancha, inclusive buracos fechados como o vão das molduras e as sombras), recortar cada sprite por contorno, padronizar tamanho (ícone de cultivo 32×32, muda 16×16, árvore 48×64, prédio de pasto 112×112, personagem 32×48 por quadro, animal 48×48, pet 32×32, veículo 96×64), escalar só por número inteiro sem suavizar (NEAREST / `image-rendering: pixelated`), âncora na base inferior (`origin(0.5, 1.0)`) para não tremer, gerar spritesheets + atlas JSON e nomes padronizados (`crop_alface_ready.png`).
 
 ### Mapa 🆕
 
@@ -149,15 +156,15 @@ profiles, farms, lots, plots, plantings, trees, buildings, animals, characters, 
 
 ### Especificações das artes novas 🆕
 
-Todas em PNG com fundo transparente (se a ferramenta de IA não fizer transparência, fundo liso #FF00FF), sem suavização e com âncora no centro da base.
+Todas em PNG com fundo transparente (se a ferramenta de IA não fizer transparência, fundo liso escuro #1C1C1C ou #FF00FF 🆕), sem suavização e com âncora no centro da base.
 
 | Arte | Tamanho | Detalhes |
 | --- | --- | --- |
-| Muda no canteiro | 16×16 por estágio | 36 cultivos já têm 4 estágios (reduzidos das planilhas). Faltam 14: Cenoura, Batata, Morango e os 11 com * (seção 6); até ficarem prontos, 3 estágios genéricos + o ícone do cultivo |
+| Muda no canteiro | 16×16 por estágio | 36 cultivos já têm 4 estágios (reduzidos das planilhas). 🆕 Cenoura, Batata, Morango e Tomate: 3 estágios genéricos + o maduro. Faltam 6 (Beterraba, Batata-doce, Mandioca, Pepino, Quiabo e Maracujá); até lá, estágios genéricos + o ícone |
 | Árvore do pomar | adulta 48×64 (já existe: folhosa e palmeira); muda 24×32 (falta: 1 folhosa e 1 palmeira) | As frutas são desenhadas por código sobre a copa (pontos de 2×2 a 3×3 px, na cor do ícone de cada fruta). Banana e Mamão usam a palmeira; as outras 13 frutas, a folhosa. 4 por terraço, a 44 px uma da outra |
 | Celeiro (prédio) | 112×112 no mapa | Mesma vista, luz e estilo do Galinheiro (madeira, telhado de telhas vermelhas); fica no centro do cercado C2 |
 | Veículo parado | tira de 384×64 (4 quadros de 96×64) | Mesmo ângulo 3/4 nos 4 veículos; 6 quadros/s em loop. Carroça: cavalo respira (1 px) e mexe o rabo. Carro, picape e caminhão: carroceria vibra 1 px e sai uma fumacinha de 2 a 3 px do escapamento |
-| Máscara de raridade do veículo | 384×64, mesmos 4 quadros | Branco onde a cor muda com a raridade (sela/arreios, carroceria ou caçamba); transparente no resto |
+| ~~Máscara de raridade do veículo~~ 🆕 | — | Não é mais necessária: cada raridade tem o próprio sprite (seção 4, visual dos veículos) |
 
 ### Motor de Vida no mapa (canteiros de 6 mudas, vento e solo reativo)
 
@@ -169,9 +176,11 @@ O Phaser 4 desenha os canteiros e pomares com estes efeitos procedurais em pixel
 - **Gotas:** partículas de 1×4 px em diagonal; ao cair num canteiro, fazem um respingo de 2 px e a muda atingida abaixa 1 px por 120 ms.
 - **Noite e Colheita Dourada:** noite (19h–05h59) com filtro azul-escuro, luz amarela nas janelas e vagalumes 2×2 nos eventos noturnos. Na Colheita Dourada (2,5×), as 6 mudas ganham contorno dourado (#F2C230) e soltam estrelinhas.
 
-**Como pedir as artes à IA 🆕:** 1 imagem quadrada de 1024×1024 por arte, fundo liso #FF00FF, o objeto sozinho e centralizado ocupando cerca de 85% da largura, sem chão, sem sombra projetada e sem texto. O script recorta e reduz para o tamanho final da tabela.
+**Como pedir as artes à IA 🆕:** 1 imagem quadrada de 1024×1024 por arte (ou uma prancha em grade, com espaço entre os sprites), fundo liso #1C1C1C ou #FF00FF, o objeto sozinho e centralizado ocupando cerca de 85% da largura, sem chão, sem sombra projetada e sem texto. O script recorta e reduz para o tamanho final da tabela.
 
-**Artes que faltam** (usar marcador provisório no mesmo estilo até ficarem prontas): 11 culturas novas (marcadas com * na seção 6: ícone e estágios); estágios de Cenoura, Batata e Morango; 2 mudas de árvore; prédio do Celeiro; animação de parado e máscaras dos veículos; 2 ilustrações de carta (há 8 de 10) + 5 molduras de raridade e verso; itens (ferramentas em 5 materiais, roupas, amuletos, lanches); Escritura; entulho; ícones das 5 rotas e da interface.
+**Artes que faltam** 🆕 (usar marcador provisório no mesmo estilo até ficarem prontas): estágios e ícone de Beterraba, Batata-doce, Mandioca, Pepino, Quiabo e Maracujá; ícone 32×32 de Tomate, Mamão, Goiaba, Acerola e Jabuticaba; 2 medalhões de rota (Capital e Exportação; até lá a Capital usa o da cidade e a Exportação o do porto); ícones da interface. Cenoura, Batata, Morango e Tomate usam os 3 estágios genéricos + o maduro da prancha nova.
+
+**Observações das pranchas de 22/10:** o Celeiro veio com telhado de madeira (o Galinheiro tem telhas vermelhas); as molduras de carta vieram mais estreitas que 2:3 e foram esticadas para 64×96 (o vão fica entre 42×55 e 44×60; a ilustração 44×64 vai por baixo e a moldura cobre as bordas).
 
 ### Cores de raridade (cartas, veículos e itens)
 
@@ -187,12 +196,13 @@ O Phaser 4 desenha os canteiros e pomares com estes efeitos procedurais em pixel
 
 - Inspiração: cartas mágicas elegantes no estilo de anime, como as de Sakura Card Captors. Arte original: não copiar símbolos, molduras, verso, nomes ou personagens daquele anime, só o formato e a ideia (carta vertical, ornamentada, com círculo mágico e ilustração encantada).
 - Formato vertical 2:3, base 64×96 em pixel art (exibida em 2× ou 3×). Ilustração do tema no centro (44×64), círculo mágico atrás, nome numa faixa embaixo, símbolo da carta no topo.
+- 🆕 Montagem no jogo: um `Container` do Phaser empilha ilustração (44×64) + moldura vazada da raridade (64×96) + nome em texto na faixa de pergaminho + cronômetro no topo. O mini-ícone 12×12 aparece no slot de buff ativo.
 - Cada carta tem 1 ilustração e 5 molduras: Comum cinza simples; Incomum verde com ramos; Raro azul com estrelas; Lendário dourado com brilho animado; Mítico vermelho com aura animada e efeito holográfico. Verso único com o brasão do jogo.
 - Abertura do pacote: a carta gira dentro de um círculo mágico e acende na cor da raridade; no Mítico, partículas e um tremor leve na tela.
 
 ### Visual dos veículos por raridade
 
-A raridade troca a cor e o acabamento de uma peça do sprite, sempre na cor da tabela acima: Carroça → sela e arreios; Carro → carroceria (pintura e frisos); Picape e Caminhão → carroceria e caçamba. Lendário e Mítico ganham brilho animado. Técnica: máscara da peça + troca de paleta sobre o ângulo único, aplicada a todos os quadros da animação de parado 🆕 (4 veículos × 5 raridades).
+🆕 Cada raridade tem o próprio sprite 96×64 (prancha 4 × 5): o veículo ganha peças (rodas reforçadas, bagageiro, faróis, estepe, carga extra) em vez de trocar de cor; a cor da raridade aparece na moldura do card e no selo. A animação de parado de 4 quadros existe para os Comuns; nas outras raridades o código faz o parado (corpo desce 1 px a cada 2 quadros e solta a fumacinha), e Lendário e Mítico ganham brilho animado. Assim a máscara de raridade deixa de ser necessária.
 
 ## 5. Mapa e expansão de terreno 🆕
 
@@ -250,6 +260,7 @@ O tipo de cada lote vem da posição no mapa. A ordem acima é a do modelo e res
 Um cultivo novo libera a cada nível, do 1 ao 49 (o nível 1 tem 2: Alface e Cenoura), 50 no lançamento. O melhor cultivo de cada nível rende cerca de 60 × 1,07^(nível−1) de ouro por hora por canteiro, já descontada a semente (1 árvore = 2 canteiros, então 4 árvores = 1 lote de 8 canteiros). Novos cultivos e animais entram depois só pela config (`config/crops.json` e `config/animals.json`).
 
 - **Lavoura:** 1 colheita por plantio. Semente = 25% do valor da colheita.
+- 🆕 **Raridade (seção 9):** a Barraca só vende sementes e mudas Comuns. Sementes e mudas raras caem na pesquisa da Lupa, em pacotes de missão e em eventos, e multiplicam o ouro e o XP da colheita por **um plantio** (lavoura: 1 colheita; recorrente: as 5; árvore: 6 colheitas, depois volta a Comum). No canteiro aparece uma estrelinha da cor da raridade; no inventário, a moldura da raridade.
 - **Recorrente:** 5 colheitas por plantio (a 1ª em "Cresce", as outras a cada "Rebrota"). Semente = valor de 1 colheita. 🆕 O XP da tabela abaixo é por colheita: o número original era do plantio inteiro e foi dividido por 5 (ex.: Morango 190 por plantio = 38 por colheita). Lido como "por colheita", os recorrentes davam 5× mais XP por hora que os outros cultivos.
 - **Pomar:** árvore permanente, só em lote de pomar (4 vagas por terraço); produz a cada "Rebrota" depois de crescer. Muda = 6 colheitas. 🆕 O jogador pode **derrubar uma árvore de graça** para plantar outra fruta; a nova muda é paga e cresce do zero. Sem isso, uma Maçã do nível 10 ocuparia para sempre a vaga de uma Jabuticaba (14× mais ouro por hora).
 - **Trabalho:** cada plantio + colheita gasta 1 unidade de trabalho; colheita extra de recorrente ou de árvore gasta 0,5. Culturas curtas rendem um pouco mais ouro por hora, mas gastam muito mais trabalho; as longas vencem em fazendas grandes e offline. Essa troca é o coração da escolha do que plantar. Com 30 lotes há 168 canteiros e 24 árvores (antes 136 e 20). 🆕 Quantas unidades de trabalho um personagem faz por hora (ferramenta de Madeira) é calibrado no simulador da fase 0 para bater as metas da seção 14.
@@ -317,6 +328,8 @@ Um cultivo novo libera a cada nível, do 1 ao 49 (o nível 1 tem 2: Alface e Cen
 
 Cada animal rende cerca de 3 canteiros (2,9 a 3,1, valor bruto). A Rancheira em campo coleta a 100%; outra classe, a 60%. A ração (≈15% da produção) é descontada sozinha; sem ouro para ração, o animal para de produzir (nunca morre). Comprar um animal custa 10 dias de ração. Cada casa começa com 4 vagas e amplia para 8 e 12.
 
+🆕 **Raridade do animal:** sorteada no servidor na hora da compra e fixa para sempre: Comum 75%, Incomum 18%, Raro 5%, Lendário 1,5%, Mítico 0,5%. Multiplica a produção por ciclo (×1 / ×1,2 / ×1,5 / ×2 / ×3); a ração não muda. Na média os animais produzem ×1,09. Tirar um animal da vaga não devolve ouro, para ninguém ficar comprando de novo até sair Mítico. O card do animal mostra um escudo na cor da raridade.
+
 **Lago 🆕:** +10% na produção das aves do Galinheiro (Galinha, Pato, Ganso e Peru) e **+2 vagas no Galinheiro, só para aves** (4 → 6, 8 → 10, 12 → 14). Só com o +10% o Lago valia 0,37 de um lote de lavoura comprado no mesmo momento (0,20 se comprado por último); com as vagas passa a 0,89, sem passar do teto de produção animal (+60%).
 
 | Animal | Nível | Casa | Produto | A cada | Preço do produto | Ração/dia | Compra | XP/coleta |
@@ -378,6 +391,7 @@ O personagem ganha XP por hora trabalhada: o próximo nível exige (10 + 1,5 × 
 Abre pela Casa 🆕 (junto com o Silo e o painel de operadores).
 
 - **Ferramenta** da classe, em 5 materiais. Melhora a capacidade de trabalho; quem melhora é o Ferreiro, na Forja, uma por personagem.
+- 🆕 **Durabilidade da ferramenta (0 a 100):** perde 2,5 por hora de trabalho; abaixo de 30% a ferramenta trabalha a 50% da capacidade até ser consertada na Forja. O conserto custa 10% do preço do material (Madeira: 100 de ouro). Com 3 personagens em campo, os consertos custam de 3% (Cobre) a 7,5% (Cristal) da Renda de Referência por dia. Números em `config/tools_and_items.json`.
 - **Vestimenta** (chapéu, botas ou luvas): energia máxima, menos gasto de energia ou mais capacidade.
 - **Amuleto:** efeito especial (ex.: Ferradura +2 pontos de sucesso se conduzir; Trevo +2% colheita dupla; Relógio de Bolso +8% XP do personagem; Pena +3% produção animal).
 - **Lanche:** consumível, até 5 unidades, usado sozinho quando a energia cai abaixo de 15% (Pão de Queijo +25, Café +40, Marmita +70). Vem de expedições ou é comprado na **Barraca** 🆕.
@@ -459,7 +473,7 @@ Vender é mandar a produção numa expedição: quanto mais longe, maior o preç
 
 1. O jogador escolhe veículo, rota, o que levar e se paga seguro. A **Barraca** continua sempre disponível: venda na hora, sem risco, a 70% do preço da Feira.
 2. O servidor sorteia ao enviar: **crítico** (5%: paga +25% e sorteia item 2×), **sucesso** ou **falha** (perde uma parte aleatória dentro da faixa da rota; o resto volta ao Silo).
-3. Chance final = base + veículo + raridade do veículo + minigame de partida + Gerente conduzindo (+8 pontos e −10% de duração) + cartas, habilidades e pet − clima (chuva −4, carroça na chuva −8, neblina −4, noite −2). Teto de 95%.
+3. Chance final = base + segurança do veículo (× raridade) + minigame de partida + Gerente conduzindo (+8 pontos e −10% de duração) + cartas, habilidades e pet − clima (chuva −4, carroça na chuva −8, neblina −4, noite −2). Teto de 95%.
 4. **Proteção contra azar:** depois de 2 falhas seguidas, a próxima expedição ganha +25 pontos.
 5. **Seguro:** se falhar, devolve em ouro a perda acima de 10%, a preço da rota. O preço foi calculado para nunca dar lucro na média: ele troca um pouco de ganho por segurança.
 6. **Repetição automática:** o veículo refaz a mesma rota até 2 vezes enquanto o jogador está fora, herdando o resultado do minigame da partida.
@@ -468,15 +482,17 @@ Vender é mandar a produção numa expedição: quanto mais longe, maior o preç
 
 ### Raridade dos veículos
 
-Todo veículo é comprado Comum e sobe de raridade na **Forja** (reforma), pagando ouro + 1 Kit de Reforma da raridade nova. A raridade muda a aparência (seção 4), aumenta a chance de sucesso e reduz o desgaste. O veículo fica parado durante a reforma.
+Todo veículo é comprado Comum e sobe de raridade na **Forja** (reforma), pagando ouro + 1 Kit de Reforma da raridade nova. A raridade muda a aparência (seção 4) e 🆕 **multiplica capacidade, velocidade e segurança** pelo multiplicador global (seção 9). O veículo fica parado durante a reforma.
 
-| Raridade | Nível mínimo | Custo em ouro | Tempo na oficina | Sucesso | Desgaste |
+| Raridade | Nível mínimo | Custo em ouro | Tempo na oficina | Multiplicador 🆕 | Exemplo: Caminhão grande na Exportação |
 | --- | --- | --- | --- | --- | --- |
-| Comum | 1 | (compra) | — | +0 | normal |
-| Incomum | 8 | 30% do preço do veículo | 2 h | +2 pontos | −10% |
-| Raro | 16 | 60% | 4 h | +4 pontos | −20% |
-| Lendário | 26 | 120% | 8 h | +6 pontos | −30% |
-| Mítico | 36 | 240% | 12 h | +8 pontos | −40% |
+| Comum | 1 | (compra) | — | ×1 | 500 unid., 8 h, +8 pontos |
+| Incomum | 8 | 30% do preço do veículo | 2 h | ×1,2 | 600 unid., 6 h 40, +9,6 |
+| Raro | 16 | 60% | 4 h | ×1,5 | 750 unid., 5 h 20, +12 |
+| Lendário | 26 | 120% | 8 h | ×2 | 1.000 unid., 4 h, +16 |
+| Mítico | 36 | 240% | 12 h | ×3 | 1.500 unid., 2 h 40, +24 |
+
+Capacidade × multiplicador; duração ÷ multiplicador; pontos de segurança do veículo × multiplicador (a Carroça tem 0 pontos, então ganha só capacidade e velocidade). O teto de 95% de sucesso continua. O desgaste por viagem é o mesmo em todas as raridades.
 
 A Carroça usa 33.000 como preço de referência. Exemplo no Caminhão grande: 1,7 mi, 3,4 mi, 6,7 mi e 13,4 mi.
 
@@ -490,7 +506,7 @@ A Carroça usa 33.000 como preço de referência. Exemplo no Caminhão grande: 1
 | Porto | 8% | 40% | 38% | 18% | 4% |
 | Exportação | 10% | 30% | 37% | 25% | 8% |
 
-O bônus de raridade pesa nas rotas arriscadas: na Exportação, com Caminhão grande e Gerente, o Mítico rende +6,9% por viagem; em rotas seguras ele bate no teto de 95% e vale mais pelo desgaste menor. Na simulação, as reformas consomem cerca de 1% do ouro e não atrasam o mapa.
+🆕 Com a regra nova, a raridade pesa mais: o Caminhão Mítico com Gerente bate o teto de 95% até na Exportação e faz a viagem em 2 h 40. O efeito na renda é medido pelo simulador da fase 0 (seção 14); como os preços dos lotes acompanham a Renda de Referência, o ritmo do mapa se mantém.
 
 ### Minigame de partida
 
@@ -562,6 +578,26 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 | 23 | 400.000 | 910.000 | | 48 | 7.700.000 | 12.000.000 |
 | 24 | 480.000 | 1.100.000 | | 49 | 7.900.000 | 13.000.000 |
 | 25 | 570.000 | 1.200.000 | | 50 | — | 13.000.000 |
+
+### Raridade global 🆕
+
+As 5 raridades das cartas valem também para sementes e mudas, animais e veículos. A **linha base é o Comum**: a progressão de 77 dias e a fórmula 60 × 1,07^(nível−1) supõem tudo Comum, e o resto entra como bônus medido no simulador.
+
+| Raridade | Cor | Multiplicador (ouro, produção, atributos) |
+| --- | --- | --- |
+| Comum | #9E9E9E | ×1 |
+| Incomum | #4CAF50 | ×1,2 |
+| Raro | #2F7BE5 | ×1,5 |
+| Lendário | #F2C230 | ×2 |
+| Mítico | #E5383B | ×3 |
+
+| Onde | Como se consegue | O que multiplica | Quanto dura |
+| --- | --- | --- | --- |
+| Sementes e mudas | Barraca vende só Comum; raras caem na Lupa, em pacotes e eventos (chances a definir) | ouro e XP da colheita | 1 plantio (árvore: 6 colheitas) |
+| Animais | sorteada na compra: 75% / 18% / 5% / 1,5% / 0,5% | produção por ciclo (ração igual) | para sempre |
+| Veículos | reforma na Forja com ouro + Kit (seção 8) | capacidade, velocidade e pontos de segurança | para sempre |
+
+Roupas e amuletos continuam com a tabela própria (×1 / ×1,3 / ×1,6 / ×2 / ×2,5, seção 7) e as ferramentas com os 5 materiais. O multiplicador de raridade é aplicado antes dos bônus percentuais e não conta para os tetos da seção 11. Tudo em `config/rarity.json`.
 
 ### Para onde vai o ouro
 
@@ -657,14 +693,14 @@ Cada raridade foi ajustada para render **o mesmo em todas as cartas**, medido em
 | Coruja Sábia | XP da conta e dos personagens | +15% | +22% | +32% | +45% | +62% |
 | Ampulheta | Tudo anda mais rápido: lavoura, pomar, animais e limpeza de lote | +10% | +15% | +22% | +32% | +43% |
 | Trevo de Quatro Folhas | Expedições lançadas no buff: chance de crítico / valor do crítico / chance de item e kit | +4 / +10% / +20% | +6 / +15% / +35% | +9 / +22% / +50% | +12 / +32% / +75% | +16 / +42% / +100% |
-| Lua Prateada | Aumenta os bônus de clima e do evento noturno (melhor durante o evento) | +35% | +65% | +120% | +190% | +300% |
+| Tempestade 🆕 | Aumenta os bônus de clima e do evento noturno (melhor durante o evento) | +35% | +65% | +120% | +190% | +300% |
 | Fôlego | Em campo: gasto de energia / no banco: recuperação / XP dos personagens | −30% / +30% / +15% | −45% / +45% / +22% | −60% / +60% / +32% | −80% / +80% / +45% | sem gasto / +100% / +62% |
 
 - **Moeda da Sorte** paga sobre o que foi produzido, não sobre o que foi vendido: ninguém ganha segurando vendas (mesmo motivo do limite da Lua Cheia).
 - **Estrada Livre** e **Trevo** valem para expedições que **partem** durante o buff. O valor deles supõe que o jogador junta até 4 h de produção para mandar no buff.
 - **Trevo** e **Fôlego** têm parte do valor estimada (itens e energia): medir no beta. Fôlego rende muito mais com 1 a 3 personagens; serve de carta de começo de jogo.
-- Combinar 3 buffs é estratégia (ex.: Sol de Verão + Ampulheta + Lua Prateada durante o Calor Dourado), sempre limitado pelos tetos abaixo.
-- 🆕 **Arte:** há 8 ilustrações prontas (sol, cesta, carneiro, coruja, ampulheta, nuvem com raio, ferradura, engrenagem) para 10 cartas. Falta definir qual é qual e gerar as 2 restantes.
+- Combinar 3 buffs é estratégia (ex.: Sol de Verão + Ampulheta + Tempestade durante o Calor Dourado), sempre limitado pelos tetos abaixo.
+- 🆕 **Arte:** as 10 ilustrações estão prontas, na ordem da prancha: 1 Sol de Verão, 2 Cesta Dourada, 3 Rebanho Feliz, 4 Coruja Sábia, 5 Ampulheta, 6 Tempestade (antes Lua Prateada; a arte é uma nuvem com raio), 7 Estrada Livre (ferradura), 8 Fôlego (engrenagem), 9 Trevo de Quatro Folhas, 10 Moeda da Sorte. Tudo em `config/cards.json`.
 
 ### Armory (coleção permanente)
 
@@ -682,7 +718,7 @@ Cada raridade foi ajustada para render **o mesmo em todas as cartas**, medido em
 | Coruja Sábia | +2,5% XP da conta | +6% XP da conta |
 | Ampulheta | +0,8% velocidade de lavoura, pomar e animais | +2% |
 | Trevo de Quatro Folhas | +2 pontos de crítico e +10% de itens | +5 pontos e +25% |
-| Lua Prateada | +25% nos bônus de clima e evento | +60% |
+| Tempestade | +25% nos bônus de clima e evento | +60% |
 | Fôlego | +15% recuperação de energia e +10% XP de personagens | +40% e +25% |
 
 Cada bônus parcial vale cerca de 2% de renda e cada completo cerca de 5% (medido com a simulação). O Armory inteiro chega perto de 50%, mas leva anos: é o objetivo de longo prazo do jogo. Depois do nível 50, o XP da Coruja vira Estrelas da Vila.
@@ -790,7 +826,7 @@ São 12 fases. Cada uma termina com deploy, testes automáticos verdes e o check
 2. **Progressão.** XP e níveis 1–50, os 50 cultivos, compra e limpeza dos 29 lotes 🆕, Escritura da 20ª compra em diante (por enquanto dada pelo painel), ferramentas, árvores do pomar com troca grátis 🆕. *Teste:* comprar lote vizinho; lote não vizinho e lote sem nível são recusados; Galinheiro e Celeiro podem ser comprados de longe; derrubar uma árvore de graça e plantar outra fruta.
 3. **Personagens.** 6 classes, energia e rodízio nos slots, contratação e salário, Desmotivado, inventário, árvores de habilidade, reset, pets. *Teste:* ficar sem ouro para salário e ver o personagem Desmotivado; pagar e ver voltar ao normal.
 4. **Animais.** Galinheiro e Celeiro (prédios no mapa 🆕), Lago (+10% e +2 vagas para aves 🆕), ampliações, 10 animais, ração. *Teste:* sem ouro para ração, o animal para de produzir e volta quando há ouro; comprar o Lago e ver 2 vagas a mais no Galinheiro, que só aceitam aves.
-5. **Expedições.** Garagem com os 4 veículos animados 🆕, 5 rotas, raridade e reforma, Kits de Reforma, minigame de partida, sorteio, crítico, falha parcial, seguro, garantia contra azar, repetição, desgaste e conserto, itens, Escrituras, demanda do dia, relatório narrado. *Teste:* 2 falhas seguidas e a 3ª com +25 pontos visível; seguro devolvendo a perda; deixar o tempo do minigame acabar e ver a chance reduzida; reformar a Carroça e ver a sela mudar de cor; com o veículo em viagem, a vaga da garagem mostra o contador.
+5. **Expedições.** Garagem com os 4 veículos animados 🆕, 5 rotas, raridade e reforma, Kits de Reforma, minigame de partida, sorteio, crítico, falha parcial, seguro, garantia contra azar, repetição, desgaste e conserto, itens, Escrituras, demanda do dia, relatório narrado. *Teste:* 2 falhas seguidas e a 3ª com +25 pontos visível; seguro devolvendo a perda; deixar o tempo do minigame acabar e ver a chance reduzida; reformar a Carroça e ver o sprite da nova raridade e a capacidade maior; com o veículo em viagem, a vaga da garagem mostra o contador.
 6. **Clima e evento noturno.** Agenda diária por fuso horário, bônus, filtros visuais, aviso do evento, troca de fuso com espera de 30 dias. *Teste:* com 2 contas em fusos diferentes, cada uma vê o evento entre 19:00 e 21:00 do seu horário, sem repetir o da noite anterior; forçar um evento pelo painel.
 7. **Missões e cartas.** Bancos de missões, troca diária, pacotes, garantia, 10 cartas em 5 raridades, buffs temporários, Armory, fichário, venda ao Colecionador, tetos de bônus. *Teste:* abrir pacotes e conferir a garantia; colocar Comum, Incomum e Raro da mesma carta no Armory e ver o bônus parcial; ativar 3 buffs juntos e ver o teto respeitado; vender uma carta ao Colecionador e conferir o valor.
 8. **Multiplayer.** Amigos, visitas com ajuda e emojis, ranking semanal, drenos de fim de jogo e o mercado com o conteúdo que o dono decidir antes desta fase 🆕. *Teste:* duas contas no mesmo celular não conseguem negociar entre si.

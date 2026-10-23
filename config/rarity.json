@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 9 (raridade global) · decisões do dono de 22/10/2026",
+  "baseline": "common",
+  "baseline_note": "a curva base (77 dias, 60 × 1,07^(n−1)) supõe tudo Comum",
+  "tiers": [
+    {
+      "id": "common",
+      "name_pt": "Comum",
+      "color_hex": "#9E9E9E",
+      "multiplier": 1.0
+    },
+    {
+      "id": "uncommon",
+      "name_pt": "Incomum",
+      "color_hex": "#4CAF50",
+      "multiplier": 1.2
+    },
+    {
+      "id": "rare",
+      "name_pt": "Raro",
+      "color_hex": "#2F7BE5",
+      "multiplier": 1.5
+    },
+    {
+      "id": "legendary",
+      "name_pt": "Lendário",
+      "color_hex": "#F2C230",
+      "multiplier": 2.0
+    },
+    {
+      "id": "mythic",
+      "name_pt": "Mítico",
+      "color_hex": "#E5383B",
+      "multiplier": 3.0
+    }
+  ],
+  "seeds": {
+    "shop_sells": "common",
+    "applies_to": [
+      "gold",
+      "xp"
+    ],
+    "lasts": "one_planting",
+    "lasts_note": "lavoura: 1 colheita; recorrente: as 5 colheitas; árvore: 6 colheitas e volta a Comum",
+    "sources": [
+      "lupa_research",
+      "mission_packs",
+      "night_events"
+    ],
+    "drop_rates": null,
+    "drop_rates_note": "a definir nas fases 3 (Botânica), 6 (eventos) e 7 (pacotes); o simulador usa 0 (linha base)"
+  },
+  "animals": {
+    "rolled_on": "purchase",
+    "applies_to": [
+      "production"
+    ],
+    "feed_unchanged": true,
+    "purchase_odds": {
+      "common": 0.75,
+      "uncommon": 0.18,
+      "rare": 0.05,
+      "legendary": 0.015,
+      "mythic": 0.005
+    },
+    "remove_refund": 0,
+    "remove_note": "tirar um animal não devolve ouro (evita sortear de novo de graça)"
+  },
+  "vehicles": {
+    "acquired_by": "forge_refurbish",
+    "applies_to": [
+      "capacity",
+      "speed",
+      "safety_points"
+    ],
+    "speed_rule": "duração ÷ multiplicador",
+    "safety_rule": "pontos de segurança do veículo × multiplicador (teto de 95% continua)",
+    "sprites": "vehicle_{vehicle}_{rarity}"
+  },
+  "equipment_note": "roupas e amuletos mantêm a tabela própria (×1 / ×1,3 / ×1,6 / ×2 / ×2,5) em tools_and_items.json"
+}

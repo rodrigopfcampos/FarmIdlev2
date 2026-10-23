@@ -3,12 +3,14 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { round2, R } from './land-model.ts';
+import { buildMapRules } from '../db/map-rules.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const read = (p: string) => JSON.parse(readFileSync(join(root, p), 'utf8'));
 const levels = read('config/levels.json');
 const lots = read('config/lots.json');
 const map = read('config/mapConfig.json');
+const farm = read('config/farm.json');
 const gdd = readFileSync(join(root, 'docs', 'GDD.md'), 'utf8');
 
 let fails = 0;
@@ -196,10 +198,18 @@ const keys = [
   ...crops.flatMap((c: any) => [c.art.ready_sprite, c.art.seed_bag].filter(Boolean)),
   ...['carroca', 'carro', 'picape', 'caminhao'].flatMap((v) => [`vehicle_${v}_idle`, ...rarity.tiers.map((t: any) => `vehicle_${v}_${t.id}`)]),
   'building_celeiro', 'building_galinheiro', 'tree_leafy_sapling', 'tree_leafy_adult', 'tree_palm_sapling', 'tree_palm_adult',
+  'lot_sign', 'item_deed', ...farm.visual.debris_sprites, ...tools.tool_materials.map((m: any) => `tool_hoe_${m.id}`),
 ];
 const missing = keys.filter((k: string) => !sprites[k]);
 if (missing.length) console.log('   faltam:', missing.join(', '));
 check(!missing.length, `as ${keys.length} artes citadas na config existem em public/assets/sprites`);
+
+// ---------- fase 2: regras do mapa no servidor, pomar e cultivos por nível ----------
+check(JSON.stringify(read('config/map_rules.json')) === JSON.stringify(buildMapRules()), 'config/map_rules.json em dia com mapConfig.json (rode npx tsx tools/db/map-rules.ts)');
+const orchard = crops.filter((c: any) => c.kind === 'orchard');
+check(orchard.every((c: any) => /^#[0-9a-f]{6}$/i.test(farm.visual.fruit_hex[c.id] ?? '') && farm.visual.fruit_dots[c.tree_base]?.length),
+  `as ${orchard.length} frutas têm cor e posição das frutas na árvore (farm.json)`);
+check(crops.filter((c: any) => c.kind !== 'orchard' && c.unlock_level === 1).length >= 2, 'nível 1 já tem cultivos de canteiro');
 
 // ---------- simulador (seção 14): critérios de aceite ----------
 const rep = read('tools/sim/report.json');

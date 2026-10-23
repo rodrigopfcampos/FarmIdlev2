@@ -1,8 +1,12 @@
-// Carrega o manifest das artes e só os sprites que a fase atual usa.
+// Carrega o manifest das artes e os sprites que o mapa usa; gera as frutas das árvores na cor de cada fruta.
 import Phaser from 'phaser';
-import { UNLOCKED_CROPS } from '../data';
+import { CROP_LIST, FARM } from '../data';
 import type { Manifest } from '../farm/art';
 import { store } from '../farm/store';
+import { bus } from '../core/bus';
+
+const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_'];
+const MAP_KEYS = ['ui_coin', 'lot_sign'];
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('boot'); }
@@ -15,13 +19,36 @@ export class BootScene extends Phaser.Scene {
   create(): void {
     const m = this.cache.json.get('manifest').sprites as Manifest;
     store.manifest = m;
-    const keys = new Set<string>(['crop_generic_stage1', 'crop_generic_stage2', 'crop_generic_stage3', 'ui_coin']);
-    for (const c of UNLOCKED_CROPS) for (const k of [`crop_${c.id}_stage1`, `crop_${c.id}_stage2`, `crop_${c.id}_stage3`, `crop_${c.id}_ready`, `icon_${c.id}`]) if (m[k]) keys.add(k);
-    for (const k of Object.keys(m)) if (k.startsWith('char_agricultor_')) keys.add(k);
-    for (const k of keys) this.load.image(k, `assets/${m[k].file}`);
+    bus.emit('art:ready'); // a interface redesenha os ícones que dependem do manifest
+    for (const k of Object.keys(m)) {
+      if (m[k].frames || m[k].file.includes('/extras/')) continue;
+      if (MAP_KEYS.includes(k) || MAP_PREFIXES.some((p) => k.startsWith(p))) this.load.image(k, `assets/${m[k].file}`);
+    }
     const cart = m.vehicle_carroca_idle;
     this.load.spritesheet('vehicle_carroca_idle', `assets/${cart.file}`, { frameWidth: cart.frame_size![0], frameHeight: cart.frame_size![1] });
-    this.load.once('complete', () => this.scene.start('farm'));
+    this.load.once('complete', () => { this.makeFruitTextures(); this.scene.start('farm'); });
     this.load.start();
+  }
+
+  /** frutas 4×4 (base, brilho e sombra) por cima da árvore adulta: uma textura por fruta */
+  private makeFruitTextures(): void {
+    const pattern = ['.XX.', 'XHXX', 'XXXD', '.DD.'];
+    const dots = FARM.visual.fruit_dots as unknown as Record<string, number[][]>;
+    const colors = FARM.visual.fruit_hex as Record<string, string>;
+    for (const c of CROP_LIST) {
+      if (c.kind !== 'orchard') continue;
+      const base = Phaser.Display.Color.HexStringToColor(colors[c.id] ?? '#c6191c');
+      const shade = (k: number) => Phaser.Display.Color.GetColor(Math.min(255, base.red * k), Math.min(255, base.green * k), Math.min(255, base.blue * k));
+      const ink: Record<string, number> = { X: base.color, H: shade(1.35), D: shade(0.65) };
+      const g = this.make.graphics({}, false);
+      for (const [cx, cy] of dots[c.tree_base ?? 'leafy'] ?? []) {
+        pattern.forEach((row, j) => [...row].forEach((ch, i) => {
+          if (ch === '.') return;
+          g.fillStyle(ink[ch], 1).fillRect(cx - 2 + i, cy - 2 + j, 1, 1);
+        }));
+      }
+      g.generateTexture(`fruit_${c.id}`, 48, 64);
+      g.destroy();
+    }
   }
 }

@@ -18,6 +18,7 @@ Jogo idle de fazenda em pixel art, no navegador (Phaser 4 + TypeScript + Vite) c
 - `npm run balance:check`: confere mapa, lotes, cultivos, animais, cartas, ferramentas, raridade, artes e documento (tem de terminar em "tudo verde")
 - `npm run sim`: simulador de economia (seção 14 do GDD)
 - `npx tsx tools/db/config-sql.ts levels ...`: gera o SQL que copia a config para a tabela `game_config`
+- `npx tsx tools/db/map-rules.ts`: gera `config/map_rules.json` (lotes, vizinhos, canteiros e árvores que o servidor usa) a partir do `mapConfig.json`
 
 ## Hospedagem
 
@@ -26,7 +27,7 @@ Site: https://farmidlev2.2mailife.workers.dev (projeto de produção do Supabase
 
 ## Painel do admin
 
-`/admin.html`: entra com e-mail e senha de uma conta admin e o código do aplicativo autenticador (2FA). Busca jogadores e mostra ledger, auditoria e fazenda.
+`/admin.html`: entra com e-mail e senha de uma conta admin e o código do aplicativo autenticador (2FA). Busca jogadores e mostra ledger, auditoria e fazenda. Na guia Fazenda dá para dar Escritura (fica na auditoria com a justificativa).
 
 ## Testes do banco
 

@@ -34,7 +34,7 @@ describe('canteiros', () => {
     }
   });
   it('estágios: semente, broto, crescendo e pronto', () => {
-    const th = [0.25, 0.55, 0.85];
+    const th = [0.25, 0.55, 0.85]; // limiares de exemplo (os do jogo ficam em farm.json)
     expect([0, 0.3, 0.6, 0.9, 1.2].map((p) => stageFor(p, th))).toEqual([0, 1, 2, 3, 3]);
   });
   it('vento move só pixels inteiros, no máximo a força', () => {

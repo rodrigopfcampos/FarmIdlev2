@@ -14,6 +14,9 @@ begin
     (a, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'f1-a-' || a || '@exemplo.test', '{"nickname":"Fazenda A","birth_date":"1990-01-01"}', now(), now()),
     (b, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'f1-b-' || b || '@exemplo.test', '{"nickname":"Fazenda B","birth_date":"1990-01-01"}', now(), now());
 
+  -- (desde a fase 2 a Batata pede nível 2)
+  update public.farms set level = 2 where user_id = a;
+
   -- 1. conta nova ganha o A1 com 8 canteiros e 1 h de trabalho guardado
   select count(*) into n from public.plots where user_id = a and plot_id like 'A1-%';
   if n <> 8 then raise exception 'FALHA 1: % canteiros no A1', n; end if;

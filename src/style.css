@@ -24,7 +24,7 @@ label { display: block; margin: 8px 0; font-size: 14px; }
 input { display: block; width: 100%; margin-top: 4px; padding: 10px; font: inherit; color: var(--ink); background: var(--paper); border: 2px solid var(--panel-border); }
 input:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
 .primary { width: 100%; margin-top: 8px; padding: 12px; font: inherit; font-weight: 700; color: #1c1c1c; background: var(--gold); border: 2px solid #8a6a10; cursor: pointer; }
-.primary:disabled { opacity: 0.6; cursor: wait; }
+.primary:disabled { opacity: 0.45; filter: grayscale(0.7); cursor: not-allowed; }
 .msg { min-height: 1.4em; margin: 8px 0 0; color: #ffb4a8; font-size: 14px; }
 .msg.ok { color: #9be39f; }
 .hud { position: absolute; top: 12px; right: 12px; pointer-events: auto; display: flex; gap: 10px; align-items: center; background: #000c; border: 2px solid var(--panel-border); padding: 6px 10px; max-width: calc(100% - 24px); flex-wrap: wrap; }
@@ -70,3 +70,22 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outl
 .toast { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); max-width: calc(100% - 32px); background: #000d; border: 2px solid var(--gold); padding: 8px 14px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .toast.show { opacity: 1; }
 @media (max-width: 480px) { .hud .nick { display: none; } }
+
+/* fase 2: nível, XP, Escrituras, lotes, pomar e Forja */
+.hud .level { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+.xpbar { display: inline-block; width: 64px; height: 8px; background: #3a2c20; border: 1px solid var(--panel-border); }
+.xpbar > span { display: block; height: 100%; background: var(--green); }
+.hud .deeds { display: flex; align-items: center; gap: 4px; font-weight: 700; }
+.crop.locked { opacity: 0.55; cursor: not-allowed; }
+.crop.locked:hover { border-color: var(--panel-border); }
+.game-panel h3 { margin: 14px 0 8px; font-size: 16px; color: var(--gold); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0 0 12px; }
+.facts dt { color: #bfae8c; }
+.facts dd { margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.facts small { color: #bfae8c; font-size: 13px; }
+.problems { margin: 0 0 8px; padding: 8px 10px 8px 28px; background: #3a1c18; border-left: 4px solid var(--danger); color: #ffd0c8; font-size: 14px; }
+.trees .slot-n { font-weight: 700; color: var(--gold); min-width: 56px; }
+.tool { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; border: 2px solid transparent; }
+.tool small { font-size: 12px; color: #d8c8a8; }
+.tool.current { border-color: var(--gold); }
+.tool.locked { opacity: 0.45; }

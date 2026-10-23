@@ -7,8 +7,11 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const names = process.argv.slice(2);
 if (!names.length) { console.error('informe os nomes: levels crops animals ...'); process.exit(1); }
+// partes que só servem para documentação/ferramentas e não vão para o banco
+const SERVER_OMIT: Record<string, string[]> = { lots: ['simulated_order'] };
 for (const name of names) {
   const data = JSON.parse(readFileSync(join(root, 'config', `${name}.json`), 'utf8'));
+  for (const k of SERVER_OMIT[name] ?? []) data[k] = [];
   if (!Number.isInteger(data.version)) throw new Error(`${name}.json sem "version" inteiro`);
   const json = JSON.stringify(data);
   if (json.includes('$cfg$')) throw new Error('texto proibido no json');

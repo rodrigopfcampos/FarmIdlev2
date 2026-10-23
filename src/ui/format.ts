@@ -15,3 +15,11 @@ export function ageOn(birth: string, today = new Date()): number | null {
   if (today.getUTCMonth() < mo - 1 || (today.getUTCMonth() === mo - 1 && today.getUTCDate() < d)) age--;
   return age;
 }
+
+// duração em texto curto: "12 min", "2 h", "1 h 05"
+export function duration(seconds: number): string {
+  const m = Math.max(0, Math.ceil(seconds / 60));
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h} h ${String(r).padStart(2, '0')}` : `${h} h`;
+}

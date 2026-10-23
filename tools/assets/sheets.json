@@ -255,6 +255,12 @@
               "crop_generic_stage2",
               "crop_generic_stage3"
             ]
+          ],
+          "col_boost": [
+            1.6,
+            1.3,
+            1.1,
+            1
           ]
         },
         {
@@ -512,7 +518,13 @@
               "crop_cereja_ready"
             ]
           ],
-          "uniform_rows": true
+          "uniform_rows": true,
+          "col_boost": [
+            1.6,
+            1.3,
+            1.1,
+            1
+          ]
         }
       ]
     },
@@ -1050,6 +1062,12 @@
               "crop_roma_stage3",
               "crop_roma_ready"
             ]
+          ],
+          "col_boost": [
+            1.6,
+            1.3,
+            1.1,
+            1
           ]
         }
       ]
@@ -1177,6 +1195,12 @@
               "crop_alface_stage3",
               "crop_alface_ready"
             ]
+          ],
+          "col_boost": [
+            1.6,
+            1.3,
+            1.1,
+            1
           ]
         }
       ]
@@ -1304,6 +1328,12 @@
               "crop_alho_poro_stage3",
               "crop_alho_poro_ready"
             ]
+          ],
+          "col_boost": [
+            1.6,
+            1.3,
+            1.1,
+            1
           ]
         }
       ]

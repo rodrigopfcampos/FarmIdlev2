@@ -1,18 +1,127 @@
 {
-  "version": 1,
-  "source": "GDD v2 seções 2, 3, 4 e 6 (fazenda, limite offline, canteiros vivos)",
+  "version": 3,
+  "source": "GDD v2 seções 2, 3, 4, 5 e 6 (fazenda, limite offline, lotes, pomar, canteiros vivos)",
   "offline_cap_hours": 8,
   "labor_bank_cap_hours": 1,
   "initial_labor_bank_hours": 1,
   "starting_lot": "A1",
   "plots_per_crop_lot": 8,
-  "phase1_unlocked_crops": ["alface", "cenoura", "batata", "espinafre"],
-  "phase1_note": "até a fase 2 ligar XP e níveis, os 4 primeiros cultivos ficam liberados; o Agricultor trabalha sem energia até a fase 3",
   "sync_seconds": 60,
   "visual": {
-    "stage_thresholds": [0.25, 0.55, 0.85],
+    "stage_thresholds": [
+      0.15,
+      0.5,
+      0.85
+    ],
     "wind_strength_px": 1,
     "wind_speed": 1.6,
-    "vehicle_idle_fps": 6
+    "vehicle_idle_fps": 6,
+    "debris_sprites": [
+      "debris_rock",
+      "debris_stump_big",
+      "debris_stump_small"
+    ],
+    "stage_thresholds_note": "0–15% semente, 15–50% broto, 50–85% crescendo, depois maduro; a árvore é muda até 50% do 1º crescimento e mostra fruta a partir de 85% de cada ciclo",
+    "fruit_dots": {
+      "leafy": [
+        [
+          30,
+          9
+        ],
+        [
+          15,
+          12
+        ],
+        [
+          39,
+          15
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          10,
+          21
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          36,
+          22
+        ],
+        [
+          42,
+          24
+        ],
+        [
+          12,
+          30
+        ],
+        [
+          24,
+          30
+        ],
+        [
+          33,
+          32
+        ],
+        [
+          37,
+          34
+        ]
+      ],
+      "palm": [
+        [
+          22,
+          20
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          28,
+          24
+        ]
+      ],
+      "note": "centro de cada fruta (4×4 px) sobre a árvore adulta de 48×64"
+    },
+    "fruit_hex": {
+      "maca": "#c6191c",
+      "laranja": "#eb7f0c",
+      "banana": "#e6c02a",
+      "pera": "#b1c523",
+      "maca_verde": "#8cc63f",
+      "limao": "#f6db09",
+      "pessego": "#ea9363",
+      "mamao": "#f08a24",
+      "manga": "#e0a020",
+      "goiaba": "#e86a7a",
+      "cereja": "#a41c23",
+      "acerola": "#d81f2a",
+      "figo": "#833c77",
+      "roma": "#b1192e",
+      "jabuticaba": "#4a2058"
+    },
+    "no_debris_types": [
+      "pasto_lago"
+    ]
+  },
+  "labor_note": "até a fase 3, o Agricultor trabalha sem gastar energia e faz também o pomar",
+  "blacksmith_hired_from_phase": 3,
+  "ui": {
+    "locked_crops_preview": 3,
+    "level_up_toast_seconds": 5
   }
 }

@@ -1,0 +1,544 @@
+{
+  "version": 3,
+  "source": "gerado de config/mapConfig.json por tools/db/map-rules.ts",
+  "start_lot": "A1",
+  "exempt_types": [
+    "pasto_galinheiro",
+    "pasto_celeiro"
+  ],
+  "lots": [
+    {
+      "id": "A1",
+      "type": "lavoura",
+      "neighbors": [
+        "A3",
+        "A4",
+        "P1",
+        "P2"
+      ],
+      "plots": [
+        "A1-1",
+        "A1-2",
+        "A1-3",
+        "A1-4",
+        "A1-5",
+        "A1-6",
+        "A1-7",
+        "A1-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A2",
+      "type": "lavoura",
+      "neighbors": [
+        "A4",
+        "A5"
+      ],
+      "plots": [
+        "A2-1",
+        "A2-2",
+        "A2-3",
+        "A2-4",
+        "A2-5",
+        "A2-6",
+        "A2-7",
+        "A2-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A3",
+      "type": "lavoura",
+      "neighbors": [
+        "A1",
+        "A6",
+        "A7",
+        "P3",
+        "P4"
+      ],
+      "plots": [
+        "A3-1",
+        "A3-2",
+        "A3-3",
+        "A3-4",
+        "A3-5",
+        "A3-6",
+        "A3-7",
+        "A3-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A4",
+      "type": "lavoura",
+      "neighbors": [
+        "A1",
+        "A2",
+        "A7",
+        "A8"
+      ],
+      "plots": [
+        "A4-1",
+        "A4-2",
+        "A4-3",
+        "A4-4",
+        "A4-5",
+        "A4-6",
+        "A4-7",
+        "A4-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A5",
+      "type": "lavoura",
+      "neighbors": [
+        "A2",
+        "A8",
+        "A9"
+      ],
+      "plots": [
+        "A5-1",
+        "A5-2",
+        "A5-3",
+        "A5-4",
+        "A5-5",
+        "A5-6",
+        "A5-7",
+        "A5-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A6",
+      "type": "lavoura",
+      "neighbors": [
+        "A3",
+        "A10",
+        "A11",
+        "P4",
+        "P5"
+      ],
+      "plots": [
+        "A6-1",
+        "A6-2",
+        "A6-3",
+        "A6-4",
+        "A6-5",
+        "A6-6",
+        "A6-7",
+        "A6-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A7",
+      "type": "lavoura",
+      "neighbors": [
+        "A3",
+        "A4",
+        "A11",
+        "A12"
+      ],
+      "plots": [
+        "A7-1",
+        "A7-2",
+        "A7-3",
+        "A7-4",
+        "A7-5",
+        "A7-6",
+        "A7-7",
+        "A7-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A8",
+      "type": "lavoura",
+      "neighbors": [
+        "A4",
+        "A5",
+        "A12",
+        "A13"
+      ],
+      "plots": [
+        "A8-1",
+        "A8-2",
+        "A8-3",
+        "A8-4",
+        "A8-5",
+        "A8-6",
+        "A8-7",
+        "A8-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A9",
+      "type": "lavoura",
+      "neighbors": [
+        "A5",
+        "A13"
+      ],
+      "plots": [
+        "A9-1",
+        "A9-2",
+        "A9-3",
+        "A9-4",
+        "A9-5",
+        "A9-6",
+        "A9-7",
+        "A9-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A10",
+      "type": "lavoura",
+      "neighbors": [
+        "A6",
+        "A14",
+        "A15",
+        "P5",
+        "P6"
+      ],
+      "plots": [
+        "A10-1",
+        "A10-2",
+        "A10-3",
+        "A10-4",
+        "A10-5",
+        "A10-6",
+        "A10-7",
+        "A10-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A11",
+      "type": "lavoura",
+      "neighbors": [
+        "A6",
+        "A7",
+        "A15",
+        "A16"
+      ],
+      "plots": [
+        "A11-1",
+        "A11-2",
+        "A11-3",
+        "A11-4",
+        "A11-5",
+        "A11-6",
+        "A11-7",
+        "A11-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A12",
+      "type": "lavoura",
+      "neighbors": [
+        "A7",
+        "A8",
+        "A16",
+        "A17"
+      ],
+      "plots": [
+        "A12-1",
+        "A12-2",
+        "A12-3",
+        "A12-4",
+        "A12-5",
+        "A12-6",
+        "A12-7",
+        "A12-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A13",
+      "type": "lavoura",
+      "neighbors": [
+        "A8",
+        "A9",
+        "A17",
+        "C1"
+      ],
+      "plots": [
+        "A13-1",
+        "A13-2",
+        "A13-3",
+        "A13-4",
+        "A13-5",
+        "A13-6",
+        "A13-7",
+        "A13-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A14",
+      "type": "lavoura",
+      "neighbors": [
+        "A10",
+        "A18",
+        "P6"
+      ],
+      "plots": [
+        "A14-1",
+        "A14-2",
+        "A14-3",
+        "A14-4",
+        "A14-5",
+        "A14-6",
+        "A14-7",
+        "A14-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A15",
+      "type": "lavoura",
+      "neighbors": [
+        "A10",
+        "A11",
+        "A18",
+        "A19"
+      ],
+      "plots": [
+        "A15-1",
+        "A15-2",
+        "A15-3",
+        "A15-4",
+        "A15-5",
+        "A15-6",
+        "A15-7",
+        "A15-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A16",
+      "type": "lavoura",
+      "neighbors": [
+        "A11",
+        "A12",
+        "A19",
+        "A20"
+      ],
+      "plots": [
+        "A16-1",
+        "A16-2",
+        "A16-3",
+        "A16-4",
+        "A16-5",
+        "A16-6",
+        "A16-7",
+        "A16-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A17",
+      "type": "lavoura",
+      "neighbors": [
+        "A12",
+        "A13",
+        "A20"
+      ],
+      "plots": [
+        "A17-1",
+        "A17-2",
+        "A17-3",
+        "A17-4",
+        "A17-5",
+        "A17-6",
+        "A17-7",
+        "A17-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A18",
+      "type": "lavoura",
+      "neighbors": [
+        "A14",
+        "A15",
+        "A21"
+      ],
+      "plots": [
+        "A18-1",
+        "A18-2",
+        "A18-3",
+        "A18-4",
+        "A18-5",
+        "A18-6",
+        "A18-7",
+        "A18-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A19",
+      "type": "lavoura",
+      "neighbors": [
+        "A15",
+        "A16",
+        "A21",
+        "L"
+      ],
+      "plots": [
+        "A19-1",
+        "A19-2",
+        "A19-3",
+        "A19-4",
+        "A19-5",
+        "A19-6",
+        "A19-7",
+        "A19-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A20",
+      "type": "lavoura",
+      "neighbors": [
+        "A16",
+        "A17",
+        "C2",
+        "L"
+      ],
+      "plots": [
+        "A20-1",
+        "A20-2",
+        "A20-3",
+        "A20-4",
+        "A20-5",
+        "A20-6",
+        "A20-7",
+        "A20-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "A21",
+      "type": "lavoura",
+      "neighbors": [
+        "A18",
+        "A19",
+        "L"
+      ],
+      "plots": [
+        "A21-1",
+        "A21-2",
+        "A21-3",
+        "A21-4",
+        "A21-5",
+        "A21-6",
+        "A21-7",
+        "A21-8"
+      ],
+      "tree_slots": 0
+    },
+    {
+      "id": "P1",
+      "type": "pomar",
+      "neighbors": [
+        "A1",
+        "P2"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "P2",
+      "type": "pomar",
+      "neighbors": [
+        "A1",
+        "P1",
+        "P3"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "P3",
+      "type": "pomar",
+      "neighbors": [
+        "A3",
+        "P2",
+        "P4"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "P4",
+      "type": "pomar",
+      "neighbors": [
+        "A3",
+        "A6",
+        "P3",
+        "P5"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "P5",
+      "type": "pomar",
+      "neighbors": [
+        "A6",
+        "A10",
+        "P4",
+        "P6"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "P6",
+      "type": "pomar",
+      "neighbors": [
+        "A10",
+        "A14",
+        "P5"
+      ],
+      "plots": [],
+      "tree_slots": 4
+    },
+    {
+      "id": "C1",
+      "type": "pasto_galinheiro",
+      "neighbors": [
+        "A13",
+        "C2"
+      ],
+      "plots": [],
+      "tree_slots": 0
+    },
+    {
+      "id": "C2",
+      "type": "pasto_celeiro",
+      "neighbors": [
+        "A20",
+        "C1"
+      ],
+      "plots": [],
+      "tree_slots": 0
+    },
+    {
+      "id": "L",
+      "type": "pasto_lago",
+      "neighbors": [
+        "A19",
+        "A20",
+        "A21"
+      ],
+      "plots": [],
+      "tree_slots": 0
+    }
+  ]
+}

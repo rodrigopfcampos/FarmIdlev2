@@ -207,7 +207,9 @@ async function renderRegion(img, region) {
       let w, h;
       if (region.fit === 'fill') { w = W; h = H; }
       else {
-        const s = region.scale === 'row' ? rowScale[r] : region.scale === 'all' ? allScale : scaleFor(b, [W, H]);
+        let s = region.scale === 'row' ? rowScale[r] : region.scale === 'all' ? allScale : scaleFor(b, [W, H]);
+        // estágios pequenos ficam maiores (sem passar da célula), para a muda aparecer no canteiro
+        if (region.col_boost?.[c]) s = Math.min(s * region.col_boost[c], scaleFor(b, [W, H]));
         w = Math.max(1, Math.round(b.w * s)); h = Math.max(1, Math.round(b.h * s));
       }
       const px = await scaled(img, b, w, h);

@@ -1,0 +1,613 @@
+{
+  "version": 2,
+  "source": "GDD v2 seção 5 · gerado por tools/balance/build-lots.ts",
+  "rules": {
+    "start_lot": "A1",
+    "total_lots": 30,
+    "purchases": 29,
+    "price_by": "purchase_count",
+    "adjacency": {
+      "rule": "shared_side",
+      "exempt_types": [
+        "pasto_galinheiro",
+        "pasto_celeiro"
+      ]
+    },
+    "min_level": {
+      "formula": "ceil(k * n)",
+      "k": 1.44,
+      "type_floor": {
+        "pasto_galinheiro": 3,
+        "pasto_celeiro": 8,
+        "pomar": 10,
+        "pasto_lago": 11
+      }
+    },
+    "cost": {
+      "formula": "base * growth^(n-1) * R(ceil(k * n))",
+      "base": 0.29,
+      "growth": 1.105,
+      "rounding": "2_significant_digits"
+    },
+    "deed": {
+      "required_from_purchase": 20,
+      "total_needed": 10
+    },
+    "cleanup": {
+      "base_minutes": 60,
+      "per_purchase_minutes": 12,
+      "other_class_multiplier": 2,
+      "neighbor_help_reduction": 0.1,
+      "max_neighbor_helps_per_day": 5
+    }
+  },
+  "purchases": [
+    {
+      "n": 1,
+      "min_level": 2,
+      "reference_income_level": 2,
+      "reference_income": 8700,
+      "cost": 2500,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 72
+    },
+    {
+      "n": 2,
+      "min_level": 3,
+      "reference_income_level": 3,
+      "reference_income": 9900,
+      "cost": 3200,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 84
+    },
+    {
+      "n": 3,
+      "min_level": 5,
+      "reference_income_level": 5,
+      "reference_income": 17000,
+      "cost": 6000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 96
+    },
+    {
+      "n": 4,
+      "min_level": 6,
+      "reference_income_level": 6,
+      "reference_income": 22000,
+      "cost": 8600,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 108
+    },
+    {
+      "n": 5,
+      "min_level": 8,
+      "reference_income_level": 8,
+      "reference_income": 37000,
+      "cost": 16000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 120
+    },
+    {
+      "n": 6,
+      "min_level": 9,
+      "reference_income_level": 9,
+      "reference_income": 49000,
+      "cost": 23000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 132
+    },
+    {
+      "n": 7,
+      "min_level": 11,
+      "reference_income_level": 11,
+      "reference_income": 84000,
+      "cost": 44000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 144
+    },
+    {
+      "n": 8,
+      "min_level": 12,
+      "reference_income_level": 12,
+      "reference_income": 110000,
+      "cost": 64000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 156
+    },
+    {
+      "n": 9,
+      "min_level": 13,
+      "reference_income_level": 13,
+      "reference_income": 150000,
+      "cost": 97000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 168
+    },
+    {
+      "n": 10,
+      "min_level": 15,
+      "reference_income_level": 15,
+      "reference_income": 250000,
+      "cost": 180000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 180
+    },
+    {
+      "n": 11,
+      "min_level": 16,
+      "reference_income_level": 16,
+      "reference_income": 310000,
+      "cost": 240000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 192
+    },
+    {
+      "n": 12,
+      "min_level": 18,
+      "reference_income_level": 18,
+      "reference_income": 450000,
+      "cost": 390000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 204
+    },
+    {
+      "n": 13,
+      "min_level": 19,
+      "reference_income_level": 19,
+      "reference_income": 520000,
+      "cost": 500000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 216
+    },
+    {
+      "n": 14,
+      "min_level": 21,
+      "reference_income_level": 21,
+      "reference_income": 690000,
+      "cost": 730000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 228
+    },
+    {
+      "n": 15,
+      "min_level": 22,
+      "reference_income_level": 22,
+      "reference_income": 790000,
+      "cost": 930000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 240
+    },
+    {
+      "n": 16,
+      "min_level": 24,
+      "reference_income_level": 24,
+      "reference_income": 1100000,
+      "cost": 1400000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 252
+    },
+    {
+      "n": 17,
+      "min_level": 25,
+      "reference_income_level": 25,
+      "reference_income": 1200000,
+      "cost": 1700000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 264
+    },
+    {
+      "n": 18,
+      "min_level": 26,
+      "reference_income_level": 26,
+      "reference_income": 1400000,
+      "cost": 2200000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 276
+    },
+    {
+      "n": 19,
+      "min_level": 28,
+      "reference_income_level": 28,
+      "reference_income": 1800000,
+      "cost": 3100000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 288
+    },
+    {
+      "n": 20,
+      "min_level": 29,
+      "reference_income_level": 29,
+      "reference_income": 2000000,
+      "cost": 3900000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 300
+    },
+    {
+      "n": 21,
+      "min_level": 31,
+      "reference_income_level": 31,
+      "reference_income": 2500000,
+      "cost": 5300000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 312
+    },
+    {
+      "n": 22,
+      "min_level": 32,
+      "reference_income_level": 32,
+      "reference_income": 2800000,
+      "cost": 6600000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 324
+    },
+    {
+      "n": 23,
+      "min_level": 34,
+      "reference_income_level": 34,
+      "reference_income": 3600000,
+      "cost": 9400000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 336
+    },
+    {
+      "n": 24,
+      "min_level": 35,
+      "reference_income_level": 35,
+      "reference_income": 4200000,
+      "cost": 12000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 348
+    },
+    {
+      "n": 25,
+      "min_level": 36,
+      "reference_income_level": 36,
+      "reference_income": 4800000,
+      "cost": 15000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 360
+    },
+    {
+      "n": 26,
+      "min_level": 38,
+      "reference_income_level": 38,
+      "reference_income": 6300000,
+      "cost": 22000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 372
+    },
+    {
+      "n": 27,
+      "min_level": 39,
+      "reference_income_level": 39,
+      "reference_income": 6800000,
+      "cost": 26000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 384
+    },
+    {
+      "n": 28,
+      "min_level": 41,
+      "reference_income_level": 41,
+      "reference_income": 7600000,
+      "cost": 33000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 396
+    },
+    {
+      "n": 29,
+      "min_level": 42,
+      "reference_income_level": 42,
+      "reference_income": 8300000,
+      "cost": 39000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 408
+    }
+  ],
+  "simulated_order": [
+    {
+      "n": 1,
+      "lot_id": "A3",
+      "type": "lavoura",
+      "min_level": 2,
+      "cost": 2500,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 72,
+      "regular_day": 0.3
+    },
+    {
+      "n": 2,
+      "lot_id": "C1",
+      "type": "pasto_galinheiro",
+      "min_level": 3,
+      "cost": 3200,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 84,
+      "regular_day": 0.6
+    },
+    {
+      "n": 3,
+      "lot_id": "A4",
+      "type": "lavoura",
+      "min_level": 5,
+      "cost": 6000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 96,
+      "regular_day": 0.9
+    },
+    {
+      "n": 4,
+      "lot_id": "A2",
+      "type": "lavoura",
+      "min_level": 6,
+      "cost": 8600,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 108,
+      "regular_day": 1.2
+    },
+    {
+      "n": 5,
+      "lot_id": "C2",
+      "type": "pasto_celeiro",
+      "min_level": 8,
+      "cost": 16000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 120,
+      "regular_day": 1.6
+    },
+    {
+      "n": 6,
+      "lot_id": "A6",
+      "type": "lavoura",
+      "min_level": 9,
+      "cost": 23000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 132,
+      "regular_day": 2.1
+    },
+    {
+      "n": 7,
+      "lot_id": "P1",
+      "type": "pomar",
+      "min_level": 11,
+      "cost": 44000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 144,
+      "regular_day": 2.8
+    },
+    {
+      "n": 8,
+      "lot_id": "A7",
+      "type": "lavoura",
+      "min_level": 12,
+      "cost": 64000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 156,
+      "regular_day": 3.6
+    },
+    {
+      "n": 9,
+      "lot_id": "A8",
+      "type": "lavoura",
+      "min_level": 13,
+      "cost": 97000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 168,
+      "regular_day": 4.5
+    },
+    {
+      "n": 10,
+      "lot_id": "P2",
+      "type": "pomar",
+      "min_level": 15,
+      "cost": 180000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 180,
+      "regular_day": 5.8
+    },
+    {
+      "n": 11,
+      "lot_id": "A5",
+      "type": "lavoura",
+      "min_level": 16,
+      "cost": 240000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 192,
+      "regular_day": 7.1
+    },
+    {
+      "n": 12,
+      "lot_id": "A10",
+      "type": "lavoura",
+      "min_level": 18,
+      "cost": 390000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 204,
+      "regular_day": 9.1
+    },
+    {
+      "n": 13,
+      "lot_id": "P3",
+      "type": "pomar",
+      "min_level": 19,
+      "cost": 500000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 216,
+      "regular_day": 10.4
+    },
+    {
+      "n": 14,
+      "lot_id": "A11",
+      "type": "lavoura",
+      "min_level": 21,
+      "cost": 730000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 228,
+      "regular_day": 13.4
+    },
+    {
+      "n": 15,
+      "lot_id": "A12",
+      "type": "lavoura",
+      "min_level": 22,
+      "cost": 930000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 240,
+      "regular_day": 15.1
+    },
+    {
+      "n": 16,
+      "lot_id": "P4",
+      "type": "pomar",
+      "min_level": 24,
+      "cost": 1400000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 252,
+      "regular_day": 18.8
+    },
+    {
+      "n": 17,
+      "lot_id": "A13",
+      "type": "lavoura",
+      "min_level": 25,
+      "cost": 1700000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 264,
+      "regular_day": 20.8
+    },
+    {
+      "n": 18,
+      "lot_id": "A20",
+      "type": "lavoura",
+      "min_level": 26,
+      "cost": 2200000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 276,
+      "regular_day": 23
+    },
+    {
+      "n": 19,
+      "lot_id": "L",
+      "type": "pasto_lago",
+      "min_level": 28,
+      "cost": 3100000,
+      "requires_deed": false,
+      "cleanup_minutes_blacksmith": 288,
+      "regular_day": 27.7
+    },
+    {
+      "n": 20,
+      "lot_id": "P5",
+      "type": "pomar",
+      "min_level": 29,
+      "cost": 3900000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 300,
+      "regular_day": 30.3
+    },
+    {
+      "n": 21,
+      "lot_id": "A9",
+      "type": "lavoura",
+      "min_level": 31,
+      "cost": 5300000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 312,
+      "regular_day": 35.8
+    },
+    {
+      "n": 22,
+      "lot_id": "A14",
+      "type": "lavoura",
+      "min_level": 32,
+      "cost": 6600000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 324,
+      "regular_day": 38.7
+    },
+    {
+      "n": 23,
+      "lot_id": "P6",
+      "type": "pomar",
+      "min_level": 34,
+      "cost": 9400000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 336,
+      "regular_day": 44.9
+    },
+    {
+      "n": 24,
+      "lot_id": "A15",
+      "type": "lavoura",
+      "min_level": 35,
+      "cost": 12000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 348,
+      "regular_day": 48.1
+    },
+    {
+      "n": 25,
+      "lot_id": "A16",
+      "type": "lavoura",
+      "min_level": 36,
+      "cost": 15000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 360,
+      "regular_day": 51.8
+    },
+    {
+      "n": 26,
+      "lot_id": "A17",
+      "type": "lavoura",
+      "min_level": 38,
+      "cost": 22000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 372,
+      "regular_day": 58
+    },
+    {
+      "n": 27,
+      "lot_id": "A18",
+      "type": "lavoura",
+      "min_level": 39,
+      "cost": 26000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 384,
+      "regular_day": 63.3
+    },
+    {
+      "n": 28,
+      "lot_id": "A19",
+      "type": "lavoura",
+      "min_level": 41,
+      "cost": 33000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 396,
+      "regular_day": 69.9
+    },
+    {
+      "n": 29,
+      "lot_id": "A21",
+      "type": "lavoura",
+      "min_level": 42,
+      "cost": 39000000,
+      "requires_deed": true,
+      "cleanup_minutes_blacksmith": 408,
+      "regular_day": 76.8
+    }
+  ],
+  "model_check": {
+    "regular": {
+      "map_complete_day": 76.8,
+      "max_gold_wait_days": 3
+    },
+    "casual": {
+      "map_complete_day": 108.5,
+      "max_gold_wait_days": 6.1
+    },
+    "dedicated": {
+      "map_complete_day": 71,
+      "max_gold_wait_days": 2.1
+    }
+  }
+}

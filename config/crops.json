@@ -1,0 +1,899 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026)",
+  "rules": {
+    "reference_gold_per_hour_per_plot": {
+      "formula": "60 * 1.07^(level-1)",
+      "note": "líquido de semente; árvore = 2 canteiros"
+    },
+    "seed_cost": {
+      "crop": "25% do valor de 1 colheita",
+      "recurring": "valor de 1 colheita",
+      "orchard": "valor de 6 colheitas (muda)"
+    },
+    "work_units": {
+      "plant_and_harvest": 1,
+      "extra_harvest_recurring_or_tree": 0.5,
+      "per_character_per_hour": null,
+      "per_character_per_hour_note": "calibrar no simulador da fase 0"
+    },
+    "golden_harvest": {
+      "multiplier": 2.5,
+      "cap_permanent": 0.2,
+      "cap_absolute": 0.6
+    },
+    "orchard": {
+      "trees_per_lot": 4,
+      "remove_tree_cost": 0,
+      "remove_tree_note": "derrubar é grátis; a nova muda é paga e cresce do zero"
+    },
+    "recurring_xp_note": "xp_per_harvest = XP do plantio inteiro (tabela do dono) ÷ 5"
+  },
+  "crops": [
+    {
+      "id": "alface",
+      "name_pt": "Alface",
+      "unlock_level": 1,
+      "kind": "crop",
+      "grow_minutes": 10,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 5,
+      "seed_cost": 3.7,
+      "xp_per_harvest": 5.1,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "cenoura",
+      "name_pt": "Cenoura",
+      "unlock_level": 1,
+      "kind": "crop",
+      "grow_minutes": 30,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 14,
+      "seed_cost": 10,
+      "xp_per_harvest": 15,
+      "art": {
+        "icon": true,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "batata",
+      "name_pt": "Batata",
+      "unlock_level": 2,
+      "kind": "crop",
+      "grow_minutes": 60,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 29,
+      "seed_cost": 22,
+      "xp_per_harvest": 31,
+      "art": {
+        "icon": true,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "espinafre",
+      "name_pt": "Espinafre",
+      "unlock_level": 3,
+      "kind": "crop",
+      "grow_minutes": 20,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 11,
+      "seed_cost": 8.1,
+      "xp_per_harvest": 11,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "morango",
+      "name_pt": "Morango",
+      "unlock_level": 4,
+      "kind": "recurring",
+      "grow_minutes": 90,
+      "regrow_minutes": 60,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 51,
+      "seed_cost": 100,
+      "xp_per_harvest": 38,
+      "art": {
+        "icon": true,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "tomate",
+      "name_pt": "Tomate",
+      "unlock_level": 5,
+      "kind": "recurring",
+      "grow_minutes": 120,
+      "regrow_minutes": 90,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 78,
+      "seed_cost": 160,
+      "xp_per_harvest": 58,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "cebola",
+      "name_pt": "Cebola",
+      "unlock_level": 6,
+      "kind": "crop",
+      "grow_minutes": 120,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 74,
+      "seed_cost": 55,
+      "xp_per_harvest": 75,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "milho",
+      "name_pt": "Milho",
+      "unlock_level": 7,
+      "kind": "crop",
+      "grow_minutes": 180,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 120,
+      "seed_cost": 87,
+      "xp_per_harvest": 120,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "couve",
+      "name_pt": "Couve",
+      "unlock_level": 8,
+      "kind": "crop",
+      "grow_minutes": 45,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 33,
+      "seed_cost": 25,
+      "xp_per_harvest": 31,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "repolho",
+      "name_pt": "Repolho",
+      "unlock_level": 9,
+      "kind": "crop",
+      "grow_minutes": 240,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 170,
+      "seed_cost": 130,
+      "xp_per_harvest": 170,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "maca",
+      "name_pt": "Maçã",
+      "unlock_level": 10,
+      "kind": "orchard",
+      "grow_minutes": 720,
+      "regrow_minutes": 360,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 330,
+      "sapling_cost": 7900,
+      "xp_per_harvest": 530,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "pimentao",
+      "name_pt": "Pimentão",
+      "unlock_level": 11,
+      "kind": "recurring",
+      "grow_minutes": 180,
+      "regrow_minutes": 120,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 160,
+      "seed_cost": 320,
+      "xp_per_harvest": 102,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "alho",
+      "name_pt": "Alho",
+      "unlock_level": 12,
+      "kind": "crop",
+      "grow_minutes": 90,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 84,
+      "seed_cost": 63,
+      "xp_per_harvest": 73,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "abobora",
+      "name_pt": "Abóbora",
+      "unlock_level": 13,
+      "kind": "crop",
+      "grow_minutes": 360,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 340,
+      "seed_cost": 250,
+      "xp_per_harvest": 310,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "beterraba",
+      "name_pt": "Beterraba",
+      "unlock_level": 14,
+      "kind": "crop",
+      "grow_minutes": 150,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 160,
+      "seed_cost": 120,
+      "xp_per_harvest": 130,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "laranja",
+      "name_pt": "Laranja",
+      "unlock_level": 15,
+      "kind": "orchard",
+      "grow_minutes": 840,
+      "regrow_minutes": 420,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 540,
+      "sapling_cost": 13000,
+      "xp_per_harvest": 780,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "mirtilo",
+      "name_pt": "Mirtilo",
+      "unlock_level": 16,
+      "kind": "recurring",
+      "grow_minutes": 240,
+      "regrow_minutes": 150,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 280,
+      "seed_cost": 560,
+      "xp_per_harvest": 162,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "brocolis",
+      "name_pt": "Brócolis",
+      "unlock_level": 17,
+      "kind": "crop",
+      "grow_minutes": 180,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 230,
+      "seed_cost": 170,
+      "xp_per_harvest": 180,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "pepino",
+      "name_pt": "Pepino",
+      "unlock_level": 18,
+      "kind": "recurring",
+      "grow_minutes": 120,
+      "regrow_minutes": 90,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 190,
+      "seed_cost": 380,
+      "xp_per_harvest": 102,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "batata_doce",
+      "name_pt": "Batata-doce",
+      "unlock_level": 19,
+      "kind": "crop",
+      "grow_minutes": 300,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 420,
+      "seed_cost": 320,
+      "xp_per_harvest": 330,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "banana",
+      "name_pt": "Banana",
+      "unlock_level": 20,
+      "kind": "orchard",
+      "grow_minutes": 960,
+      "regrow_minutes": 480,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 870,
+      "sapling_cost": 21000,
+      "xp_per_harvest": 1100,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "palm"
+    },
+    {
+      "id": "melancia",
+      "name_pt": "Melancia",
+      "unlock_level": 21,
+      "kind": "crop",
+      "grow_minutes": 480,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 760,
+      "seed_cost": 570,
+      "xp_per_harvest": 580,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "mandioca",
+      "name_pt": "Mandioca",
+      "unlock_level": 22,
+      "kind": "crop",
+      "grow_minutes": 600,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 1000,
+      "seed_cost": 750,
+      "xp_per_harvest": 760,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "uva",
+      "name_pt": "Uva",
+      "unlock_level": 23,
+      "kind": "recurring",
+      "grow_minutes": 360,
+      "regrow_minutes": 240,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 690,
+      "seed_cost": 1400,
+      "xp_per_harvest": 340,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "couve_flor",
+      "name_pt": "Couve-flor",
+      "unlock_level": 24,
+      "kind": "crop",
+      "grow_minutes": 240,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 480,
+      "seed_cost": 360,
+      "xp_per_harvest": 330,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "pera",
+      "name_pt": "Pera",
+      "unlock_level": 25,
+      "kind": "orchard",
+      "grow_minutes": 960,
+      "regrow_minutes": 480,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 1200,
+      "sapling_cost": 29000,
+      "xp_per_harvest": 1400,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "pimenta",
+      "name_pt": "Pimenta",
+      "unlock_level": 26,
+      "kind": "recurring",
+      "grow_minutes": 180,
+      "regrow_minutes": 120,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 440,
+      "seed_cost": 880,
+      "xp_per_harvest": 198,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "berinjela",
+      "name_pt": "Berinjela",
+      "unlock_level": 27,
+      "kind": "recurring",
+      "grow_minutes": 300,
+      "regrow_minutes": 180,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 710,
+      "seed_cost": 1400,
+      "xp_per_harvest": 320,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "maca_verde",
+      "name_pt": "Maçã verde",
+      "unlock_level": 28,
+      "kind": "orchard",
+      "grow_minutes": 1080,
+      "regrow_minutes": 480,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 1500,
+      "sapling_cost": 36000,
+      "xp_per_harvest": 1600,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "quiabo",
+      "name_pt": "Quiabo",
+      "unlock_level": 29,
+      "kind": "recurring",
+      "grow_minutes": 150,
+      "regrow_minutes": 90,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 420,
+      "seed_cost": 840,
+      "xp_per_harvest": 174,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "abacaxi",
+      "name_pt": "Abacaxi",
+      "unlock_level": 30,
+      "kind": "crop",
+      "grow_minutes": 720,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 2000,
+      "seed_cost": 1500,
+      "xp_per_harvest": 1300,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "limao",
+      "name_pt": "Limão",
+      "unlock_level": 31,
+      "kind": "orchard",
+      "grow_minutes": 1080,
+      "regrow_minutes": 540,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 2100,
+      "sapling_cost": 49000,
+      "xp_per_harvest": 2000,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "melao",
+      "name_pt": "Melão",
+      "unlock_level": 32,
+      "kind": "crop",
+      "grow_minutes": 420,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 1400,
+      "seed_cost": 1100,
+      "xp_per_harvest": 820,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "maracuja",
+      "name_pt": "Maracujá",
+      "unlock_level": 33,
+      "kind": "recurring",
+      "grow_minutes": 480,
+      "regrow_minutes": 300,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 1700,
+      "seed_cost": 3400,
+      "xp_per_harvest": 680,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      }
+    },
+    {
+      "id": "aipo",
+      "name_pt": "Aipo",
+      "unlock_level": 34,
+      "kind": "crop",
+      "grow_minutes": 120,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 490,
+      "seed_cost": 370,
+      "xp_per_harvest": 260,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "pessego",
+      "name_pt": "Pêssego",
+      "unlock_level": 35,
+      "kind": "orchard",
+      "grow_minutes": 1200,
+      "regrow_minutes": 600,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 3000,
+      "sapling_cost": 72000,
+      "xp_per_harvest": 2700,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "amora",
+      "name_pt": "Amora",
+      "unlock_level": 36,
+      "kind": "recurring",
+      "grow_minutes": 300,
+      "regrow_minutes": 180,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 1300,
+      "seed_cost": 2600,
+      "xp_per_harvest": 480,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "gengibre",
+      "name_pt": "Gengibre",
+      "unlock_level": 37,
+      "kind": "crop",
+      "grow_minutes": 540,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 2500,
+      "seed_cost": 1900,
+      "xp_per_harvest": 1300,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "mamao",
+      "name_pt": "Mamão",
+      "unlock_level": 38,
+      "kind": "orchard",
+      "grow_minutes": 1200,
+      "regrow_minutes": 600,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 3700,
+      "sapling_cost": 88000,
+      "xp_per_harvest": 3100,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      },
+      "tree_base": "palm"
+    },
+    {
+      "id": "aspargo",
+      "name_pt": "Aspargo",
+      "unlock_level": 39,
+      "kind": "recurring",
+      "grow_minutes": 600,
+      "regrow_minutes": 360,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 3100,
+      "seed_cost": 6200,
+      "xp_per_harvest": 1080,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "manga",
+      "name_pt": "Manga",
+      "unlock_level": 40,
+      "kind": "orchard",
+      "grow_minutes": 1440,
+      "regrow_minutes": 720,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 5000,
+      "sapling_cost": 120000,
+      "xp_per_harvest": 4000,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "alho_poro",
+      "name_pt": "Alho-poró",
+      "unlock_level": 41,
+      "kind": "crop",
+      "grow_minutes": 180,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 1200,
+      "seed_cost": 870,
+      "xp_per_harvest": 520,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "goiaba",
+      "name_pt": "Goiaba",
+      "unlock_level": 42,
+      "kind": "orchard",
+      "grow_minutes": 1320,
+      "regrow_minutes": 660,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 5300,
+      "sapling_cost": 130000,
+      "xp_per_harvest": 4000,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "alcachofra",
+      "name_pt": "Alcachofra",
+      "unlock_level": 43,
+      "kind": "crop",
+      "grow_minutes": 480,
+      "regrow_minutes": null,
+      "harvests_per_planting": 1,
+      "units_per_harvest": 3,
+      "fair_price_per_unit": 3400,
+      "seed_cost": 2500,
+      "xp_per_harvest": 1500,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "cereja",
+      "name_pt": "Cereja",
+      "unlock_level": 44,
+      "kind": "orchard",
+      "grow_minutes": 1440,
+      "regrow_minutes": 720,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 6600,
+      "sapling_cost": 160000,
+      "xp_per_harvest": 4800,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "kiwi",
+      "name_pt": "Kiwi",
+      "unlock_level": 45,
+      "kind": "recurring",
+      "grow_minutes": 600,
+      "regrow_minutes": 360,
+      "harvests_per_planting": 5,
+      "units_per_harvest": 2,
+      "fair_price_per_unit": 4600,
+      "seed_cost": 9300,
+      "xp_per_harvest": 1420,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      }
+    },
+    {
+      "id": "acerola",
+      "name_pt": "Acerola",
+      "unlock_level": 46,
+      "kind": "orchard",
+      "grow_minutes": 1200,
+      "regrow_minutes": 600,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 6300,
+      "sapling_cost": 150000,
+      "xp_per_harvest": 4300,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "figo",
+      "name_pt": "Figo",
+      "unlock_level": 47,
+      "kind": "orchard",
+      "grow_minutes": 1440,
+      "regrow_minutes": 720,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 8100,
+      "sapling_cost": 190000,
+      "xp_per_harvest": 5500,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "roma",
+      "name_pt": "Romã",
+      "unlock_level": 48,
+      "kind": "orchard",
+      "grow_minutes": 1440,
+      "regrow_minutes": 720,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 8700,
+      "sapling_cost": 210000,
+      "xp_per_harvest": 5700,
+      "art": {
+        "icon": true,
+        "growth_stages": true
+      },
+      "tree_base": "leafy"
+    },
+    {
+      "id": "jabuticaba",
+      "name_pt": "Jabuticaba",
+      "unlock_level": 49,
+      "kind": "orchard",
+      "grow_minutes": 1440,
+      "regrow_minutes": 720,
+      "harvests_per_planting": null,
+      "units_per_harvest": 4,
+      "fair_price_per_unit": 9300,
+      "sapling_cost": 220000,
+      "xp_per_harvest": 6000,
+      "art": {
+        "icon": false,
+        "growth_stages": false
+      },
+      "tree_base": "leafy"
+    }
+  ]
+}

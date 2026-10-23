@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026)",
+  "rules": {
+    "collector_efficiency": {
+      "rancheira": 1.0,
+      "other_class": 0.6
+    },
+    "no_feed_gold": "para de produzir; nunca morre",
+    "lake_bonus": {
+      "bird_production": 0.1,
+      "extra_galinheiro_slots": 2,
+      "extra_slots_for": "birds"
+    }
+  },
+  "houses": {
+    "galinheiro": {
+      "lot_type": "pasto_galinheiro",
+      "slots": [
+        {
+          "slots": 4,
+          "min_level": null,
+          "cost": 0
+        },
+        {
+          "slots": 8,
+          "min_level": 9,
+          "cost": 39000
+        },
+        {
+          "slots": 12,
+          "min_level": 15,
+          "cost": 400000
+        }
+      ]
+    },
+    "celeiro": {
+      "lot_type": "pasto_celeiro",
+      "slots": [
+        {
+          "slots": 4,
+          "min_level": null,
+          "cost": 0
+        },
+        {
+          "slots": 8,
+          "min_level": 14,
+          "cost": 150000
+        },
+        {
+          "slots": 12,
+          "min_level": 20,
+          "cost": 960000
+        }
+      ]
+    }
+  },
+  "animals": [
+    {
+      "id": "galinha",
+      "name_pt": "Galinha",
+      "unlock_level": 3,
+      "house": "galinheiro",
+      "is_bird": true,
+      "product": {
+        "id": "ovo",
+        "name_pt": "Ovo",
+        "fair_price_per_unit": 410,
+        "art": "ovo_branco"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 740,
+      "buy_cost": 7400,
+      "xp_per_collect": 59
+    },
+    {
+      "id": "coelho",
+      "name_pt": "Coelho",
+      "unlock_level": 6,
+      "house": "galinheiro",
+      "is_bird": false,
+      "product": {
+        "id": "pelo_de_coelho",
+        "name_pt": "Pelo de coelho",
+        "fair_price_per_unit": 1500,
+        "art": "pelo"
+      },
+      "produce_every_minutes": 360,
+      "feed_cost_per_day": 910,
+      "buy_cost": 9100,
+      "xp_per_collect": 200
+    },
+    {
+      "id": "vaca",
+      "name_pt": "Vaca",
+      "unlock_level": 8,
+      "house": "celeiro",
+      "is_bird": false,
+      "product": {
+        "id": "leite",
+        "name_pt": "Leite",
+        "fair_price_per_unit": 1200,
+        "art": "leite"
+      },
+      "produce_every_minutes": 240,
+      "feed_cost_per_day": 1000,
+      "buy_cost": 10000,
+      "xp_per_collect": 150
+    },
+    {
+      "id": "pato",
+      "name_pt": "Pato",
+      "unlock_level": 11,
+      "house": "galinheiro",
+      "is_bird": true,
+      "product": {
+        "id": "ovo_de_pata",
+        "name_pt": "Ovo de pata",
+        "fair_price_per_unit": 1100,
+        "art": "ovo_pintado"
+      },
+      "produce_every_minutes": 180,
+      "feed_cost_per_day": 1300,
+      "buy_cost": 13000,
+      "xp_per_collect": 130
+    },
+    {
+      "id": "ovelha",
+      "name_pt": "Ovelha",
+      "unlock_level": 14,
+      "house": "celeiro",
+      "is_bird": false,
+      "product": {
+        "id": "la",
+        "name_pt": "Lã",
+        "fair_price_per_unit": 3500,
+        "art": "la"
+      },
+      "produce_every_minutes": 480,
+      "feed_cost_per_day": 1600,
+      "buy_cost": 16000,
+      "xp_per_collect": 380
+    },
+    {
+      "id": "porco",
+      "name_pt": "Porco",
+      "unlock_level": 17,
+      "house": "celeiro",
+      "is_bird": false,
+      "product": {
+        "id": "trufa",
+        "name_pt": "Trufa",
+        "fair_price_per_unit": 3200,
+        "art": "trufa"
+      },
+      "produce_every_minutes": 360,
+      "feed_cost_per_day": 1900,
+      "buy_cost": 19000,
+      "xp_per_collect": 330
+    },
+    {
+      "id": "cabra",
+      "name_pt": "Cabra",
+      "unlock_level": 21,
+      "house": "celeiro",
+      "is_bird": false,
+      "product": {
+        "id": "leite_de_cabra",
+        "name_pt": "Leite de cabra",
+        "fair_price_per_unit": 3500,
+        "art": "variacao_de_cor"
+      },
+      "produce_every_minutes": 300,
+      "feed_cost_per_day": 2500,
+      "buy_cost": 25000,
+      "xp_per_collect": 330
+    },
+    {
+      "id": "ganso",
+      "name_pt": "Ganso",
+      "unlock_level": 25,
+      "house": "galinheiro",
+      "is_bird": true,
+      "product": {
+        "id": "ovo_de_ganso",
+        "name_pt": "Ovo de ganso",
+        "fair_price_per_unit": 5500,
+        "art": "variacao_de_cor"
+      },
+      "produce_every_minutes": 360,
+      "feed_cost_per_day": 3300,
+      "buy_cost": 33000,
+      "xp_per_collect": 470
+    },
+    {
+      "id": "peru",
+      "name_pt": "Peru",
+      "unlock_level": 30,
+      "house": "galinheiro",
+      "is_bird": true,
+      "product": {
+        "id": "pena_de_peru",
+        "name_pt": "Pena de peru",
+        "fair_price_per_unit": 10000,
+        "art": "pena"
+      },
+      "produce_every_minutes": 480,
+      "feed_cost_per_day": 4600,
+      "buy_cost": 46000,
+      "xp_per_collect": 770
+    },
+    {
+      "id": "alpaca",
+      "name_pt": "Alpaca",
+      "unlock_level": 35,
+      "house": "celeiro",
+      "is_bird": false,
+      "product": {
+        "id": "la_de_alpaca",
+        "name_pt": "Lã de alpaca",
+        "fair_price_per_unit": 22000,
+        "art": "variacao_de_cor"
+      },
+      "produce_every_minutes": 720,
+      "feed_cost_per_day": 6500,
+      "buy_cost": 65000,
+      "xp_per_collect": 1400
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "villageidlefarm",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "balance:calibrate": "tsx tools/balance/land-model.ts",
+    "balance:search": "tsx tools/balance/lots-search.ts",
+    "balance:lots": "tsx tools/balance/build-lots.ts",
+    "balance:check": "tsx tools/balance/check.ts"
+  }
+}

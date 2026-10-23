@@ -122,6 +122,10 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
         <label>Nível<input name="value" type="number" min="1" max="50" value="${f.level}" required style="width:90px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pomar"></label>
         <button class="primary small" type="submit">Mudar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="cleanup"><strong>Terminar limpeza</strong>
+        <label>Lote<select name="value">${f.lots.filter((l: any) => l.ready_at > f.farm_time).map((l: any) => `<option value="${esc(l.lot_id)}">${esc(l.lot_id)} (falta ${Math.ceil((l.ready_at - f.farm_time) / 60)} min)</option>`).join('') || '<option value="">nenhum em limpeza</option>'}${f.lots.filter((l: any) => l.ready_at > f.farm_time).length > 1 ? '<option value="*">todos</option>' : ''}</select></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pomar"></label>
+        <button class="primary small" type="submit">Terminar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
@@ -132,13 +136,15 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
   }
   box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div><div class="table-wrap">${body}</div></div>`;
   box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm')));
-  // ferramentas de teste (Escritura, nível e ouro): o servidor exige 2FA e registra tudo na auditoria
+  // ferramentas de teste (Escritura, nível, limpeza e ouro): o servidor exige 2FA e registra tudo na auditoria
   box.querySelectorAll<HTMLFormElement>('form.grant').forEach((form) => form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const d = new FormData(form);
     const msg = form.querySelector('.msg')!;
-    const value = Number(d.get('value')), reason = String(d.get('reason'));
-    const call = form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
+    const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
+    if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
+    const call = form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
+      : form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
       : form.dataset.kind === 'level' ? supabase!.rpc('admin_set_level', { p_user: id, p_level: value, p_reason: reason })
       : supabase!.rpc('admin_grant_gold', { p_user: id, p_amount: value, p_reason: reason });
     const { error } = await call;

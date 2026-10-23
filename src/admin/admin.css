@@ -18,3 +18,4 @@ body.admin { overflow: auto; background: var(--bg); }
 #admin .tabs { margin: 12px 0; max-width: 480px; }
 .table-wrap { overflow-x: auto; }
 #admin .grants form { margin: 6px 0; }
+#admin .grants select { display: block; margin-top: 4px; padding: 9px; font: inherit; color: var(--ink); background: var(--paper); border: 2px solid var(--panel-border); }

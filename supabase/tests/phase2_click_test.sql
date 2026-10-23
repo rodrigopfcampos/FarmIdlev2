@@ -69,5 +69,26 @@ begin
   if not exists (select 1 from public.ledger where user_id = a and reason = 'admin_grant' and amount = 50000) then raise exception 'FALHA 17: ouro do admin fora do ledger'; end if;
   if (select sum(amount) from public.ledger where user_id = a) <> (select gold from public.wallets where user_id = a) then raise exception 'FALHA 18: ledger × carteira'; end if;
 
+  -- 7. admin termina a limpeza: o lote fica pronto e o canteiro planta na hora; jogador não consegue
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  s := public.buy_lot('A3');
+  begin perform public.admin_finish_cleanup(a, null, 'quero pular a espera'); raise exception 'FALHA 19: jogador terminou a limpeza';
+  exception when insufficient_privilege then null; end;
+  reset role;
+  perform set_config('request.jwt.claims', json_build_object('sub', adm, 'role', 'authenticated', 'aal', 'aal2')::text, true);
+  set local role authenticated;
+  s := public.admin_finish_cleanup(a, 'A3', 'teste da limpeza');
+  begin perform public.admin_finish_cleanup(a, 'A3', 'teste da limpeza'); raise exception 'FALHA 20: limpeza terminada duas vezes';
+  exception when check_violation then null; end;
+  reset role;
+  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  s := public.set_crop('A3', 'alface');
+  select count(*) into n from public.plots where user_id = a and plot_id like 'A3-%' and state = 'growing';
+  if n <> 8 then raise exception 'FALHA 21: % canteiros do A3 plantados depois da limpeza (esperado 8)', n; end if;
+  reset role;
+  if not exists (select 1 from public.audit_log where target_user_id = a and action = 'admin.finish_cleanup' and actor_id = adm) then raise exception 'FALHA 22: limpeza sem auditoria'; end if;
+
   raise exception 'TESTES_OK';
 end $$;

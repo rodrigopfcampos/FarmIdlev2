@@ -65,7 +65,7 @@
 ## F. Regras provisórias da fase 2 (mudam na fase 3)
 - Sem Ferreiro, a limpeza leva o dobro (1 h + 12 min × n, × 2): da 16ª compra em diante passa de 8 h e precisa de mais de uma volta do jogador. Com o Ferreiro (fase 3) volta ao tempo da tabela.
 - O Agricultor faz tudo: lavoura, colheitas extras dos recorrentes e o pomar, sem gastar energia.
-- Escritura, nível e ouro para testes pelo painel do admin (guia Fazenda); missões e expedições entram nas fases 5 e 7.
+- Escritura, nível, limpeza de lote e ouro para testes pelo painel do admin (guia Fazenda); missões e expedições entram nas fases 5 e 7.
 - A Enxada não se desgasta ainda; desgaste e conserto na fase 3.
 - Lote do Galinheiro/Celeiro/Lago pode ser comprado; os animais chegam na fase 4.
 
@@ -73,7 +73,7 @@
 1. Conta nova: escolha Alface num canteiro vazio (planta na hora) e "Alface no lote A1 inteiro". Em 10 min os canteiros pulam maduros; clique num deles (colhe e replanta) ou em "Colher e plantar (N)". Aparece "Nível 2!".
 2. No nível 2, compre o A3 (vizinho do A1). O lote clareia e mostra "Limpeza 2 h 24"; escolha o cultivo e ele planta quando a limpeza acaba.
 3. Lote não vizinho (ex.: A2) e lote acima do nível mostram o motivo e o botão fica desligado.
-4. Painel do admin, guia Fazenda: mude o nível da sua conta para 12 e dê ouro (ex.: 50.000) para testar o resto.
+4. Painel do admin, guia Fazenda: mude o nível da sua conta para 12, dê ouro (ex.: 50.000) e use "Terminar limpeza" para não esperar.
 5. Galinheiro (C1) pode ser comprado mesmo longe; depois da limpeza aparece o prédio.
 6. Pomar (nível 10): plante uma Maçã, veja a muda; "Derrubar (grátis)" e plante outra fruta.
 7. Forja (nível 8): melhore a Enxada para Cobre; o trabalho por hora sobe 40%.

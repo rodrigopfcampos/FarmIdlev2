@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "source": "GDD v2 seções 2, 3, 4 e 6 (fazenda, limite offline, canteiros vivos)",
+  "offline_cap_hours": 8,
+  "labor_bank_cap_hours": 1,
+  "initial_labor_bank_hours": 1,
+  "starting_lot": "A1",
+  "plots_per_crop_lot": 8,
+  "phase1_unlocked_crops": ["alface", "cenoura", "batata", "espinafre"],
+  "phase1_note": "até a fase 2 ligar XP e níveis, os 4 primeiros cultivos ficam liberados; o Agricultor trabalha sem energia até a fase 3",
+  "sync_seconds": 60,
+  "visual": {
+    "stage_thresholds": [0.25, 0.55, 0.85],
+    "wind_strength_px": 1,
+    "wind_speed": 1.6,
+    "vehicle_idle_fps": 6
+  }
+}

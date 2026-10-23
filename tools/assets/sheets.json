@@ -372,18 +372,18 @@
               "crop_batata_ready",
               "crop_morango_ready",
               "extras/crop_trigo_ready",
-              "crop_milho_ready",
+              "extras/crop_milho_ready_alt",
               "crop_tomate_ready",
-              "crop_abobora_ready"
+              "extras/crop_abobora_ready_alt"
             ],
             [
-              "crop_melancia_ready",
+              "extras/crop_melancia_ready_alt",
               "extras/crop_girassol_ready",
-              "crop_repolho_ready",
-              "crop_cebola_ready",
-              "crop_pimenta_ready",
+              "extras/crop_repolho_ready_alt",
+              "extras/crop_cebola_ready_alt",
+              "extras/crop_pimenta_ready_alt",
               "extras/crop_algodao_ready",
-              "crop_abacaxi_ready"
+              "extras/crop_abacaxi_ready_alt"
             ]
           ]
         }
@@ -922,6 +922,536 @@
               "result_coins",
               "result_chest",
               "result_jackpot"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plants2",
+      "file": "Planta 2.jpg",
+      "regions": [
+        {
+          "name": "sacos de semente",
+          "rect": [
+            0,
+            12,
+            200,
+            765
+          ],
+          "rows": 9,
+          "cols": 1,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "align": "center",
+          "dir": "crops",
+          "names": [
+            [
+              "seedbag_melao"
+            ],
+            [
+              "seedbag_melancia"
+            ],
+            [
+              "seedbag_abacaxi"
+            ],
+            [
+              "seedbag_pera"
+            ],
+            [
+              "seedbag_limao"
+            ],
+            [
+              "seedbag_manga"
+            ],
+            [
+              "seedbag_figo"
+            ],
+            [
+              "seedbag_kiwi"
+            ],
+            [
+              "seedbag_roma"
+            ]
+          ]
+        },
+        {
+          "name": "estágios",
+          "rect": [
+            200,
+            12,
+            1024,
+            765
+          ],
+          "rows": 9,
+          "cols": 4,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "scale": "row",
+          "dir": "crops",
+          "names": [
+            [
+              "crop_melao_stage1",
+              "crop_melao_stage2",
+              "crop_melao_stage3",
+              "crop_melao_ready"
+            ],
+            [
+              "crop_melancia_stage1",
+              "crop_melancia_stage2",
+              "crop_melancia_stage3",
+              "crop_melancia_ready"
+            ],
+            [
+              "crop_abacaxi_stage1",
+              "crop_abacaxi_stage2",
+              "crop_abacaxi_stage3",
+              "crop_abacaxi_ready"
+            ],
+            [
+              "crop_pera_stage1",
+              "crop_pera_stage2",
+              "crop_pera_stage3",
+              "crop_pera_ready"
+            ],
+            [
+              "crop_limao_stage1",
+              "crop_limao_stage2",
+              "crop_limao_stage3",
+              "crop_limao_ready"
+            ],
+            [
+              "crop_manga_stage1",
+              "crop_manga_stage2",
+              "crop_manga_stage3",
+              "crop_manga_ready"
+            ],
+            [
+              "crop_figo_stage1",
+              "crop_figo_stage2",
+              "crop_figo_stage3",
+              "crop_figo_ready"
+            ],
+            [
+              "crop_kiwi_stage1",
+              "crop_kiwi_stage2",
+              "crop_kiwi_stage3",
+              "crop_kiwi_ready"
+            ],
+            [
+              "crop_roma_stage1",
+              "crop_roma_stage2",
+              "crop_roma_stage3",
+              "crop_roma_ready"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plants3",
+      "file": "planta 3.jpg",
+      "regions": [
+        {
+          "name": "sacos de semente",
+          "rect": [
+            0,
+            12,
+            200,
+            765
+          ],
+          "rows": 9,
+          "cols": 1,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "align": "center",
+          "dir": "crops",
+          "names": [
+            [
+              "seedbag_cebola"
+            ],
+            [
+              "seedbag_alho"
+            ],
+            [
+              "seedbag_milho"
+            ],
+            [
+              "seedbag_berinjela"
+            ],
+            [
+              "seedbag_abobora"
+            ],
+            [
+              "seedbag_pimentao"
+            ],
+            [
+              "seedbag_pimenta"
+            ],
+            [
+              "seedbag_gengibre"
+            ],
+            [
+              "seedbag_alface"
+            ]
+          ]
+        },
+        {
+          "name": "estágios",
+          "rect": [
+            200,
+            12,
+            1024,
+            765
+          ],
+          "rows": 9,
+          "cols": 4,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "scale": "row",
+          "dir": "crops",
+          "names": [
+            [
+              "crop_cebola_stage1",
+              "crop_cebola_stage2",
+              "crop_cebola_stage3",
+              "crop_cebola_ready"
+            ],
+            [
+              "crop_alho_stage1",
+              "crop_alho_stage2",
+              "crop_alho_stage3",
+              "crop_alho_ready"
+            ],
+            [
+              "crop_milho_stage1",
+              "crop_milho_stage2",
+              "crop_milho_stage3",
+              "crop_milho_ready"
+            ],
+            [
+              "crop_berinjela_stage1",
+              "crop_berinjela_stage2",
+              "crop_berinjela_stage3",
+              "crop_berinjela_ready"
+            ],
+            [
+              "crop_abobora_stage1",
+              "crop_abobora_stage2",
+              "crop_abobora_stage3",
+              "crop_abobora_ready"
+            ],
+            [
+              "crop_pimentao_stage1",
+              "crop_pimentao_stage2",
+              "crop_pimentao_stage3",
+              "crop_pimentao_ready"
+            ],
+            [
+              "crop_pimenta_stage1",
+              "crop_pimenta_stage2",
+              "crop_pimenta_stage3",
+              "crop_pimenta_ready"
+            ],
+            [
+              "crop_gengibre_stage1",
+              "crop_gengibre_stage2",
+              "crop_gengibre_stage3",
+              "crop_gengibre_ready"
+            ],
+            [
+              "crop_alface_stage1",
+              "crop_alface_stage2",
+              "crop_alface_stage3",
+              "crop_alface_ready"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plants4",
+      "file": "planta 4.jpg",
+      "regions": [
+        {
+          "name": "sacos de semente",
+          "rect": [
+            0,
+            18,
+            140,
+            568
+          ],
+          "rows": 9,
+          "cols": 1,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "align": "center",
+          "dir": "crops",
+          "names": [
+            [
+              "seedbag_couve"
+            ],
+            [
+              "seedbag_espinafre"
+            ],
+            [
+              "seedbag_repolho"
+            ],
+            [
+              "seedbag_brocolis"
+            ],
+            [
+              "seedbag_couve_flor"
+            ],
+            [
+              "seedbag_aipo"
+            ],
+            [
+              "seedbag_aspargo"
+            ],
+            [
+              "seedbag_alcachofra"
+            ],
+            [
+              "seedbag_alho_poro"
+            ]
+          ]
+        },
+        {
+          "name": "estágios",
+          "rect": [
+            140,
+            18,
+            1024,
+            568
+          ],
+          "rows": 9,
+          "cols": 4,
+          "uniform_rows": true,
+          "size": [
+            16,
+            16
+          ],
+          "scale": "row",
+          "dir": "crops",
+          "names": [
+            [
+              "crop_couve_stage1",
+              "crop_couve_stage2",
+              "crop_couve_stage3",
+              "crop_couve_ready"
+            ],
+            [
+              "crop_espinafre_stage1",
+              "crop_espinafre_stage2",
+              "crop_espinafre_stage3",
+              "crop_espinafre_ready"
+            ],
+            [
+              "crop_repolho_stage1",
+              "crop_repolho_stage2",
+              "crop_repolho_stage3",
+              "crop_repolho_ready"
+            ],
+            [
+              "crop_brocolis_stage1",
+              "crop_brocolis_stage2",
+              "crop_brocolis_stage3",
+              "crop_brocolis_ready"
+            ],
+            [
+              "crop_couve_flor_stage1",
+              "crop_couve_flor_stage2",
+              "crop_couve_flor_stage3",
+              "crop_couve_flor_ready"
+            ],
+            [
+              "crop_aipo_stage1",
+              "crop_aipo_stage2",
+              "crop_aipo_stage3",
+              "crop_aipo_ready"
+            ],
+            [
+              "crop_aspargo_stage1",
+              "crop_aspargo_stage2",
+              "crop_aspargo_stage3",
+              "crop_aspargo_ready"
+            ],
+            [
+              "crop_alcachofra_stage1",
+              "crop_alcachofra_stage2",
+              "crop_alcachofra_stage3",
+              "crop_alcachofra_ready"
+            ],
+            [
+              "crop_alho_poro_stage1",
+              "crop_alho_poro_stage2",
+              "crop_alho_poro_stage3",
+              "crop_alho_poro_ready"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "icons",
+      "file": "Foto_das_Frutas_legumes_e_verdura.jpg",
+      "remove_dark_shadow": true,
+      "regions": [
+        {
+          "name": "ícones de produto",
+          "rows": 4,
+          "cols": 10,
+          "size": [
+            32,
+            32
+          ],
+          "align": "center",
+          "dir": "icons",
+          "names": [
+            [
+              "icon_maca",
+              "icon_maca_verde",
+              "icon_banana",
+              "icon_laranja",
+              "icon_uva",
+              "icon_morango",
+              "icon_mirtilo",
+              "icon_amora",
+              "icon_pessego",
+              "icon_cereja"
+            ],
+            [
+              "icon_melao",
+              "icon_melancia_fatia",
+              "icon_melancia",
+              "icon_abacaxi",
+              "icon_pera",
+              "icon_limao",
+              "icon_manga",
+              "icon_figo",
+              "icon_kiwi",
+              "icon_roma"
+            ],
+            [
+              "icon_cenoura",
+              "icon_batata",
+              "icon_cebola",
+              "icon_alho",
+              "icon_milho",
+              "icon_berinjela",
+              "icon_abobora",
+              "icon_pimentao",
+              "icon_pimenta",
+              "icon_gengibre"
+            ],
+            [
+              "icon_alface",
+              "icon_couve",
+              "icon_espinafre",
+              "icon_repolho",
+              "icon_brocolis",
+              "icon_couve_flor",
+              "icon_aipo",
+              "icon_aspargo",
+              "icon_alcachofra",
+              "icon_alho_poro"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "farmer",
+      "file": "fazendeiro_completo.jpg",
+      "regions": [
+        {
+          "name": "agricultor",
+          "cells": [
+            [
+              [
+                18,
+                4,
+                70,
+                100
+              ],
+              [
+                105,
+                388,
+                80,
+                90
+              ],
+              [
+                200,
+                388,
+                85,
+                90
+              ],
+              [
+                298,
+                388,
+                95,
+                90
+              ]
+            ]
+          ],
+          "size": [
+            32,
+            48
+          ],
+          "scale": "row",
+          "dir": "characters",
+          "names": [
+            [
+              "char_agricultor_idle",
+              "char_agricultor_act1",
+              "char_agricultor_act2",
+              "char_agricultor_act3"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interface",
+      "file": "interface.jpg",
+      "regions": [
+        {
+          "name": "moeda",
+          "cells": [
+            [
+              [
+                30,
+                45,
+                100,
+                95
+              ]
+            ]
+          ],
+          "size": [
+            16,
+            16
+          ],
+          "align": "center",
+          "dir": "ui",
+          "names": [
+            [
+              "ui_coin"
             ]
           ]
         }

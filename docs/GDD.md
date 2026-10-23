@@ -108,6 +108,8 @@ Toda ação passa pelas funções do servidor; o banco só aceita escrita vinda 
 ### Como o servidor manda no jogo (modelo idle)
 
 - O estado da fazenda é salvo com horários. Em toda ação, o servidor primeiro roda `advance_farm(farm_id, agora)`: avança a fazenda até agora, no máximo 8 h depois da última atividade do jogador, de forma determinística (colheitas, gasto de energia nos slots, desgaste de ferramentas, lanches consumidos, rodízio de operadores e limpeza de lotes). Só depois aplica a ação.
+- 🆕 **Relógio da fazenda (fase 1):** cada fazenda guarda o próprio tempo (`farm_time`, em segundos de tempo ativo). Ele anda junto com o relógio do servidor até 8 h depois da última ação do jogador e então para; quando o jogador volta, continua de onde parou (o que estava crescendo termina depois). O jogo no aparelho só usa o horário que o servidor manda e o cronômetro do navegador, nunca a hora do aparelho.
+- 🆕 **Trabalho guardado:** o trabalho que o Agricultor não usa fica guardado até o equivalente a 1 h (conta nova começa com 1 h); cada plantio gasta 1 unidade. Os canteiros são atendidos na ordem em que ficaram livres; sem ouro para a semente, o canteiro para até o jogador vender algo.
 - O cliente envia só intenções: `plant(canteiro, cultura)`, `repair_tool(personagem)`, `send_expedition(veiculo, rota, carga, seguro)`, `buy_lot(lote)`, `hire(classe)` etc. Nunca envia ouro, tempo ou resultado.
 - Todo sorteio (expedição, cartas, clima, itens) é feito no servidor com gerador criptográfico e gravado antes de aparecer na tela.
 - Escrita no banco só por funções RPC com validação. Row Level Security bloqueia escrita direta em todas as tabelas; cada jogador lê só os próprios dados (mais perfis públicos e, quando existir, anúncios do mercado).
@@ -125,7 +127,7 @@ Toda ação passa pelas funções do servidor; o banco só aceita escrita vinda 
 
 ### Tabelas principais
 
-profiles, farms, lots, plots, plantings, trees, buildings, animals, characters, character_skills, items, character_equipment, pets, vehicles, expeditions, player_cards, card_packs, pity_counters, missions, player_missions, weather_days, market_listings, market_trades, visits, friendships, ledger, audit_log, admin_actions, anticheat_alerts, config_versions, reports.
+profiles, wallets, farms, owned_lots 🆕, plots, silo 🆕, game_config 🆕, lots, plantings, trees, buildings, animals, characters, character_skills, items, character_equipment, pets, vehicles, expeditions, player_cards, card_packs, pity_counters, missions, player_missions, weather_days, market_listings, market_trades, visits, friendships, ledger, audit_log, admin_actions, anticheat_alerts, config_versions, reports.
 
 ## 4. Artes, visão do mapa e Motor de Vida em pixel art
 
@@ -776,7 +778,7 @@ Tudo soma, mas nunca passa destes tetos. "Permanente" = habilidades, Armory, pet
 
 ## 12. Painel administrativo e antitrapaça
 
-O painel é um app separado, só para contas com papel admin e 2FA, e compara cada jogador com as faixas da simulação para achar trapaça e problemas de balanceamento.
+O painel é um app separado, só para contas com papel admin e 2FA, e compara cada jogador com as faixas da simulação para achar trapaça e problemas de balanceamento. 🆕 Fase 1: página `/admin.html` com entrada por 2FA (aplicativo autenticador), busca de jogador e as abas Ledger, Auditoria e Fazenda; cada consulta do admin fica registrada no audit_log.
 
 | Guia | O que mostra | Ações |
 | --- | --- | --- |

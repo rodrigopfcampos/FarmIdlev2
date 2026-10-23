@@ -915,8 +915,8 @@
         1
       ]
     },
-    "crop_milho_ready": {
-      "file": "sprites/crops/crop_milho_ready.png",
+    "crop_milho_ready_alt": {
+      "file": "sprites/crops/extras/crop_milho_ready_alt.png",
       "size": [
         16,
         16
@@ -937,8 +937,8 @@
         1
       ]
     },
-    "crop_abobora_ready": {
-      "file": "sprites/crops/crop_abobora_ready.png",
+    "crop_abobora_ready_alt": {
+      "file": "sprites/crops/extras/crop_abobora_ready_alt.png",
       "size": [
         16,
         16
@@ -948,8 +948,8 @@
         1
       ]
     },
-    "crop_melancia_ready": {
-      "file": "sprites/crops/crop_melancia_ready.png",
+    "crop_melancia_ready_alt": {
+      "file": "sprites/crops/extras/crop_melancia_ready_alt.png",
       "size": [
         16,
         16
@@ -970,8 +970,8 @@
         1
       ]
     },
-    "crop_repolho_ready": {
-      "file": "sprites/crops/crop_repolho_ready.png",
+    "crop_repolho_ready_alt": {
+      "file": "sprites/crops/extras/crop_repolho_ready_alt.png",
       "size": [
         16,
         16
@@ -981,8 +981,8 @@
         1
       ]
     },
-    "crop_cebola_ready": {
-      "file": "sprites/crops/crop_cebola_ready.png",
+    "crop_cebola_ready_alt": {
+      "file": "sprites/crops/extras/crop_cebola_ready_alt.png",
       "size": [
         16,
         16
@@ -992,8 +992,8 @@
         1
       ]
     },
-    "crop_pimenta_ready": {
-      "file": "sprites/crops/crop_pimenta_ready.png",
+    "crop_pimenta_ready_alt": {
+      "file": "sprites/crops/extras/crop_pimenta_ready_alt.png",
       "size": [
         16,
         16
@@ -1014,8 +1014,8 @@
         1
       ]
     },
-    "crop_abacaxi_ready": {
-      "file": "sprites/crops/crop_abacaxi_ready.png",
+    "crop_abacaxi_ready_alt": {
+      "file": "sprites/crops/extras/crop_abacaxi_ready_alt.png",
       "size": [
         16,
         16
@@ -2106,6 +2106,1986 @@
       "size": [
         32,
         32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_melao": {
+      "file": "sprites/crops/seedbag_melao.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_melancia": {
+      "file": "sprites/crops/seedbag_melancia.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_abacaxi": {
+      "file": "sprites/crops/seedbag_abacaxi.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_pera": {
+      "file": "sprites/crops/seedbag_pera.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_limao": {
+      "file": "sprites/crops/seedbag_limao.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_manga": {
+      "file": "sprites/crops/seedbag_manga.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_figo": {
+      "file": "sprites/crops/seedbag_figo.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_kiwi": {
+      "file": "sprites/crops/seedbag_kiwi.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_roma": {
+      "file": "sprites/crops/seedbag_roma.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crop_melao_stage1": {
+      "file": "sprites/crops/crop_melao_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melao_stage2": {
+      "file": "sprites/crops/crop_melao_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melao_stage3": {
+      "file": "sprites/crops/crop_melao_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melao_ready": {
+      "file": "sprites/crops/crop_melao_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melancia_stage1": {
+      "file": "sprites/crops/crop_melancia_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melancia_stage2": {
+      "file": "sprites/crops/crop_melancia_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melancia_stage3": {
+      "file": "sprites/crops/crop_melancia_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_melancia_ready": {
+      "file": "sprites/crops/crop_melancia_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abacaxi_stage1": {
+      "file": "sprites/crops/crop_abacaxi_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abacaxi_stage2": {
+      "file": "sprites/crops/crop_abacaxi_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abacaxi_stage3": {
+      "file": "sprites/crops/crop_abacaxi_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abacaxi_ready": {
+      "file": "sprites/crops/crop_abacaxi_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pera_stage1": {
+      "file": "sprites/crops/crop_pera_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pera_stage2": {
+      "file": "sprites/crops/crop_pera_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pera_stage3": {
+      "file": "sprites/crops/crop_pera_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pera_ready": {
+      "file": "sprites/crops/crop_pera_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_limao_stage1": {
+      "file": "sprites/crops/crop_limao_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_limao_stage2": {
+      "file": "sprites/crops/crop_limao_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_limao_stage3": {
+      "file": "sprites/crops/crop_limao_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_limao_ready": {
+      "file": "sprites/crops/crop_limao_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_manga_stage1": {
+      "file": "sprites/crops/crop_manga_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_manga_stage2": {
+      "file": "sprites/crops/crop_manga_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_manga_stage3": {
+      "file": "sprites/crops/crop_manga_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_manga_ready": {
+      "file": "sprites/crops/crop_manga_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_figo_stage1": {
+      "file": "sprites/crops/crop_figo_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_figo_stage2": {
+      "file": "sprites/crops/crop_figo_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_figo_stage3": {
+      "file": "sprites/crops/crop_figo_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_figo_ready": {
+      "file": "sprites/crops/crop_figo_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_kiwi_stage1": {
+      "file": "sprites/crops/crop_kiwi_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_kiwi_stage2": {
+      "file": "sprites/crops/crop_kiwi_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_kiwi_stage3": {
+      "file": "sprites/crops/crop_kiwi_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_kiwi_ready": {
+      "file": "sprites/crops/crop_kiwi_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_roma_stage1": {
+      "file": "sprites/crops/crop_roma_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_roma_stage2": {
+      "file": "sprites/crops/crop_roma_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_roma_stage3": {
+      "file": "sprites/crops/crop_roma_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_roma_ready": {
+      "file": "sprites/crops/crop_roma_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "seedbag_cebola": {
+      "file": "sprites/crops/seedbag_cebola.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_alho": {
+      "file": "sprites/crops/seedbag_alho.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_milho": {
+      "file": "sprites/crops/seedbag_milho.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_berinjela": {
+      "file": "sprites/crops/seedbag_berinjela.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_abobora": {
+      "file": "sprites/crops/seedbag_abobora.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_pimentao": {
+      "file": "sprites/crops/seedbag_pimentao.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_pimenta": {
+      "file": "sprites/crops/seedbag_pimenta.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_gengibre": {
+      "file": "sprites/crops/seedbag_gengibre.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_alface": {
+      "file": "sprites/crops/seedbag_alface.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crop_cebola_stage1": {
+      "file": "sprites/crops/crop_cebola_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cebola_stage2": {
+      "file": "sprites/crops/crop_cebola_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cebola_stage3": {
+      "file": "sprites/crops/crop_cebola_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_cebola_ready": {
+      "file": "sprites/crops/crop_cebola_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_stage1": {
+      "file": "sprites/crops/crop_alho_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_stage2": {
+      "file": "sprites/crops/crop_alho_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_stage3": {
+      "file": "sprites/crops/crop_alho_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_ready": {
+      "file": "sprites/crops/crop_alho_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_milho_stage1": {
+      "file": "sprites/crops/crop_milho_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_milho_stage2": {
+      "file": "sprites/crops/crop_milho_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_milho_stage3": {
+      "file": "sprites/crops/crop_milho_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_milho_ready": {
+      "file": "sprites/crops/crop_milho_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_berinjela_stage1": {
+      "file": "sprites/crops/crop_berinjela_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_berinjela_stage2": {
+      "file": "sprites/crops/crop_berinjela_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_berinjela_stage3": {
+      "file": "sprites/crops/crop_berinjela_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_berinjela_ready": {
+      "file": "sprites/crops/crop_berinjela_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abobora_stage1": {
+      "file": "sprites/crops/crop_abobora_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abobora_stage2": {
+      "file": "sprites/crops/crop_abobora_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abobora_stage3": {
+      "file": "sprites/crops/crop_abobora_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_abobora_ready": {
+      "file": "sprites/crops/crop_abobora_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimentao_stage1": {
+      "file": "sprites/crops/crop_pimentao_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimentao_stage2": {
+      "file": "sprites/crops/crop_pimentao_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimentao_stage3": {
+      "file": "sprites/crops/crop_pimentao_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimentao_ready": {
+      "file": "sprites/crops/crop_pimentao_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimenta_stage1": {
+      "file": "sprites/crops/crop_pimenta_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimenta_stage2": {
+      "file": "sprites/crops/crop_pimenta_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimenta_stage3": {
+      "file": "sprites/crops/crop_pimenta_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_pimenta_ready": {
+      "file": "sprites/crops/crop_pimenta_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_gengibre_stage1": {
+      "file": "sprites/crops/crop_gengibre_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_gengibre_stage2": {
+      "file": "sprites/crops/crop_gengibre_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_gengibre_stage3": {
+      "file": "sprites/crops/crop_gengibre_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_gengibre_ready": {
+      "file": "sprites/crops/crop_gengibre_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alface_stage1": {
+      "file": "sprites/crops/crop_alface_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alface_stage2": {
+      "file": "sprites/crops/crop_alface_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alface_stage3": {
+      "file": "sprites/crops/crop_alface_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alface_ready": {
+      "file": "sprites/crops/crop_alface_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "seedbag_couve": {
+      "file": "sprites/crops/seedbag_couve.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_espinafre": {
+      "file": "sprites/crops/seedbag_espinafre.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_repolho": {
+      "file": "sprites/crops/seedbag_repolho.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_brocolis": {
+      "file": "sprites/crops/seedbag_brocolis.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_couve_flor": {
+      "file": "sprites/crops/seedbag_couve_flor.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_aipo": {
+      "file": "sprites/crops/seedbag_aipo.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_aspargo": {
+      "file": "sprites/crops/seedbag_aspargo.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_alcachofra": {
+      "file": "sprites/crops/seedbag_alcachofra.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "seedbag_alho_poro": {
+      "file": "sprites/crops/seedbag_alho_poro.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crop_couve_stage1": {
+      "file": "sprites/crops/crop_couve_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_stage2": {
+      "file": "sprites/crops/crop_couve_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_stage3": {
+      "file": "sprites/crops/crop_couve_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_ready": {
+      "file": "sprites/crops/crop_couve_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_espinafre_stage1": {
+      "file": "sprites/crops/crop_espinafre_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_espinafre_stage2": {
+      "file": "sprites/crops/crop_espinafre_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_espinafre_stage3": {
+      "file": "sprites/crops/crop_espinafre_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_espinafre_ready": {
+      "file": "sprites/crops/crop_espinafre_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_repolho_stage1": {
+      "file": "sprites/crops/crop_repolho_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_repolho_stage2": {
+      "file": "sprites/crops/crop_repolho_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_repolho_stage3": {
+      "file": "sprites/crops/crop_repolho_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_repolho_ready": {
+      "file": "sprites/crops/crop_repolho_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_brocolis_stage1": {
+      "file": "sprites/crops/crop_brocolis_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_brocolis_stage2": {
+      "file": "sprites/crops/crop_brocolis_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_brocolis_stage3": {
+      "file": "sprites/crops/crop_brocolis_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_brocolis_ready": {
+      "file": "sprites/crops/crop_brocolis_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_flor_stage1": {
+      "file": "sprites/crops/crop_couve_flor_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_flor_stage2": {
+      "file": "sprites/crops/crop_couve_flor_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_flor_stage3": {
+      "file": "sprites/crops/crop_couve_flor_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_couve_flor_ready": {
+      "file": "sprites/crops/crop_couve_flor_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aipo_stage1": {
+      "file": "sprites/crops/crop_aipo_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aipo_stage2": {
+      "file": "sprites/crops/crop_aipo_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aipo_stage3": {
+      "file": "sprites/crops/crop_aipo_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aipo_ready": {
+      "file": "sprites/crops/crop_aipo_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aspargo_stage1": {
+      "file": "sprites/crops/crop_aspargo_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aspargo_stage2": {
+      "file": "sprites/crops/crop_aspargo_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aspargo_stage3": {
+      "file": "sprites/crops/crop_aspargo_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_aspargo_ready": {
+      "file": "sprites/crops/crop_aspargo_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alcachofra_stage1": {
+      "file": "sprites/crops/crop_alcachofra_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alcachofra_stage2": {
+      "file": "sprites/crops/crop_alcachofra_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alcachofra_stage3": {
+      "file": "sprites/crops/crop_alcachofra_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alcachofra_ready": {
+      "file": "sprites/crops/crop_alcachofra_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_poro_stage1": {
+      "file": "sprites/crops/crop_alho_poro_stage1.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_poro_stage2": {
+      "file": "sprites/crops/crop_alho_poro_stage2.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_poro_stage3": {
+      "file": "sprites/crops/crop_alho_poro_stage3.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "crop_alho_poro_ready": {
+      "file": "sprites/crops/crop_alho_poro_ready.png",
+      "size": [
+        16,
+        16
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "icon_maca": {
+      "file": "sprites/icons/icon_maca.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_maca_verde": {
+      "file": "sprites/icons/icon_maca_verde.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_banana": {
+      "file": "sprites/icons/icon_banana.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_laranja": {
+      "file": "sprites/icons/icon_laranja.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_uva": {
+      "file": "sprites/icons/icon_uva.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_morango": {
+      "file": "sprites/icons/icon_morango.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_mirtilo": {
+      "file": "sprites/icons/icon_mirtilo.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_amora": {
+      "file": "sprites/icons/icon_amora.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pessego": {
+      "file": "sprites/icons/icon_pessego.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_cereja": {
+      "file": "sprites/icons/icon_cereja.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_melao": {
+      "file": "sprites/icons/icon_melao.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_melancia_fatia": {
+      "file": "sprites/icons/icon_melancia_fatia.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_melancia": {
+      "file": "sprites/icons/icon_melancia.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_abacaxi": {
+      "file": "sprites/icons/icon_abacaxi.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pera": {
+      "file": "sprites/icons/icon_pera.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_limao": {
+      "file": "sprites/icons/icon_limao.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_manga": {
+      "file": "sprites/icons/icon_manga.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_figo": {
+      "file": "sprites/icons/icon_figo.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_kiwi": {
+      "file": "sprites/icons/icon_kiwi.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_roma": {
+      "file": "sprites/icons/icon_roma.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_cenoura": {
+      "file": "sprites/icons/icon_cenoura.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_batata": {
+      "file": "sprites/icons/icon_batata.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_cebola": {
+      "file": "sprites/icons/icon_cebola.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_alho": {
+      "file": "sprites/icons/icon_alho.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_milho": {
+      "file": "sprites/icons/icon_milho.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_berinjela": {
+      "file": "sprites/icons/icon_berinjela.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_abobora": {
+      "file": "sprites/icons/icon_abobora.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pimentao": {
+      "file": "sprites/icons/icon_pimentao.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pimenta": {
+      "file": "sprites/icons/icon_pimenta.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_gengibre": {
+      "file": "sprites/icons/icon_gengibre.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_alface": {
+      "file": "sprites/icons/icon_alface.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_couve": {
+      "file": "sprites/icons/icon_couve.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_espinafre": {
+      "file": "sprites/icons/icon_espinafre.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_repolho": {
+      "file": "sprites/icons/icon_repolho.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_brocolis": {
+      "file": "sprites/icons/icon_brocolis.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_couve_flor": {
+      "file": "sprites/icons/icon_couve_flor.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_aipo": {
+      "file": "sprites/icons/icon_aipo.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_aspargo": {
+      "file": "sprites/icons/icon_aspargo.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_alcachofra": {
+      "file": "sprites/icons/icon_alcachofra.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_alho_poro": {
+      "file": "sprites/icons/icon_alho_poro.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_agricultor_idle": {
+      "file": "sprites/characters/char_agricultor_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act1": {
+      "file": "sprites/characters/char_agricultor_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act2": {
+      "file": "sprites/characters/char_agricultor_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act3": {
+      "file": "sprites/characters/char_agricultor_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "ui_coin": {
+      "file": "sprites/ui/ui_coin.png",
+      "size": [
+        16,
+        16
       ],
       "anchor": [
         0.5,

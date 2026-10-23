@@ -1,38 +1,50 @@
-// Ponto de entrada: liga o Phaser (mapa) e a tela de login por cima.
+// Ponto de entrada: liga o Phaser (mapa) e a interface; sem login mostra a tela de entrar.
 import Phaser from 'phaser';
+import { BootScene } from './scenes/BootScene';
 import { FarmScene } from './scenes/FarmScene';
-import { configMissing, loadPlayer, supabase } from './net/supabase';
-import { showAuth, showHud, showMessage } from './ui/auth';
-import { formatGold } from './ui/format';
+import { configMissing, supabase } from './net/supabase';
+import { enableMockIfAsked } from './net/farmApi';
+import { showAuth, showMessage } from './ui/auth';
+import { mountGameUi } from './ui/game-ui';
+import { startSync, stopSync } from './farm/store';
 
-new Phaser.Game({
+const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
   backgroundColor: '#1c1c1c',
   pixelArt: true,
   roundPixels: true,
   scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
-  scene: [FarmScene],
+  scene: [BootScene, FarmScene],
 });
 
+if (import.meta.env.DEV) (window as unknown as { game: Phaser.Game }).game = game; // só para depurar
+
 const ui = document.getElementById('ui')!;
+let inGame = false;
 
-async function refresh(): Promise<void> {
-  const { data } = await supabase!.auth.getSession();
-  if (!data.session) { showAuth(ui); return; }
-  try {
-    const p = await loadPlayer();
-    showHud(ui, p.nickname, formatGold(p.gold));
-  } catch (e) {
-    showMessage(ui, e instanceof Error ? e.message : 'Erro ao carregar.');
-  }
+function enterGame(): void {
+  if (inGame) return;
+  inGame = true;
+  ui.classList.add('in-game');
+  mountGameUi(ui);
+  startSync();
 }
 
-if (configMissing) {
-  showMessage(ui, 'Servidor não configurado: faltam as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY.');
-} else {
-  supabase!.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') void refresh();
+function leaveGame(): void {
+  inGame = false;
+  ui.classList.remove('in-game');
+  stopSync();
+  showAuth(ui);
+}
+
+async function boot(): Promise<void> {
+  if (await enableMockIfAsked()) { enterGame(); return; }
+  if (configMissing) { showMessage(ui, 'Servidor não configurado: faltam as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY.'); return; }
+  supabase!.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT') leaveGame();
+    else if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) enterGame();
+    else if (event === 'INITIAL_SESSION') leaveGame();
   });
-  void refresh();
 }
+void boot();

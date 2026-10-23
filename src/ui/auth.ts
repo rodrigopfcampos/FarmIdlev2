@@ -85,16 +85,6 @@ export function showAuth(root: HTMLElement): void {
   });
 }
 
-export function showHud(root: HTMLElement, nickname: string, gold: string): void {
-  root.innerHTML = `
-    <div class="hud">
-      <span class="nick">${escapeHtml(nickname)}</span>
-      <span class="gold" title="Ouro"><span class="coin" aria-hidden="true"></span>${gold}</span>
-      <button type="button" class="logout">Sair</button>
-    </div>`;
-  root.querySelector('.logout')!.addEventListener('click', () => supabase!.auth.signOut());
-}
-
 export function showMessage(root: HTMLElement, text: string): void {
   root.innerHTML = `<div class="panel"><h1>Village Idle Farm</h1><p>${escapeHtml(text)}</p></div>`;
 }

@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (23/10/2026)
+# Village Idle Farm — mapa do projeto (23/10/2026, fase 1)
 
 ## A. Feito
 
@@ -28,15 +28,16 @@
 1. ✅ Cloudflare com as variáveis do Supabase; site em https://farmidlev2.2mailife.workers.dev (conectado ao projeto de produção).
 2. ✅ Supabase (produção): Site URL = endereço do site.
 3. ✅ Teste em produção (23/10): conta criada e confirmada, entrada feita, 2.000 de ouro no ledger e na carteira, auditoria registrada.
-4. Dar o "ok" da fase 0.
+4. ✅ "ok" da fase 0.
+6. Testar a fase 1 em produção: plantar, fechar o jogo 2 h, voltar e colher; vender na Barraca; clicar nas 4 zonas; entrar no painel `/admin.html` com 2FA.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
 
 ## D. Fases (GDD seção 13)
 
 | Fase | Entrega | Situação |
 | --- | --- | --- |
-| 0 Base | Repo, Supabase teste/produção, login, deploy automático, config, ledger, audit_log, script das artes, simulador | **feito e testado em produção**; aguarda o "ok" |
-| 1 Fazenda mínima | Mapa com 4 zonas, A1, Agricultor, 4 cultivos, `advance_farm`, offline 8 h, Silo, Barraca, painel básico | próxima |
+| 0 Base | Repo, Supabase teste/produção, login, deploy automático, config, ledger, audit_log, script das artes, simulador | **feito e testado em produção** |
+| 1 Fazenda mínima | Mapa com 4 zonas, A1, Agricultor, 4 cultivos, `advance_farm`, offline 8 h, Silo, Barraca, painel básico | **feito** (23/10); falta o teste do dono em produção |
 | 2 Progressão | XP/níveis, 50 cultivos, compra e limpeza dos lotes, Escritura, ferramentas, pomar | — |
 | 3 Personagens | 6 classes, energia, salário, desgaste, inventário, habilidades, pets | — |
 | 4 Animais | Galinheiro, Celeiro, Lago, ampliações, 10 animais com raridade, ração | — |
@@ -49,6 +50,7 @@
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
 ## E. Artes que faltam
+- (fase 1) recortadas também: estágios de 27 cultivos (pranchas Planta 2, 3 e 4), 40 ícones de produto, o Agricultor (parado + 3 quadros de ação) e a moeda da interface.
 - Estágios e ícone: Beterraba, Batata-doce, Mandioca, Pepino, Quiabo, Maracujá.
 - Ícone 32×32: Tomate, Mamão, Goiaba, Acerola, Jabuticaba.
 - 2 medalhões de rota: Capital e Exportação.

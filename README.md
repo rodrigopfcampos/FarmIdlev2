@@ -21,5 +21,13 @@ Jogo idle de fazenda em pixel art, no navegador (Phaser 4 + TypeScript + Vite) c
 
 ## Hospedagem
 
-Cloudflare Pages: comando `npm run build`, pasta `dist`, variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`
-(Production = projeto de produção, Preview = projeto de teste).
+Cloudflare (Workers Builds, `wrangler.jsonc`): comando `npm run build`, pasta `dist`, variáveis de build `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`.
+Site: https://farmidlev2.2mailife.workers.dev (projeto de produção do Supabase).
+
+## Painel do admin
+
+`/admin.html`: entra com e-mail e senha de uma conta admin e o código do aplicativo autenticador (2FA). Busca jogadores e mostra ledger, auditoria e fazenda.
+
+## Testes do banco
+
+`supabase/tests/*.sql`: rodar no projeto de teste (resultado esperado: erro `TESTES_OK`, tudo é desfeito).

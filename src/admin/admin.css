@@ -1,0 +1,19 @@
+/* Painel do admin: tela comum, rolável, sem o mapa. */
+body.admin { overflow: auto; background: var(--bg); }
+#admin { max-width: 1100px; margin: 0 auto; padding: 16px; }
+#admin h1 { color: var(--gold); font-size: 22px; margin: 8px 0 16px; }
+#admin .card { background: var(--panel); border: 2px solid var(--panel-border); padding: 16px; margin-bottom: 16px; }
+#admin form.search { display: flex; gap: 8px; }
+#admin form.search input { margin: 0; flex: 1; }
+#admin table { width: 100%; border-collapse: collapse; font-size: 14px; }
+#admin th, #admin td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #4a3a2a; vertical-align: top; }
+#admin th { color: var(--gold); }
+#admin tr.pick { cursor: pointer; }
+#admin tr.pick:hover td { background: #3a2c20; }
+#admin .neg { color: #ffb4a8; }
+#admin .pos { color: #9be39f; }
+#admin code { font-size: 12px; color: #d8c8a8; word-break: break-all; }
+#admin .qr { background: #fff; padding: 8px; display: inline-block; }
+#admin .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+#admin .tabs { margin: 12px 0; max-width: 480px; }
+.table-wrap { overflow-x: auto; }

@@ -27,7 +27,7 @@
 ## C. Pendências do dono
 1. ✅ Cloudflare com as variáveis do Supabase; site em https://farmidlev2.2mailife.workers.dev (conectado ao projeto de produção).
 2. ✅ Supabase (produção): Site URL = endereço do site.
-3. Testar em produção: criar conta, confirmar e-mail, entrar, ver 2.000 de ouro, sair.
+3. ✅ Teste em produção (23/10): conta criada e confirmada, entrada feita, 2.000 de ouro no ledger e na carteira, auditoria registrada.
 4. Dar o "ok" da fase 0.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
 
@@ -35,7 +35,7 @@
 
 | Fase | Entrega | Situação |
 | --- | --- | --- |
-| 0 Base | Repo, Supabase teste/produção, login, deploy automático, config, ledger, audit_log, script das artes, simulador | **feito**, falta o teste em produção (C1–C3) |
+| 0 Base | Repo, Supabase teste/produção, login, deploy automático, config, ledger, audit_log, script das artes, simulador | **feito e testado em produção**; aguarda o "ok" |
 | 1 Fazenda mínima | Mapa com 4 zonas, A1, Agricultor, 4 cultivos, `advance_farm`, offline 8 h, Silo, Barraca, painel básico | próxima |
 | 2 Progressão | XP/níveis, 50 cultivos, compra e limpeza dos lotes, Escritura, ferramentas, pomar | — |
 | 3 Personagens | 6 classes, energia, salário, desgaste, inventário, habilidades, pets | — |
@@ -58,5 +58,5 @@
 ## F. Riscos e pontos em aberto
 - Chance de semente rara (Lupa, pacotes, eventos): definir nas fases 3, 6 e 7; hoje o balanceamento supõe Comum.
 - Depois do mapa completo sobra ouro: drenos de fim de jogo antes da fase 8 (seção 9).
-- Plano grátis do Supabase: sem backup diário nem recuperação por horário (o GDD pede); avaliar o plano pago antes do beta.
+- Plano grátis do Supabase: sem backup diário, sem recuperação por horário (o GDD pede) e sem bloqueio de senhas vazadas; avaliar o plano pago antes do beta.
 - Legal: ECA Digital e LGPD (seção 15) com advogado antes de cobrar qualquer coisa.

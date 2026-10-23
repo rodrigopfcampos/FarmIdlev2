@@ -45,7 +45,7 @@ async function mfa(): Promise<void> {
   if (!factorId) {
     // primeira vez: cadastra o aplicativo autenticador
     for (const old of factors?.all.filter((x) => x.status !== 'verified') ?? []) await supabase!.auth.mfa.unenroll({ factorId: old.id });
-    const { data, error } = await supabase!.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Village Idle Farm' });
+    const { data, error } = await supabase!.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'Village Idle Farm', issuer: 'Village Idle Farm' });
     if (error || !data) { screen(`<div class="card">Não foi possível ativar o 2FA: ${esc(error?.message)}</div>`); return; }
     factorId = data.id;
     qr = `<p>Escaneie no aplicativo autenticador (Google Authenticator, Microsoft Authenticator…):</p>

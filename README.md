@@ -27,7 +27,7 @@ Site: https://farmidlev2.2mailife.workers.dev (projeto de produção do Supabase
 
 ## Painel do admin
 
-`/admin.html`: entra com e-mail e senha de uma conta admin e o código do aplicativo autenticador (2FA). Busca jogadores e mostra ledger, auditoria e fazenda. Na guia Fazenda dá para dar Escritura (fica na auditoria com a justificativa).
+`/admin.html`: entra com e-mail e senha de uma conta admin e o código do aplicativo autenticador (2FA). Busca jogadores e mostra ledger, auditoria e fazenda. Na guia Fazenda dá para dar Escritura, mudar o nível e dar ouro para testes (tudo fica na auditoria com a justificativa; o ouro, também no ledger).
 
 ## Testes do banco
 

@@ -1,11 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 14 (premissas da simulação) e seção 11 (cartas por semana)",
   "days": 160,
   "profiles": {
     "casual": {
       "name_pt": "Casual",
-      "sessions": [9, 20],
+      "sessions": [
+        9,
+        20
+      ],
       "daily_missions_done_prob": 0.43,
       "weekly_3_prob": 1.0,
       "weekly_5_prob": 0.0,
@@ -13,7 +16,12 @@
     },
     "regular": {
       "name_pt": "Regular",
-      "sessions": [8, 13, 19, 22],
+      "sessions": [
+        8,
+        13,
+        19,
+        22
+      ],
       "daily_missions_done_prob": 0.75,
       "weekly_3_prob": 1.0,
       "weekly_5_prob": 0.5,
@@ -21,7 +29,17 @@
     },
     "dedicated": {
       "name_pt": "Dedicado",
-      "sessions": [7, 9, 11, 13, 15, 17, 19, 21, 23],
+      "sessions": [
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
       "daily_missions_done_prob": 1.0,
       "weekly_3_prob": 1.0,
       "weekly_5_prob": 1.0,
@@ -34,8 +52,25 @@
   "secondary_purchase_max_share_of_gold": 0.25,
   "orchard_replant_gain": 1.15,
   "targets": {
-    "regular": { "level30_day": 33, "level50_day": 113, "map_complete_day": 77, "max_gold_wait_days": 3.2 },
-    "casual": { "map_complete_day": 108, "max_gold_wait_days": 6.5 },
-    "dedicated": { "map_complete_day": 71, "max_gold_wait_days": 2.2 }
-  }
+    "regular": {
+      "level30_day": 33,
+      "level50_day": 113,
+      "map_complete_day": 77,
+      "max_gold_wait_days": 3.2,
+      "level10_day": 1.0
+    },
+    "casual": {
+      "map_complete_day": 108,
+      "max_gold_wait_days": 6.5
+    },
+    "dedicated": {
+      "map_complete_day": 71,
+      "max_gold_wait_days": 2.2
+    }
+  },
+  "click_play": true,
+  "click_play_note": "nas sessões o jogador colhe e planta tudo por clique (grátis); o Agricultor trabalha entre as sessões",
+  "offline_cap_hours": 8,
+  "r_min_days_at_level": 0.2,
+  "r_min_days_note": "R de um nível só é medido se o regular fica nele pelo menos isso (dias); os mais rápidos são interpolados"
 }

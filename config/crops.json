@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026)",
   "rules": {
     "reference_gold_per_hour_per_plot": {
@@ -12,10 +12,13 @@
       "orchard": "valor de 6 colheitas (muda)"
     },
     "work_units": {
+      "plant": 0.5,
+      "harvest": 0.5,
       "plant_and_harvest": 1,
       "extra_harvest_recurring_or_tree": 0.5,
       "per_character_per_hour": 2.67,
-      "per_character_per_hour_note": "calibrado pelo simulador da fase 0 (tools/sim): regular no nível 50 no dia 113"
+      "per_character_per_hour_note": "capacidade do Agricultor fora do jogo; valor da calibração da fase 0, fixo desde a fase 2 (com o jogo aberto, plantar e colher por clique não gasta trabalho)",
+      "click_note": "com o jogo aberto, plantar e colher por clique não gasta trabalho; o Agricultor gasta 0,5 para plantar e 0,5 para colher"
     },
     "golden_harvest": {
       "multiplier": 2.5,

@@ -53,6 +53,8 @@ export const setCrop = (target: string, crop: string | null) => rpc('set_crop', 
 export const sellAtStall = (item: string, qty: number) =>
   rpc('sell_at_stall', { p_item: item, p_qty: qty, p_idempotency_key: crypto.randomUUID() });
 export const buyLot = (lot: string) => rpc('buy_lot', { p_lot: lot });
+/** clique do jogador: colhe o que está maduro e planta o que está vazio (canteiro, lote ou null = fazenda toda) */
+export const tendFarm = (target: string | null) => rpc('tend_farm', { p_target: target });
 export const plantTree = (lot: string, slot: number, fruit: string) => rpc('plant_tree', { p_lot: lot, p_slot: slot, p_fruit: fruit });
 export const chopTree = (lot: string, slot: number) => rpc('chop_tree', { p_lot: lot, p_slot: slot });
 export const upgradeTool = (cls: string) => rpc('upgrade_tool', { p_class: cls });

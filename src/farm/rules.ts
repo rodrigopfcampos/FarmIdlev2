@@ -82,3 +82,28 @@ export function xpProgress(xp: number, toNext: number | null): number {
   if (!toNext) return 1;
   return Math.max(0, Math.min(1, xp / toNext));
 }
+
+// ---------- clique do jogador ----------
+export type PlotLike = { plot_id: string; crop_id: string | null; state: 'empty' | 'growing'; ready_at: number | null; stalled_reason: string | null };
+export type PlotLook = 'ready' | 'growing' | 'planned' | 'cleanup' | 'stalled' | 'empty';
+
+/** o que o canteiro mostra e o que o clique faz: maduro colhe, planejado planta, vazio abre a escolha */
+export function plotLook(p: PlotLike, now: number, lotReadyAt: number): PlotLook {
+  if (p.state === 'growing') return p.ready_at !== null && p.ready_at <= now ? 'ready' : 'growing';
+  if (!p.crop_id) return 'empty';
+  if (lotReadyAt > now) return 'cleanup';
+  if (p.stalled_reason) return 'stalled';
+  return 'planned';
+}
+
+/** quantas coisas o botão "Colher e plantar" resolve agora (canteiros maduros ou à espera e árvores maduras) */
+export function tendCount(s: { plots: PlotLike[]; trees: TreeState[]; lots: { lot_id: string; ready_at: number }[] }, now: number): number {
+  const ready = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
+  let n = 0;
+  for (const p of s.plots) {
+    const look = plotLook(p, now, ready.get(p.plot_id.split('-')[0]) ?? 0);
+    if (look === 'ready' || look === 'planned') n++;
+  }
+  for (const t of s.trees) if (t.fruit_id && t.ready_at !== null && t.ready_at <= now) n++;
+  return n;
+}

@@ -1,11 +1,12 @@
-// Interface por cima do mapa: barra do topo (nível, XP, ouro, Escrituras) e os painéis
-// das zonas, dos canteiros, dos lotes à venda e do pomar.
+// Interface por cima do mapa: barra do topo (nível, XP, ouro, Escrituras, trabalho do Agricultor e o botão
+// "Colher e plantar") e os painéis das zonas, dos canteiros, dos lotes à venda e do pomar.
+// Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
 import { CROPS, CROP_LIST, FARM, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, STALL_RATIO, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
 import { iconSprite } from '../farm/art';
-import { lotOffer, orchardFruits, plotCrops, treeLook, xpProgress } from '../farm/rules';
+import { lotOffer, orchardFruits, plotCrops, plotLook, tendCount, treeLook, xpProgress } from '../farm/rules';
 import { applyState, store } from '../farm/store';
-import { buyLot, chopTree, plantTree, sellAtStall, setCrop, upgradeTool, type FarmState, type PlotState } from '../net/farmApi';
+import { buyLot, chopTree, plantTree, sellAtStall, setCrop, tendFarm, upgradeTool, type FarmState, type PlotState } from '../net/farmApi';
 import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
 
@@ -24,10 +25,13 @@ let hud: HTMLElement;
 let panel: HTMLElement;
 let current: (() => void) | null = null; // redesenha o painel aberto quando o estado muda
 let lastLevel = 0;
+let ticker: number | undefined;
 
 export function mountGameUi(el: HTMLElement): void {
   root = el;
   lastLevel = 0;
+  window.clearInterval(ticker);
+  ticker = window.setInterval(refreshTendButton, 1000); // maduros mudam com o tempo, sem esperar o servidor
   root.innerHTML = `<div class="hud" id="hud"></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
@@ -44,9 +48,9 @@ function wire(): void {
   bus.on('farm:error', (msg: string) => toast(msg));
   bus.on('art:ready', () => { if (store.state) onState(store.state); });
   bus.on('ui:zone', (id: string) => openZone(id));
-  bus.on('ui:plot', (id: string) => openPlot(id));
+  bus.on('ui:plot', (id: string) => onPlotClick(id));
   bus.on('ui:locked', (id: string) => openLot(id));
-  bus.on('ui:orchard', (id: string) => openOrchard(id));
+  bus.on('ui:orchard', (id: string) => onOrchardClick(id));
   bus.on('ui:pasture', (id: string) => openInfo(`${LOT_TYPE_NAMES[LOT_BY_ID[id].type]} ${id}`, 'Este pasto é seu. Os animais chegam na fase 4.'));
 }
 
@@ -59,13 +63,85 @@ function onState(s: FarmState): void {
     <span class="level" title="${xpText}">Nv ${s.level}<span class="xpbar" role="progressbar" aria-label="XP do nível" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></span></span>
     <span class="gold" title="Ouro">${sprite('ui_coin', 1, 'coin-img')}${formatGold(s.gold)}</span>
     ${deeds ? `<span class="deeds" title="Escrituras">${sprite('item_deed', 0.5)}${deeds}</span>` : ''}
+    ${laborMeter(s)}
+    <button type="button" class="hud-btn tend" data-tend hidden></button>
     <button type="button" class="hud-btn" data-open="casa_principal">Silo</button>
     <button type="button" class="logout">Sair</button>`;
   hud.querySelector('.logout')!.addEventListener('click', () => supabase!.auth.signOut());
   hud.querySelector('[data-open]')!.addEventListener('click', () => openZone('casa_principal', 'silo'));
+  hud.querySelector('[data-tend]')!.addEventListener('click', () => void tend(null));
+  refreshTendButton();
   if (lastLevel && s.level > lastLevel) levelUp(lastLevel, s.level);
   lastLevel = s.level;
   current?.();
+}
+
+/** trabalho guardado do Agricultor (o que ele usa fora do jogo) */
+function laborMeter(s: FarmState): string {
+  const cap = s.labor_per_hour * s.labor_cap_hours;
+  const pct = cap > 0 ? Math.round((Math.min(s.labor_bank, cap) / cap) * 100) : 0;
+  return `<span class="labor" title="Trabalho guardado do Agricultor: ${nf1.format(s.labor_bank)} de ${nf1.format(cap)} (${nf1.format(s.labor_per_hour)} por hora). Ele planta e colhe sozinho quando você não está.">
+    ${sprite('char_agricultor_idle', 0.5)}<span class="laborbar"><span style="width:${pct}%"></span></span></span>`;
+}
+
+/** botão "Colher e plantar (N)": aparece quando há canteiro maduro, canteiro esperando plantio ou árvore com fruta */
+function refreshTendButton(): void {
+  const b = hud?.querySelector<HTMLButtonElement>('[data-tend]');
+  const s = store.state;
+  if (!b || !s) return;
+  const n = tendCount(s, store.clock.farmNow());
+  b.hidden = n === 0;
+  b.textContent = `Colher e plantar (${n})`;
+}
+
+// ---------- clique do jogador ----------
+let busy = false;
+
+/** colhe e planta (canteiro, lote ou fazenda inteira) e mostra o que entrou no Silo */
+async function tend(target: string | null): Promise<void> {
+  const before = store.state;
+  if (!before || busy) return;
+  busy = true;
+  const now = store.clock.farmNow();
+  const lotReady = new Map(before.lots.map((l) => [l.lot_id, l.ready_at]));
+  const inTarget = (id: string) => target === null || id === target || id.startsWith(`${target}-`);
+  const ripe = before.plots.filter((p) => inTarget(p.plot_id) && plotLook(p, now, lotReady.get(p.plot_id.split('-')[0]) ?? 0) === 'ready');
+  const ripeTrees = before.trees.filter((t) => (target === null || t.lot_id === target) && t.fruit_id && t.ready_at !== null && t.ready_at <= now);
+  try {
+    const after = await tendFarm(target);
+    applyState(after);
+    const fx = ripe.map((p) => ({ plot: p.plot_id, text: `+${CROPS[p.planted_crop_id!].units_per_harvest} ${CROPS[p.planted_crop_id!].name_pt}` }));
+    for (const t of ripeTrees) fx.push({ plot: t.lot_id, text: `+${CROPS[t.fruit_id!].units_per_harvest} ${CROPS[t.fruit_id!].name_pt}` });
+    bus.emit('fx:harvest', fx);
+    const got = Object.entries(after.silo).map(([k, q]) => [k, q - (before.silo[k] ?? 0)] as const).filter(([, d]) => d > 0);
+    const planted = after.plots.filter((p) => inTarget(p.plot_id) && p.state === 'growing' && p.planted_at !== null && p.planted_at >= after.farm_time - 1).length;
+    const parts: string[] = [];
+    if (got.length) parts.push(`Colhido: ${got.map(([k, d]) => `${d} ${CROPS[k].name_pt}`).join(', ')}`);
+    if (planted) parts.push(`${planted} plantado${planted > 1 ? 's' : ''}`);
+    const stalled = after.plots.some((p) => inTarget(p.plot_id) && p.state === 'empty' && p.stalled_reason === 'sem_ouro');
+    if (stalled) parts.push('falta ouro para algumas sementes');
+    toast(parts.join(' · ') || 'Nada para colher ou plantar agora.');
+  } catch (e) {
+    toast(e instanceof Error ? e.message : 'Não deu certo.');
+  } finally {
+    busy = false;
+  }
+}
+
+function onPlotClick(id: string): void {
+  const s = store.state;
+  const p = s?.plots.find((x) => x.plot_id === id);
+  if (!s || !p) return;
+  const look = plotLook(p, store.clock.farmNow(), s.lots.find((l) => l.lot_id === id.split('-')[0])?.ready_at ?? 0);
+  if (look === 'ready' || look === 'planned') void tend(id);
+  else openPlot(id);
+}
+
+function onOrchardClick(lot: string): void {
+  const s = store.state;
+  const now = store.clock.farmNow();
+  if (s?.trees.some((t) => t.lot_id === lot && t.fruit_id && t.ready_at !== null && t.ready_at <= now)) void tend(lot);
+  else openOrchard(lot);
 }
 
 function levelUp(from: number, to: number): void {
@@ -126,15 +202,18 @@ function plotStatus(p: PlotState): string {
   const now = store.clock.farmNow();
   const lot = p.plot_id.split('-')[0];
   const cleanup = cleanupLeft(lot);
-  if (cleanup) return `Lote em limpeza: fica pronto em ${duration(cleanup)}. ${p.crop_id ? `Depois o Agricultor planta ${esc(CROPS[p.crop_id].name_pt)}.` : 'Já dá para escolher o cultivo.'}`;
+  const name = (id: string) => `<strong>${esc(CROPS[id].name_pt)}</strong>`;
+  const next = p.crop_id && p.crop_id !== p.planted_crop_id ? `<br>Depois: ${name(p.crop_id)}.` : '';
+  if (cleanup) return `Lote em limpeza: fica pronto em ${duration(cleanup)}. ${p.crop_id ? `Depois planta ${name(p.crop_id)}.` : 'Já dá para escolher o cultivo.'}`;
   if (p.state === 'growing') {
     const c = CROPS[p.planted_crop_id!];
     const which = c.kind === 'recurring' ? ` (colheita ${p.harvests_done + 1} de ${c.harvests_per_planting})` : '';
-    return `<strong>${esc(c.name_pt)}</strong> crescendo${which}: pronto em ${duration(p.ready_at! - now)}. Depois o Agricultor colhe e replanta sozinho.`;
+    if (p.ready_at! <= now) return `Agora: ${name(c.id)} pronta${which}. Clique no canteiro ou em "Colher agora".${next}`;
+    return `Agora: ${name(c.id)} crescendo${which}, pronta em ${duration(p.ready_at! - now)}.${next}`;
   }
-  if (p.crop_id && p.stalled_reason === 'sem_ouro') return `Parado: falta ouro para a semente de ${esc(CROPS[p.crop_id].name_pt)}. Venda algo na Barraca.`;
-  if (p.crop_id) return `Esperando o Agricultor ter tempo para plantar ${esc(CROPS[p.crop_id].name_pt)}.`;
-  return 'Vazio. Escolha o que plantar: o Agricultor replanta sempre o mesmo cultivo.';
+  if (p.crop_id && p.stalled_reason === 'sem_ouro') return `Parado: falta ouro para a semente de ${name(p.crop_id)}. Venda algo na Barraca.`;
+  if (p.crop_id) return `Vazio, com ${name(p.crop_id)} escolhida. Clique no canteiro para plantar agora ou deixe o Agricultor plantar.`;
+  return 'Vazio. Escolha um cultivo: ele é plantado na hora e replantado sempre que for colhido.';
 }
 
 function cropButton(c: Crop, selected: boolean, locked: boolean, attr: string): string {
@@ -152,22 +231,26 @@ function openPlot(id: string): void {
     if (!s || !p) return '<p>Carregando…</p>';
     const { open, next } = plotCrops(s.level);
     const crops = [...[...open].reverse().map((c) => cropButton(c, p.crop_id === c.id, false, 'data-crop')), ...next.map((c) => cropButton(c, false, true, ''))].join('');
+    const ready = p.state === 'growing' && p.ready_at !== null && p.ready_at <= store.clock.farmNow();
     return `<p class="status">${plotStatus(p)}</p>
-      <div class="crops">${crops}</div>
-      <div class="row">
-        <button type="button" class="secondary" data-all>Usar no lote ${esc(lot)} inteiro</button>
+      <div class="row top">
+        ${ready ? '<button type="button" class="primary small" data-harvest>Colher agora</button>' : ''}
+        <button type="button" class="secondary" data-all ${p.crop_id ? '' : 'disabled'}>${p.crop_id ? `${esc(CROPS[p.crop_id].name_pt)} no lote ${esc(lot)} inteiro` : `Escolha um cultivo para usar no lote ${esc(lot)}`}</button>
         ${p.crop_id ? '<button type="button" class="secondary" data-stop>Parar este canteiro</button>' : ''}
       </div>
-      <p class="hint">Plantar usa ${nf1.format(WORK.plant_and_harvest)} unidade de trabalho do Agricultor (${nf1.format(s.labor_per_hour)} por hora); cada colheita extra de recorrente ou de árvore usa ${nf1.format(WORK.extra_harvest_recurring_or_tree)}. Cultivos curtos rendem por hora, mas pedem mais trabalho.</p>`;
+      <div class="crops">${crops}</div>
+      <p class="hint">Com o jogo aberto, plantar e colher com clique é grátis. Quando você sai, o Agricultor faz sozinho: ${nf1.format(WORK.plant)} de trabalho para plantar e ${nf1.format(WORK.harvest)} para colher (ele junta ${nf1.format(s.labor_per_hour)} por hora). Cultivos longos rendem melhor enquanto você está fora.</p>`;
   }, (el) => {
-    let chosen = store.state?.plots.find((x) => x.plot_id === id)?.crop_id ?? null;
     el.querySelectorAll<HTMLButtonElement>('[data-crop]').forEach((b) => b.addEventListener('click', () => {
-      chosen = b.dataset.crop!;
-      void act(() => setCrop(id, chosen), `${CROPS[chosen].name_pt} no canteiro ${id}`);
+      const chosen = b.dataset.crop!;
+      const p = store.state?.plots.find((x) => x.plot_id === id);
+      const now = p?.state === 'empty' && !cleanupLeft(lot);
+      void act(() => setCrop(id, chosen), now ? `${CROPS[chosen].name_pt} plantada no canteiro ${id}` : `${CROPS[chosen].name_pt} no próximo plantio do canteiro ${id}`).then(close);
     }));
+    el.querySelector('[data-harvest]')?.addEventListener('click', () => void tend(id));
     el.querySelector('[data-all]')?.addEventListener('click', () => {
-      if (!chosen) { toast('Escolha um cultivo primeiro.'); return; }
-      void act(() => setCrop(lot, chosen), `${CROPS[chosen].name_pt} no lote ${lot} inteiro`);
+      const chosen = store.state?.plots.find((x) => x.plot_id === id)?.crop_id;
+      if (chosen) void act(() => setCrop(lot, chosen), `${CROPS[chosen].name_pt} em todo o lote ${lot}`);
     });
     el.querySelector('[data-stop]')?.addEventListener('click', () => void act(() => setCrop(id, null), `Canteiro ${id} parado`));
   });
@@ -217,7 +300,7 @@ function treeStatus(lot: string, slot: number): string {
   const now = store.clock.farmNow();
   const look = treeLook(t, now);
   const left = t.ready_at! - now;
-  const when = left > 0 ? `próxima colheita em ${duration(left)}` : 'colheita esperando o Agricultor';
+  const when = left > 0 ? `próxima colheita em ${duration(left)}` : 'pronta para colher';
   return `<strong>${esc(c.name_pt)}</strong> · ${look === 'sapling' ? 'muda' : look === 'fruit' ? 'com fruta' : 'adulta'} · ${when}`;
 }
 
@@ -244,9 +327,11 @@ function openOrchard(lot: string): void {
       picker = `<h3>Muda para a vaga ${picking}</h3>${has ? '<p class="hint">A árvore atual é derrubada de graça e a nova muda cresce do zero.</p>' : ''}
         <div class="crops">${[...[...open].reverse().map((c) => btn(c, false)), ...next.map((c) => btn(c, true))].join('') || '<p>Nenhuma fruta liberada ainda.</p>'}</div>`;
     }
-    return `<ul class="items trees">${slots}</ul>${picker}
-      <p class="hint">O Agricultor colhe as árvores sozinho; cada colheita usa ${nf1.format(WORK.extra_harvest_recurring_or_tree)} de trabalho. Árvores não precisam de semente.</p>`;
+    const ripe = s.trees.some((t) => t.lot_id === lot && t.fruit_id && t.ready_at !== null && t.ready_at <= store.clock.farmNow());
+    return `${ripe ? '<div class="row top"><button type="button" class="primary small" data-harvest>Colher as frutas</button></div>' : ''}<ul class="items trees">${slots}</ul>${picker}
+      <p class="hint">Com o jogo aberto, colher com clique é grátis; fora do jogo o Agricultor colhe (${nf1.format(WORK.harvest)} de trabalho por árvore). Árvores não precisam de semente.</p>`;
   }, (el) => {
+    el.querySelector('[data-harvest]')?.addEventListener('click', () => void tend(lot));
     el.querySelectorAll<HTMLButtonElement>('[data-pick]').forEach((b) => b.addEventListener('click', () => { picking = Number(b.dataset.pick); current?.(); }));
     el.querySelectorAll<HTMLButtonElement>('[data-chop]').forEach((b) => b.addEventListener('click', () => {
       b.disabled = true;
@@ -304,7 +389,7 @@ function openZone(id: string, tab = 'silo'): void {
         const cap = s.labor_per_hour * s.labor_cap_hours;
         body = `<div class="slots"><span class="slot-title">Slots de Campo</span>
           <div class="char-card">${sprite('char_agricultor_idle', 2)}<div><strong>Agricultor</strong><small>Dono da fazenda · sem salário</small>
-          <small>Planta e colhe a lavoura e o pomar: ${nf1.format(s.labor_per_hour)} unidades de trabalho por hora</small>
+          <small>Quando você sai, planta e colhe sozinho: ${nf1.format(s.labor_per_hour)} unidades de trabalho por hora (plantar ${nf1.format(WORK.plant)}, colher ${nf1.format(WORK.harvest)})</small>
           <small>Trabalho guardado: ${nf1.format(s.labor_bank)} de ${nf1.format(cap)}</small></div></div>
           <div class="slot empty-slot">Vago · contratação na fase 3</div><div class="slot empty-slot">Vago · contratação na fase 3</div>
           <span class="slot-title">Slots de Banco</span><div class="slot empty-slot">Descanso · fase 3</div></div>`;

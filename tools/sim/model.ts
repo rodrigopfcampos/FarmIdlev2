@@ -16,8 +16,19 @@ export const CFG = {
 };
 export const SIM = JSON.parse(readFileSync(join(root, 'tools', 'sim', 'profiles.json'), 'utf8'));
 
-const XP_NEXT: number[] = [];
-for (const l of CFG.levels.levels) XP_NEXT[l.level] = l.xp_to_next ?? Infinity;
+/** XP para o próximo nível a partir da curva da config: começo fixo e uma escala por faixa de níveis */
+export function xpTable(scales: number[] = CFG.levels.xp_curve.bands.map((b: any) => b.scale)): number[] {
+  const c = CFG.levels.xp_curve, out: number[] = [];
+  for (const l of CFG.levels.levels) {
+    if (l.xp_base == null) { out[l.level] = Infinity; continue; }
+    const early = c.early[String(l.level)];
+    const band = c.bands.findIndex((b: any) => l.level >= b.levels[0] && l.level <= b.levels[1]);
+    out[l.level] = early ?? Math.round((l.xp_base * (band >= 0 ? scales[band] : 1)) / 10) * 10;
+    // nunca pede menos XP que o nível anterior (a troca de faixa não pode fazer degrau para baixo)
+    if (l.level > 1 && Number.isFinite(out[l.level - 1])) out[l.level] = Math.max(out[l.level], out[l.level - 1]);
+  }
+  return out;
+}
 
 const round2 = (x: number) => { const p = Math.pow(10, Math.floor(Math.log10(x)) - 1); return Math.round(x / p) * p; };
 
@@ -66,7 +77,7 @@ function rng(seed: number) {
   return () => { s += 0x6d2b79f5; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 }
 
-export type SimParams = { workPerHour: number; R: number[]; seed?: number; recordIncome?: boolean };
+export type SimParams = { workPerHour: number; R: number[]; seed?: number; recordIncome?: boolean; xpNext?: number[] };
 export type SimResult = {
   profile: string; levelDay: number[]; mapCompleteDay: number; maxGoldWait: number; buys: { n: number; day: number; wait: number; deedWait: number }[];
   spend: Record<string, number>; atMapComplete: Record<string, number> | null; income: number; salaries: number; toolRepairs: number; feed: number; seeds: number; incomeByLevel: number[]; daysByLevel: number[];
@@ -79,6 +90,7 @@ const ANIMAL_AVG = CFG.rarity.tiers.reduce((s: number, t: any) => s + t.multipli
 
 export function simulate(profileId: string, p: SimParams): SimResult {
   const prof = SIM.profiles[profileId];
+  const XP_NEXT = p.xpNext ?? xpTable();
   const rand = rng(p.seed ?? 7);
   const R = (L: number) => p.R[Math.min(50, Math.max(1, L))];
   const days = SIM.days;
@@ -131,6 +143,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const incomeByLevel: number[] = new Array(51).fill(0), hoursByLevel: number[] = new Array(51).fill(0);
   let silo = { value: 0, units: 0 };
   let lastSession = -999;
+  let freePerHour = 0; // trabalho grátis do jogador (cliques na sessão), espalhado até a próxima sessão
   let hourlyIncomeEMA = 300, hourlyXpEMA = 50;
   let petSince = -1;
   let dayIncome = 0, dayXp = 0;
@@ -177,6 +190,10 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     if (sessionList.find((s) => Math.floor(s / 24) === day) === t) dailyMissions(t, day);
     buyStuff(t);
     lastSession = t;
+    // jogo aberto: o jogador colhe e planta tudo com cliques, sem gastar trabalho do Agricultor.
+    // Isso vale 1 ciclo por canteiro e 1 colheita por árvore até a próxima sessão (no máximo o limite offline).
+    const gap = Math.min(nextSessionAfter(t) - t, SIM.offline_cap_hours);
+    freePerHour = SIM.click_play ? (plots * WU.plant_and_harvest + 4 * orchards.length * WU.harvest) / gap : 0;
   }
 
   function sell(t: number) {
@@ -369,10 +386,10 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       dayIncome = 0; dayXp = 0;
     }
     hoursByLevel[level]++;
-    if (t - lastSession >= 8) continue; // limite offline de 8 h
+    if (t - lastSession >= SIM.offline_cap_hours) continue; // limite offline de 8 h
     // produção desta hora
     const cap = workCapacity();
-    let labor = cap.total;
+    let labor = cap.total + freePerHour;
     let value = 0, units = 0, gainXp = 0;
     for (const o of orchards) if (o.fruit && t >= o.readyAt) {
       const need = 4 * o.fruit.work;

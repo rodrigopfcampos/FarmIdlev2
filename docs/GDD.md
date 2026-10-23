@@ -1,6 +1,6 @@
 # Village Idle Farm — Documento do Jogo (GDD) v2
 
-Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa), 22/10/2026 (raridade global, cartas, ferramentas e artes recortadas) e 23/10/2026 (simulador completo: R e capacidade de trabalho calibrados). Junta o documento atual (seções 1 a 6) com a ideia anterior (seções 7 a 15), adaptada à ideia atual. **🆕** marca o que é novo ou mudou nesta versão.
+Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa), 22/10/2026 (raridade global, cartas, ferramentas e artes recortadas) e 23/10/2026 (simulador completo: R e capacidade de trabalho calibrados; depois do teste da fase 2, plantio e colheita por clique e começo rápido). Junta o documento atual (seções 1 a 6) com a ideia anterior (seções 7 a 15), adaptada à ideia atual. **🆕** marca o que é novo ou mudou nesta versão.
 
 ## O que mudou na v2
 
@@ -26,7 +26,7 @@ Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa), 22/10/20
 | XP dos recorrentes | número da tabela lido como "por colheita" (5× mais XP) | o número era do **plantio inteiro**: por colheita = ÷ 5 |
 | Árvore do pomar | permanente | permanente, mas pode ser **derrubada de graça** para trocar de fruta |
 | Lago | +10% nas aves | **+10% nas aves e +2 vagas no Galinheiro** (só aves) |
-| Capacidade de trabalho | não definida | **2,67 unidades por personagem por hora** (ferramenta de Madeira), calibrada no simulador |
+| Capacidade de trabalho | não definida | **2,67 unidades por personagem por hora** (ferramenta de Madeira), usada quando o jogador está fora; com o jogo aberto, plantar e colher por clique é grátis 🆕 |
 | Renda de Referência (R) | medida com 25 lotes | **remedida com 30 lotes** pelo simulador completo (`tools/sim`): começo mais lento (R do nível 1 = 1.500), fim mais rico |
 | Arte das árvores do pomar | uma árvore por fruta | 2 bases que já existem (folhosa e palmeira) + frutas desenhadas por código |
 | Cartas | 8 ilustrações para 10 cartas | **10 ilustrações** + 5 molduras + verso; a carta 6 passa a se chamar **Tempestade** (mesmo efeito da antiga Lua Prateada) |
@@ -109,7 +109,8 @@ Toda ação passa pelas funções do servidor; o banco só aceita escrita vinda 
 
 - O estado da fazenda é salvo com horários. Em toda ação, o servidor primeiro roda `advance_farm(farm_id, agora)`: avança a fazenda até agora, no máximo 8 h depois da última atividade do jogador, de forma determinística (colheitas, gasto de energia nos slots, desgaste de ferramentas, lanches consumidos, rodízio de operadores e limpeza de lotes). Só depois aplica a ação.
 - 🆕 **Relógio da fazenda (fase 1):** cada fazenda guarda o próprio tempo (`farm_time`, em segundos de tempo ativo). Ele anda junto com o relógio do servidor até 8 h depois da última ação do jogador e então para; quando o jogador volta, continua de onde parou (o que estava crescendo termina depois). O jogo no aparelho só usa o horário que o servidor manda e o cronômetro do navegador, nunca a hora do aparelho.
-- 🆕 **Trabalho guardado:** o trabalho que o Agricultor não usa fica guardado até o equivalente a 1 h (conta nova começa com 1 h); cada plantio gasta 1 unidade. Os canteiros são atendidos na ordem em que ficaram livres; sem ouro para a semente, o canteiro para até o jogador vender algo.
+- 🆕 **Trabalho guardado:** o trabalho que o Agricultor não usa fica guardado até o equivalente a 1 h (conta nova começa com 1 h). Fora do jogo ele faz tudo numa fila só, na ordem em que as tarefas ficaram prontas: plantar gasta 0,5 e colher gasta 0,5 (inclusive colheita extra de recorrente e de árvore). Sem ouro para a semente, o canteiro para até o jogador vender algo.
+- 🆕 **Clique do jogador (fase 2):** com o jogo aberto, clicar num canteiro maduro colhe e replanta na hora; escolher um cultivo num canteiro vazio planta na hora; o botão "Colher e plantar (N)" faz isso na fazenda inteira. O clique não gasta trabalho do Agricultor, só a semente. A colheita não é mais automática: o canteiro maduro espera o clique ou o Agricultor.
 - O cliente envia só intenções: `plant(canteiro, cultura)`, `repair_tool(personagem)`, `send_expedition(veiculo, rota, carga, seguro)`, `buy_lot(lote)`, `hire(classe)` etc. Nunca envia ouro, tempo ou resultado.
 - Todo sorteio (expedição, cartas, clima, itens) é feito no servidor com gerador criptográfico e gravado antes de aparecer na tela.
 - Escrita no banco só por funções RPC com validação. Row Level Security bloqueia escrita direta em todas as tabelas; cada jogador lê só os próprios dados (mais perfis públicos e, quando existir, anúncios do mercado).
@@ -225,35 +226,35 @@ custo(n) = 0,28 × 1,10^(n−1) × R(⌈1,46 × n⌉)
 
 | Compra n | Lote (ordem simulada) | Tipo | Nível mínimo | Custo (ouro) | Escritura | Limpeza (Ferreiro) | Dia (regular) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | A3 | Lavoura | 2 | 620 | Não | 1 h 12 | 0,8 |
-| 2 | C1 | Galinheiro | 3 | 1.000 | Não | 1 h 24 | 1,3 |
-| 3 | A4 | Lavoura | 5 | 2.500 | Não | 1 h 36 | 1,9 |
-| 4 | A2 | Lavoura | 6 | 5.200 | Não | 1 h 48 | 2,3 |
-| 5 | C2 | Celeiro | 8 | 14.000 | Não | 2 h 00 | 2,8 |
-| 6 | A6 | Lavoura | 9 | 18.000 | Não | 2 h 12 | 3,8 |
-| 7 | P1 | Pomar | 11 | 36.000 | Não | 2 h 24 | 4,5 |
-| 8 | A7 | Lavoura | 12 | 54.000 | Não | 2 h 36 | 6,3 |
-| 9 | A8 | Lavoura | 14 | 170.000 | Não | 2 h 48 | 8,3 |
-| 10 | P2 | Pomar | 15 | 230.000 | Não | 3 h 00 | 8,8 |
-| 11 | A5 | Lavoura | 17 | 400.000 | Não | 3 h 12 | 10,5 |
-| 12 | A10 | Lavoura | 18 | 520.000 | Não | 3 h 24 | 12,8 |
-| 13 | P3 | Pomar | 19 | 620.000 | Não | 3 h 36 | 13,5 |
-| 14 | A11 | Lavoura | 21 | 970.000 | Não | 3 h 48 | 16,8 |
-| 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 19,8 |
-| 16 | P4 | Pomar | 24 | 1.900.000 | Não | 4 h 12 | 21,3 |
-| 17 | A13 | Lavoura | 25 | 2.400.000 | Não | 4 h 24 | 23,5 |
-| 18 | A20 | Lavoura | 27 | 4.000.000 | Não | 4 h 36 | 26,3 |
-| 19 | L | Lago | 28 | 4.700.000 | Não | 4 h 48 | 28,5 |
-| 20 | P5 | Pomar | 30 | 7.200.000 | Sim | 5 h 00 | 33,3 |
-| 21 | A9 | Lavoura | 31 | 9.400.000 | Sim | 5 h 12 | 37,5 |
-| 22 | A14 | Lavoura | 33 | 13.000.000 | Sim | 5 h 24 | 42,3 |
-| 23 | P6 | Pomar | 34 | 15.000.000 | Sim | 5 h 36 | 44,9 |
-| 24 | A15 | Lavoura | 36 | 23.000.000 | Sim | 5 h 48 | 49,9 |
-| 25 | A16 | Lavoura | 37 | 28.000.000 | Sim | 6 h 00 | 53,5 |
-| 26 | A17 | Lavoura | 38 | 33.000.000 | Sim | 6 h 12 | 57,8 |
-| 27 | A18 | Lavoura | 40 | 47.000.000 | Sim | 6 h 24 | 64,9 |
-| 28 | A19 | Lavoura | 41 | 51.000.000 | Sim | 6 h 36 | 69,3 |
-| 29 | A21 | Lavoura | 43 | 69.000.000 | Sim | 6 h 48 | 78,3 |
+| 1 | A3 | Lavoura | 2 | 670 | Não | 1 h 12 | 0,3 |
+| 2 | C1 | Galinheiro | 3 | 1.200 | Não | 1 h 24 | 0,3 |
+| 3 | A4 | Lavoura | 5 | 2.900 | Não | 1 h 36 | 0,5 |
+| 4 | A2 | Lavoura | 6 | 4.800 | Não | 1 h 48 | 0,9 |
+| 5 | C2 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
+| 6 | A6 | Lavoura | 9 | 24.000 | Não | 2 h 12 | 1,8 |
+| 7 | P1 | Pomar | 11 | 48.000 | Não | 2 h 24 | 2,3 |
+| 8 | A7 | Lavoura | 12 | 65.000 | Não | 2 h 36 | 3,5 |
+| 9 | A8 | Lavoura | 14 | 190.000 | Não | 2 h 48 | 5,3 |
+| 10 | P2 | Pomar | 15 | 260.000 | Não | 3 h 00 | 6,3 |
+| 11 | A5 | Lavoura | 17 | 470.000 | Não | 3 h 12 | 8,5 |
+| 12 | A10 | Lavoura | 18 | 620.000 | Não | 3 h 24 | 9,8 |
+| 13 | P3 | Pomar | 19 | 760.000 | Não | 3 h 36 | 10,8 |
+| 14 | A11 | Lavoura | 21 | 1.100.000 | Não | 3 h 48 | 14,3 |
+| 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 16,8 |
+| 16 | P4 | Pomar | 24 | 2.100.000 | Não | 4 h 12 | 19,5 |
+| 17 | A13 | Lavoura | 25 | 2.800.000 | Não | 4 h 24 | 21,8 |
+| 18 | A20 | Lavoura | 27 | 4.800.000 | Não | 4 h 36 | 24,9 |
+| 19 | L | Lago | 28 | 5.800.000 | Não | 4 h 48 | 27,5 |
+| 20 | P5 | Pomar | 30 | 8.000.000 | Sim | 5 h 00 | 33,3 |
+| 21 | A9 | Lavoura | 31 | 9.800.000 | Sim | 5 h 12 | 37,5 |
+| 22 | A14 | Lavoura | 33 | 13.000.000 | Sim | 5 h 24 | 41,5 |
+| 23 | P6 | Pomar | 34 | 16.000.000 | Sim | 5 h 36 | 44,3 |
+| 24 | A15 | Lavoura | 36 | 25.000.000 | Sim | 5 h 48 | 50,5 |
+| 25 | A16 | Lavoura | 37 | 30.000.000 | Sim | 6 h 00 | 53,5 |
+| 26 | A17 | Lavoura | 38 | 36.000.000 | Sim | 6 h 12 | 56,9 |
+| 27 | A18 | Lavoura | 40 | 50.000.000 | Sim | 6 h 24 | 64,5 |
+| 28 | A19 | Lavoura | 41 | 59.000.000 | Sim | 6 h 36 | 68,5 |
+| 29 | A21 | Lavoura | 43 | 81.000.000 | Sim | 6 h 48 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -265,7 +266,7 @@ Um cultivo novo libera a cada nível, do 1 ao 49 (o nível 1 tem 2: Alface e Cen
 - 🆕 **Raridade (seção 9):** a Barraca só vende sementes e mudas Comuns. Sementes e mudas raras caem na pesquisa da Lupa, em pacotes de missão e em eventos, e multiplicam o ouro e o XP da colheita por **um plantio** (lavoura: 1 colheita; recorrente: as 5; árvore: 6 colheitas, depois volta a Comum). No canteiro aparece uma estrelinha da cor da raridade; no inventário, a moldura da raridade.
 - **Recorrente:** 5 colheitas por plantio (a 1ª em "Cresce", as outras a cada "Rebrota"). Semente = valor de 1 colheita. 🆕 O XP da tabela abaixo é por colheita: o número original era do plantio inteiro e foi dividido por 5 (ex.: Morango 190 por plantio = 38 por colheita). Lido como "por colheita", os recorrentes davam 5× mais XP por hora que os outros cultivos.
 - **Pomar:** árvore permanente, só em lote de pomar (4 vagas por terraço); produz a cada "Rebrota" depois de crescer. Muda = 6 colheitas. 🆕 O jogador pode **derrubar uma árvore de graça** para plantar outra fruta; a nova muda é paga e cresce do zero. Sem isso, uma Maçã do nível 10 ocuparia para sempre a vaga de uma Jabuticaba (14× mais ouro por hora).
-- **Trabalho:** cada plantio + colheita gasta 1 unidade de trabalho; colheita extra de recorrente ou de árvore gasta 0,5. Culturas curtas rendem um pouco mais ouro por hora, mas gastam muito mais trabalho; as longas vencem em fazendas grandes e offline. Essa troca é o coração da escolha do que plantar. Com 30 lotes há 168 canteiros e 24 árvores (antes 136 e 20). 🆕 Um personagem faz **2,67 unidades de trabalho por hora** com ferramenta de Madeira (× material da ferramenta, × 60% fora da função), valor calibrado no simulador para bater as metas da seção 14. Ex.: no nível 1, o Agricultor sozinho dá conta de menos de 1 canteiro de Alface (10 min), mas de ~1 lote de cultivos de 4 a 8 h: o começo é decidir entre ritmo e alcance.
+- **Trabalho:** cada plantio + colheita gasta 1 unidade de trabalho (🆕 0,5 para plantar e 0,5 para colher); colheita extra de recorrente ou de árvore gasta 0,5. 🆕 Isso vale para o Agricultor quando o jogador está fora; com o jogo aberto, o jogador planta e colhe por clique sem gastar trabalho. Culturas curtas rendem um pouco mais ouro por hora, mas gastam muito mais trabalho; as longas vencem em fazendas grandes e offline. Essa troca é o coração da escolha do que plantar. Com 30 lotes há 168 canteiros e 24 árvores (antes 136 e 20). 🆕 Um personagem faz **2,67 unidades de trabalho por hora** com ferramenta de Madeira (× material da ferramenta, × 60% fora da função), valor calibrado no simulador para bater as metas da seção 14. Ex.: no nível 1, o Agricultor sozinho dá conta de menos de 1 canteiro de Alface (10 min), mas de ~1 lote de cultivos de 4 a 8 h: online, cultivos curtos com clique; antes de sair, cultivos longos para o Agricultor.
 - **Colheita Dourada:** chance pequena (cartas e habilidades) de a colheita valer 2,5×. Máximo 20% somando os bônus permanentes e 60% com cartas e evento (tetos da seção 11).
 - Preço por unidade = preço base na Feira da Vila (expedição nível 1). Os operadores nos slots replantam sozinhos o último cultivo escolhido em cada canteiro, comprando semente automaticamente.
 
@@ -361,11 +362,11 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Classe | Ferramenta | Função (100% de eficiência) | Libera no nível | Contratação (ouro) |
 | --- | --- | --- | --- | --- |
 | Agricultor | Enxada | Plantar e colher a lavoura | 1 (inicial) | grátis |
-| Rancheira | Regador | Animais e pomar | 3 | 5.000 |
-| Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 21.000 |
-| Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 82.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 420.000 |
-| Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.200.000 |
+| Rancheira | Regador | Animais e pomar | 3 | 5.800 |
+| Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
+| Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 120.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 480.000 |
+| Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
 
@@ -382,7 +383,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 150 | 1.100 | 7.000 | 17.000 | 38.000 | 84.000 | 160.000 | 280.000 | 440.000 | 520.000 |
+| Salário base/dia (ouro) | 170 | 1.600 | 8.000 | 20.000 | 44.000 | 94.000 | 170.000 | 300.000 | 460.000 | 520.000 |
 
 ### Nível do personagem
 
@@ -551,35 +552,35 @@ Simulação de 200 mil viagens por rota (carga que volta revendida a 95% da Feir
 Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 50, e o jogador regular chega ao nível 30 no dia 33 e ao 50 no dia 113.
 
 - **XP da conta:** colheitas e coletas (XP das tabelas da seção 6), expedições (+15% do XP de produção) e missões.
-- **Renda de Referência (R):** renda diária média de um jogador regular em cada nível, medida na simulação. Custos e salários são calculados sobre ela, então tudo acompanha a economia. Fica em `config/levels.json`. 🆕 Os valores abaixo foram remedidos pelo simulador da fase 0 com 30 lotes (`config/levels.json` versão 2); preços de lote, contratação, salários e resets se ajustaram sozinhos. O começo ficou mais lento que na simulação antiga (o Agricultor sozinho trabalha pouco) e o fim, mais rico (expedições e raridade dos veículos).
+- **Renda de Referência (R):** renda diária média de um jogador regular em cada nível, medida na simulação. Custos e salários são calculados sobre ela, então tudo acompanha a economia. Fica em `config/levels.json`. 🆕 Os valores abaixo foram remedidos pelo simulador com 30 lotes e plantio e colheita por clique (`config/levels.json` versão 3); preços de lote, contratação, salários e resets se ajustaram sozinhos. 🆕 **Curva de XP (teste da fase 2):** os níveis 1 a 4 pedem pouco (40, 50, 65 e 90 XP: o nível 2 sai com 1 rodada de Alface no A1, em ~10 min, e o nível 5 em ~1 h jogando); o resto é a tabela do dono multiplicada por uma escala por faixa (níveis 5–9, 10–29 e 30–49), calibrada para o regular chegar ao nível 10 no 1º dia, ao 30 no dia 33 e ao 50 no dia 113. Os níveis que passam em poucas horas não dão medida de R: o R deles é interpolado.
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 410 | 1.500 | | 26 | 660.000 | 2.400.000 |
-| 2 | 520 | 2.200 | | 27 | 760.000 | 2.800.000 |
-| 3 | 650 | 3.300 | | 28 | 890.000 | 3.000.000 |
-| 4 | 980 | 4.000 | | 29 | 1.000.000 | 3.400.000 |
-| 5 | 1.500 | 7.400 | | 30 | 1.100.000 | 4.200.000 |
-| 6 | 2.200 | 14.000 | | 31 | 1.300.000 | 5.000.000 |
-| 7 | 3.500 | 24.000 | | 32 | 1.500.000 | 5.500.000 |
-| 8 | 5.400 | 33.000 | | 33 | 1.600.000 | 6.100.000 |
-| 9 | 9.100 | 40.000 | | 34 | 1.800.000 | 6.700.000 |
-| 10 | 15.000 | 55.000 | | 35 | 2.100.000 | 7.800.000 |
-| 11 | 25.000 | 72.000 | | 36 | 2.400.000 | 9.200.000 |
-| 12 | 36.000 | 99.000 | | 37 | 2.700.000 | 10.000.000 |
-| 13 | 52.000 | 170.000 | | 38 | 3.100.000 | 11.000.000 |
-| 14 | 66.000 | 280.000 | | 39 | 3.500.000 | 12.000.000 |
-| 15 | 85.000 | 350.000 | | 40 | 3.900.000 | 14.000.000 |
-| 16 | 110.000 | 430.000 | | 41 | 4.300.000 | 14.000.000 |
-| 17 | 130.000 | 550.000 | | 42 | 4.700.000 | 16.000.000 |
-| 18 | 160.000 | 650.000 | | 43 | 5.300.000 | 17.000.000 |
-| 19 | 200.000 | 710.000 | | 44 | 5.800.000 | 19.000.000 |
-| 20 | 240.000 | 830.000 | | 45 | 6.400.000 | 22.000.000 |
-| 21 | 280.000 | 1.000.000 | | 46 | 6.900.000 | 23.000.000 |
-| 22 | 330.000 | 1.400.000 | | 47 | 7.300.000 | 24.000.000 |
-| 23 | 400.000 | 1.500.000 | | 48 | 7.700.000 | 24.000.000 |
-| 24 | 480.000 | 1.600.000 | | 49 | 7.900.000 | 26.000.000 |
-| 25 | 570.000 | 1.900.000 | | 50 | — | 26.000.000 |
+| 1 | 40 | 1.900 | | 26 | 866.580 | 2.900.000 |
+| 2 | 50 | 2.400 | | 27 | 997.880 | 3.400.000 |
+| 3 | 65 | 3.900 | | 28 | 1.168.570 | 3.700.000 |
+| 4 | 90 | 5.800 | | 29 | 1.313.000 | 4.200.000 |
+| 5 | 870 | 8.700 | | 30 | 1.313.000 | 4.700.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.361.100 | 5.200.000 |
+| 7 | 2.030 | 20.000 | | 32 | 1.570.500 | 5.900.000 |
+| 8 | 3.140 | 29.000 | | 33 | 1.675.200 | 6.500.000 |
+| 9 | 5.290 | 54.000 | | 34 | 1.884.600 | 7.200.000 |
+| 10 | 19.700 | 82.000 | | 35 | 2.198.700 | 8.400.000 |
+| 11 | 32.830 | 97.000 | | 36 | 2.512.800 | 9.900.000 |
+| 12 | 47.270 | 120.000 | | 37 | 2.826.900 | 11.000.000 |
+| 13 | 68.280 | 220.000 | | 38 | 3.245.700 | 12.000.000 |
+| 14 | 86.660 | 320.000 | | 39 | 3.664.500 | 13.000.000 |
+| 15 | 111.610 | 400.000 | | 40 | 4.083.300 | 15.000.000 |
+| 16 | 144.430 | 520.000 | | 41 | 4.502.100 | 16.000.000 |
+| 17 | 170.690 | 650.000 | | 42 | 4.920.900 | 18.000.000 |
+| 18 | 210.080 | 770.000 | | 43 | 5.549.100 | 20.000.000 |
+| 19 | 262.600 | 870.000 | | 44 | 6.072.600 | 21.000.000 |
+| 20 | 315.120 | 1.000.000 | | 45 | 6.700.800 | 23.000.000 |
+| 21 | 367.640 | 1.100.000 | | 46 | 7.224.300 | 24.000.000 |
+| 22 | 433.290 | 1.400.000 | | 47 | 7.643.100 | 24.000.000 |
+| 23 | 525.200 | 1.600.000 | | 48 | 8.061.900 | 25.000.000 |
+| 24 | 630.240 | 1.800.000 | | 49 | 8.271.300 | 26.000.000 |
+| 25 | 748.410 | 2.200.000 | | 50 | — | 26.000.000 |
 
 ### Raridade global 🆕
 
@@ -840,19 +841,20 @@ São 12 fases. Cada uma termina com deploy, testes automáticos verdes e o check
 
 🆕 **Simulador completo da fase 0** (`tools/sim`, `npm run sim`): 160 dias, hora a hora, para os 3 perfis, lendo só a config. Modela lotes, vizinhança, Escrituras e limpeza; escolha de cultivo pela mão de obra (até 2 cultivos por vez); pomar com troca de fruta; animais com raridade sorteada, Lago e ampliações; personagens com contratação, energia e rodízio, salário, nível, ferramenta e desgaste; venda por expedição (rotas, veículos, raridade, Gerente, kits, Escrituras) ou Barraca; missões, pacotes com garantia, buffs e Armory; pet. Entram pela média: clima e evento noturno (+11% renda e +7% XP, seção 10), minigame (casual −1, regular +1, dedicado +2 pontos), habilidades (pontos ÷ 39 × 10% de renda por personagem) e Papagaio (+4% nas vendas).
 
-**Calibração:** a capacidade de trabalho saiu **2,67 unidades por personagem por hora** (Madeira), o valor que põe o regular no nível 50 no dia 113. A Renda de Referência foi remedida com 30 lotes por ponto fixo (preços dependem de R, R depende do ritmo): `levels.json` versão 2. Os parâmetros do lote foram buscados no próprio simulador: 0,28 × 1,10^(n−1) × R(⌈1,46 n⌉).
+**Calibração:** a capacidade de trabalho saiu **2,67 unidades por personagem por hora** (Madeira) na fase 0. 🆕 Desde o teste da fase 2, nas sessões o jogador colhe e planta por clique (1 ciclo grátis por canteiro e 1 colheita por árvore até a próxima sessão, no máximo 8 h); o Agricultor trabalha entre as sessões. O que se calibra agora são as escalas da curva de XP (nível 10 no dia 1, 30 no dia 33 e 50 no dia 113) e a Renda de Referência, por ponto fixo (preços dependem de R, R depende do ritmo): `levels.json` versão 3. Os parâmetros do lote foram buscados no próprio simulador: 0,28 × 1,10^(n−1) × R(⌈1,46 n⌉).
 
 | Resultado (30 lotes, simulador, média de 5 sementes) | Casual (2 sessões/dia) | Regular (4) | Dedicado (9) |
 | --- | --- | --- | --- |
-| Nível 30 | dia 45,9 | dia 33,2 | dia 30,5 |
+| Nível 10 🆕 | dia 1,5 | dia 1,0 | dia 0,8 |
+| Nível 30 | dia 46 | dia 33 | dia 30 |
 | Nível 50 | dia 157 | dia 113 | dia 103 |
-| Mapa completo | dia 112,8 | dia 78,0 | dia 71,3 |
-| Maior espera por ouro de um lote | 3,8 dias | 2,5 dias | 2,4 dias |
-| Salários sobre a renda | 16,9% | 12,3% | 11,3% |
-| Consertos de ferramenta sobre a renda | 7,4% | 8,0% | 7,4% |
+| Mapa completo | dia 107,7 | dia 77,0 | dia 70,0 |
+| Maior espera por ouro de um lote | 3,4 dias | 2,1 dias | 2,2 dias |
+| Salários sobre a renda | 17,0% | 12,3% | 11,2% |
+| Consertos de ferramenta sobre a renda | 6,9% | 7,7% | 7,2% |
 | Bônus parcial nas 10 cartas (mediana, sem mercado) | semana 45 | semana 33 | semana 30 |
 
-Comparado com as metas publicadas da simulação antiga (25 lotes, abaixo), tudo fica a até 5% (casual: mapa no dia 113 × 108). O relatório completo fica em `tools/sim/report.json`, e `npm run balance:check` refaz o regular para garantir que ele está em dia com a config.
+Comparado com as metas publicadas da simulação antiga (25 lotes, abaixo), tudo fica a até 1%. O relatório completo fica em `tools/sim/report.json`, e `npm run balance:check` refaz o regular para garantir que ele está em dia com a config.
 
 | Resultado da simulação antiga (25 lotes) | Casual (2 sessões/dia) | Regular (4) | Dedicado (9) |
 | --- | --- | --- | --- |
@@ -875,6 +877,7 @@ Achados da simulação antiga que mudaram o desenho:
 ### Critérios de aceite do simulador (o build falha se sair da faixa: `npm run balance:check` no CI) 🆕
 
 - Regular: mapa completo (30 lotes 🆕) entre os dias 65 e 85; nível 50 entre os dias 95 e 125.
+- 🆕 Começo rápido: regular no nível 10 entre os dias 0,8 e 1,3; o nível 2 sai com 1 rodada de Alface no A1.
 - Casual: nenhuma espera por um lote acima de 8 dias.
 - Salários do regular entre 8% e 18% da renda.
 - Valor médio por rota sempre crescente da Feira à Exportação; seguro nunca com média positiva.
@@ -888,7 +891,7 @@ Achados da simulação antiga que mudaram o desenho:
 - 🆕 XP por hora de recorrentes e árvores dentro de ±10% da lavoura do mesmo nível.
 - 🆕 Cada animal entre 2,8 e 3,2 canteiros; ração entre 13% e 17% da produção; compra = 10 dias de ração.
 
-Premissas (`tools/sim/profiles.json`): sessões às 9h e 20h (casual); 8h, 13h, 19h e 22h (regular); de 2 em 2 h das 7h às 23h (dedicado); o jogador escolhe o cultivo que mais rende para a mão de obra que tem, troca as árvores do pomar pela melhor fruta liberada, compra lote assim que pode (guardando 1 dia de salários e ração) e só faz compras secundárias (ferramenta, veículo, reforma, ampliação) quando o próximo lote espera nível ou quando custam até 25% do ouro. Missões: casual completa as 5 diárias em 43% dos dias, regular em 75%, dedicado sempre (4, 5,5 e 6 cartas por semana). 🆕 Raridade de sementes não entra (chances ainda não definidas): a curva supõe Comum.
+Premissas (`tools/sim/profiles.json`): sessões às 9h e 20h (casual); 8h, 13h, 19h e 22h (regular); de 2 em 2 h das 7h às 23h (dedicado); 🆕 em cada sessão o jogador colhe e planta tudo por clique; o jogador escolhe o cultivo que mais rende para a mão de obra que tem, troca as árvores do pomar pela melhor fruta liberada, compra lote assim que pode (guardando 1 dia de salários e ração) e só faz compras secundárias (ferramenta, veículo, reforma, ampliação) quando o próximo lote espera nível ou quando custam até 25% do ouro. Missões: casual completa as 5 diárias em 43% dos dias, regular em 75%, dedicado sempre (4, 5,5 e 6 cartas por semana). 🆕 Raridade de sementes não entra (chances ainda não definidas): a curva supõe Comum.
 
 ## 15. Lei e monetização futura
 

@@ -223,11 +223,21 @@ check(P.regular.armory_all_partial_week_median >= 25 && P.regular.armory_all_par
 const near = (v: number, t: number) => Math.abs(v / t - 1) <= 0.1;
 check(near(P.regular.map_complete_day, 77) && near(P.casual.map_complete_day, 108) && near(P.dedicated.map_complete_day, 71) && near(P.regular.level30_day, 33) && near(P.regular.level50_day, 113),
   'simulador reproduz as metas da seção 14 com até 10% de diferença');
-check(crops.length > 0 && cropsCfg.rules.work_units.per_character_per_hour === rep.work_per_character_hour, `capacidade de trabalho calibrada (${rep.work_per_character_hour}) gravada em crops.json`);
+check(crops.length > 0 && cropsCfg.rules.work_units.per_character_per_hour === rep.work_per_character_hour, `capacidade de trabalho (${rep.work_per_character_hour}) igual à usada no simulador`);
+check(P.regular.level10_day >= 0.8 && P.regular.level10_day <= 1.3, `simulador: regular no nível 10 no dia ${P.regular.level10_day} (começo rápido: 0,8 a 1,3)`);
+{
+  const wu = cropsCfg.rules.work_units;
+  check(wu.plant + wu.harvest === wu.plant_and_harvest && wu.harvest === wu.extra_harvest_recurring_or_tree, 'trabalho: plantar + colher = 1 ciclo; colheita extra custa o mesmo que colher');
+  const early = levels.xp_curve.early;
+  check(Number(early['1']) <= 8 * crops.find((c: any) => c.unlock_level === 1 && c.grow_minutes <= 10).xp_per_harvest + 1, 'nível 2 sai com 1 rodada de Alface no A1 (8 canteiros)');
+}
 // o relatório tem de ser da config atual: roda o regular de novo (1 semente) e compara
 {
   const { simulate } = await import('../sim/model.ts');
   const Rnow: number[] = []; for (const l of levels.levels) Rnow[l.level] = l.reference_income_per_day;
+  const { xpTable } = await import('../sim/model.ts');
+  const xpCfg = xpTable();
+  check(levels.levels.every((l: any) => (l.xp_to_next ?? Infinity) === xpCfg[l.level]), 'xp_to_next de levels.json bate com a curva de XP (xp_curve)');
   const r = simulate('regular', { workPerHour: rep.work_per_character_hour, R: Rnow, seed: 7 });
   check(Math.abs(r.mapCompleteDay - P.regular.map_complete_day) <= 3 && Math.abs((r.levelDay[50] ?? 999) - P.regular.level50_day) <= 3,
     `relatório do simulador está em dia com a config (regular: mapa ${r.mapCompleteDay.toFixed(1)}, nível 50 ${(r.levelDay[50] ?? 0).toFixed(1)})`);

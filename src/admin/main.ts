@@ -113,26 +113,38 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
       · trabalho guardado ${Number(f.labor_bank).toFixed(2)} · tempo da fazenda ${(f.farm_time / 3600).toFixed(1)} h · última atividade ${when(f.last_activity_at)}</p>
       <p>Lotes: ${f.lots.map((l: any) => `${esc(l.lot_id)}${l.purchase_n ? ` (${l.purchase_n}ª${l.ready_at > f.farm_time ? ', em limpeza' : ''})` : ''}`).join(', ')}</p>
       <p>Silo: <code>${esc(JSON.stringify(f.silo))}</code> · Itens: <code>${esc(JSON.stringify(f.inventory))}</code> · Ferramentas: <code>${esc(JSON.stringify(f.tools))}</code></p>
-      <form class="row" id="grant"><strong>Dar Escritura</strong>
-        <label>Quantidade<input name="qty" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
-        <label style="flex:1">Justificativa (fica na auditoria)<input name="reason" minlength="5" required placeholder="ex.: teste da fase 2"></label>
+      <div class="grants"><p class="hint">Ferramentas de teste: tudo fica na auditoria com a justificativa (e o ouro, no ledger).</p>
+      <form class="row grant" data-kind="deed"><strong>Dar Escritura</strong>
+        <label>Quantidade<input name="value" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: teste da fase 2"></label>
         <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="level"><strong>Mudar nível</strong>
+        <label>Nível<input name="value" type="number" min="1" max="50" value="${f.level}" required style="width:90px"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pomar"></label>
+        <button class="primary small" type="submit">Mudar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
+        <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
+        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form></div>
       ${f.trees.length ? `<p>Árvores: ${f.trees.map((t: any) => `${esc(t.lot_id)}-${t.slot}: ${esc(t.fruit_id ?? 'vazia')}`).join(' · ')}</p>` : ''}
       <table><thead><tr><th>Canteiro</th><th>Cultivo</th><th>Estado</th><th>Pronto em (tempo da fazenda)</th><th>Parado</th></tr></thead><tbody>${
       f.plots.map((p: any) => `<tr><td>${esc(p.plot_id)}</td><td>${esc(p.crop_id ?? '—')}</td><td>${esc(p.state)}</td><td>${p.ready_at ? (p.ready_at / 3600).toFixed(2) + ' h' : '—'}</td><td>${esc(p.stalled_reason ?? '')}</td></tr>`).join('')}</tbody></table>`;
   }
   box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div><div class="table-wrap">${body}</div></div>`;
   box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm')));
-  // dar Escritura (fase 2, até as missões e expedições existirem): o servidor registra na auditoria
-  const grant = box.querySelector<HTMLFormElement>('#grant');
-  grant?.addEventListener('submit', async (e) => {
+  // ferramentas de teste (Escritura, nível e ouro): o servidor exige 2FA e registra tudo na auditoria
+  box.querySelectorAll<HTMLFormElement>('form.grant').forEach((form) => form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const d = new FormData(grant);
-    const msg = grant.querySelector('.msg')!;
-    const { error } = await supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: Number(d.get('qty')), p_reason: String(d.get('reason')) });
+    const d = new FormData(form);
+    const msg = form.querySelector('.msg')!;
+    const value = Number(d.get('value')), reason = String(d.get('reason'));
+    const call = form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
+      : form.dataset.kind === 'level' ? supabase!.rpc('admin_set_level', { p_user: id, p_level: value, p_reason: reason })
+      : supabase!.rpc('admin_grant_gold', { p_user: id, p_amount: value, p_reason: reason });
+    const { error } = await call;
     if (error) { msg.textContent = error.message; return; }
     void detail(id, 'farm');
-  });
+  }));
 }
 
 void start();

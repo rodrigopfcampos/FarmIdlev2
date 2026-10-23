@@ -1,12 +1,13 @@
 // Mapa vivo da fazenda: fundo em escala inteira; lotes que não são seus escurecidos, com placa e entulho;
 // lote comprado mostra o entulho e o tempo de limpeza até ficar pronto; 6 mudas por canteiro com vento
-// e pulinho na troca de estágio; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
+// e pulinho na troca de estágio; canteiro maduro pula esperando o clique; canteiro vazio com cultivo escolhido
+// mostra o ícone do cultivo; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { CROPS, FARM, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { stageSprite } from '../farm/art';
 import { pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
-import { lotOffer, treeLook } from '../farm/rules';
+import { lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
 import { duration, formatGold } from '../ui/format';
@@ -18,7 +19,7 @@ const ZONE_NAMES: Record<string, string> = {
 };
 const depthOf = (y: number) => 1 + y / 10000;
 
-type PlotView = { id: string; polygon: Pt[]; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null };
+type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; fruit: Phaser.GameObjects.Image; look: string };
 type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture'; id: string; poly?: Pt[]; rect?: number[] };
@@ -49,7 +50,9 @@ export class FarmScene extends Phaser.Scene {
       for (const p of lot.plots ?? []) {
         const base = seedlingPositions(p.polygon);
         const sprites = base.map(([x, y]) => this.add.image(x, y, 'crop_generic_stage1').setOrigin(0.5, 1).setVisible(false).setDepth(depthOf(y)));
-        this.plots.push({ id: p.id, polygon: p.polygon, sprites, base, stage: -1, crop: null });
+        // ícone do cultivo escolhido num canteiro vazio (esperando o clique ou o Agricultor)
+        const marker = this.add.image(p.center[0], p.center[1], 'crop_generic_stage1').setScale(0.5).setAlpha(0.75).setVisible(false).setDepth(depthOf(p.center[1]));
+        this.plots.push({ id: p.id, polygon: p.polygon, center: p.center, sprites, base, stage: -1, crop: null, marker, markerKey: '' });
       }
       // vagas de árvore do pomar
       (lot.tree_slots ?? []).forEach(([x, y], i) => {
@@ -79,7 +82,21 @@ export class FarmScene extends Phaser.Scene {
     this.setupCamera();
     this.setupInput();
     bus.on('farm:state', (s: FarmState) => this.applyState(s));
+    bus.on('fx:harvest', (items: { plot: string; text: string }[]) => this.floatTexts(items));
     if (store.state) this.applyState(store.state);
+  }
+
+  /** texto que sobe e some em cima do que foi colhido (+3 Alface) */
+  private floatTexts(items: { plot: string; text: string }[]): void {
+    for (const it of items) {
+      const v = this.plots.find((x) => x.id === it.plot);
+      const lot = LOTS.find((l) => l.id === it.plot);
+      const [x, y] = v ? v.center : lot ? lot.center : [0, 0];
+      const t = this.add.text(x, y - 10, it.text, { fontFamily: 'system-ui, sans-serif', fontSize: '12px', fontStyle: 'bold', color: '#fff3a0', stroke: '#2b2118', strokeThickness: 2 })
+        .setOrigin(0.5, 1).setResolution(2).setDepth(30);
+      this.tweens.add({ targets: t, y: y - 28, duration: 1400, ease: 'Quad.Out', onComplete: () => t.destroy() });
+      this.tweens.add({ targets: t, alpha: 0, delay: 800, duration: 600 });
+    }
   }
 
   private text(): Phaser.GameObjects.Text {
@@ -120,8 +137,18 @@ export class FarmScene extends Phaser.Scene {
     const second = Math.floor(t);
     if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); }
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
+    const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
     for (const v of this.plots) {
       const p = byId.get(v.id);
+      const look = p ? plotLook(p, now, lotReady.get(v.id.split('-')[0]) ?? 0) : 'empty';
+      // ícone do cultivo planejado (vermelho quando falta ouro para a semente)
+      const mk = look === 'planned' || look === 'cleanup' || look === 'stalled' ? `${look}:${p!.crop_id}` : '';
+      if (mk !== v.markerKey) {
+        v.markerKey = mk;
+        const icon = mk ? `icon_${p!.crop_id}` : '';
+        v.marker.setVisible(!!mk && this.textures.exists(icon));
+        if (mk && this.textures.exists(icon)) v.marker.setTexture(icon).setTint(look === 'stalled' ? 0xff7070 : 0xffffff).setAlpha(look === 'planned' ? 0.85 : 0.5);
+      }
       if (!p || p.state !== 'growing' || p.planted_at === null || p.ready_at === null) {
         if (v.stage !== -1) { v.sprites.forEach((sp) => sp.setVisible(false)); v.stage = -1; }
         continue;
@@ -139,8 +166,11 @@ export class FarmScene extends Phaser.Scene {
         });
         v.stage = stage; v.crop = p.planted_crop_id;
       }
-      // vento: onda da esquerda para a direita, em pixels inteiros
-      v.sprites.forEach((sp, i) => sp.setX(v.base[i][0] + windOffset(t, v.base[i][0], FARM.visual.wind_speed, FARM.visual.wind_strength_px)));
+      // vento: onda da esquerda para a direita, em pixels inteiros; maduro dá pulinhos esperando o clique
+      v.sprites.forEach((sp, i) => {
+        sp.setX(v.base[i][0] + windOffset(t, v.base[i][0], FARM.visual.wind_speed, FARM.visual.wind_strength_px));
+        sp.setY(v.base[i][1] - (look === 'ready' ? Math.round(Math.max(0, Math.sin(t * FARM.visual.ready_hop_speed - i * 0.6)) * FARM.visual.ready_hop_px) : 0));
+      });
     }
   }
 
@@ -214,8 +244,25 @@ export class FarmScene extends Phaser.Scene {
 
   private hoverText(hit: Hit): string {
     if (hit.kind === 'zone') return ZONE_NAMES[hit.id];
-    if (hit.kind === 'plot') return `Canteiro ${hit.id}`;
     const s = store.state!;
+    const now = store.clock.farmNow();
+    if (hit.kind === 'plot') {
+      const p = s.plots.find((x) => x.plot_id === hit.id);
+      if (!p) return `Canteiro ${hit.id}`;
+      const name = (id: string | null) => (id ? CROPS[id].name_pt : '');
+      switch (plotLook(p, now, s.lots.find((l) => l.lot_id === hit.id.split('-')[0])?.ready_at ?? 0)) {
+        case 'ready': return `${name(p.planted_crop_id)} pronta · clique para colher`;
+        case 'growing': return `${name(p.planted_crop_id)} · pronta em ${duration(p.ready_at! - now)}`;
+        case 'planned': return `${name(p.crop_id)} · clique para plantar`;
+        case 'cleanup': return `${name(p.crop_id)} · depois da limpeza`;
+        case 'stalled': return `${name(p.crop_id)} · falta ouro para a semente`;
+        default: return `Canteiro ${hit.id} · clique para escolher o cultivo`;
+      }
+    }
+    if (hit.kind === 'orchard') {
+      const ripe = s.trees.filter((x) => x.lot_id === hit.id && x.fruit_id && x.ready_at !== null && x.ready_at <= now).length;
+      if (ripe) return `Pomar ${hit.id} · ${ripe} com fruta: clique para colher`;
+    }
     const type = LOT_TYPE_NAMES[LOTS.find((l) => l.id === hit.id)!.type];
     if (hit.kind !== 'locked') return `${type} ${hit.id}`;
     const o = lotOffer(hit.id, this.owned, s.level, s.inventory.deed ?? 0, s.gold);

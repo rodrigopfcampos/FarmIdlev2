@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "GDD v2 seções 2, 3, 4, 5 e 6 (fazenda, limite offline, lotes, pomar, canteiros vivos)",
   "offline_cap_hours": 8,
   "labor_bank_cap_hours": 1,
@@ -116,7 +116,9 @@
     },
     "no_debris_types": [
       "pasto_lago"
-    ]
+    ],
+    "ready_hop_px": 2,
+    "ready_hop_speed": 4
   },
   "labor_note": "até a fase 3, o Agricultor trabalha sem gastar energia e faz também o pomar",
   "blacksmith_hired_from_phase": 3,

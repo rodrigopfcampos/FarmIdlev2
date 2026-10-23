@@ -49,8 +49,9 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outl
 .status { background: #00000055; border-left: 4px solid var(--gold); padding: 8px 10px; margin: 0 0 12px; }
 .crops { display: grid; gap: 6px; }
 .crop { display: flex; gap: 10px; align-items: center; text-align: left; font: inherit; color: var(--paper); background: #3a2c20; border: 2px solid var(--panel-border); padding: 6px 10px; cursor: pointer; }
-.crop:hover { border-color: var(--gold); }
-.crop.selected { border-color: var(--gold); background: #4a3a20; }
+.crop:hover { border-color: #a8845a; background: #43331f; }
+.crop.selected { border-color: var(--gold); background: #4a3a20; box-shadow: inset 4px 0 0 var(--gold); }
+.crop.selected strong::after { content: ' ✓ escolhido'; color: var(--gold); font-weight: 700; font-size: 13px; }
 .crop small, .items small, .char-card small { display: block; color: #d8c8a8; font-size: 13px; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .secondary { font: inherit; padding: 8px 12px; background: transparent; color: var(--paper); border: 2px solid var(--panel-border); cursor: pointer; }
@@ -89,3 +90,12 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outl
 .tool small { font-size: 12px; color: #d8c8a8; }
 .tool.current { border-color: var(--gold); }
 .tool.locked { opacity: 0.45; }
+
+/* clique do jogador: trabalho do Agricultor e botão Colher e plantar */
+.hud .labor { display: flex; align-items: center; gap: 4px; }
+.laborbar { display: inline-block; width: 40px; height: 6px; background: #3a2c20; border: 1px solid var(--panel-border); }
+.laborbar > span { display: block; height: 100%; background: #6fb3e0; }
+.hud .tend { background: var(--gold); border-color: #8a6a10; color: #1c1c1c; }
+.hud .tend[hidden] { display: none; }
+.row.top { margin: 0 0 10px; }
+.secondary:disabled { opacity: 0.5; cursor: not-allowed; }

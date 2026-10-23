@@ -23,8 +23,8 @@ begin
   s := public.set_crop('A1-1', 'alface');
   reset role;
 
-  -- 2. colheita dá XP e sobe de nível (Alface = 5,1 XP; nível 1→2 pede 410)
-  update public.farms set xp = 405 where user_id = a;
+  -- 2. colheita dá XP e sobe de nível (Alface = 5,1 XP; nível 1→2 pede o xp_to_next da config)
+  update public.farms set xp = (public.config_get('levels') -> 'levels' -> 0 ->> 'xp_to_next')::numeric - 5 where user_id = a;
   update public.farms set synced_at = synced_at - interval '11 minutes', last_activity_at = last_activity_at - interval '11 minutes' where user_id = a;
   set local role authenticated;
   s := public.get_farm();
@@ -38,7 +38,7 @@ begin
   s := public.buy_lot('A3');
   if not exists (select 1 from public.owned_lots where user_id = a and lot_id = 'A3' and purchase_n = 1) then raise exception 'FALHA 5: A3 não comprado'; end if;
   if (select count(*) from public.plots where user_id = a and plot_id like 'A3-%') <> 8 then raise exception 'FALHA 6: A3 sem 8 canteiros'; end if;
-  if (select amount from public.ledger where user_id = a and reason = 'lot_purchase') <> -620 then raise exception 'FALHA 7: preço do 1º lote'; end if;
+  if (select amount from public.ledger where user_id = a and reason = 'lot_purchase') <> -(public.config_get('lots') -> 'purchases' -> 0 ->> 'cost')::numeric then raise exception 'FALHA 7: preço do 1º lote'; end if;
   begin perform public.buy_lot('A2'); raise exception 'FALHA 8: comprou lote não vizinho';
   exception when check_violation then if sqlerrm <> 'lote não é vizinho' then raise exception 'FALHA 8b: %', sqlerrm; end if; end;
   begin perform public.buy_lot('A3'); raise exception 'FALHA 9: comprou o mesmo lote duas vezes';

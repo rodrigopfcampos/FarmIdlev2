@@ -17,3 +17,4 @@ body.admin { overflow: auto; background: var(--bg); }
 #admin .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 #admin .tabs { margin: 12px 0; max-width: 480px; }
 .table-wrap { overflow-x: auto; }
+#admin .grants form { margin: 6px 0; }

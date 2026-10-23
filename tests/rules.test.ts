@@ -1,7 +1,7 @@
 // Regras da progressão do lado do cliente (o servidor tem os testes em supabase/tests/phase2_test.sql).
 import { describe, expect, it } from 'vitest';
 import { CROPS, PURCHASES } from '../src/data';
-import { cleanupMinutes, isNeighbor, lotOffer, plotCrops, orchardFruits, treeLook, xpProgress } from '../src/farm/rules';
+import { cleanupMinutes, isNeighbor, lotOffer, plotCrops, plotLook, orchardFruits, tendCount, treeLook, xpProgress } from '../src/farm/rules';
 
 describe('compra de lotes', () => {
   const start = new Set(['A1']);
@@ -78,5 +78,25 @@ describe('barra de XP', () => {
     expect(xpProgress(205, 410)).toBe(0.5);
     expect(xpProgress(500, 410)).toBe(1);
     expect(xpProgress(0, null)).toBe(1);
+  });
+});
+
+describe('clique do jogador', () => {
+  const plot = (over: Partial<Parameters<typeof plotLook>[0]>) => ({ plot_id: 'A1-1', crop_id: 'alface', state: 'empty' as const, ready_at: null, stalled_reason: null, ...over });
+  it('maduro colhe, planejado planta, vazio abre a escolha', () => {
+    expect(plotLook(plot({ state: 'growing', ready_at: 100 }), 100, 0)).toBe('ready');
+    expect(plotLook(plot({ state: 'growing', ready_at: 101 }), 100, 0)).toBe('growing');
+    expect(plotLook(plot({}), 100, 0)).toBe('planned');
+    expect(plotLook(plot({ crop_id: null }), 100, 0)).toBe('empty');
+    expect(plotLook(plot({}), 100, 200)).toBe('cleanup');
+    expect(plotLook(plot({ stalled_reason: 'sem_ouro' }), 100, 0)).toBe('stalled');
+  });
+  it('o botão conta maduros, planejados e árvores com fruta (não conta quem está sem ouro)', () => {
+    const s = {
+      plots: [plot({ state: 'growing', ready_at: 50 }), plot({ plot_id: 'A1-2' }), plot({ plot_id: 'A1-3', stalled_reason: 'sem_ouro' }), plot({ plot_id: 'A3-1' })],
+      trees: [{ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: 0, ready_at: 90 }],
+      lots: [{ lot_id: 'A1', ready_at: 0 }, { lot_id: 'A3', ready_at: 999 }],
+    };
+    expect(tendCount(s, 100)).toBe(3);
   });
 });

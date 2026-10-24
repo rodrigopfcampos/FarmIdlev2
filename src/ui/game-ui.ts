@@ -3,7 +3,7 @@
 // Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
 import { ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
-import { iconSprite } from '../farm/art';
+import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
 import {
   animalLook, classDef, collectUnits, feedPerCycle, hireCost, hoursToNext, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook, rareSeeds,
   skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
@@ -20,11 +20,25 @@ import { duration, formatGold } from './format';
 const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
-function sprite(key: string | null, scale = 2, cls = ''): string {
+function sprite(key: string | null, scale = 2, cls = '', filter = ''): string {
   const m = key ? store.manifest[key] : null;
   if (!m) return '';
   const [w, h] = m.frame_size ?? m.size;
-  return `<span class="px ${cls}" style="width:${w * scale}px;height:${h * scale}px;background-image:url(assets/${m.file});background-size:${m.size[0] * scale}px ${m.size[1] * scale}px"></span>`;
+  return `<span class="px ${cls}" style="width:${w * scale}px;height:${h * scale}px;background-image:url(assets/${m.file});background-size:${m.size[0] * scale}px ${m.size[1] * scale}px${filter ? `;filter:${filter}` : ''}"></span>`;
+}
+
+/** ícone de um item do Silo: arte (com a variação de cor, se houver) ou emoji provisório */
+function itemIcon(id: string): string {
+  const key = iconSprite(store.manifest, id);
+  if (key) return sprite(key, 1, '', ICON_VARIANTS[id]?.filter ?? '');
+  const e = itemInfo(id).emoji;
+  return e ? `<span class="pet-face small" aria-hidden="true">${e}</span>` : '';
+}
+
+/** rosto do pet nas listas: arte ou emoji provisório */
+function petFace(id: string): string {
+  const key = petSprite(store.manifest, id);
+  return key ? `<span class="pet-face" aria-hidden="true">${sprite(key, 1.5)}</span>` : `<span class="pet-face" aria-hidden="true">${PET_EMOJI[id]}</span>`;
 }
 
 // Até as artes chegarem, os outros personagens usam o Agricultor com outra cor (só visual)
@@ -525,7 +539,7 @@ function siloItems(withSell: boolean): string {
     const c = itemInfo(id);
     const unit = c.price * stallRatio() * salesMult();
     const auto = s.auto_sell.includes(id);
-    return `<li>${c.emoji ? `<span class="pet-face small" aria-hidden="true">${c.emoji}</span>` : sprite(iconSprite(store.manifest, id), 1)}<span><strong>${esc(c.name_pt)}</strong><small>${q} no Silo · Barraca ${nf1.format(unit)} cada</small></span>
+    return `<li>${itemIcon(id)}<span><strong>${esc(c.name_pt)}</strong><small>${q} no Silo · Barraca ${nf1.format(unit)} cada</small></span>
       ${withSell ? `<span class="btns"><button type="button" class="secondary" data-sell="${id}" data-qty="1">Vender 1</button><button type="button" class="primary small" data-sell="${id}" data-qty="${q}">Vender tudo (${formatGold(q * unit)})</button>
       <label class="check"><input type="checkbox" data-auto="${id}" ${auto ? 'checked' : ''}> Venda automática</label></span>` : ''}</li>`;
   }).join('')}</ul>`;
@@ -668,13 +682,13 @@ function petsTab(s: FarmState): string {
     const mine = s.pets.find((x) => x.pet_id === p.id);
     if (!mine) {
       const first = s.pets.length === 0;
-      return `<li><span class="pet-face" aria-hidden="true">${PET_EMOJI[p.id]}</span><span><strong>${esc(p.name_pt)}</strong><small>${PET_TEXT[p.id]}</small></span>
+      return `<li>${petFace(p.id)}<span><strong>${esc(p.name_pt)}</strong><small>${PET_TEXT[p.id]}</small></span>
         <span class="btns"><button type="button" class="primary small" data-adopt="${p.id}" ${!first && s.gold < cost ? 'disabled' : ''}>Adotar${first ? ' (grátis)' : ` · ${formatGold(cost)}`}</button></span></li>`;
     }
     const lv = petLevel(mine.affinity);
     const next = petNextIn(mine.affinity);
     const cared = mine.last_care === s.game_day;
-    return `<li class="${mine.active ? 'active-pet' : ''}"><span class="pet-face" aria-hidden="true">${PET_EMOJI[p.id]}</span><span><strong>${esc(p.name_pt)} · Nv ${lv}${mine.active ? ' · ativo' : ''}</strong>
+    return `<li class="${mine.active ? 'active-pet' : ''}">${petFace(p.id)}<span><strong>${esc(p.name_pt)} · Nv ${lv}${mine.active ? ' · ativo' : ''}</strong>
         <small>${PET_TEXT[p.id]} · efeito a ${Math.round(petFactor(lv) * 100)}%</small>
         <small>Afinidade ${mine.affinity}${next ? ` · próximo nível em ${next} carinho${next > 1 ? 's' : ''}` : ' · nível máximo'}</small></span>
       <span class="btns"><button type="button" class="primary small" data-care="${p.id}" ${cared ? 'disabled' : ''}>${cared ? 'Carinho feito hoje' : 'Carinho'}</button>

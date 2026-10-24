@@ -4091,6 +4091,182 @@
         0.5,
         0.5
       ]
+    },
+    "pet_cachorro_idle1": {
+      "file": "sprites/characters/pet_cachorro_idle1.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_cachorro_idle2": {
+      "file": "sprites/characters/pet_cachorro_idle2.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_gato_idle1": {
+      "file": "sprites/characters/pet_gato_idle1.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_gato_idle2": {
+      "file": "sprites/characters/pet_gato_idle2.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_papagaio_idle1": {
+      "file": "sprites/characters/pet_papagaio_idle1.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_papagaio_idle2": {
+      "file": "sprites/characters/pet_papagaio_idle2.png",
+      "size": [
+        24,
+        24
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "icon_trufa": {
+      "file": "sprites/icons/icon_trufa.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_leite": {
+      "file": "sprites/icons/icon_leite.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_la": {
+      "file": "sprites/icons/icon_la.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pelo_de_coelho": {
+      "file": "sprites/icons/icon_pelo_de_coelho.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_ovo": {
+      "file": "sprites/icons/icon_ovo.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_pena_de_peru": {
+      "file": "sprites/icons/icon_pena_de_peru.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "icon_ovo_de_pata": {
+      "file": "sprites/icons/icon_ovo_de_pata.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "item_fuel": {
+      "file": "sprites/icons/item_fuel.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "item_feed": {
+      "file": "sprites/icons/item_feed.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "item_wrench": {
+      "file": "sprites/icons/item_wrench.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
     }
   }
 }

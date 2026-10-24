@@ -34,7 +34,7 @@ const state: FarmState = {
     { lot_id: 'P1', slot: 3, fruit_id: 'maca', planted_at: T - 60_000, ready_at: T + 2_000 },
     { lot_id: 'P1', slot: 4, fruit_id: null, planted_at: null, ready_at: null },
   ],
-  silo: { batata: 6, cenoura: 3, alface: 9, maca: 4 },
+  silo: { batata: 6, cenoura: 3, alface: 9, maca: 4, ovo: 3, trufa: 1, la_de_alpaca: 2, leite_de_cabra: 1 },
   inventory: { deed: 1 },
   tools: { agricultor: 'wood', rancheira: 'wood', ferreiro: 'wood' },
   game_day: new Date().toISOString().slice(0, 10), labor_nominal: 6.94, last_payday: null, boosted_sale_day: null, pet_swapped_at: null,

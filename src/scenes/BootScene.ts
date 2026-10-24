@@ -5,7 +5,7 @@ import type { Manifest } from '../farm/art';
 import { store } from '../farm/store';
 import { bus } from '../core/bus';
 
-const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_'];
+const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_', 'pet_'];
 const MAP_KEYS = ['ui_coin', 'lot_sign'];
 
 export class BootScene extends Phaser.Scene {

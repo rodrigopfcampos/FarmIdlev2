@@ -5,7 +5,7 @@
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
-import { stageSprite } from '../farm/art';
+import { petSprite, stageSprite } from '../farm/art';
 import { cameraBounds, pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
 import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
@@ -36,7 +36,9 @@ export class FarmScene extends Phaser.Scene {
   private cleaning = new Map<string, number>(); // lote → fim da limpeza (tempo da fazenda)
   private lastSecond = -1;
   private pointer: { x: number; y: number } | null = null; // última posição do mouse no mapa
-  private pet: Phaser.GameObjects.Text | null = null;       // pet ativo na frente da Casa (provisório até a arte)
+  private pet: Phaser.GameObjects.Text | null = null;       // pet ativo sem arte (emoji provisório)
+  private petImg: Phaser.GameObjects.Image | null = null;   // pet ativo com arte (2 quadros parados)
+  private petFrame: 1 | 2 = 1;
   private petAt: Pt | null = null;
 
   constructor() { super('farm'); }
@@ -93,6 +95,13 @@ export class FarmScene extends Phaser.Scene {
       this.petAt = house.pet_anchor;
       this.pet = this.add.text(house.pet_anchor[0], house.pet_anchor[1], '', { fontSize: '16px' }).setOrigin(0.5, 1).setDepth(depthOf(house.pet_anchor[1])).setVisible(false);
       this.tweens.add({ targets: this.pet, y: house.pet_anchor[1] - 2, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+      this.petImg = this.add.image(house.pet_anchor[0], house.pet_anchor[1], '__DEFAULT').setOrigin(0.5, 1).setDepth(depthOf(house.pet_anchor[1])).setVisible(false);
+      // alterna os 2 quadros parados
+      this.time.addEvent({ delay: 650, loop: true, callback: () => {
+        const id = store.state?.pet?.id;
+        const key = id ? petSprite(store.manifest, id, this.petFrame === 1 ? 2 : 1) : null;
+        if (key && this.petImg?.visible && this.textures.exists(key)) { this.petFrame = this.petFrame === 1 ? 2 : 1; this.petImg.setTexture(key); }
+      } });
     }
 
     this.setupCamera();
@@ -127,7 +136,11 @@ export class FarmScene extends Phaser.Scene {
     for (const lot of LOTS) if (!this.owned.has(lot.id)) this.shade.fillPoints(lot.polygon.map(([x, y]) => new Phaser.Math.Vector2(x, y)), true);
     this.refreshDecor();
     const PET_EMOJI: Record<string, string> = { cachorro: '🐶', gato: '🐱', papagaio: '🦜' };
-    this.pet?.setText(s.pet ? PET_EMOJI[s.pet.id] ?? '' : '').setVisible(!!s.pet);
+    const petKey = s.pet ? petSprite(store.manifest, s.pet.id, this.petFrame) : null;
+    const hasArt = !!petKey && this.textures.exists(petKey);
+    if (hasArt) this.petImg?.setTexture(petKey!);
+    this.petImg?.setVisible(!!s.pet && hasArt);
+    this.pet?.setText(s.pet ? PET_EMOJI[s.pet.id] ?? '' : '').setVisible(!!s.pet && !hasArt);
     if (this.pointer) this.showHover(this.pointer.x, this.pointer.y); // o rótulo do lote muda depois da compra
   }
 
@@ -256,7 +269,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private hitTest(x: number, y: number): Hit | null {
-    if (this.pet?.visible && this.petAt && Math.abs(x - this.petAt[0]) <= 10 && y <= this.petAt[1] + 2 && y >= this.petAt[1] - 20) {
+    if ((this.pet?.visible || this.petImg?.visible) && this.petAt && Math.abs(x - this.petAt[0]) <= 10 && y <= this.petAt[1] + 2 && y >= this.petAt[1] - 20) {
       return { kind: 'pet', id: 'pet', rect: [this.petAt[0] - 10, this.petAt[1] - 20, this.petAt[0] + 10, this.petAt[1] + 2] };
     }
     for (const z of ZONES) for (const r of z.hit_rects) if (x >= r[0] && x <= r[2] && y >= r[1] && y <= r[3]) return { kind: 'zone', id: z.id, rect: r };

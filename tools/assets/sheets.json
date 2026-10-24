@@ -1486,6 +1486,178 @@
           ]
         }
       ]
+    },
+    {
+      "id": "pets",
+      "file": "Foto dos pets.jpg",
+      "regions": [
+        {
+          "name": "pets parados",
+          "dir": "characters",
+          "size": [
+            24,
+            24
+          ],
+          "scale": "row",
+          "cells": [
+            [
+              [
+                1410,
+                74,
+                213,
+                219
+              ],
+              [
+                1410,
+                326,
+                206,
+                224
+              ]
+            ],
+            [
+              [
+                1445,
+                590,
+                160,
+                219
+              ],
+              [
+                1766,
+                590,
+                155,
+                213
+              ]
+            ],
+            [
+              [
+                127,
+                1123,
+                177,
+                213
+              ],
+              [
+                436,
+                1129,
+                179,
+                207
+              ]
+            ]
+          ],
+          "names": [
+            [
+              "pet_cachorro_idle1",
+              "pet_cachorro_idle2"
+            ],
+            [
+              "pet_gato_idle1",
+              "pet_gato_idle2"
+            ],
+            [
+              "pet_papagaio_idle1",
+              "pet_papagaio_idle2"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "animal_products",
+      "file": "Produtos dos Animais.png",
+      "regions": [
+        {
+          "name": "produtos e insumos",
+          "dir": "icons",
+          "size": [
+            32,
+            32
+          ],
+          "align": "center",
+          "cells": [
+            [
+              [
+                32,
+                94,
+                156,
+                144
+              ],
+              [
+                188,
+                51,
+                120,
+                203
+              ],
+              [
+                300,
+                82,
+                168,
+                164
+              ],
+              [
+                464,
+                97,
+                145,
+                141
+              ],
+              [
+                608,
+                73,
+                136,
+                176
+              ],
+              [
+                740,
+                78,
+                136,
+                176
+              ],
+              [
+                869,
+                97,
+                123,
+                149
+              ]
+            ],
+            [
+              [
+                44,
+                318,
+                172,
+                192
+              ],
+              [
+                292,
+                318,
+                180,
+                192
+              ],
+              [
+                548,
+                318,
+                184,
+                188
+              ]
+            ]
+          ],
+          "names": [
+            [
+              "icon_trufa",
+              "icon_leite",
+              "icon_la",
+              "icon_pelo_de_coelho",
+              "icon_ovo",
+              "icon_pena_de_peru",
+              "icon_ovo_de_pata"
+            ],
+            [
+              "item_fuel",
+              "item_feed",
+              "item_wrench"
+            ]
+          ]
+        }
+      ],
+      "note": "PNG limpo a partir do JPG do dono: sombras pintadas da cor do fundo (a trufa é escura e sumia com remove_dark_shadow)",
+      "tolerance": 3
     }
   ]
 }

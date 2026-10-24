@@ -4553,6 +4553,666 @@
         0.5,
         0.5
       ]
+    },
+    "animal_vaca_f1": {
+      "file": "sprites/animals/animal_vaca_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_vaca_f2": {
+      "file": "sprites/animals/animal_vaca_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_vaca_f3": {
+      "file": "sprites/animals/animal_vaca_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_vaca_f4": {
+      "file": "sprites/animals/animal_vaca_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_vaca_f5": {
+      "file": "sprites/animals/animal_vaca_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_vaca_f6": {
+      "file": "sprites/animals/animal_vaca_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f1": {
+      "file": "sprites/animals/animal_porco_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f2": {
+      "file": "sprites/animals/animal_porco_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f3": {
+      "file": "sprites/animals/animal_porco_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f4": {
+      "file": "sprites/animals/animal_porco_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f5": {
+      "file": "sprites/animals/animal_porco_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_porco_f6": {
+      "file": "sprites/animals/animal_porco_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f1": {
+      "file": "sprites/animals/animal_ovelha_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f2": {
+      "file": "sprites/animals/animal_ovelha_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f3": {
+      "file": "sprites/animals/animal_ovelha_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f4": {
+      "file": "sprites/animals/animal_ovelha_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f5": {
+      "file": "sprites/animals/animal_ovelha_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ovelha_f6": {
+      "file": "sprites/animals/animal_ovelha_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f1": {
+      "file": "sprites/animals/animal_cabra_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f2": {
+      "file": "sprites/animals/animal_cabra_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f3": {
+      "file": "sprites/animals/animal_cabra_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f4": {
+      "file": "sprites/animals/animal_cabra_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f5": {
+      "file": "sprites/animals/animal_cabra_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_cabra_f6": {
+      "file": "sprites/animals/animal_cabra_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f1": {
+      "file": "sprites/animals/animal_alpaca_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f2": {
+      "file": "sprites/animals/animal_alpaca_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f3": {
+      "file": "sprites/animals/animal_alpaca_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f4": {
+      "file": "sprites/animals/animal_alpaca_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f5": {
+      "file": "sprites/animals/animal_alpaca_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_alpaca_f6": {
+      "file": "sprites/animals/animal_alpaca_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f1": {
+      "file": "sprites/animals/animal_galinha_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f2": {
+      "file": "sprites/animals/animal_galinha_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f3": {
+      "file": "sprites/animals/animal_galinha_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f4": {
+      "file": "sprites/animals/animal_galinha_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f5": {
+      "file": "sprites/animals/animal_galinha_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_galinha_f6": {
+      "file": "sprites/animals/animal_galinha_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f1": {
+      "file": "sprites/animals/animal_pato_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f2": {
+      "file": "sprites/animals/animal_pato_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f3": {
+      "file": "sprites/animals/animal_pato_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f4": {
+      "file": "sprites/animals/animal_pato_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f5": {
+      "file": "sprites/animals/animal_pato_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_pato_f6": {
+      "file": "sprites/animals/animal_pato_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f1": {
+      "file": "sprites/animals/animal_ganso_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f2": {
+      "file": "sprites/animals/animal_ganso_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f3": {
+      "file": "sprites/animals/animal_ganso_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f4": {
+      "file": "sprites/animals/animal_ganso_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f5": {
+      "file": "sprites/animals/animal_ganso_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_ganso_f6": {
+      "file": "sprites/animals/animal_ganso_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f1": {
+      "file": "sprites/animals/animal_coelho_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f2": {
+      "file": "sprites/animals/animal_coelho_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f3": {
+      "file": "sprites/animals/animal_coelho_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f4": {
+      "file": "sprites/animals/animal_coelho_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f5": {
+      "file": "sprites/animals/animal_coelho_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_coelho_f6": {
+      "file": "sprites/animals/animal_coelho_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f1": {
+      "file": "sprites/animals/animal_peru_f1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f2": {
+      "file": "sprites/animals/animal_peru_f2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f3": {
+      "file": "sprites/animals/animal_peru_f3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f4": {
+      "file": "sprites/animals/animal_peru_f4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f5": {
+      "file": "sprites/animals/animal_peru_f5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_peru_f6": {
+      "file": "sprites/animals/animal_peru_f6.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
     }
   }
 }

@@ -38,6 +38,12 @@ function itemIcon(id: string): string {
   return e ? `<span class="pet-face small" aria-hidden="true">${e}</span>` : '';
 }
 
+/** animal nas listas: arte ou emoji provisório */
+function animalFace(id: string): string {
+  const key = `animal_${id}_f1`;
+  return store.manifest[key] ? `<span class="pet-face" aria-hidden="true">${sprite(key, 1.25)}</span>` : `<span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[id] ?? '🐾'}</span>`;
+}
+
 /** rosto do pet nas listas: arte ou emoji provisório */
 function petFace(id: string): string {
   const key = petSprite(store.manifest, id);
@@ -170,7 +176,7 @@ async function tend(target: string | null): Promise<void> {
     const ripeAnimals = before.animals.filter((a) => animalLook(a, now) === 'ready' && (target === null || before.houses[a.house_id]?.lot === target));
     const byHouse = new Map<string, AnimalState[]>();
     for (const a of ripeAnimals) byHouse.set(a.house_id, [...(byHouse.get(a.house_id) ?? []), a]);
-    for (const [house, n] of byHouse) fx.push({ plot: before.houses[house].lot, text: `+${n.length} ${ANIMAL_EMOJI[n[0].animal_id] ?? ''}` });
+    for (const [house, n] of byHouse) fx.push({ plot: before.houses[house].lot, text: `${ANIMAL_BY_ID[n[0].animal_id].name_pt}: ${n.length} coleta${n.length > 1 ? "s" : ""}` });
     const hungry = after.animals.some((a) => a.state === 'hungry');
     bus.emit('fx:harvest', fx);
     const got = Object.entries(after.silo).map(([k, q]) => [k, q - (before.silo[k] ?? 0)] as const).filter(([, d]) => d > 0);
@@ -483,7 +489,7 @@ function openHouse(house: string): void {
       const d = ANIMAL_BY_ID[a.animal_id];
       const r = RARITY_BY_ID[a.rarity];
       const ready = animalLook(a, now) === 'ready';
-      return `<li><span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[a.animal_id] ?? '🐾'}</span><span><strong>${esc(d.name_pt)} <span class="shield" style="--c:${r.color_hex}">${esc(r.name_pt)} ×${nf1.format(r.multiplier)}</span></strong>
+      return `<li>${animalFace(a.animal_id)}<span><strong>${esc(d.name_pt)} <span class="shield" style="--c:${r.color_hex}">${esc(r.name_pt)} ×${nf1.format(r.multiplier)}</span></strong>
         <small>${animalStatus(a)}</small></span>
         <span class="btns">${ready ? `<button type="button" class="primary small" data-collect>Coletar</button>` : ''}<button type="button" class="secondary" data-remove="${slot}">Tirar</button></span></li>`;
     }).join('');
@@ -496,7 +502,7 @@ function openHouse(house: string): void {
         const feed = feedPerCycle(x.feed_cost_per_day, x.produce_every_minutes, fx.feed_discount);
         const value = x.product.fair_price_per_unit * collectUnits(1, fx.animal_production, fx.animal_cap, s.lake && x.is_bird, ANIMAL_RULES.lake_bonus.bird_production);
         return `<button type="button" class="crop ${locked ? 'locked' : ''}" ${locked || s.gold < x.buy_cost ? 'disabled' : `data-buy-animal="${x.id}"`}>
-          <span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[x.id]}</span><span><strong>${esc(x.name_pt)}${locked ? ` · nível ${x.unlock_level}` : ` · ${formatGold(x.buy_cost)} ouro`}</strong>
+          ${animalFace(x.id)}<span><strong>${esc(x.name_pt)}${locked ? ` · nível ${x.unlock_level}` : ` · ${formatGold(x.buy_cost)} ouro`}</strong>
           <small>${esc(x.product.name_pt)} a cada ${duration(x.produce_every_minutes * 60)} (Feira ${formatGold(value)}) · ração ${formatGold(feed)} por ciclo · ${nf1.format(x.xp_per_collect)} XP</small></span></button>`;
       }).join('')}</div><p class="hint">A raridade é sorteada na compra (Comum 75%, Incomum 18%, Raro 5%, Lendário 1,5%, Mítico 0,5%) e fica para sempre. Tirar o animal não devolve o ouro.</p>`;
     }

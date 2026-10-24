@@ -1879,6 +1879,133 @@
           ]
         }
       ]
+    },
+    {
+      "id": "animals1",
+      "file": "Animais 1.jpg",
+      "remove_dark_shadow": true,
+      "regions": [
+        {
+          "name": "animais",
+          "rows": 5,
+          "cols": 6,
+          "size": [
+            32,
+            32
+          ],
+          "scale": "row",
+          "dir": "animals",
+          "names": [
+            [
+              "animal_vaca_f1",
+              "animal_vaca_f2",
+              "animal_vaca_f3",
+              "animal_vaca_f4",
+              "animal_vaca_f5",
+              "animal_vaca_f6"
+            ],
+            [
+              "animal_porco_f1",
+              "animal_porco_f2",
+              "animal_porco_f3",
+              "animal_porco_f4",
+              "animal_porco_f5",
+              "animal_porco_f6"
+            ],
+            [
+              "animal_ovelha_f1",
+              "animal_ovelha_f2",
+              "animal_ovelha_f3",
+              "animal_ovelha_f4",
+              "animal_ovelha_f5",
+              "animal_ovelha_f6"
+            ],
+            [
+              "animal_cabra_f1",
+              "animal_cabra_f2",
+              "animal_cabra_f3",
+              "animal_cabra_f4",
+              "animal_cabra_f5",
+              "animal_cabra_f6"
+            ],
+            [
+              "animal_alpaca_f1",
+              "animal_alpaca_f2",
+              "animal_alpaca_f3",
+              "animal_alpaca_f4",
+              "animal_alpaca_f5",
+              "animal_alpaca_f6"
+            ]
+          ],
+          "rect": [
+            0,
+            10,
+            1024,
+            572
+          ],
+          "uniform_rows": true
+        }
+      ]
+    },
+    {
+      "id": "animals2",
+      "file": "Animais 2.jpg",
+      "remove_dark_shadow": true,
+      "regions": [
+        {
+          "name": "animais",
+          "rows": 5,
+          "cols": 6,
+          "size": [
+            32,
+            32
+          ],
+          "scale": "row",
+          "dir": "animals",
+          "names": [
+            [
+              "animal_galinha_f1",
+              "animal_galinha_f2",
+              "animal_galinha_f3",
+              "animal_galinha_f4",
+              "animal_galinha_f5",
+              "animal_galinha_f6"
+            ],
+            [
+              "animal_pato_f1",
+              "animal_pato_f2",
+              "animal_pato_f3",
+              "animal_pato_f4",
+              "animal_pato_f5",
+              "animal_pato_f6"
+            ],
+            [
+              "animal_ganso_f1",
+              "animal_ganso_f2",
+              "animal_ganso_f3",
+              "animal_ganso_f4",
+              "animal_ganso_f5",
+              "animal_ganso_f6"
+            ],
+            [
+              "animal_coelho_f1",
+              "animal_coelho_f2",
+              "animal_coelho_f3",
+              "animal_coelho_f4",
+              "animal_coelho_f5",
+              "animal_coelho_f6"
+            ],
+            [
+              "animal_peru_f1",
+              "animal_peru_f2",
+              "animal_peru_f3",
+              "animal_peru_f4",
+              "animal_peru_f5",
+              "animal_peru_f6"
+            ]
+          ]
+        }
+      ]
     }
   ]
 }

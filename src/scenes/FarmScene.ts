@@ -22,7 +22,7 @@ const depthOf = (y: number) => 1 + y / 10000;
 
 type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; fruit: Phaser.GameObjects.Image; look: string };
-type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text };
+type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
@@ -78,11 +78,13 @@ export class FarmScene extends Phaser.Scene {
         : undefined;
       // aviso em cima da casa dos animais: produto pronto (emoji do animal) ou fome (!)
       const badge = building && lot.building_anchor
-        ? this.add.text(lot.building_anchor[0], lot.building_anchor[1] - 46, '', { fontSize: '14px', backgroundColor: '#000000aa', padding: { x: 3, y: 1 } })
+        ? this.add.text(lot.building_anchor[0], lot.building_anchor[1] - 46, '', { fontFamily: 'system-ui, sans-serif', fontSize: '12px', fontStyle: 'bold', backgroundColor: '#000000aa', padding: { x: 3, y: 1 } })
           .setOrigin(0.5, 1).setResolution(2).setDepth(21).setVisible(false)
         : undefined;
-      if (badge) this.tweens.add({ targets: badge, y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-      this.decor.push({ lot, sign, debris, timer, building, badge });
+      // arte do animal pronto ao lado do aviso
+      const badgeIcon = badge ? this.add.image(lot.building_anchor![0] - 14, lot.building_anchor![1] - 46, '__DEFAULT').setOrigin(1, 1).setDepth(21).setVisible(false) : undefined;
+      if (badge) this.tweens.add({ targets: [badge, badgeIcon], y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+      this.decor.push({ lot, sign, debris, timer, building, badge, badgeIcon });
     }
 
     // Carroça parada na vaga da Garagem, com a animação de parado
@@ -193,8 +195,12 @@ export class FarmScene extends Phaser.Scene {
         const mine = house ? s!.animals.filter((a) => a.house_id === house) : [];
         const ready = mine.filter((a) => animalLook(a, now) === 'ready');
         const hungry = mine.some((a) => a.state === 'hungry');
-        const txt = ready.length ? `${ANIMAL_EMOJI[ready[0].animal_id] ?? '🐾'} ${ready.length}` : hungry ? '⚠️ ração' : '';
+        const art = ready.length ? `animal_${ready[0].animal_id}_f1` : '';
+        const hasArt = !!art && this.textures.exists(art);
+        const txt = ready.length ? `${hasArt ? '' : `${ANIMAL_EMOJI[ready[0].animal_id] ?? ''} `}${ready.length} pronto${ready.length > 1 ? 's' : ''}` : hungry ? 'Sem ração!' : '';
         d.badge.setText(txt).setVisible(!!txt && !inCleanup);
+        if (hasArt) d.badgeIcon?.setTexture(art);
+        d.badgeIcon?.setVisible(hasArt && !inCleanup).setX(d.badge.x - d.badge.displayWidth / 2 - 1);
       }
     }
   }

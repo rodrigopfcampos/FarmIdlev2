@@ -44,7 +44,7 @@
 8. ✅ Teste da fase 3 e "ok" (24/10).
 10. ✅ Teste da fase 4 e "ok" (24/10).
 11. Testar a fase 5 em produção (lista na seção G) e dar o "ok".
-9. Gerar as artes da seção E (animais); até lá o jogo usa emojis.
+9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
 
 ## D. Fases (GDD seção 13)
@@ -65,7 +65,7 @@
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
 ## E. Artes que faltam
-- 🆕 (fase 4) 10 animais (card do slot); até lá o jogo usa emojis. Produtos: 7 ícones recortados da prancha "Produtos dos Animais" (Leite de cabra, Ovo de ganso e Lã de alpaca usam o ícone base com outra cor).
+- (fase 4) 10 animais recortados das pranchas "Animais 1" e "Animais 2" (6 quadros cada, 32×32). Produtos: 7 ícones recortados da prancha "Produtos dos Animais" (Leite de cabra, Ovo de ganso e Lã de alpaca usam o ícone base com outra cor).
 - (fase 4) prancha "Imagem dos personagens": os 6 personagens (parado + 3 quadros de ação, 32×48) e 6 retratos 48×48; o Agricultor antigo foi trocado por este para manter o mesmo estilo. Molduras das cartas trocadas pela prancha nova "Moldura e parte de traz dos cards".
 - (fase 4) recortados também: 3 pets (2 quadros parados, 24×24) e os insumos Ração, Combustível e Chave (para as próximas fases).
 - (fase 1) recortadas também: estágios de 27 cultivos (pranchas Planta 2, 3 e 4), 40 ícones de produto, o Agricultor (parado + 3 quadros de ação) e a moeda da interface.

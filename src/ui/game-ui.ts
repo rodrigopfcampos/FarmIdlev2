@@ -2,17 +2,17 @@
 // "Colher e plantar") e os painéis das zonas, dos canteiros, dos lotes à venda e do pomar.
 // Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
-import { CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
+import { ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
 import { iconSprite } from '../farm/art';
 import {
-  classDef, hireCost, hoursToNext, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook, rareSeeds,
+  animalLook, classDef, collectUnits, feedPerCycle, hireCost, hoursToNext, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook, rareSeeds,
   skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
 } from '../farm/rules';
 import { applyState, store } from '../farm/store';
 import {
-  adoptPet, buyLot, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
+  adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
   sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, skillAdd, skillChoose, skillReset, tendFarm, upgradeTool,
-  type CharacterState, type FarmState, type PlotState,
+  type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
 import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
@@ -85,7 +85,7 @@ function wire(): void {
     if (s && p && p.last_care !== s.game_day) void act(() => carePet(p.pet_id), `${PET_EMOJI[p.pet_id]} Carinho feito! +${PETS.care_energy} de energia para ${className(p.linked_class ?? 'agricultor')}.`);
     else openZone('casa_principal', 'pets');
   });
-  bus.on('ui:pasture', (id: string) => openInfo(`${LOT_TYPE_NAMES[LOT_BY_ID[id].type]} ${id}`, 'Este pasto é seu. Os animais chegam na fase 4.'));
+  bus.on('ui:pasture', (id: string) => onPastureClick(id));
 }
 
 function onState(s: FarmState): void {
@@ -150,14 +150,20 @@ async function tend(target: string | null): Promise<void> {
     applyState(after);
     const fx = ripe.map((p) => ({ plot: p.plot_id, text: `+${CROPS[p.planted_crop_id!].units_per_harvest} ${CROPS[p.planted_crop_id!].name_pt}` }));
     for (const t of ripeTrees) fx.push({ plot: t.lot_id, text: `+${CROPS[t.fruit_id!].units_per_harvest} ${CROPS[t.fruit_id!].name_pt}` });
+    const ripeAnimals = before.animals.filter((a) => animalLook(a, now) === 'ready' && (target === null || before.houses[a.house_id]?.lot === target));
+    const byHouse = new Map<string, AnimalState[]>();
+    for (const a of ripeAnimals) byHouse.set(a.house_id, [...(byHouse.get(a.house_id) ?? []), a]);
+    for (const [house, n] of byHouse) fx.push({ plot: before.houses[house].lot, text: `+${n.length} ${ANIMAL_EMOJI[n[0].animal_id] ?? ''}` });
+    const hungry = after.animals.some((a) => a.state === 'hungry');
     bus.emit('fx:harvest', fx);
     const got = Object.entries(after.silo).map(([k, q]) => [k, q - (before.silo[k] ?? 0)] as const).filter(([, d]) => d > 0);
     const planted = after.plots.filter((p) => inTarget(p.plot_id) && p.state === 'growing' && p.planted_at !== null && p.planted_at >= after.farm_time - 1).length;
     const parts: string[] = [];
-    if (got.length) parts.push(`Colhido: ${got.map(([k, d]) => `${d} ${CROPS[k].name_pt}`).join(', ')}`);
+    if (got.length) parts.push(`Colhido: ${got.map(([k, d]) => `${d} ${itemInfo(k).name_pt}`).join(', ')}`);
     if (planted) parts.push(`${planted} plantado${planted > 1 ? 's' : ''}`);
     const stalled = after.plots.some((p) => inTarget(p.plot_id) && p.state === 'empty' && p.stalled_reason === 'sem_ouro');
     if (stalled) parts.push('falta ouro para algumas sementes');
+    if (hungry && ripeAnimals.length) parts.push('falta ouro para a ração de algum animal');
     toast(parts.join(' · ') || 'Nada para colher ou plantar agora.');
   } catch (e) {
     toast(e instanceof Error ? e.message : 'Não deu certo.');
@@ -187,7 +193,8 @@ function levelUp(from: number, to: number): void {
   const tools = TOOL_MATERIALS.filter((m) => m.unlock_level > from && m.unlock_level <= to).map((m) => `ferramentas de ${m.name_pt}`);
   const hires = CLASSES.filter((c) => c.unlock_level > from && c.unlock_level <= to).map((c) => `contratar ${c.name_pt}`);
   const pets = PETS.unlock_level > from && PETS.unlock_level <= to ? ['adotar um pet'] : [];
-  const extra = [...news, ...tools, ...hires, ...pets];
+  const animals = ANIMALS.filter((a) => a.unlock_level > from && a.unlock_level <= to).map((a) => a.name_pt);
+  const extra = [...news, ...animals, ...tools, ...hires, ...pets];
   toast(`Nível ${to}!${extra.length ? ` Liberado: ${extra.join(', ')}.` : ''}`, FARM.ui.level_up_toast_seconds);
 }
 
@@ -327,7 +334,9 @@ function openLot(id: string): void {
     const o = lotOffer(id, owned, s.level, s.inventory.deed ?? 0, s.gold, smith, s.fx.cleanup);
     if (!o) return '<p>Este lote já é seu.</p>';
     if (o.problems.includes('fim')) return `<p>${PROBLEM_TEXT.fim(o)}</p>`;
-    const what = def.type === 'lavoura' ? '8 canteiros' : def.type === 'pomar' ? '4 vagas de árvore' : 'pasto para animais (fase 4)';
+    const what = def.type === 'lavoura' ? '8 canteiros' : def.type === 'pomar' ? '4 vagas de árvore'
+      : def.type === 'pasto_lago' ? `Lago: +${Math.round(ANIMAL_RULES.lake_bonus.bird_production * 100)}% nas aves e +${ANIMAL_RULES.lake_bonus.extra_galinheiro_slots} vagas de ave no Galinheiro`
+      : `${def.type === 'pasto_galinheiro' ? 'Galinheiro' : 'Celeiro'} com 4 vagas para animais`;
     return `<dl class="facts">
         <dt>Compra</dt><dd>${o.n}ª de 29</dd>
         <dt>O que vem</dt><dd>${what}</dd>
@@ -411,16 +420,112 @@ function openOrchard(lot: string): void {
   });
 }
 
+
+// ---------- animais (fase 4) ----------
+const houseOfLot = (lot: string) => Object.entries(store.state?.houses ?? {}).find(([, h]) => h.lot === lot)?.[0] ?? null;
+
+function onPastureClick(lot: string): void {
+  const s = store.state;
+  if (!s) return;
+  const house = houseOfLot(lot);
+  if (!house) { openLake(); return; }
+  const now = store.clock.farmNow();
+  if (s.animals.some((a) => a.house_id === house && animalLook(a, now) === 'ready')) void tend(lot);
+  else openHouse(house);
+}
+
+function openLake(): void {
+  const lb = ANIMAL_RULES.lake_bonus;
+  openInfo('Lago', `O Lago dá +${Math.round(lb.bird_production * 100)}% na produção das aves (Galinha, Pato, Ganso e Peru) e +${lb.extra_galinheiro_slots} vagas no Galinheiro, só para aves.`);
+}
+
+function animalStatus(a: AnimalState): string {
+  const now = store.clock.farmNow();
+  const look = animalLook(a, now);
+  const d = ANIMAL_BY_ID[a.animal_id];
+  if (look === 'hungry') return '<span class="bad">Com fome: falta ouro para a ração. Venda algo e ele volta.</span>';
+  if (look === 'ready') return `<strong>${esc(d.product.name_pt)} pronto</strong> · clique para coletar`;
+  return `Produzindo ${esc(d.product.name_pt)} · pronto em ${duration(a.ready_at! - now)}`;
+}
+
+function openHouse(house: string): void {
+  let picking: number | null = null;
+  show(HOUSE_NAMES[house] ?? house, () => {
+    const s = store.state!;
+    const h = s.houses[house];
+    if (!h?.owned) return `<p class="status">${cleanupLeft(h?.lot ?? '') ? `Pasto em limpeza: fica pronto em ${duration(cleanupLeft(h.lot)!)}.` : 'Compre o pasto para ter esta casa.'}</p>`;
+    const now = store.clock.farmNow();
+    const total = h.slots + h.bird_slots;
+    const fx = s.fx;
+    const rows = Array.from({ length: total }, (_, i) => {
+      const slot = i + 1;
+      const bird = slot > h.slots;
+      const a = s.animals.find((x) => x.house_id === house && x.slot === slot);
+      if (!a) return `<li class="empty-slot"><span class="slot-n">Vaga ${slot}</span><span>${bird ? 'Vaga do Lago (só aves)' : 'Vazia'}</span>
+        <span class="btns"><button type="button" class="${picking === slot ? 'primary small' : 'secondary'}" data-pick-slot="${slot}">Comprar animal</button></span></li>`;
+      const d = ANIMAL_BY_ID[a.animal_id];
+      const r = RARITY_BY_ID[a.rarity];
+      const ready = animalLook(a, now) === 'ready';
+      return `<li><span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[a.animal_id] ?? '🐾'}</span><span><strong>${esc(d.name_pt)} <span class="shield" style="--c:${r.color_hex}">${esc(r.name_pt)} ×${nf1.format(r.multiplier)}</span></strong>
+        <small>${animalStatus(a)}</small></span>
+        <span class="btns">${ready ? `<button type="button" class="primary small" data-collect>Coletar</button>` : ''}<button type="button" class="secondary" data-remove="${slot}">Tirar</button></span></li>`;
+    }).join('');
+    let picker = '';
+    if (picking !== null) {
+      const bird = picking > h.slots;
+      const list = ANIMALS.filter((x) => x.house === house && (!bird || x.is_bird));
+      picker = `<h3>Animal para a vaga ${picking}</h3><div class="crops">${list.map((x) => {
+        const locked = x.unlock_level > s.level;
+        const feed = feedPerCycle(x.feed_cost_per_day, x.produce_every_minutes, fx.feed_discount);
+        const value = x.product.fair_price_per_unit * collectUnits(1, fx.animal_production, fx.animal_cap, s.lake && x.is_bird, ANIMAL_RULES.lake_bonus.bird_production);
+        return `<button type="button" class="crop ${locked ? 'locked' : ''}" ${locked || s.gold < x.buy_cost ? 'disabled' : `data-buy-animal="${x.id}"`}>
+          <span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[x.id]}</span><span><strong>${esc(x.name_pt)}${locked ? ` · nível ${x.unlock_level}` : ` · ${formatGold(x.buy_cost)} ouro`}</strong>
+          <small>${esc(x.product.name_pt)} a cada ${duration(x.produce_every_minutes * 60)} (Feira ${formatGold(value)}) · ração ${formatGold(feed)} por ciclo · ${nf1.format(x.xp_per_collect)} XP</small></span></button>`;
+      }).join('')}</div><p class="hint">A raridade é sorteada na compra (Comum 75%, Incomum 18%, Raro 5%, Lendário 1,5%, Mítico 0,5%) e fica para sempre. Tirar o animal não devolve o ouro.</p>`;
+    }
+    const next = HOUSES[house].slots[h.tier + 1];
+    const upCost = next ? Math.round(next.cost * (1 + fx.expansion_cost) * 100) / 100 : 0;
+    const upWhy = !next ? '' : (next.min_level ?? 0) > s.level ? `nível ${next.min_level}` : s.gold < upCost ? `falta ${formatGold(upCost - s.gold)}` : '';
+    const anyReady = s.animals.some((a) => a.house_id === house && animalLook(a, now) === 'ready');
+    return `${anyReady ? '<div class="row top"><button type="button" class="primary small" data-collect>Coletar tudo</button></div>' : ''}
+      <ul class="items trees">${rows}</ul>${picker}
+      ${next ? `<div class="row"><button type="button" class="secondary" data-upgrade-house ${upWhy ? 'disabled' : ''}>Ampliar para ${next.slots} vagas · ${formatGold(upCost)}${upWhy ? ` (${upWhy})` : ''}</button></div>` : ''}
+      <p class="hint">Com o jogo aberto, coletar com clique é grátis e rende 100%. Fora do jogo a equipe coleta (${nf1.format(WORK.harvest)} de trabalho) e rende ${Math.round(ANIMAL_RULES.collector_efficiency.rancheira * 100)}% com a Rancheira em campo, ${Math.round(ANIMAL_RULES.collector_efficiency.other_class * 100)}% sem ela${fx.rancheira ? ' (ela está em campo)' : ''}. A ração é cobrada no começo de cada ciclo.${house === 'galinheiro' && !s.lake ? ' O Lago dá +2 vagas para aves.' : ''}</p>`;
+  }, (el) => {
+    const s = store.state!;
+    el.querySelectorAll('[data-collect]').forEach((b) => b.addEventListener('click', () => void tend(s.houses[house].lot)));
+    el.querySelectorAll<HTMLButtonElement>('[data-pick-slot]').forEach((b) => b.addEventListener('click', () => { picking = Number(b.dataset.pickSlot); current?.(); }));
+    el.querySelectorAll<HTMLButtonElement>('[data-buy-animal]').forEach((b) => b.addEventListener('click', () => {
+      const slot = picking!;
+      picking = null;
+      b.disabled = true;
+      void act(() => buyAnimal(house, slot, b.dataset.buyAnimal!)).then(() => {
+        const a = store.state?.animals.find((x) => x.house_id === house && x.slot === slot);
+        if (a) toast(`${ANIMAL_BY_ID[a.animal_id].name_pt} ${RARITY_BY_ID[a.rarity].name_pt}!${a.rarity === 'common' ? '' : ` Produz ×${nf1.format(RARITY_BY_ID[a.rarity].multiplier)}.`}`, 5);
+      });
+    }));
+    el.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.confirm !== '1') { b.dataset.confirm = '1'; b.textContent = 'Tirar mesmo? (sem reembolso)'; return; }
+      b.disabled = true;
+      void act(() => removeAnimal(house, Number(b.dataset.remove)), 'Animal retirado.');
+    }));
+    el.querySelector<HTMLButtonElement>('[data-upgrade-house]')?.addEventListener('click', (e) => {
+      (e.currentTarget as HTMLButtonElement).disabled = true;
+      void act(() => upgradeHouse(house), 'Casa ampliada!');
+    });
+  });
+}
+
 // ---------- zonas ----------
 function siloItems(withSell: boolean): string {
   const s = store.state!;
   const items = Object.entries(s.silo).filter(([, q]) => q > 0);
   if (!items.length) return '<p class="empty">O Silo está vazio. As colheitas chegam aqui sozinhas.</p>';
   return `<ul class="items">${items.map(([id, q]) => {
-    const c = CROPS[id];
-    const unit = c.fair_price_per_unit * stallRatio() * salesMult();
+    const c = itemInfo(id);
+    const unit = c.price * stallRatio() * salesMult();
     const auto = s.auto_sell.includes(id);
-    return `<li>${sprite(iconSprite(store.manifest, id), 1)}<span><strong>${esc(c.name_pt)}</strong><small>${q} no Silo · Barraca ${nf1.format(unit)} cada</small></span>
+    return `<li>${c.emoji ? `<span class="pet-face small" aria-hidden="true">${c.emoji}</span>` : sprite(iconSprite(store.manifest, id), 1)}<span><strong>${esc(c.name_pt)}</strong><small>${q} no Silo · Barraca ${nf1.format(unit)} cada</small></span>
       ${withSell ? `<span class="btns"><button type="button" class="secondary" data-sell="${id}" data-qty="1">Vender 1</button><button type="button" class="primary small" data-sell="${id}" data-qty="${q}">Vender tudo (${formatGold(q * unit)})</button>
       <label class="check"><input type="checkbox" data-auto="${id}" ${auto ? 'checked' : ''}> Venda automática</label></span>` : ''}</li>`;
   }).join('')}</ul>`;
@@ -430,11 +535,11 @@ function bindSell(el: HTMLElement): void {
   el.querySelectorAll<HTMLButtonElement>('[data-sell]').forEach((b) => b.addEventListener('click', () => {
     b.disabled = true;
     const qty = Number(b.dataset.qty);
-    void act(() => sellAtStall(b.dataset.sell!, qty), `Vendido: ${qty} ${CROPS[b.dataset.sell!].name_pt}`);
+    void act(() => sellAtStall(b.dataset.sell!, qty), `Vendido: ${qty} ${itemInfo(b.dataset.sell!).name_pt}`);
   }));
   el.querySelectorAll<HTMLInputElement>('[data-auto]').forEach((b) => b.addEventListener('change', () => {
     const id = b.dataset.auto!;
-    void act(() => setAutoSell(id, b.checked), b.checked ? `${CROPS[id].name_pt}: o Comerciante vende sozinho` : `${CROPS[id].name_pt}: venda automática desligada`);
+    void act(() => setAutoSell(id, b.checked), b.checked ? `${itemInfo(id).name_pt}: o Comerciante vende sozinho` : `${itemInfo(id).name_pt}: venda automática desligada`);
   }));
   el.querySelectorAll<HTMLButtonElement>('[data-snack-buy]').forEach((b) => b.addEventListener('click', () => {
     b.disabled = true;

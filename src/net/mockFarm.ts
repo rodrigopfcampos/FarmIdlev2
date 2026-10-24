@@ -1,5 +1,5 @@
 // Estado falso da fazenda, só para desenvolvimento e screenshots (nunca entra no build de produção).
-import { CHARS, CROPS, MAP_RULES, PETS, SNACKS, TOOL_MATERIALS } from '../data';
+import { ANIMAL_BY_ID, CHARS, CROPS, MAP_RULES, PETS, SNACKS, TOOL_MATERIALS } from '../data';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
 import type { CharacterState, FarmState, PlotState } from './farmApi';
 
@@ -48,7 +48,15 @@ const state: FarmState = {
   pet: { id: 'gato', level: 2, factor: 0.55, linked: 'agricultor' },
   snack_prices: Object.fromEntries(SNACKS.map((x) => [x.id, Math.round(96000 * x.price_R_ratio)])),
   fx: { stall_ratio: 0.7, seed_discount: 0, sales_gold: 0, shop_discount: 0, auto_sell: false, auto_pay: false, rare_seed: 0, seed_refund: 0,
-    gerente_cut: 0, early_unlock: null, daily_boost: 0, growth_crop: 0.02, growth_orchard: 0, tree_initial: 0, cleanup: 0, tool_cost: 0, harvest_xp: 0, golden: 0 },
+    gerente_cut: 0, early_unlock: null, daily_boost: 0, growth_crop: 0.02, growth_orchard: 0, tree_initial: 0, cleanup: 0, tool_cost: 0, harvest_xp: 0, golden: 0,
+    feed_discount: 0, animal_production: 0.055, animal_cap: 0.6, animal_double: 0, expansion_cost: 0, rancheira: true },
+  animals: [
+    { house_id: 'galinheiro', slot: 1, animal_id: 'galinha', rarity: 'common', state: 'growing', cycle_start: T - 7300, ready_at: T - 100 },
+    { house_id: 'galinheiro', slot: 2, animal_id: 'galinha', rarity: 'rare', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
+    { house_id: 'galinheiro', slot: 3, animal_id: 'coelho', rarity: 'mythic', state: 'hungry', cycle_start: T - 100, ready_at: null },
+  ],
+  houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' }, celeiro: { owned: false, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' } },
+  lake: false,
 };
 state.inventory['seed:alface:rare'] = 1;
 state.inventory.snack_cheese_bread = 4;
@@ -76,6 +84,10 @@ export const mockFarm = {
       for (const tr of state.trees) if ((args.p_target == null || tr.lot_id === args.p_target) && tr.fruit_id && tr.ready_at! <= t) {
         const c = CROPS[tr.fruit_id];
         state.silo[c.id] = (state.silo[c.id] ?? 0) + c.units_per_harvest; tr.ready_at = t + (c.regrow_minutes ?? 0) * 60;
+      }
+      for (const a of state.animals) if (a.state === 'growing' && a.ready_at! <= t && (args.p_target == null || state.houses[a.house_id].lot === args.p_target)) {
+        const d = ANIMAL_BY_ID[a.animal_id];
+        state.silo[d.product.id] = (state.silo[d.product.id] ?? 0) + 1; a.ready_at = t + d.produce_every_minutes * 60;
       }
       plantNow();
     }
@@ -114,6 +126,9 @@ export const mockFarm = {
     if (fn === 'adopt_pet') state.pets.push({ pet_id: args.p_pet as string, affinity: 0, last_care: null, active: false, linked_class: null });
     if (fn === 'care_pet') { const p = state.pets.find((x) => x.pet_id === args.p_pet)!; p.affinity++; p.last_care = state.game_day; }
     if (fn === 'link_pet') { state.pets.find((x) => x.active)!.linked_class = args.p_class as string; state.pet!.linked = args.p_class as string; }
+    if (fn === 'buy_animal') state.animals.push({ house_id: args.p_house as string, slot: args.p_slot as number, animal_id: args.p_animal as string, rarity: 'uncommon', state: 'growing', cycle_start: t, ready_at: t + 7200 });
+    if (fn === 'remove_animal') state.animals = state.animals.filter((a) => !(a.house_id === args.p_house && a.slot === args.p_slot));
+    if (fn === 'upgrade_house') { const h = state.houses[args.p_house as string]; h.tier++; h.slots += 4; }
     void PETS;
     return structuredClone({ ...state, server_now: new Date().toISOString(), last_activity_at: new Date().toISOString() });
   },

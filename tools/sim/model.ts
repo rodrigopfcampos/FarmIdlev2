@@ -214,7 +214,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     // jogo aberto: o jogador colhe e planta tudo com cliques, sem gastar trabalho do Agricultor.
     // Isso vale 1 ciclo por canteiro e 1 colheita por árvore até a próxima sessão (no máximo o limite offline).
     const gap = Math.min(nextSessionAfter(t) - t, SIM.offline_cap_hours);
-    freePerHour = SIM.click_play ? (plots * WU.plant_and_harvest + 4 * orchards.length * WU.harvest) / gap : 0;
+    // animais: o clique coleta o que está pronto (1 coleta por animal por sessão)
+    const animalsNow = Object.values(houses).reduce((a, h) => a + (h.animal ? h.count : 0), 0);
+    freePerHour = SIM.click_play ? (plots * WU.plant_and_harvest + 4 * orchards.length * WU.harvest + animalsNow * WU.harvest) / gap : 0;
   }
 
   function sell(t: number) {
@@ -412,6 +414,20 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const cap = workCapacity(t);
     let labor = cap.total + freePerHour;
     let value = 0, units = 0, gainXp = 0;
+    // fase 4: animais primeiro na fila (cada coleta gasta 0,5 de trabalho; a ração é cobrada por ciclo)
+    const rancheira = has('rancheira');
+    for (const [hid, h] of Object.entries(houses)) if (h.animal && h.count > 0) {
+      const a = h.animal;
+      const per = h.count / (a.produce_every_minutes / 60); // coletas por hora
+      const need = per * WU.harvest;
+      const f = Math.min(1, labor / need); labor -= need * f;
+      const perH = (a.product.fair_price_per_unit / (a.produce_every_minutes / 60)) * ANIMAL_AVG
+        * (rancheira ? CFG.animals.rules.collector_efficiency.rancheira : CFG.animals.rules.collector_efficiency.other_class)
+        * (lake && hid === 'galinheiro' && a.is_bird ? 1 + CFG.animals.rules.lake_bonus.bird_production : 1);
+      value += h.count * perH * f; units += per * f;
+      gainXp += h.count * a.xp_per_collect / (a.produce_every_minutes / 60) * f;
+      const fd = h.count * a.feed_cost_per_day / 24 * f; gold -= Math.min(gold, fd); feed += fd;
+    }
     for (const o of orchards) if (o.fruit && t >= o.readyAt) {
       const need = 4 * o.fruit.work;
       const f = Math.min(1, labor / need); labor -= need * f;
@@ -421,16 +437,6 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     value += plan.gold + plan.seed * seedBack(); units += plan.units; gainXp += plan.xp; seeds += plan.seed * (1 - seedBack());
     // Botânica: sementes raras (média) e +XP nas colheitas de lavoura e pomar
     value *= botanicaMult(); units *= botanicaMult(); gainXp *= botanicaMult() * botanicaXp();
-    const rancheira = has('rancheira');
-    for (const [hid, h] of Object.entries(houses)) if (h.animal && h.count > 0) {
-      const a = h.animal;
-      const perH = (a.product.fair_price_per_unit / (a.produce_every_minutes / 60)) * ANIMAL_AVG
-        * (rancheira ? CFG.animals.rules.collector_efficiency.rancheira : CFG.animals.rules.collector_efficiency.other_class)
-        * (lake && hid === 'galinheiro' && a.is_bird ? 1 + CFG.animals.rules.lake_bonus.bird_production : 1);
-      value += h.count * perH; units += h.count / (a.produce_every_minutes / 60);
-      gainXp += h.count * a.xp_per_collect / (a.produce_every_minutes / 60);
-      const f = h.count * a.feed_cost_per_day / 24; gold -= Math.min(gold, f); feed += f;
-    }
     silo.value += value; silo.units += units;
     const x = gainXp * weatherXp * 1.15; // +15% de XP das expedições
     addXp(x, t); dayXp += x;

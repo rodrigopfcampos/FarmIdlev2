@@ -98,7 +98,7 @@ export function plotLook(p: PlotLike, now: number, lotReadyAt: number): PlotLook
 }
 
 /** quantas coisas o botão "Colher e plantar" resolve agora (canteiros maduros ou à espera e árvores maduras) */
-export function tendCount(s: { plots: PlotLike[]; trees: TreeState[]; lots: { lot_id: string; ready_at: number }[] }, now: number): number {
+export function tendCount(s: { plots: PlotLike[]; trees: TreeState[]; lots: { lot_id: string; ready_at: number }[]; animals?: AnimalLike[] }, now: number): number {
   const ready = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
   let n = 0;
   for (const p of s.plots) {
@@ -106,6 +106,7 @@ export function tendCount(s: { plots: PlotLike[]; trees: TreeState[]; lots: { lo
     if (look === 'ready' || look === 'planned') n++;
   }
   for (const t of s.trees) if (t.fruit_id && t.ready_at !== null && t.ready_at <= now) n++;
+  for (const a of s.animals ?? []) if (animalLook(a, now) === 'ready') n++;
   return n;
 }
 
@@ -167,4 +168,22 @@ export function rareSeeds(inventory: Record<string, number>, crop?: string): { c
   return Object.entries(inventory).filter(([k, q]) => k.startsWith('seed:') && q > 0)
     .map(([k, qty]) => { const [, c, rarity] = k.split(':'); return { crop: c, rarity, qty }; })
     .filter((x) => !crop || x.crop === crop);
+}
+
+// ---------- animais (fase 4) ----------
+export type AnimalLike = { state: 'growing' | 'hungry'; ready_at: number | null };
+/** pronto (espera o clique ou a equipe), produzindo ou com fome (sem ouro para a ração) */
+export function animalLook(a: AnimalLike, now: number): 'ready' | 'growing' | 'hungry' {
+  if (a.state === 'hungry') return 'hungry';
+  return a.ready_at !== null && a.ready_at <= now ? 'ready' : 'growing';
+}
+
+/** ração de 1 ciclo do animal (ração/dia × duração do ciclo, com desconto) */
+export function feedPerCycle(feedPerDay: number, cycleMinutes: number, discount = 0): number {
+  return Math.round(feedPerDay * cycleMinutes / 1440 * (1 - discount) * 100) / 100;
+}
+
+/** valor esperado de 1 coleta: raridade × (1 + bônus com teto, Lago nas aves) */
+export function collectUnits(rarityMult: number, bonus: number, cap: number, lakeBird: boolean, lakeBonus: number): number {
+  return rarityMult * (1 + Math.min(cap, bonus + (lakeBird ? lakeBonus : 0)));
 }

@@ -232,29 +232,29 @@ custo(n) = 0,28 × 1,10^(n−1) × R(⌈1,46 × n⌉)
 | 4 | A2 | Lavoura | 6 | 4.800 | Não | 1 h 48 | 0,9 |
 | 5 | C2 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
 | 6 | A6 | Lavoura | 9 | 24.000 | Não | 2 h 12 | 1,8 |
-| 7 | P1 | Pomar | 11 | 48.000 | Não | 2 h 24 | 2,3 |
-| 8 | A7 | Lavoura | 12 | 71.000 | Não | 2 h 36 | 3,8 |
+| 7 | P1 | Pomar | 11 | 50.000 | Não | 2 h 24 | 2,3 |
+| 8 | A7 | Lavoura | 12 | 76.000 | Não | 2 h 36 | 3,8 |
 | 9 | A8 | Lavoura | 14 | 190.000 | Não | 2 h 48 | 5,3 |
-| 10 | P2 | Pomar | 15 | 270.000 | Não | 3 h 00 | 6,3 |
-| 11 | A5 | Lavoura | 17 | 520.000 | Não | 3 h 12 | 8,8 |
-| 12 | A10 | Lavoura | 18 | 640.000 | Não | 3 h 24 | 9,5 |
-| 13 | P3 | Pomar | 19 | 770.000 | Não | 3 h 36 | 10,8 |
+| 10 | P2 | Pomar | 15 | 280.000 | Não | 3 h 00 | 6,3 |
+| 11 | A5 | Lavoura | 17 | 510.000 | Não | 3 h 12 | 8,8 |
+| 12 | A10 | Lavoura | 18 | 640.000 | Não | 3 h 24 | 9,8 |
+| 13 | P3 | Pomar | 19 | 780.000 | Não | 3 h 36 | 10,8 |
 | 14 | A11 | Lavoura | 21 | 1.200.000 | Não | 3 h 48 | 14,3 |
 | 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 17,5 |
-| 16 | P4 | Pomar | 24 | 2.200.000 | Não | 4 h 12 | 19,5 |
-| 17 | A13 | Lavoura | 25 | 3.000.000 | Não | 4 h 24 | 21,8 |
+| 16 | P4 | Pomar | 24 | 2.200.000 | Não | 4 h 12 | 19,8 |
+| 17 | A13 | Lavoura | 25 | 3.000.000 | Não | 4 h 24 | 21,9 |
 | 18 | A20 | Lavoura | 27 | 5.000.000 | Não | 4 h 36 | 25,3 |
 | 19 | L | Lago | 28 | 5.900.000 | Não | 4 h 48 | 27,5 |
 | 20 | P5 | Pomar | 30 | 8.400.000 | Sim | 5 h 00 | 33,3 |
 | 21 | A9 | Lavoura | 31 | 10.000.000 | Sim | 5 h 12 | 37,5 |
-| 22 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 24 | 41,3 |
+| 22 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 24 | 41,5 |
 | 23 | P6 | Pomar | 34 | 17.000.000 | Sim | 5 h 36 | 44,3 |
 | 24 | A15 | Lavoura | 36 | 25.000.000 | Sim | 5 h 48 | 50,3 |
 | 25 | A16 | Lavoura | 37 | 30.000.000 | Sim | 6 h 00 | 53,5 |
 | 26 | A17 | Lavoura | 38 | 36.000.000 | Sim | 6 h 12 | 56,9 |
 | 27 | A18 | Lavoura | 40 | 50.000.000 | Sim | 6 h 24 | 64,5 |
 | 28 | A19 | Lavoura | 41 | 62.000.000 | Sim | 6 h 36 | 68,5 |
-| 29 | A21 | Lavoura | 43 | 81.000.000 | Sim | 6 h 48 | 77,3 |
+| 29 | A21 | Lavoura | 43 | 85.000.000 | Sim | 6 h 48 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -329,7 +329,7 @@ Um cultivo novo libera a cada nível, do 1 ao 49 (o nível 1 tem 2: Alface e Cen
 
 ### Animais
 
-Cada animal rende cerca de 3 canteiros (2,9 a 3,1, valor bruto). A Rancheira em campo coleta a 100%; outra classe, a 60%. A ração (≈15% da produção) é descontada sozinha; sem ouro para ração, o animal para de produzir (nunca morre). Comprar um animal custa 10 dias de ração. Cada casa começa com 4 vagas e amplia para 8 e 12.
+Cada animal rende cerca de 3 canteiros (2,9 a 3,1, valor bruto). A Rancheira em campo coleta a 100%; outra classe, a 60%. 🆕 **Fase 4 (decisões do dono, 24/10):** a coleta é igual à lavoura: com o jogo aberto o clique coleta grátis e rende 100%; fora do jogo a equipe coleta na fila gastando 0,5 de trabalho (100% com a Rancheira em campo, 60% sem ela). O produto pronto espera a coleta. Cada vaga escolhe o seu animal (casas mistas). A ração é cobrada no começo de cada ciclo (ração/dia × duração do ciclo); sem ouro o animal fica com fome e volta sozinho quando entra ouro. Bônus de produção (habilidade, Gato, Lago) somam com teto de +60%; a raridade multiplica à parte. A ração (≈15% da produção) é descontada sozinha; sem ouro para ração, o animal para de produzir (nunca morre). Comprar um animal custa 10 dias de ração. Cada casa começa com 4 vagas e amplia para 8 e 12.
 
 🆕 **Raridade do animal:** sorteada no servidor na hora da compra e fixa para sempre: Comum 75%, Incomum 18%, Raro 5%, Lendário 1,5%, Mítico 0,5%. Multiplica a produção por ciclo (×1 / ×1,2 / ×1,5 / ×2 / ×3); a ração não muda. Na média os animais produzem ×1,09. Tirar um animal da vaga não devolve ouro, para ninguém ficar comprando de novo até sair Mítico. O card do animal mostra um escudo na cor da raridade.
 
@@ -397,7 +397,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 170 | 1.600 | 8.200 | 20.000 | 46.000 | 98.000 | 170.000 | 300.000 | 460.000 | 540.000 |
+| Salário base/dia (ouro) | 170 | 1.600 | 8.400 | 20.000 | 46.000 | 98.000 | 170.000 | 300.000 | 460.000 | 540.000 |
 
 ### Nível do personagem
 
@@ -570,31 +570,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 891.000 | 3.000.000 |
-| 2 | 50 | 2.400 | | 27 | 1.026.000 | 3.500.000 |
-| 3 | 65 | 3.900 | | 28 | 1.201.500 | 3.800.000 |
-| 4 | 90 | 5.800 | | 29 | 1.350.000 | 4.300.000 |
-| 5 | 870 | 8.700 | | 30 | 1.350.000 | 4.900.000 |
-| 6 | 1.280 | 13.000 | | 31 | 1.435.200 | 5.400.000 |
-| 7 | 2.040 | 20.000 | | 32 | 1.656.000 | 6.000.000 |
-| 8 | 3.150 | 29.000 | | 33 | 1.766.400 | 6.700.000 |
-| 9 | 5.310 | 54.000 | | 34 | 1.987.200 | 7.400.000 |
-| 10 | 20.250 | 82.000 | | 35 | 2.318.400 | 8.600.000 |
-| 11 | 33.750 | 96.000 | | 36 | 2.649.600 | 10.000.000 |
-| 12 | 48.600 | 130.000 | | 37 | 2.980.800 | 11.000.000 |
-| 13 | 70.200 | 220.000 | | 38 | 3.422.400 | 12.000.000 |
-| 14 | 89.100 | 320.000 | | 39 | 3.864.000 | 13.000.000 |
-| 15 | 114.750 | 410.000 | | 40 | 4.305.600 | 15.000.000 |
-| 16 | 148.500 | 560.000 | | 41 | 4.747.200 | 17.000.000 |
-| 17 | 175.500 | 710.000 | | 42 | 5.188.800 | 19.000.000 |
-| 18 | 216.000 | 800.000 | | 43 | 5.851.200 | 20.000.000 |
-| 19 | 270.000 | 880.000 | | 44 | 6.403.200 | 22.000.000 |
-| 20 | 324.000 | 1.000.000 | | 45 | 7.065.600 | 23.000.000 |
-| 21 | 378.000 | 1.200.000 | | 46 | 7.617.600 | 24.000.000 |
-| 22 | 445.500 | 1.400.000 | | 47 | 8.059.200 | 25.000.000 |
-| 23 | 540.000 | 1.600.000 | | 48 | 8.500.800 | 25.000.000 |
-| 24 | 648.000 | 1.900.000 | | 49 | 8.721.600 | 26.000.000 |
-| 25 | 769.500 | 2.300.000 | | 50 | — | 27.000.000 |
+| 1 | 40 | 1.900 | | 26 | 894.300 | 3.000.000 |
+| 2 | 50 | 2.400 | | 27 | 1.029.800 | 3.500.000 |
+| 3 | 65 | 3.900 | | 28 | 1.205.950 | 3.800.000 |
+| 4 | 90 | 5.800 | | 29 | 1.355.000 | 4.300.000 |
+| 5 | 870 | 8.700 | | 30 | 1.355.000 | 4.900.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.441.700 | 5.400.000 |
+| 7 | 2.040 | 20.000 | | 32 | 1.663.500 | 6.000.000 |
+| 8 | 3.150 | 29.000 | | 33 | 1.774.400 | 6.700.000 |
+| 9 | 5.310 | 54.000 | | 34 | 1.996.200 | 7.400.000 |
+| 10 | 20.330 | 82.000 | | 35 | 2.328.900 | 8.600.000 |
+| 11 | 33.880 | 100.000 | | 36 | 2.661.600 | 10.000.000 |
+| 12 | 48.780 | 140.000 | | 37 | 2.994.300 | 11.000.000 |
+| 13 | 70.460 | 220.000 | | 38 | 3.437.900 | 12.000.000 |
+| 14 | 89.430 | 320.000 | | 39 | 3.881.500 | 13.000.000 |
+| 15 | 115.180 | 420.000 | | 40 | 4.325.100 | 15.000.000 |
+| 16 | 149.050 | 550.000 | | 41 | 4.768.700 | 17.000.000 |
+| 17 | 176.150 | 700.000 | | 42 | 5.212.300 | 19.000.000 |
+| 18 | 216.800 | 800.000 | | 43 | 5.877.700 | 21.000.000 |
+| 19 | 271.000 | 890.000 | | 44 | 6.432.200 | 22.000.000 |
+| 20 | 325.200 | 1.000.000 | | 45 | 7.097.600 | 23.000.000 |
+| 21 | 379.400 | 1.200.000 | | 46 | 7.652.100 | 24.000.000 |
+| 22 | 447.150 | 1.400.000 | | 47 | 8.095.700 | 25.000.000 |
+| 23 | 542.000 | 1.600.000 | | 48 | 8.539.300 | 25.000.000 |
+| 24 | 650.400 | 1.900.000 | | 49 | 8.761.100 | 26.000.000 |
+| 25 | 772.350 | 2.300.000 | | 50 | — | 27.000.000 |
 
 ### Raridade global 🆕
 

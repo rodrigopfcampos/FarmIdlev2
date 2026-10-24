@@ -130,10 +130,15 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o Desmotivado"></label>
         <input name="value" type="hidden" value="1">
         <button class="primary small" type="submit">Cobrar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="animals"><strong>Terminar ciclo dos animais</strong>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a coleta"></label>
+        <input name="value" type="hidden" value="1">
+        <button class="primary small" type="submit">Terminar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
         <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form></div>
+      <p>Animais: ${(f.animals ?? []).map((a: any) => `${esc(a.house_id)}-${a.slot} ${esc(a.animal_id)} (${esc(a.rarity)}${a.state === 'hungry' ? ', com fome' : ''})`).join(' · ') || '—'}</p>
       <p>Personagens: ${(f.characters ?? []).map((c: any) => `${esc(c.class_id)} Nv ${c.level} (${esc(c.slot === 'field' ? 'campo' : 'banco')}, energia ${Number(c.energy).toFixed(0)}${Number(c.debt) > 0 ? `, deve ${formatGold(Number(c.debt))} há ${c.unpaid_days} dia(s)` : ''})`).join(' · ') || '—'}
         · Pets: ${(f.pets ?? []).map((p: any) => `${esc(p.pet_id)} (afinidade ${p.affinity}${p.active ? ', ativo' : ''})`).join(' · ') || '—'} · último salário: ${esc(f.last_payday ?? '—')}</p>
       ${f.trees.length ? `<p>Árvores: ${f.trees.map((t: any) => `${esc(t.lot_id)}-${t.slot}: ${esc(t.fruit_id ?? 'vazia')}`).join(' · ')}</p>` : ''}
@@ -149,7 +154,8 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
     const msg = form.querySelector('.msg')!;
     const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
-    const call = form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })
+    const call = form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })
+      : form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
       : form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
       : form.dataset.kind === 'level' ? supabase!.rpc('admin_set_level', { p_user: id, p_level: value, p_reason: reason })

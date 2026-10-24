@@ -12,11 +12,14 @@ export type CharacterState = {
   snack_id: string | null; snack_qty: number; cloth_id: string | null; amulet_id: string | null; material: string; durability: number;
   rate: number; energy_max: number; energy_use: number; energy_rest: number; active: boolean; salary: number;
 };
+export type AnimalState = { house_id: string; slot: number; animal_id: string; rarity: string; state: 'growing' | 'hungry'; cycle_start: number | null; ready_at: number | null };
+export type HouseState = { owned: boolean; tier: number; slots: number; bird_slots: number; lot: string };
 export type PetState = { pet_id: string; affinity: number; last_care: string | null; active: boolean; linked_class: string | null };
 export type TeamFx = {
   stall_ratio: number; seed_discount: number; sales_gold: number; shop_discount: number; auto_sell: boolean; auto_pay: boolean;
   rare_seed: number; seed_refund: number; gerente_cut: number; early_unlock: { crop: string; levels: number } | null; daily_boost: number;
   growth_crop: number; growth_orchard: number; tree_initial: number; cleanup: number; tool_cost: number; harvest_xp: number; golden: number;
+  feed_discount: number; animal_production: number; animal_cap: number; animal_double: number; expansion_cost: number; rancheira: boolean;
 };
 export type LotState = { lot_id: string; ready_at: number; purchase_n: number | null };
 export type FarmState = {
@@ -28,6 +31,7 @@ export type FarmState = {
   game_day: string; labor_nominal: number; last_payday: string | null; boosted_sale_day: string | null; pet_swapped_at: string | null;
   auto_sell: string[]; characters: CharacterState[]; pets: PetState[]; pet: { id: string; level: number; factor: number; linked: string | null } | null;
   snack_prices: Record<string, number>; fx: TeamFx;
+  animals: AnimalState[]; houses: Record<string, HouseState>; lake: boolean;
 };
 
 const ERRORS: Record<string, string> = {
@@ -65,6 +69,13 @@ const ERRORS: Record<string, string> = {
   'carinho de hoje já foi dado': 'O carinho de hoje já foi dado. Volte amanhã.',
   'semente rara não encontrada': 'Você não tem essa semente rara.',
   'canteiro ocupado': 'O canteiro está ocupado. Colha primeiro.',
+  'casa ainda não existe': 'Compre o pasto e espere a limpeza acabar.',
+  'animal não é dessa casa': 'Esse animal mora na outra casa.',
+  'vaga não existe': 'Essa vaga ainda não existe. Amplie a casa.',
+  'vaga do Lago é só para aves': 'As vagas do Lago são só para aves.',
+  'vaga ocupada': 'Essa vaga já tem um animal.',
+  'vaga vazia': 'Essa vaga está vazia.',
+  'casa já está no máximo': 'A casa já tem o máximo de vagas.',
 };
 
 function normalize(s: FarmState): FarmState {
@@ -72,7 +83,7 @@ function normalize(s: FarmState): FarmState {
   s.xp = Number(s.xp);
   s.xp_to_next = s.xp_to_next === null ? null : Number(s.xp_to_next);
   s.lots ??= []; s.trees ??= []; s.inventory ??= {}; s.tools ??= {};
-  s.characters ??= []; s.pets ??= []; s.auto_sell ??= []; s.snack_prices ??= {};
+  s.characters ??= []; s.pets ??= []; s.auto_sell ??= []; s.snack_prices ??= {}; s.animals ??= []; s.houses ??= {};
   for (const c of s.characters) { c.debt = Number(c.debt); c.salary = Number(c.salary); }
   return s;
 }
@@ -109,6 +120,9 @@ export const skillChoose = (cls: string, crop: string) => rpc('skill_choose', { 
 export const adoptPet = (pet: string) => rpc('adopt_pet', { p_pet: pet });
 export const setActivePet = (pet: string) => rpc('set_active_pet', { p_pet: pet });
 export const linkPet = (cls: string) => rpc('link_pet', { p_class: cls });
+export const buyAnimal = (house: string, slot: number, animal: string) => rpc('buy_animal', { p_house: house, p_slot: slot, p_animal: animal });
+export const removeAnimal = (house: string, slot: number) => rpc('remove_animal', { p_house: house, p_slot: slot });
+export const upgradeHouse = (house: string) => rpc('upgrade_house', { p_house: house });
 export const carePet = (pet: string) => rpc('care_pet', { p_pet: pet });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

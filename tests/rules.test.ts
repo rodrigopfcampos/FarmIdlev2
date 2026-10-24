@@ -1,8 +1,8 @@
 // Regras da progressão do lado do cliente (o servidor tem os testes em supabase/tests/phase2_test.sql).
 import { describe, expect, it } from 'vitest';
-import { CROPS, LEVELS, PURCHASES } from '../src/data';
+import { CROPS, LEVELS, PURCHASES, itemInfo } from '../src/data';
 import {
-  cleanupMinutes, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
+  animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
   rareSeeds, skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
 } from '../src/farm/rules';
 
@@ -159,5 +159,28 @@ describe('sementes raras e pomar (fase 3)', () => {
     const g = CROPS.maca.grow_minutes * 60 * 0.8;
     expect(treeLook({ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: 0, ready_at: g }, g * 0.1)).toBe('sapling');
     expect(treeLook({ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: 0, ready_at: g }, g * 0.9)).toBe('fruit');
+  });
+});
+
+describe('animais (fase 4)', () => {
+  it('pronto, produzindo ou com fome', () => {
+    expect(animalLook({ state: 'growing', ready_at: 100 }, 150)).toBe('ready');
+    expect(animalLook({ state: 'growing', ready_at: 200 }, 150)).toBe('growing');
+    expect(animalLook({ state: 'hungry', ready_at: null }, 150)).toBe('hungry');
+  });
+  it('ração por ciclo = ração/dia × duração do ciclo', () => {
+    expect(feedPerCycle(740, 120)).toBeCloseTo(61.67, 2);
+    expect(feedPerCycle(1000, 240, 0.4)).toBeCloseTo(100, 2);
+  });
+  it('produção: raridade × (1 + bônus), Lago só nas aves, teto de 60%', () => {
+    expect(collectUnits(3, 0, 0.6, true, 0.1)).toBeCloseTo(3.3);
+    expect(collectUnits(1, 0.7, 0.6, false, 0.1)).toBeCloseTo(1.6);
+  });
+  it('itens do Silo: cultivo ou produto animal', () => {
+    expect(itemInfo('ovo')).toMatchObject({ name_pt: 'Ovo', price: 410 });
+    expect(itemInfo('alface').emoji).toBeNull();
+  });
+  it('conta animais prontos no botão Colher e plantar', () => {
+    expect(tendCount({ plots: [], trees: [], lots: [], animals: [{ state: 'growing', ready_at: 10 }, { state: 'hungry', ready_at: null }] }, 20)).toBe(1);
   });
 });

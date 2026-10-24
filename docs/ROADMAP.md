@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (24/10/2026, fase 3)
+# Village Idle Farm — mapa do projeto (24/10/2026, fase 4)
 
 ## A. Feito
 
@@ -17,11 +17,13 @@
 | **Fase 1** | Mapa vivo com 4 zonas, A1, Agricultor, `advance_farm`, limite offline 8 h, Silo, Barraca, painel do admin com 2FA | aprovada pelo dono (vídeo, 23/10) |
 | **Fase 2** | XP e níveis 1–50, 50 cultivos (lavoura, recorrentes e pomar), compra e limpeza dos lotes, Escritura pelo painel, Enxada em 5 materiais, pomar com troca grátis; depois do 1º teste: plantio e colheita por clique, começo rápido (nível 2 em ~10 min), painel com nível e ouro para testes | `supabase/migrations/…500` e `…600`, `src/farm/rules.ts` |
 | **Fase 3** | 6 classes com contratação, Slots de Campo e Banco, energia e rodízio, lanches na Barraca, salário à meia-noite com Desmotivado e parada, nível e árvore de habilidades com reset, ferramenta de cada classe com desgaste e conserto, Comerciante/Gerente/Botânica em campo, Sementes Raras, pets com carinho diário; painel do admin cobra salário para testes | `supabase/migrations/…24000100`, `supabase/tests/phase3_test.sql` |
+| **Fase 4** | Galinheiro e Celeiro com vagas e ampliação, Lago (+10% e +2 vagas de ave), 10 animais com raridade sorteada, ração por ciclo com fome, coleta por clique ou pela equipe, produtos no Silo e na Barraca, ramos de fase 4 (Criação, Mestria de Obras), Gato na produção, tetos de bônus; painel termina o ciclo dos animais | `supabase/migrations/…25000100`, `supabase/tests/phase4_test.sql` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
-- 🆕 (23/10, fase 3) Funções de Comerciante, Gerente e Botânica antes das fases 4 e 5; lanches a 1% / 1,6% / 2,8% de R; carinho diário dos pets (4/10/18/30) com bônus no personagem vinculado; 2º e 3º pet a 1 dia de R; salário à meia-noite de Brasília até a fase 6 (detalhes no GDD, seção 7).
+- 🆕 (24/10, fase 4) Fase 3 aprovada. Animais: coleta igual à lavoura (clique grátis; equipe gasta 0,5, 100% com Rancheira e 60% sem), casas mistas, ração cobrada no começo de cada ciclo.
+- (23/10, fase 3) Funções de Comerciante, Gerente e Botânica antes das fases 4 e 5; lanches a 1% / 1,6% / 2,8% de R; carinho diário dos pets (4/10/18/30) com bônus no personagem vinculado; 2º e 3º pet a 1 dia de R; salário à meia-noite de Brasília até a fase 6 (detalhes no GDD, seção 7).
 - 🆕 (23/10) Fase 2 aprovada pelo dono (vídeo). Mapa agora fica centralizado mesmo quando a altura da tela é menor que o mapa.
 - (23/10, teste da fase 2) Com o jogo aberto, plantar e colher por clique é grátis; fora do jogo, o Agricultor faz tudo (0,5 para plantar, 0,5 para colher). Começo rápido: nível 2 em ~10 min, 5 em ~1 h, 10 no 1º dia; nível 50 continua no dia ~113. Painel do admin dá nível e ouro para testes.
 - Navegador primeiro; mercado decidido antes da fase 8. Público 18+.
@@ -37,7 +39,8 @@
 4. ✅ "ok" da fase 0.
 6. ✅ Teste da fase 1 (vídeo de 23/10).
 7. ✅ Teste da fase 2 e "ok" (23/10).
-8. Testar a fase 3 em produção (lista na seção G) e dar o "ok".
+8. ✅ Teste da fase 3 e "ok" (24/10).
+10. Testar a fase 4 em produção (lista na seção G) e dar o "ok".
 9. Gerar as artes da seção E (personagens e pets); até lá o jogo usa o Agricultor com outra cor e um emoji no lugar do pet.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
 
@@ -48,8 +51,8 @@
 | 0 Base | Repo, Supabase teste/produção, login, deploy automático, config, ledger, audit_log, script das artes, simulador | **feito e testado em produção** |
 | 1 Fazenda mínima | Mapa com 4 zonas, A1, Agricultor, 4 cultivos, `advance_farm`, offline 8 h, Silo, Barraca, painel básico | **feito e aprovado** (23/10) |
 | 2 Progressão | XP/níveis, 50 cultivos, compra e limpeza dos lotes, Escritura, ferramentas, pomar | **feito e aprovado** (23/10) |
-| 3 Personagens | 6 classes, energia, salário, desgaste, inventário, habilidades, pets | **feito** (24/10); falta o teste do dono em produção |
-| 4 Animais | Galinheiro, Celeiro, Lago, ampliações, 10 animais com raridade, ração | — |
+| 3 Personagens | 6 classes, energia, salário, desgaste, inventário, habilidades, pets | **feito e aprovado** (24/10) |
+| 4 Animais | Galinheiro, Celeiro, Lago, ampliações, 10 animais com raridade, ração | **feito** (24/10); falta o teste do dono em produção |
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | — |
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | — |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | — |
@@ -59,6 +62,7 @@
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
 ## E. Artes que faltam
+- 🆕 (fase 4) 10 animais (card do slot) e 10 ícones de produto; até lá o jogo usa emojis.
 - 🆕 (fase 3) 5 personagens: Rancheira, Ferreiro, Comerciante, Gerente e Botânica — mesma prancha do Agricultor (parado + 3 quadros de ação, 32×48 cada depois do recorte).
 - 🆕 (fase 3) 3 pets: Cachorro, Gato e Papagaio — parado em frente à Casa (2 quadros, 24×24 depois do recorte).
 - (fase 1) recortadas também: estágios de 27 cultivos (pranchas Planta 2, 3 e 4), 40 ícones de produto, o Agricultor (parado + 3 quadros de ação) e a moeda da interface.
@@ -71,22 +75,19 @@
 
 ## F. Regras provisórias (mudam nas próximas fases)
 - Vestimenta e amuleto: os espaços existem, mas os itens só caem nas expedições (fase 5).
-- Lote do Galinheiro/Celeiro/Lago pode ser comprado; os animais chegam na fase 4. A Rancheira trabalha no pomar e na lavoura até lá.
 - Salário e carinho viram à meia-noite de Brasília até a fase 6 (fuso de cada conta).
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da fase 3 (dono, em produção)
-1. Abra a Casa → Operadores: o Agricultor está no campo com a barra de energia. No topo, ao lado do nível, aparecem os personagens em campo (clique neles para abrir a Casa).
-2. Painel do admin (guia Fazenda): nível 14 e 2.000.000 de ouro. Contrate Rancheira, Ferreiro e Comerciante: os 3 primeiros ficam no campo e o 4º no banco.
-3. Saia do jogo por 1 h e volte: a energia de quem estava em campo caiu e a ferramenta desgastou um pouco (Casa → Equipamentos).
-4. Barraca: compre 5 Cafés; em Equipamentos ponha no espaço de lanche do Agricultor.
-5. Ponha o Comerciante no campo (mande alguém para o banco antes): a Barraca passa a pagar 71% e aparece a "Venda automática" em cada item.
-6. Salário: no painel, dê ouro negativo até zerar o seu ouro e use "Cobrar salário agora". Na Casa aparece o aviso vermelho e quem deve fica "Desmotivado (−50%)". Venda algo e clique em "Pagar salários": volta ao normal.
-7. Habilidades: o painel não dá nível de personagem; o Agricultor ganha 1 ponto por nível (≈ 11 h de trabalho). Quando tiver ponto, ponha em "Cultivo → Nó B" e veja o trabalho por hora subir 6%.
-8. Pets (nível 5): adote o Gato (grátis), clique nele em frente à Casa (carinho: +5 de energia no Agricultor); o 2º clique do dia abre a guia Pets.
-9. Forja: escolha o Ferreiro e melhore o Martelo; conserte a Enxada quando ela baixar de 100.
-10. Compre um lote novo com o Ferreiro contratado: a limpeza é a metade do que era antes.
+## G. Teste da fase 4 (dono, em produção)
+1. Painel do admin: nível 9 e 200.000 de ouro. Compre o Galinheiro (C1) e use "Terminar limpeza".
+2. Clique no Galinheiro: 4 vagas. Compre uma Galinha: aparece a raridade sorteada (Comum, Incomum…), o ouro cai 7.400 + a ração do 1º ciclo.
+3. No painel, "Terminar ciclo dos animais": aparece 🐔 em cima do Galinheiro. Clique nele: o Ovo vai para o Silo e o ciclo recomeça (cobra a ração).
+4. Fome: dê ouro negativo até zerar, "Terminar ciclo", colete: aparece "⚠️ ração". Venda o Ovo na Barraca: a galinha volta a produzir.
+5. Amplie o Galinheiro para 8 vagas (39.000) e compre um Coelho.
+6. (Opcional, pede A19, A20 ou A21) Nível 11: compre o Lago — o Galinheiro ganha 2 vagas só para aves e as aves rendem +10%. O teste automático já cobre isso.
+7. Contrate a Rancheira, saia 1 h e volte: a equipe coletou sozinha.
+8. Celeiro (C2, nível 8): compre uma Vaca.
 
 ## H. Riscos e pontos em aberto
 - 🆕 Clique sem limite: um robô que clica sem parar vira um jogador sempre online (e sem o limite offline). Tratar no antitrapaça (fase 9): frequência de cliques, horas seguidas online.

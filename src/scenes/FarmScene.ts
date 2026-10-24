@@ -4,10 +4,10 @@
 // mostra o ícone do cultivo; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
-import { CROPS, FARM, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
+import { ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { stageSprite } from '../farm/art';
 import { cameraBounds, pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
-import { lotOffer, plotLook, treeLook } from '../farm/rules';
+import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
 import { duration, formatGold } from '../ui/format';
@@ -21,7 +21,7 @@ const depthOf = (y: number) => 1 + y / 10000;
 
 type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; fruit: Phaser.GameObjects.Image; look: string };
-type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image };
+type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
@@ -70,7 +70,13 @@ export class FarmScene extends Phaser.Scene {
       const building = lot.building && lot.building_anchor
         ? this.add.image(lot.building_anchor[0], lot.building_anchor[1], `building_${lot.building}`).setOrigin(0.5, 1).setDepth(depthOf(lot.building_anchor[1])).setVisible(false)
         : undefined;
-      this.decor.push({ lot, sign, debris, timer, building });
+      // aviso em cima da casa dos animais: produto pronto (emoji do animal) ou fome (!)
+      const badge = building && lot.building_anchor
+        ? this.add.text(lot.building_anchor[0], lot.building_anchor[1] - 46, '', { fontSize: '14px', backgroundColor: '#000000aa', padding: { x: 3, y: 1 } })
+          .setOrigin(0.5, 1).setResolution(2).setDepth(21).setVisible(false)
+        : undefined;
+      if (badge) this.tweens.add({ targets: badge, y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+      this.decor.push({ lot, sign, debris, timer, building, badge });
     }
 
     // Carroça parada na vaga da Garagem, com a animação de parado
@@ -138,6 +144,15 @@ export class FarmScene extends Phaser.Scene {
       d.timer.setVisible(inCleanup);
       if (inCleanup) d.timer.setText(`Limpeza ${duration(end! - now)}`);
       if (end !== undefined && !inCleanup) this.cleaning.delete(d.lot.id);
+      if (d.badge) {
+        const s = store.state;
+        const house = s ? Object.entries(s.houses).find(([, h]) => h.lot === d.lot.id)?.[0] : undefined;
+        const mine = house ? s!.animals.filter((a) => a.house_id === house) : [];
+        const ready = mine.filter((a) => animalLook(a, now) === 'ready');
+        const hungry = mine.some((a) => a.state === 'hungry');
+        const txt = ready.length ? `${ANIMAL_EMOJI[ready[0].animal_id] ?? '🐾'} ${ready.length}` : hungry ? '⚠️ ração' : '';
+        d.badge.setText(txt).setVisible(!!txt && !inCleanup);
+      }
     }
   }
 
@@ -277,6 +292,17 @@ export class FarmScene extends Phaser.Scene {
         case 'cleanup': return `${name(p.crop_id)} · depois da limpeza`;
         case 'stalled': return `${name(p.crop_id)} · falta ouro para a semente`;
         default: return `Canteiro ${hit.id} · clique para escolher o cultivo`;
+      }
+    }
+    if (hit.kind === 'pasture') {
+      const house = Object.entries(s.houses).find(([, h]) => h.lot === hit.id)?.[0];
+      if (house) {
+        const mine = s.animals.filter((a) => a.house_id === house);
+        const ready = mine.filter((a) => animalLook(a, now) === 'ready').length;
+        if (ready) return `${HOUSE_NAMES[house]} · ${ready} pronto${ready > 1 ? 's' : ''}: clique para coletar`;
+        const hungry = mine.filter((a) => a.state === 'hungry').length;
+        if (hungry) return `${HOUSE_NAMES[house]} · ${hungry} com fome (falta ouro para a ração)`;
+        return `${HOUSE_NAMES[house]} · ${mine.length} animal${mine.length === 1 ? '' : 'is'}${mine[0] ? ` (${ANIMAL_BY_ID[mine[0].animal_id].name_pt}…)` : ''}`;
       }
     }
     if (hit.kind === 'orchard') {

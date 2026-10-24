@@ -9,6 +9,7 @@ import toolsCfg from '../config/tools_and_items.json';
 import expeditionsCfg from '../config/expeditions.json';
 import charactersCfg from '../config/characters.json';
 import rarityCfg from '../config/rarity.json';
+import animalsCfg from '../config/animals.json';
 
 export type Crop = (typeof cropsCfg.crops)[number] & { sapling_cost?: number; seed_cost?: number; tree_base?: string };
 export const CROP_LIST = cropsCfg.crops as Crop[];
@@ -49,3 +50,24 @@ export const ZONES = MAP.functional_zones as unknown as Zone[];
 export const LOT_TYPE_NAMES: Record<string, string> = {
   lavoura: 'Lavoura', pomar: 'Pomar', pasto_galinheiro: 'Pasto do Galinheiro', pasto_celeiro: 'Pasto do Celeiro', pasto_lago: 'Lago',
 };
+
+// ---------- animais (fase 4) ----------
+export type Animal = (typeof animalsCfg.animals)[number];
+export const ANIMALS = animalsCfg.animals as Animal[];
+export const ANIMAL_BY_ID: Record<string, Animal> = Object.fromEntries(ANIMALS.map((a) => [a.id, a]));
+export const ANIMAL_RULES = animalsCfg.rules;
+export const HOUSES = animalsCfg.houses as Record<string, { lot_type: string; slots: { slots: number; min_level: number | null; cost: number }[] }>;
+export const HOUSE_NAMES: Record<string, string> = { galinheiro: 'Galinheiro', celeiro: 'Celeiro' };
+// emojis provisórios até as artes dos animais e dos produtos chegarem
+export const ANIMAL_EMOJI: Record<string, string> = { galinha: '🐔', coelho: '🐰', vaca: '🐄', pato: '🦆', ovelha: '🐑', porco: '🐖', cabra: '🐐', ganso: '🪿', peru: '🦃', alpaca: '🦙' };
+const PRODUCT_EMOJI: Record<string, string> = { ovo: '🥚', pelo_de_coelho: '🧶', leite: '🥛', ovo_de_pata: '🥚', la: '🧶', trufa: '🍄', leite_de_cabra: '🥛', ovo_de_ganso: '🥚', pena_de_peru: '🪶', la_de_alpaca: '🧶' };
+const PRODUCTS: Record<string, { name_pt: string; price: number; emoji: string }> = Object.fromEntries(
+  ANIMALS.map((a) => [a.product.id, { name_pt: a.product.name_pt, price: a.product.fair_price_per_unit, emoji: PRODUCT_EMOJI[a.product.id] ?? '📦' }]));
+
+/** nome, preço da Feira e (se for produto animal) emoji de um item do Silo */
+export function itemInfo(id: string): { name_pt: string; price: number; emoji: string | null } {
+  const c = CROPS[id];
+  if (c) return { name_pt: c.name_pt, price: c.fair_price_per_unit, emoji: null };
+  const p = PRODUCTS[id];
+  return p ? { name_pt: p.name_pt, price: p.price, emoji: p.emoji } : { name_pt: id, price: 0, emoji: null };
+}

@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026)",
+  "version": 2,
+  "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026) · fase 4: coleta e ração (decisões do dono, 24/10/2026)",
   "rules": {
     "collector_efficiency": {
       "rancheira": 1.0,
@@ -11,7 +11,13 @@
       "bird_production": 0.1,
       "extra_galinheiro_slots": 2,
       "extra_slots_for": "birds"
-    }
+    },
+    "units_per_collect": 1,
+    "collection": "igual à lavoura: com o jogo aberto o clique coleta grátis (100%); fora do jogo a equipe coleta na fila gastando o trabalho de colheita (0,5) e rende 100% com a Rancheira em campo, 60% sem ela",
+    "feed_charged": "per_cycle",
+    "feed_note": "no começo de cada ciclo: ração/dia × duração do ciclo; sem ouro o animal fica com fome (para) e volta quando entrar ouro",
+    "mixed_houses": true,
+    "remove_refund": 0
   },
   "houses": {
     "galinheiro": {

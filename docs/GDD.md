@@ -552,6 +552,15 @@ Para lançar uma expedição, o jogador repete uma sequência de setas (↑ ↓ 
 - Efeito medido no valor da viagem (Porto e Exportação com bons veículos): Perfeita +2% a +3%; Incompleta −4%; Falhou −7% a −9%. Errar custa mais do que acertar rende, o que dá motivo para jogar com atenção sem virar punição pesada.
 - **Antitrapaça:** o servidor sorteia as setas, envia só na hora de começar e marca o horário; o cliente devolve cada tecla com o instante; o servidor confere o tempo total (com 400 ms de tolerância de rede) e o intervalo entre teclas. Intervalos abaixo de 90 ms ou sempre iguais = robô: a partida vale só como Concluída e gera alerta.
 
+### Decisões da fase 5 🆕 (24/10/2026)
+
+- **Receber com clique:** o veículo volta e espera na Garagem até o jogador clicar em Receber; só então entram o ouro, a devolução do seguro, a carga que voltou e os achados (com o relatório narrado).
+- **Repetição guardada:** com "Repetir até 2×", o veículo sai de novo sozinho na volta, com os mesmos produtos da viagem (até a capacidade, com o que houver no Silo; sem nada, não repete). Tudo fica guardado até o Receber. Seguro só se houver ouro na hora.
+- **Demanda do dia igual para todos:** sorteada à meia-noite de Brasília entre todos os produtos do jogo (3 por rota). A Mestria Negócios do Comerciante mostra a de amanhã.
+- **Comboio:** 1 minigame só para todos os veículos; a carga enche os veículos na ordem escolhida; o Gerente conduz o primeiro (2 com a Mestria Rota).
+- **Sorteio na volta:** a chance é fixada na saída (minigame, veículo, Gerente, garantia contra azar); o resultado é sorteado no servidor quando o veículo volta.
+- **Números que o GDD não fixava** (config `expeditions.json`): conserto = 10% do preço do veículo de 0 a 100%; raridade dos itens = tabela de Kits da rota.
+
 ### Melhorias da mecânica (já incluídas acima ou na fase 5)
 
 - Resultado em faixas em vez de "deu certo/deu errado".

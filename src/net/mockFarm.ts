@@ -1,7 +1,8 @@
 // Estado falso da fazenda, só para desenvolvimento e screenshots (nunca entra no build de produção).
-import { ANIMAL_BY_ID, CHARS, CROPS, MAP_RULES, PETS, SNACKS, TOOL_MATERIALS } from '../data';
+import { ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID, SNACKS, TOOL_MATERIALS, VEHICLE_BY_ID } from '../data';
+import { cargoValue, evalMinigame } from '../farm/expeditions';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
-import type { CharacterState, FarmState, PlotState } from './farmApi';
+import type { CharacterState, CollectedTrip, FarmState, PlotState } from './farmApi';
 
 const now = new Date().toISOString();
 const T = 50_000; // tempo da fazenda no começo do mock (s)
@@ -49,7 +50,8 @@ const state: FarmState = {
   snack_prices: Object.fromEntries(SNACKS.map((x) => [x.id, Math.round(96000 * x.price_R_ratio)])),
   fx: { stall_ratio: 0.7, seed_discount: 0, sales_gold: 0, shop_discount: 0, auto_sell: false, auto_pay: false, rare_seed: 0, seed_refund: 0,
     gerente_cut: 0, early_unlock: null, daily_boost: 0, growth_crop: 0.02, growth_orchard: 0, tree_initial: 0, cleanup: 0, tool_cost: 0, harvest_xp: 0, golden: 0,
-    feed_discount: 0, animal_production: 0.055, animal_cap: 0.6, animal_double: 0, expansion_cost: 0, rancheira: true },
+    feed_discount: 0, animal_production: 0.055, animal_cap: 0.6, animal_double: 0, expansion_cost: 0, rancheira: true,
+    exp_success: 0, exp_duration: 0, vehicle_wear: 0, dog_recover: 0 },
   animals: [
     { house_id: 'galinheiro', slot: 1, animal_id: 'galinha', rarity: 'common', state: 'growing', cycle_start: T - 7300, ready_at: T - 100 },
     { house_id: 'galinheiro', slot: 2, animal_id: 'galinha', rarity: 'rare', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
@@ -57,9 +59,21 @@ const state: FarmState = {
   ],
   houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' }, celeiro: { owned: false, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' } },
   lake: false,
+  vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
+    { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
+  expeditions: [{ id: 'm1', convoy_id: 'c1', vehicle_id: 'carro', route_id: 'cidade', cargo: { batata: 80, alface: 40 }, insurance: 120, led: false, minigame: 'done',
+    started_at: T - 600, returns_at: T + 2400, seq: 0, repeat_left: 2, status: 'travel' }],
+  exp_fail_streak: 0,
+  lead: null,
+  demand: { feira: ['batata', 'ovo', 'maca'], cidade: ['alface', 'leite', 'tomate'], capital: ['milho', 'la', 'uva'], porto: ['cafe', 'trufa', 'manga'], exportacao: ['cacau', 'la_de_alpaca', 'kiwi'] },
+  demand_tomorrow: null,
 };
+const mg: { arrows: string[]; limit: number; calm: boolean } = { arrows: [], limit: 0, calm: false };
 state.inventory['seed:alface:rare'] = 1;
 state.inventory.snack_cheese_bread = 4;
+state.inventory['kit:uncommon'] = 3;
+state.inventory['cloth_boots:rare'] = 1;
+state.inventory['amulet_horseshoe:common'] = 2;
 
 export const mockFarm = {
   async rpc(fn: string, args: Record<string, unknown>): Promise<FarmState> {
@@ -129,6 +143,43 @@ export const mockFarm = {
     if (fn === 'buy_animal') state.animals.push({ house_id: args.p_house as string, slot: args.p_slot as number, animal_id: args.p_animal as string, rarity: 'uncommon', state: 'growing', cycle_start: t, ready_at: t + 7200 });
     if (fn === 'remove_animal') state.animals = state.animals.filter((a) => !(a.house_id === args.p_house && a.slot === args.p_slot));
     if (fn === 'upgrade_house') { const h = state.houses[args.p_house as string]; h.tier++; h.slots += 4; }
+    if (fn === 'start_minigame') {
+      const r = args.p_route as string, n = args.p_vehicles as number;
+      mg.arrows = Array.from({ length: EXP.minigame.arrows[r as keyof typeof EXP.minigame.arrows] + EXP.minigame.convoy_extra_arrows * (n - 1) }, () => ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)]);
+      mg.limit = (EXP.minigame.seconds[r as keyof typeof EXP.minigame.seconds] + EXP.minigame.convoy_extra_seconds * (n - 1) + (args.p_manager ? 1 : 0)) * 1000 * (args.p_calm ? 1.5 : 1);
+      mg.calm = !!args.p_calm;
+      return { id: 'mg', arrows: mg.arrows, limit_ms: mg.limit } as unknown as FarmState;
+    }
+    if (fn === 'launch_expedition') {
+      const ev = evalMinigame(mg.arrows, args.p_keys as { k: string; t: number }[], mg.limit, mg.calm);
+      const cargo = args.p_cargo as Record<string, number>;
+      for (const [k, q] of Object.entries(cargo)) state.silo[k] -= q;
+      for (const v of args.p_vehicles as string[]) {
+        const veh = state.vehicles.find((x) => x.vehicle_id === v)!;
+        const h = ROUTE_BY_ID[args.p_route as string].hours * VEHICLE_BY_ID[v].duration_multiplier;
+        state.expeditions.push({ id: crypto.randomUUID(), convoy_id: 'c2', vehicle_id: v, route_id: args.p_route as string, cargo, insurance: 0, led: !!args.p_manager,
+          minigame: ev.result, started_at: t, returns_at: t + h * 60, seq: 0, repeat_left: args.p_repeat ? 2 : 0, status: 'travel' }); // mock: 1 min por hora
+        veh.durability -= 4;
+      }
+      return structuredClone({ ...state, minigame: { result: ev.result, robot: false } });
+    }
+    for (const x of state.expeditions) if (x.status === 'travel' && x.returns_at <= t) x.status = 'back';
+    if (fn === 'collect_expeditions') {
+      const got: CollectedTrip[] = [];
+      for (const x of state.expeditions.filter((e) => e.status === 'back' && (args.p_vehicle == null || e.vehicle_id === args.p_vehicle))) {
+        const fail = Math.random() < 0.3, gold = fail ? 0 : cargoValue(x.cargo, x.route_id, state.demand[x.route_id]);
+        state.gold += gold;
+        got.push({ id: x.id, vehicle_id: x.vehicle_id, route_id: x.route_id, seq: x.seq, outcome: fail ? 'fail' : 'success', gold, refund: fail ? 50 : 0, cargo: x.cargo,
+          cargo_back: fail ? Object.fromEntries(Object.entries(x.cargo).map(([k, q]) => [k, Math.round(q * 0.7)])) : {}, loss_frac: fail ? 0.3 : null,
+          drops: fail ? [] : ['kit:uncommon', 'amulet_clover:rare'], report: fail ? 'Um eixo quebrou e 30% da carga se perdeu.' : `Viagem tranquila até ${ROUTE_BY_ID[x.route_id].name_pt}. Carga vendida.`,
+          insurance: x.insurance, minigame: x.minigame, chance: 0.9 });
+      }
+      state.expeditions = state.expeditions.filter((e) => !got.some((g) => g.id === e.id));
+      return structuredClone({ ...state, collected: got });
+    }
+    if (fn === 'buy_vehicle') state.vehicles.push({ vehicle_id: args.p_vehicle as string, rarity: 'common', durability: 100, active: true, refurb_rarity: null, refurb_until: null });
+    if (fn === 'repair_vehicle') state.vehicles.find((v) => v.vehicle_id === args.p_vehicle)!.durability = 100;
+    if (fn === 'set_active_vehicle') for (const v of state.vehicles) v.active = v.vehicle_id === args.p_vehicle;
     void PETS;
     return structuredClone({ ...state, server_now: new Date().toISOString(), last_activity_at: new Date().toISOString() });
   },

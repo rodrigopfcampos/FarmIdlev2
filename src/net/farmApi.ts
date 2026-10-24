@@ -10,8 +10,24 @@ export type CharacterState = {
   class_id: string; slot: 'field' | 'bench'; energy: number; parked: boolean; level: number; work_hours: number;
   skills: Record<string, number>; skill_choice: string | null; reset_week: string | null; debt: number; unpaid_days: number;
   snack_id: string | null; snack_qty: number; cloth_id: string | null; amulet_id: string | null; material: string; durability: number;
-  rate: number; energy_max: number; energy_use: number; energy_rest: number; active: boolean; salary: number;
+  rate: number; energy_max: number; energy_use: number; energy_rest: number; active: boolean; salary: number; leading?: boolean;
 };
+export type VehicleState = { vehicle_id: string; rarity: string; durability: number; active: boolean; refurb_rarity: string | null; refurb_until: number | null };
+export type ExpeditionState = {
+  id: string; convoy_id: string; vehicle_id: string; route_id: string; cargo: Record<string, number>; insurance: number; led: boolean; minigame: string;
+  started_at: number; returns_at: number; seq: number; repeat_left: number; status: 'travel' | 'back';
+};
+export type LeadInfo = {
+  available: boolean; leading: boolean; vehicles: number; success_pts: number; duration_mult: number; capacity_pct: number; loss_pct: number;
+  insurance_pct: number; item_pct: number; deed_pct: number; crit_pts: number; extra_seconds: number;
+};
+export type CollectedTrip = {
+  id: string; vehicle_id: string; route_id: string; seq: number; outcome: 'crit' | 'success' | 'fail'; gold: number; refund: number;
+  cargo: Record<string, number>; cargo_back: Record<string, number>; loss_frac: number | null; drops: string[]; report: string;
+  insurance: number; minigame: string; chance: number;
+};
+export type MinigameStart = { id: string; arrows: string[]; limit_ms: number };
+export type MinigameEval = { result: 'perfect' | 'done' | 'incomplete' | 'failed'; robot: boolean; errors?: number; done?: number; of?: number };
 export type AnimalState = { house_id: string; slot: number; animal_id: string; rarity: string; state: 'growing' | 'hungry'; cycle_start: number | null; ready_at: number | null };
 export type HouseState = { owned: boolean; tier: number; slots: number; bird_slots: number; lot: string };
 export type PetState = { pet_id: string; affinity: number; last_care: string | null; active: boolean; linked_class: string | null };
@@ -20,6 +36,7 @@ export type TeamFx = {
   rare_seed: number; seed_refund: number; gerente_cut: number; early_unlock: { crop: string; levels: number } | null; daily_boost: number;
   growth_crop: number; growth_orchard: number; tree_initial: number; cleanup: number; tool_cost: number; harvest_xp: number; golden: number;
   feed_discount: number; animal_production: number; animal_cap: number; animal_double: number; expansion_cost: number; rancheira: boolean;
+  exp_success: number; exp_duration: number; vehicle_wear: number; dog_recover: number;
 };
 export type LotState = { lot_id: string; ready_at: number; purchase_n: number | null };
 export type FarmState = {
@@ -32,6 +49,9 @@ export type FarmState = {
   auto_sell: string[]; characters: CharacterState[]; pets: PetState[]; pet: { id: string; level: number; factor: number; linked: string | null } | null;
   snack_prices: Record<string, number>; fx: TeamFx;
   animals: AnimalState[]; houses: Record<string, HouseState>; lake: boolean;
+  vehicles: VehicleState[]; expeditions: ExpeditionState[]; exp_fail_streak: number; lead: LeadInfo | null;
+  demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
+  collected?: CollectedTrip[]; minigame?: MinigameEval;
 };
 
 const ERRORS: Record<string, string> = {
@@ -76,6 +96,35 @@ const ERRORS: Record<string, string> = {
   'vaga ocupada': 'Essa vaga já tem um animal.',
   'vaga vazia': 'Essa vaga está vazia.',
   'casa já está no máximo': 'A casa já tem o máximo de vagas.',
+  'rota não existe': 'Essa rota não existe.',
+  'número de veículos inválido': 'Escolha de 1 a 4 veículos.',
+  'minigame inválido': 'A partida expirou. Comece de novo.',
+  'minigame não confere com a expedição': 'A partida não confere com a expedição. Comece de novo.',
+  'nível insuficiente para a rota': 'Seu nível ainda não libera essa rota.',
+  'essa rota não tem seguro': 'A Feira da Vila não tem seguro.',
+  'escolha a carga': 'Escolha o que levar.',
+  'o Gerente não pode conduzir agora': 'O Gerente não pode conduzir agora (já está viajando ou com salário atrasado).',
+  'veículo não é seu': 'Esse veículo não é seu.',
+  'veículo na reforma': 'O veículo está na reforma.',
+  'veículo ocupado (viajando ou esperando Receber)': 'O veículo está viajando ou esperando você Receber.',
+  'esse veículo não vai até essa rota': 'Esse veículo não vai até essa rota.',
+  'carga vazia para um dos veículos': 'Sobrou veículo sem carga. Leve mais ou mande menos veículos.',
+  'ouro insuficiente para o seguro': 'Falta ouro para o seguro.',
+  'carga maior que a capacidade': 'A carga passa da capacidade dos veículos.',
+  'nada para receber': 'Não há nada para receber.',
+  'veículo não existe': 'Esse veículo não existe.',
+  'você já tem esse veículo': 'Você já tem esse veículo.',
+  'veículo já está na reforma': 'O veículo já está na reforma.',
+  'veículo já é Mítico': 'O veículo já é Mítico.',
+  'falta o Kit de Reforma': 'Falta o Kit de Reforma da raridade nova.',
+  'veículo já está inteiro': 'O veículo já está inteiro.',
+  'veículo está viajando': 'O veículo está viajando.',
+  'item não pode ser juntado': 'Esse item não pode ser juntado.',
+  'já é Mítico': 'Já é Mítico.',
+  'precisa de 3 iguais': 'Precisa de 3 iguais.',
+  'espaço inválido': 'Espaço inválido.',
+  'item não serve nesse espaço': 'Esse item não serve nesse espaço.',
+  'item não está no inventário': 'Você não tem esse item.',
 };
 
 function normalize(s: FarmState): FarmState {
@@ -84,6 +133,9 @@ function normalize(s: FarmState): FarmState {
   s.xp_to_next = s.xp_to_next === null ? null : Number(s.xp_to_next);
   s.lots ??= []; s.trees ??= []; s.inventory ??= {}; s.tools ??= {};
   s.characters ??= []; s.pets ??= []; s.auto_sell ??= []; s.snack_prices ??= {}; s.animals ??= []; s.houses ??= {};
+  s.vehicles ??= []; s.expeditions ??= []; s.demand ??= {}; s.exp_fail_streak ??= 0; s.lead ??= null; s.demand_tomorrow ??= null;
+  for (const x of s.expeditions) x.insurance = Number(x.insurance);
+  for (const c of s.collected ?? []) { c.gold = Number(c.gold); c.refund = Number(c.refund); c.insurance = Number(c.insurance); }
   for (const c of s.characters) { c.debt = Number(c.debt); c.salary = Number(c.salary); }
   return s;
 }
@@ -124,6 +176,22 @@ export const buyAnimal = (house: string, slot: number, animal: string) => rpc('b
 export const removeAnimal = (house: string, slot: number) => rpc('remove_animal', { p_house: house, p_slot: slot });
 export const upgradeHouse = (house: string) => rpc('upgrade_house', { p_house: house });
 export const carePet = (pet: string) => rpc('care_pet', { p_pet: pet });
+// expedições
+export async function startMinigame(route: string, vehicles: number, manager: boolean, calm: boolean): Promise<MinigameStart> {
+  if (mock) return (await mock.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm })) as unknown as MinigameStart;
+  const { data, error } = await supabase!.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm });
+  if (error) throw new Error(ERRORS[error.message] ?? 'Não deu certo. Tente de novo.');
+  return data as MinigameStart;
+}
+export const launchExpedition = (o: { minigame: string; keys: { k: string; t: number }[]; vehicles: string[]; route: string; cargo: Record<string, number>; insurance: boolean; manager: boolean; repeat: boolean }) =>
+  rpc('launch_expedition', { p_minigame: o.minigame, p_keys: o.keys, p_vehicles: o.vehicles, p_route: o.route, p_cargo: o.cargo, p_insurance: o.insurance, p_manager: o.manager, p_repeat: o.repeat });
+export const collectExpeditions = (vehicle: string | null) => rpc('collect_expeditions', { p_vehicle: vehicle });
+export const buyVehicle = (v: string) => rpc('buy_vehicle', { p_vehicle: v });
+export const setActiveVehicle = (v: string) => rpc('set_active_vehicle', { p_vehicle: v });
+export const refurbishVehicle = (v: string) => rpc('refurbish_vehicle', { p_vehicle: v });
+export const repairVehicle = (v: string) => rpc('repair_vehicle', { p_vehicle: v });
+export const mergeItems = (item: string) => rpc('merge_items', { p_item: item });
+export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor
 let mock: { rpc: (fn: string, args: Record<string, unknown>) => Promise<FarmState> } | null = null;

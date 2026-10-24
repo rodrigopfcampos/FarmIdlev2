@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "source": "GDD v2 seção 7 · fase 3: funções de Comerciante, Gerente e Botânica, lanches e pets aprovados pelo dono (23/10/2026)",
+  "version": 4,
+  "source": "GDD v2 seção 7 · fase 5: efeitos de expedição ligados (active_phase 5)",
   "field_slots": 3,
   "bench_slots": 3,
   "energy": {
@@ -551,6 +551,6 @@
       }
     ]
   },
-  "active_phase": 4,
+  "active_phase": 5,
   "active_phase_note": "efeitos de habilidade com \"phase\" maior que este número ficam guardados e ligam na fase deles"
 }

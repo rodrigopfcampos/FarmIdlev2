@@ -71,3 +71,13 @@ export function itemInfo(id: string): { name_pt: string; price: number; emoji: s
   const p = PRODUCTS[id];
   return p ? { name_pt: p.name_pt, price: p.price, emoji: p.emoji } : { name_pt: id, price: 0, emoji: null };
 }
+
+// ---------- expedições (fase 5) ----------
+export const EXP = expeditionsCfg;
+export type Route = (typeof expeditionsCfg.routes)[number];
+export type VehicleDef = (typeof expeditionsCfg.vehicles)[number];
+export const ROUTES = expeditionsCfg.routes as Route[];
+export const ROUTE_BY_ID: Record<string, Route> = Object.fromEntries(ROUTES.map((r) => [r.id, r]));
+export const VEHICLE_BY_ID: Record<string, VehicleDef> = Object.fromEntries(VEHICLES.map((v) => [v.id, v]));
+export const EQUIP_CARDS = [...toolsCfg.clothing_cards, ...toolsCfg.amulet_cards] as unknown as { id: string; name_pt: string; base_effect: Record<string, number> }[];
+export const EQUIP_RARITIES = toolsCfg.equipment_rarities as Record<string, { multiplier: number; color_hex: string; merge_count_to_upgrade: number | null }>;

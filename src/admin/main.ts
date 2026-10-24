@@ -2,6 +2,13 @@
 // O servidor só responde para admin com 2FA; aqui é só a tela.
 import { supabase, configMissing } from '../net/supabase';
 import { formatGold } from '../ui/format';
+import { EQUIP_CARDS, RARITY_BY_ID } from '../data';
+
+// itens que o admin pode dar: Kits de Reforma e vestimentas/amuletos em cada raridade
+const ITEM_OPTIONS = [
+  ...['uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="kit:${r}">Kit de Reforma ${RARITY_BY_ID[r].name_pt}</option>`),
+  ...EQUIP_CARDS.flatMap((c) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="${c.id}:${r}">${c.name_pt} ${RARITY_BY_ID[r].name_pt}</option>`)),
+].join('');
 
 const root = document.getElementById('admin')!;
 const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -134,10 +141,21 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a coleta"></label>
         <input name="value" type="hidden" value="1">
         <button class="primary small" type="submit">Terminar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="trips"><strong>Trazer as viagens de volta</strong>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o Receber"></label>
+        <input name="value" type="hidden" value="1">
+        <button class="primary small" type="submit">Trazer</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="item"><strong>Dar item</strong>
+        <label>Item<select name="item">${ITEM_OPTIONS}</select></label>
+        <label>Quantidade<input name="value" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a reforma"></label>
+        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
         <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form></div>
+      <p>Veículos: ${(f.vehicles ?? []).map((v: any) => `${esc(v.vehicle_id)} (${esc(v.rarity)}, ${Number(v.durability).toFixed(0)}%${v.refurb_rarity ? `, reforma → ${esc(v.refurb_rarity)}` : ''})`).join(' · ') || '—'}
+        · Viagens: ${(f.expeditions ?? []).map((x: any) => `${esc(x.vehicle_id)} → ${esc(x.route_id)} ${x.status === 'back' ? '(voltou)' : `(volta em ${Math.max(0, Math.ceil((x.returns_at - f.farm_time) / 60))} min)`}${x.seq ? ` rep. ${x.seq}` : ''}`).join(' · ') || '—'} · falhas seguidas: ${f.exp_fail_streak ?? 0}</p>
       <p>Animais: ${(f.animals ?? []).map((a: any) => `${esc(a.house_id)}-${a.slot} ${esc(a.animal_id)} (${esc(a.rarity)}${a.state === 'hungry' ? ', com fome' : ''})`).join(' · ') || '—'}</p>
       <p>Personagens: ${(f.characters ?? []).map((c: any) => `${esc(c.class_id)} Nv ${c.level} (${esc(c.slot === 'field' ? 'campo' : 'banco')}, energia ${Number(c.energy).toFixed(0)}${Number(c.debt) > 0 ? `, deve ${formatGold(Number(c.debt))} há ${c.unpaid_days} dia(s)` : ''})`).join(' · ') || '—'}
         · Pets: ${(f.pets ?? []).map((p: any) => `${esc(p.pet_id)} (afinidade ${p.affinity}${p.active ? ', ativo' : ''})`).join(' · ') || '—'} · último salário: ${esc(f.last_payday ?? '—')}</p>
@@ -154,7 +172,9 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
     const msg = form.querySelector('.msg')!;
     const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
-    const call = form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })
+    const call = form.dataset.kind === 'trips' ? supabase!.rpc('admin_finish_expeditions', { p_user: id, p_reason: reason })
+      : form.dataset.kind === 'item' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: String(d.get('item')), p_qty: value, p_reason: reason })
+      : form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
       : form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })

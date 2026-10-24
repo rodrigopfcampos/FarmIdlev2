@@ -5,7 +5,7 @@ import type { Manifest } from '../farm/art';
 import { store } from '../farm/store';
 import { bus } from '../core/bus';
 
-const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_', 'pet_'];
+const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_', 'pet_', 'vehicle_'];
 const MAP_KEYS = ['ui_coin', 'lot_sign'];
 
 export class BootScene extends Phaser.Scene {
@@ -24,8 +24,10 @@ export class BootScene extends Phaser.Scene {
       if (m[k].frames || m[k].file.includes('/extras/')) continue;
       if (MAP_KEYS.includes(k) || MAP_PREFIXES.some((p) => k.startsWith(p))) this.load.image(k, `assets/${m[k].file}`);
     }
-    const cart = m.vehicle_carroca_idle;
-    this.load.spritesheet('vehicle_carroca_idle', `assets/${cart.file}`, { frameWidth: cart.frame_size![0], frameHeight: cart.frame_size![1] });
+    for (const v of ['carroca', 'carro', 'picape', 'caminhao']) {
+      const strip = m[`vehicle_${v}_idle`];
+      if (strip) this.load.spritesheet(`vehicle_${v}_idle`, `assets/${strip.file}`, { frameWidth: strip.frame_size![0], frameHeight: strip.frame_size![1] });
+    }
     this.load.once('complete', () => { this.makeFruitTextures(); this.scene.start('farm'); });
     this.load.start();
   }

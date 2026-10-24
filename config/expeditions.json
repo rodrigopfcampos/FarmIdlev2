@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "source": "GDD v2 seção 8",
+  "version": 2,
+  "source": "GDD v2 seção 8 · fase 5: decisões do dono (24/10/2026): clicar para receber, repetição guarda o resultado, demanda igual para todos, comboio",
   "stall_price_ratio": 0.7,
   "crit": {
     "chance": 0.05,
@@ -18,7 +18,9 @@
   "low_wear_success_pts": -5,
   "manager": {
     "success_pts": 8,
-    "duration_multiplier": 0.9
+    "duration_multiplier": 0.9,
+    "vehicles_led": 1,
+    "note": "o Gerente conduz 1 veículo (2 com a Mestria Rota); ocupa o Slot de Campo dele até o veículo voltar"
   },
   "weather_success_pts": {
     "rain": -4,
@@ -44,6 +46,9 @@
       "kit_chance": 0.02,
       "kit_rarity": {
         "uncommon": 1.0
+      },
+      "item_rarity": {
+        "uncommon": 1.0
       }
     },
     {
@@ -64,6 +69,10 @@
       "kit_rarity": {
         "uncommon": 0.8,
         "rare": 0.2
+      },
+      "item_rarity": {
+        "uncommon": 0.8,
+        "rare": 0.2
       }
     },
     {
@@ -82,6 +91,11 @@
       "deed_chance": 0.03,
       "kit_chance": 0.06,
       "kit_rarity": {
+        "uncommon": 0.55,
+        "rare": 0.35,
+        "legendary": 0.1
+      },
+      "item_rarity": {
         "uncommon": 0.55,
         "rare": 0.35,
         "legendary": 0.1
@@ -107,6 +121,12 @@
         "rare": 0.38,
         "legendary": 0.18,
         "mythic": 0.04
+      },
+      "item_rarity": {
+        "uncommon": 0.4,
+        "rare": 0.38,
+        "legendary": 0.18,
+        "mythic": 0.04
       }
     },
     {
@@ -125,6 +145,12 @@
       "deed_chance": 0.08,
       "kit_chance": 0.1,
       "kit_rarity": {
+        "uncommon": 0.3,
+        "rare": 0.37,
+        "legendary": 0.25,
+        "mythic": 0.08
+      },
+      "item_rarity": {
         "uncommon": 0.3,
         "rare": 0.37,
         "legendary": 0.25,
@@ -226,10 +252,58 @@
     "manager_extra_seconds": 1,
     "convoy_extra_arrows": 2,
     "convoy_extra_seconds": 1.5,
-    "calm_mode_time_multiplier": 1.5
+    "calm_mode_time_multiplier": 1.5,
+    "tolerance_ms": 400,
+    "min_interval_ms": 90,
+    "wrong_key_penalty_s": 0.5,
+    "perfect_time_left": 0.3,
+    "incomplete_min_fraction": 0.5,
+    "start_valid_s": 60,
+    "arrows_pool": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ]
   },
   "daily_demand": {
     "bonus": 0.2,
-    "products": 3
+    "products": 3,
+    "scope": "global",
+    "timezone": "America/Sao_Paulo",
+    "pool": "all_products",
+    "note": "igual para todos: sorteada à meia-noite de Brasília entre todos os produtos do jogo (cultivos, frutas e produtos animais)"
+  },
+  "collect": {
+    "rule": "click",
+    "note": "o veículo volta e espera na Garagem; ouro, carga devolvida e prêmios entram quando o jogador clica em Receber. A repetição automática (até 2×) sai sozinha com os mesmos produtos e também fica guardada"
+  },
+  "repeat": {
+    "same_products": true,
+    "skip_when_empty": true,
+    "insurance_if_gold": true
+  },
+  "insurance_deductible": 0.1,
+  "insurance_note": "se falhar, devolve em ouro a perda acima de 10% da carga, a preço da rota; o seguro custa insurance_pct da carga a preço da rota, pago na saída",
+  "item_note": "itens (vestimenta e amuleto) sorteados entre os 7 da tools_and_items; raridade pela tabela item_rarity da rota (igual à dos kits)",
+  "vehicle_repair": {
+    "cost_ratio_of_price": 0.1,
+    "note": "consertar de 0 a 100% custa 10% do preço do veículo (a Carroça usa reference_cost); proporcional ao que falta"
+  },
+  "reports": {
+    "crit": [
+      "Estrada livre e compradores animados em {route}: tudo vendido com bônus!",
+      "Chegou cedo em {route} e a carga foi disputada: venda acima do esperado."
+    ],
+    "success": [
+      "Viagem tranquila até {route}. Carga vendida.",
+      "Tudo certo em {route}: os compradores levaram a carga toda."
+    ],
+    "fail": [
+      "A estrada alagou perto da serra e {lost} da carga estragou no caminho para {route}.",
+      "Um eixo quebrou a caminho de {route} e {lost} da carga se perdeu.",
+      "Ladrões de estrada levaram {lost} da carga antes de {route}."
+    ],
+    "recovered": "O cachorro farejou e trouxe de volta a carga perdida!"
   }
 }

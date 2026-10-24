@@ -2,8 +2,10 @@
 // "Colher e plantar") e os painéis das zonas, dos canteiros, dos lotes à venda e do pomar.
 // Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
-import { ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
+import { EQUIP_CARDS, EQUIP_RARITIES, EXP, RARITIES, VEHICLE_BY_ID, ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
 import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
+import { RARITY_ORDER, rarityMult, refurbCost, refurbNext, repairCost, vehicleStatus } from '../farm/expeditions';
+import { dropColor, dropName, openGarage } from './garage';
 import {
   animalLook, classDef, collectUnits, feedPerCycle, hireCost, hoursToNext, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook, rareSeeds,
   skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
@@ -12,6 +14,7 @@ import { applyState, store } from '../farm/store';
 import {
   adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
   sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, skillAdd, skillChoose, skillReset, tendFarm, upgradeTool,
+  equipItem, mergeItems, refurbishVehicle, repairVehicle,
   type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
 import { supabase } from '../net/supabase';
@@ -56,8 +59,8 @@ const stallRatio = () => store.state?.fx?.stall_ratio ?? STALL_RATIO;
 const salesMult = () => 1 + (store.state?.fx?.sales_gold ?? 0);
 const pct = (x: number) => `${nf1.format(x * 100)}%`;
 const PET_TEXT: Record<string, string> = {
-  cachorro: 'Expedições: +4 pontos de sucesso e 10% de chance de recuperar a carga perdida (fase 5)',
-  gato: '+40% na recuperação de energia da equipe; +10% na produção animal (fase 4)',
+  cachorro: 'Expedições: +4 pontos de sucesso e 10% de chance de recuperar a carga perdida',
+  gato: '+40% na recuperação de energia da equipe; +10% na produção animal',
   papagaio: '+4% de ouro nas vendas; avisa do evento noturno 30 min antes (fase 6)',
 };
 const PET_EMOJI: Record<string, string> = { cachorro: '🐶', gato: '🐱', papagaio: '🦜' };
@@ -643,8 +646,19 @@ function equipmentTab(s: FarmState, sel: string): string {
       <small>${snack ? `${esc(snack.name_pt)} × ${c.snack_qty} · +${snack.energy_restore} de energia, comido sozinho abaixo de ${snack.auto_trigger_below_energy_pct}%` : 'Vazio. Compre lanches na Barraca.'}</small>
       <span class="btns">${owned.map((x) => `<button type="button" class="secondary" data-equip="${x.id}">${esc(x.name_pt)} (${s.inventory[x.id]})</button>`).join('')}
       ${snack ? '<button type="button" class="secondary" data-unequip>Tirar</button>' : ''}</span></div></div>
-    <div class="slot empty-slot">Vestimenta · chega nas expedições (fase 5)</div>
-    <div class="slot empty-slot">Amuleto · chega nas expedições (fase 5)</div>${linked}`;
+    ${equipSlot(s, c, 'cloth')}${equipSlot(s, c, 'amulet')}${linked}`;
+}
+
+function equipSlot(s: FarmState, c: CharacterState, slot: 'cloth' | 'amulet'): string {
+  const cur = slot === 'cloth' ? c.cloth_id : c.amulet_id;
+  const name = slot === 'cloth' ? 'Vestimenta' : 'Amuleto';
+  const owned = Object.entries(s.inventory).filter(([k, q]) => q > 0 && k.startsWith(`${slot}_`)).sort();
+  const card = cur ? EQUIP_CARDS.find((x) => x.id === cur.split(':')[0]) : null;
+  const eff = card ? Object.entries(card.base_effect).map(([k, v]) => `${EFFECT_TEXT[k] ?? k} ${nf1.format(v * (EQUIP_RARITIES[cur!.split(':')[1]]?.multiplier ?? 1))}`).join(', ') : '';
+  return `<div class="char-card">${cur ? sprite(cur.split(':')[0], 1) : '<span class="px empty-box"></span>'}<div class="grow"><strong>${name}</strong>
+      <small>${cur ? `<span style="color:${dropColor(cur)}">${esc(dropName(cur))}</span> · ${esc(eff)}` : `Vazio. ${slot === 'cloth' ? 'Chapéu, botas e luvas' : 'Amuletos'} caem nas expedições.`}</small>
+      <span class="btns">${owned.map(([k, q]) => `<button type="button" class="secondary" data-equip-item="${k}" data-equip-slot="${slot}"><span style="color:${dropColor(k)}">${esc(dropName(k))}</span> (${q})</button>`).join('')}
+      ${cur ? `<button type="button" class="secondary" data-equip-item="" data-equip-slot="${slot}">Tirar</button>` : ''}</span></div></div>`;
 }
 
 function skillsTab(s: FarmState, sel: string): string {
@@ -714,6 +728,11 @@ function bindTeam(el: HTMLElement, pick: (cls: string) => void): void {
   el.querySelector<HTMLButtonElement>('[data-pay]')?.addEventListener('click', (e) => { (e.currentTarget as HTMLButtonElement).disabled = true; void act(() => paySalaries(), 'Salários pagos.'); });
   el.querySelectorAll<HTMLButtonElement>('[data-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => repairTool(b.dataset.repair!), 'Ferramenta consertada.'); }));
   el.querySelector('[data-forge]')?.addEventListener('click', () => openZone('oficina_ferreiro'));
+  el.querySelectorAll<HTMLButtonElement>('[data-equip-item]').forEach((b) => b.addEventListener('click', () => {
+    const cls = el.querySelector<HTMLButtonElement>('[data-pick-char][aria-selected="true"]')?.dataset.pickChar ?? 'agricultor';
+    b.disabled = true;
+    void act(() => equipItem(cls, b.dataset.equipSlot as 'cloth' | 'amulet', b.dataset.equipItem || null), b.dataset.equipItem ? 'Item equipado.' : 'Item guardado.');
+  }));
   el.querySelectorAll<HTMLButtonElement>('[data-skill]').forEach((b) => b.addEventListener('click', () => {
     const cls = el.querySelector<HTMLButtonElement>('[data-pick-char][aria-selected="true"]')?.dataset.pickChar ?? 'agricultor';
     b.disabled = true;
@@ -755,7 +774,30 @@ function itemsList(s: FarmState): string {
     const t = RARITY_BY_ID[r.rarity];
     rows.push(`<li>${sprite(iconSprite(store.manifest, r.crop), 1)}<span><strong style="color:${t.color_hex}">Semente ${esc(t.name_pt)} de ${esc(CROPS[r.crop].name_pt)}</strong><small>${r.qty} · colheita ×${nf1.format(t.multiplier)} por 1 plantio · plante pelo ${CROPS[r.crop].kind === 'orchard' ? 'pomar' : 'canteiro'}</small></span></li>`);
   }
+  for (const [id, q] of Object.entries(s.inventory).filter(([k, n]) => n > 0 && (k.startsWith('kit:') || k.startsWith('cloth_') || k.startsWith('amulet_'))).sort()) {
+    const [base, rar] = id.split(':');
+    const need = base === 'kit' ? EXP.kit_merge : EQUIP_RARITIES[rar]?.merge_count_to_upgrade ?? null;
+    const card = EQUIP_CARDS.find((c) => c.id === base);
+    const eff = card ? Object.entries(card.base_effect).map(([k, v]) => `${EFFECT_TEXT[k] ?? k} ${nf1.format(v * (EQUIP_RARITIES[rar]?.multiplier ?? 1))}`).join(', ') : 'reforma de veículo na Forja';
+    rows.push(`<li>${sprite(base === 'kit' ? 'item_repair_kit' : base, 1)}<span><strong style="color:${dropColor(id)}">${esc(dropName(id))}</strong><small>${q} · ${esc(eff)}${card ? ' · equipe em Casa → Equipamentos' : ''}</small></span>
+      ${need && rar !== 'mythic' ? `<span class="btns"><button type="button" class="secondary" data-merge="${id}" ${q < need ? 'disabled' : ''}>Juntar ${need} → 1 acima</button></span>` : ''}</li>`);
+  }
   return rows.length ? `<ul class="items">${rows.join('')}</ul>` : '<p class="empty">Nenhum item ainda.</p>';
+}
+
+const EFFECT_TEXT: Record<string, string> = {
+  max_energy_bonus: '+ energia máxima', energy_cost_reduction_pct: '− % de gasto de energia', work_capacity_pct: '+ % de trabalho',
+  expedition_success_pts_when_leading: '+ pontos de sucesso quando conduz', double_harvest_chance_pct: '+ % colheita dupla',
+  character_xp_pct: '+ % XP do personagem', animal_production_pct: '+ % produção animal',
+};
+
+function bindItems(el: HTMLElement): void {
+  el.querySelectorAll<HTMLButtonElement>('[data-merge]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => mergeItems(b.dataset.merge!), 'Juntou 3 em 1 de raridade acima!'); }));
+}
+
+/** contexto que a Garagem usa para abrir painéis e mostrar avisos */
+function garageCtx() {
+  return { show, act, toast, sprite, esc, close, itemIcon };
 }
 
 function openZone(id: string, tab = 'silo'): void {
@@ -768,7 +810,7 @@ function openZone(id: string, tab = 'silo'): void {
       const tabs = [['silo', 'Silo'], ['operadores', 'Operadores'], ['equipamentos', 'Equipamentos'], ['habilidades', 'Habilidades'], ['pets', 'Pets']]
         .map(([k, n]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${active === k}">${n}</button>`).join('');
       let body = '';
-      if (active === 'silo') body = siloItems(false) + `<h3>Itens</h3>${itemsList(s)}<p class="hint">Para vender, use a Barraca. Expedições chegam na fase 5.</p>`;
+      if (active === 'silo') body = siloItems(false) + `<h3>Itens</h3>${itemsList(s)}<p class="hint">Para vender, use a Barraca (na hora, sem risco) ou a Garagem (expedição, preço maior com risco).</p>`;
       if (active === 'operadores') body = operatorsTab(s);
       if (active === 'equipamentos') body = equipmentTab(s, picked);
       if (active === 'habilidades') body = skillsTab(s, picked);
@@ -777,6 +819,7 @@ function openZone(id: string, tab = 'silo'): void {
     }, (el) => {
       el.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => { active = b.dataset.tab!; current?.(); }));
       bindTeam(el, (cls) => { picked = cls; current?.(); });
+      bindItems(el);
     });
   }
   if (id === 'barraca_comerciante') {
@@ -818,20 +861,49 @@ function openZone(id: string, tab = 'silo'): void {
           <small>${esc(className(c.class_id))} · ${nf1.format(c.rate)} de trabalho por hora · durabilidade ${nf1.format(c.durability)}</small>
           <span class="btns"><button type="button" class="secondary" data-repair="${c.class_id}" ${c.durability >= 100 || s.gold < repair ? 'disabled' : ''}>Consertar · ${formatGold(repair)}</button></span></div></div>
         <div class="tool-row">${row}</div>${action}
-        <p class="hint">A ferramenta perde 2,5 de durabilidade por hora de trabalho; abaixo de 30 trabalha a 50% até o conserto. Reforma de veículos na fase 5.</p>`;
+        <p class="hint">A ferramenta perde 2,5 de durabilidade por hora de trabalho; abaixo de 30 trabalha a 50% até o conserto.</p>
+        ${forgeVehicles(s)}`;
     }, (el) => {
       el.querySelectorAll<HTMLButtonElement>('[data-pick-char]').forEach((b) => b.addEventListener('click', () => { picked = b.dataset.pickChar!; current?.(); }));
       el.querySelectorAll<HTMLButtonElement>('[data-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => repairTool(b.dataset.repair!), 'Ferramenta consertada.'); }));
+      el.querySelectorAll<HTMLButtonElement>('[data-veh-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => repairVehicle(b.dataset.vehRepair!), 'Veículo consertado.'); }));
+      el.querySelectorAll<HTMLButtonElement>('[data-veh-refurb]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => refurbishVehicle(b.dataset.vehRefurb!), 'Reforma começou!'); }));
+      bindItems(el);
       el.querySelector<HTMLButtonElement>('[data-upgrade]')?.addEventListener('click', (e) => {
         (e.currentTarget as HTMLButtonElement).disabled = true;
         void act(() => upgradeTool(picked), 'Ferramenta melhorada!');
       });
     });
   }
-  if (id === 'garagem_expedicao') {
-    show('Garagem', () => `<div class="char-card">${sprite('vehicle_carroca_common', 1)}<div><strong>Carroça</strong><small>Capacidade ${VEHICLES[0].capacity} · Feira da Vila e Cidade Vizinha</small><small>Raridade: Comum</small></div></div>
-      <p class="hint">Expedições chegam na fase 5. Por enquanto, venda na Barraca.</p>`);
-  }
+  if (id === 'garagem_expedicao') openGarage(garageCtx());
+}
+
+/** Forja: conserto e reforma dos veículos, Kits de Reforma */
+function forgeVehicles(s: FarmState): string {
+  const now = store.clock.farmNow();
+  const rows = s.vehicles.map((v) => {
+    const d = VEHICLE_BY_ID[v.vehicle_id];
+    const st = vehicleStatus(s, v, now);
+    const rep = repairCost(v.vehicle_id, v.durability);
+    const nx = refurbNext(v.rarity);
+    const kit = nx ? `kit:${nx.rarity}` : '';
+    const cost = refurbCost(v.vehicle_id, v.rarity);
+    const t = RARITY_BY_ID[v.rarity];
+    let ref = '';
+    if (st.status === 'refurb') ref = `<small>Na reforma: vira ${esc(RARITY_BY_ID[v.refurb_rarity!].name_pt)} em ${duration(st.until! - now)}</small>`;
+    else if (nx) {
+      const why = s.level < nx.min_level ? `nível ${nx.min_level}` : !s.inventory[kit] ? `falta ${dropName(kit)}` : s.gold < cost ? `falta ${formatGold(cost - s.gold)} de ouro` : st.status !== 'idle' ? 'veículo fora da Garagem' : '';
+      ref = `<small>Reforma para ${esc(RARITY_BY_ID[nx.rarity].name_pt)} (×${nf1.format(rarityMult(nx.rarity, RARITIES))}): ${formatGold(cost)} ouro + 1 ${esc(dropName(kit))} · ${nx.hours} h parado</small>
+        <span class="btns"><button type="button" class="primary small" data-veh-refurb="${v.vehicle_id}" ${why ? 'disabled' : ''}>${why ? esc(why) : 'Reformar'}</button></span>`;
+    } else ref = '<small>Já é Mítico.</small>';
+    return `<div class="char-card">${sprite(`vehicle_${v.vehicle_id}_${v.rarity}`, 1)}<div class="grow"><strong>${esc(d.name_pt)} <span class="shield" style="--c:${t.color_hex}">${esc(t.name_pt)}</span></strong>
+      <span class="energy dura ${v.durability < EXP.low_wear_threshold_pct ? 'low' : ''}"><span style="width:${Math.round(v.durability)}%"></span></span>
+      <small>Durabilidade ${nf1.format(v.durability)} · cada viagem gasta ${EXP.wear_per_trip_pct}%${v.durability < EXP.low_wear_threshold_pct ? ' · <span class="bad">abaixo de 30: −5 pontos</span>' : ''}</small>
+      <span class="btns"><button type="button" class="secondary" data-veh-repair="${v.vehicle_id}" ${v.durability >= 100 || s.gold < rep || st.status === 'travel' ? 'disabled' : ''}>Consertar · ${formatGold(rep)}</button></span>
+      ${ref}</div></div>`;
+  }).join('');
+  const kits = RARITY_ORDER.filter((r) => s.inventory[`kit:${r}`]).map((r) => `${s.inventory[`kit:${r}`]} ${dropName(`kit:${r}`)}`).join(' · ');
+  return `<h3>Veículos</h3>${rows}<p class="hint">Kits de Reforma caem só em expedições; ${EXP.kit_merge} iguais viram 1 da raridade acima (Casa → Silo → Itens).${kits ? ` Você tem: ${esc(kits)}.` : ''}</p>`;
 }
 
 // usado nos testes

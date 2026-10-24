@@ -6,6 +6,7 @@ import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { petSprite, stageSprite } from '../farm/art';
+import { vehicleStatus } from '../farm/expeditions';
 import { cameraBounds, pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
 import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
@@ -40,6 +41,9 @@ export class FarmScene extends Phaser.Scene {
   private petImg: Phaser.GameObjects.Image | null = null;   // pet ativo com arte (2 quadros parados)
   private petFrame: 1 | 2 = 1;
   private petAt: Pt | null = null;
+  private veh: Phaser.GameObjects.Sprite | null = null;     // veículo ativo na vaga da Garagem
+  private vehLabel: Phaser.GameObjects.Text | null = null;  // contador da viagem ou "Receber"
+  private vehKey = '';
 
   constructor() { super('farm'); }
 
@@ -84,9 +88,12 @@ export class FarmScene extends Phaser.Scene {
     // Carroça parada na vaga da Garagem, com a animação de parado
     const garage = ZONES.find((z) => z.id === 'garagem_expedicao');
     if (garage?.parked_vehicle_anchor) {
-      this.anims.create({ key: 'carroca_idle', frames: this.anims.generateFrameNumbers('vehicle_carroca_idle', { start: 0, end: 3 }), frameRate: FARM.visual.vehicle_idle_fps, repeat: -1 });
+      for (const v of ['carroca', 'carro', 'picape', 'caminhao']) {
+        if (this.textures.exists(`vehicle_${v}_idle`)) this.anims.create({ key: `${v}_idle`, frames: this.anims.generateFrameNumbers(`vehicle_${v}_idle`, { start: 0, end: 3 }), frameRate: FARM.visual.vehicle_idle_fps, repeat: -1 });
+      }
       const [x, y] = garage.parked_vehicle_anchor;
-      this.add.sprite(x, y, 'vehicle_carroca_idle').setOrigin(0.5, 1).setDepth(2).play('carroca_idle');
+      this.veh = this.add.sprite(x, y, 'vehicle_carroca_idle').setOrigin(0.5, 1).setDepth(2).play('carroca_idle');
+      this.vehLabel = this.text().setOrigin(0.5, 1).setPosition(x, y - 40).setDepth(19).setVisible(false);
     }
 
     // ponto do pet na frente da Casa
@@ -141,7 +148,30 @@ export class FarmScene extends Phaser.Scene {
     if (hasArt) this.petImg?.setTexture(petKey!);
     this.petImg?.setVisible(!!s.pet && hasArt);
     this.pet?.setText(s.pet ? PET_EMOJI[s.pet.id] ?? '' : '').setVisible(!!s.pet && !hasArt);
+    this.refreshGarage(s);
     if (this.pointer) this.showHover(this.pointer.x, this.pointer.y); // o rótulo do lote muda depois da compra
+  }
+
+  /** só o veículo ativo aparece na vaga; viajando, a vaga fica vazia com o contador até a volta */
+  private refreshGarage(s: FarmState): void {
+    if (!this.veh || !this.vehLabel) return;
+    const v = s.vehicles.find((x) => x.active) ?? s.vehicles[0];
+    if (!v) { this.veh.setVisible(false); this.vehLabel.setVisible(false); return; }
+    const now = store.clock.farmNow();
+    const st = vehicleStatus(s, v, now);
+    const anyBack = s.expeditions.some((x) => x.status === 'back');
+    const parked = st.status === 'idle' || st.status === 'back';
+    this.veh.setVisible(parked);
+    if (parked) {
+      const key = v.rarity === 'common' && this.anims.exists(`${v.vehicle_id}_idle`) ? `${v.vehicle_id}_idle` : `vehicle_${v.vehicle_id}_${v.rarity}`;
+      if (key !== this.vehKey) {
+        this.vehKey = key;
+        if (key.endsWith('_idle')) this.veh.play(key);
+        else if (this.textures.exists(key)) this.veh.stop().setTexture(key);
+      }
+    }
+    const text = st.status === 'travel' ? `Volta em ${duration(st.until! - now)}` : st.status === 'refurb' ? `Reforma: ${duration(st.until! - now)}` : anyBack ? 'Receber!' : '';
+    this.vehLabel.setText(text).setVisible(!!text);
   }
 
   /** placa só nos lotes à venda; entulho até o fim da limpeza; prédio do pasto depois dela */
@@ -175,7 +205,7 @@ export class FarmScene extends Phaser.Scene {
     const now = store.clock.farmNow();
     const t = time / 1000;
     const second = Math.floor(t);
-    if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); }
+    if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); this.refreshGarage(s); }
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
     const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
     for (const v of this.plots) {

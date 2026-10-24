@@ -134,3 +134,24 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 .shield { display: inline-block; margin-left: 4px; padding: 0 6px; font-size: 12px; font-weight: 700; color: #1c1c1c; background: var(--c); clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); }
 .pet-face.small { font-size: 18px; width: 20px; }
 .items li.empty-slot { border-style: dashed; color: #bfae8c; }
+
+/* fase 5: Garagem, expedição e minigame */
+.silhouette { filter: brightness(0) opacity(0.45); }
+.items.compact li { padding: 4px 8px; }
+.items li > .px:first-child { flex: 0 0 auto; }
+.checks { display: grid; gap: 6px; }
+.checks .check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; }
+.qty { width: 72px; padding: 6px; font: inherit; background: #1c140e; color: inherit; border: 2px solid var(--panel-border); }
+.hint.good { color: #8fd18f; }
+.minigame { text-align: center; }
+.mg-arrows { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 14px 0; }
+.mg-arrow { width: 44px; height: 44px; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: #3a2c20; border: 2px solid var(--panel-border); }
+.mg-arrow.now { border-color: var(--gold); color: var(--gold); transform: scale(1.12); }
+.mg-arrow.ok { background: #2f5a2f; border-color: #4caf50; color: #d8f5d8; }
+.mg-time { height: 10px; background: #00000066; border: 2px solid var(--panel-border); margin: 8px 0 16px; }
+.mg-time span { display: block; height: 100%; background: var(--gold); transition: width 0.05s linear; }
+.mg-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.mg-pad button { font-size: 30px; padding: 18px 0; touch-action: manipulation; }
+.minigame.shake { animation: mg-shake 0.25s; }
+@keyframes mg-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+@media (prefers-reduced-motion: reduce) { .minigame.shake { animation: none; outline: 3px solid #e5383b; } .mg-arrow.now { transform: none; } }

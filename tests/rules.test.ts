@@ -1,7 +1,10 @@
 // Regras da progressão do lado do cliente (o servidor tem os testes em supabase/tests/phase2_test.sql).
 import { describe, expect, it } from 'vitest';
-import { CROPS, PURCHASES } from '../src/data';
-import { cleanupMinutes, isNeighbor, lotOffer, plotCrops, plotLook, orchardFruits, tendCount, treeLook, xpProgress } from '../src/farm/rules';
+import { CROPS, LEVELS, PURCHASES } from '../src/data';
+import {
+  cleanupMinutes, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
+  rareSeeds, skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
+} from '../src/farm/rules';
 
 describe('compra de lotes', () => {
   const start = new Set(['A1']);
@@ -98,5 +101,63 @@ describe('clique do jogador', () => {
       lots: [{ lot_id: 'A1', ready_at: 0 }, { lot_id: 'A3', ready_at: 999 }],
     };
     expect(tendCount(s, 100)).toBe(3);
+  });
+});
+
+// ---------- fase 3: personagens, pets, habilidades e sementes raras ----------
+
+describe('personagens (fase 3)', () => {
+  it('contratação = 1,5 × R do nível em que a classe libera', () => {
+    expect(hireCost('rancheira')).toBe(1.5 * LEVELS[2].reference_income_per_day);
+    expect(hireCost('botanica')).toBe(1.5 * LEVELS[19].reference_income_per_day);
+  });
+  it('próximo nível do personagem pede 10 + 1,5 × nível horas; no 30 para', () => {
+    expect(hoursToNext(1)).toBe(11.5);
+    expect(hoursToNext(30)).toBeNull();
+  });
+  it('1 ponto de habilidade por nível acima do 1º', () => {
+    expect(skillPoints(12, { 'cultivo.a': 5, 'cultivo.b': 3 })).toEqual({ total: 11, spent: 8, free: 3 });
+  });
+  it('Mestria fica trancada até os dois nós cheios; ramos de fases futuras ficam marcados', () => {
+    expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 4 }).locked).toBe(true);
+    expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 5 }).locked).toBe(false);
+    expect(skillNodeState('gerente', 'rota', 'a', {}).future).toBe(5);
+    expect(skillNodeState('agricultor', 'cultivo', 'a', {}).future).toBeNull();
+  });
+  it('limpeza: sem Ferreiro o dobro; ramo Obras reduz', () => {
+    expect(cleanupMinutes(1, true)).toBe(72);
+    expect(cleanupMinutes(1, false)).toBe(144);
+    expect(cleanupMinutes(1, true, -0.3)).toBeCloseTo(50.4);
+  });
+});
+
+describe('pets (fase 3)', () => {
+  it('nível pela afinidade: 4, 10, 18 e 30 carinhos', () => {
+    expect([0, 3, 4, 9, 10, 18, 29, 30, 99].map(petLevel)).toEqual([1, 1, 2, 2, 3, 4, 4, 5, 5]);
+    expect(petNextIn(0)).toBe(4);
+    expect(petNextIn(30)).toBeNull();
+  });
+  it('efeito de 40% no nível 1 a 100% no nível 5', () => {
+    expect(petFactor(1)).toBeCloseTo(0.4);
+    expect(petFactor(3)).toBeCloseTo(0.7);
+    expect(petFactor(5)).toBeCloseTo(1);
+  });
+  it('troca do pet ativo espera 7 dias', () => {
+    const now = new Date('2026-10-24T12:00:00Z');
+    expect(petSwapWaitDays(null, now)).toBe(0);
+    expect(petSwapWaitDays('2026-10-22T12:00:00Z', now)).toBe(5);
+    expect(petSwapWaitDays('2026-10-10T12:00:00Z', now)).toBe(0);
+  });
+});
+
+describe('sementes raras e pomar (fase 3)', () => {
+  it('lê as sementes raras do inventário', () => {
+    expect(rareSeeds({ deed: 1, 'seed:alface:rare': 2, 'seed:maca:mythic': 1, 'seed:batata:uncommon': 0 }, 'alface')).toEqual([{ crop: 'alface', rarity: 'rare', qty: 2 }]);
+    expect(rareSeeds({ 'seed:alface:rare': 2, 'seed:maca:mythic': 1 })).toHaveLength(2);
+  });
+  it('árvore com 1º crescimento mais curto (habilidade) ainda aparece como muda no começo', () => {
+    const g = CROPS.maca.grow_minutes * 60 * 0.8;
+    expect(treeLook({ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: 0, ready_at: g }, g * 0.1)).toBe('sapling');
+    expect(treeLook({ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: 0, ready_at: g }, g * 0.9)).toBe('fruit');
   });
 });

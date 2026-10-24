@@ -153,8 +153,10 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const weatherXp = 1 + CFG.weather.average_bonus.xp;
   const armoryBonus = () => armory.reduce((s, a) => s + (a.every(Boolean) ? 0.05 : a[0] && a[1] && a[2] ? 0.02 : 0), 0);
   const skillBonus = () => chars.filter((c) => c.hired).reduce((s, c) => s + ((c.lvl - 1) / CFG.chars.skills.points_per_branch / CFG.chars.skills.branches) * CFG.chars.skills.full_tree_income_estimate, 0);
-  const petFactor = (t: number) => (petSince < 0 ? 0 : Math.min(1, 0.4 + 0.6 * ((t - petSince) / 24) / CFG.chars.pets.days_to_max));
-  const salesBonus = (t: number) => 1 + 0.04 * petFactor(t); // Papagaio
+  // pet: 1 carinho por dia desde a adoção; nível pela afinidade acumulada; efeito de 40% (nível 1) a 100% (nível 5)
+  const petLevel = (t: number) => (petSince < 0 ? 0 : 1 + CFG.chars.pets.affinity_to_level.filter((a: number) => Math.floor((t - petSince) / 24) + 1 >= a).length);
+  const petFactor = (t: number) => (petSince < 0 ? 0 : CFG.chars.pets.effect_at_level_1 + (CFG.chars.pets.effect_at_level_5 - CFG.chars.pets.effect_at_level_1) * (petLevel(t) - 1) / 4);
+  const salesBonus = (t: number) => 1 + (CFG.chars.pets.list.find((x: any) => x.id === 'papagaio').sales_gold_pct / 100) * petFactor(t); // Papagaio
   const incomeMult = (t: number) => weatherIncome * (1 + armoryBonus() + skillBonus()) * salesBonus(t);
 
   const upkeepPerDay = () => {
@@ -165,14 +167,33 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   };
   const reserve = () => upkeepPerDay() * SIM.reserve_days_of_upkeep;
 
-  // capacidade de trabalho por hora (rodízio: no máximo 3 em campo, cada um trabalha 2/3 do tempo)
-  const workCapacity = () => {
+  // fase 3: funções de apoio em campo (Comerciante, Gerente, Botânica) e bônus do pet vinculado ao Agricultor
+  const FE = CFG.chars.field_effects;
+  const charMat = (id: string) => chars.find((c) => c.id === id)!.mat;
+  const gerenteCut = () => (has('gerente') ? (FE.gerente.team_energy_use_pct_base + FE.gerente.team_energy_use_pct_per_material * charMat('gerente')) / 100 : 0);
+  const stallRatio = () => Math.min(FE.comerciante.stall_price_cap, CFG.exp.stall_price_ratio + (has('comerciante') ? (FE.comerciante.stall_price_pts_per_material * (charMat('comerciante') + 1)) / 100 : 0));
+  const seedBack = () => (has('comerciante') ? (FE.comerciante.seed_discount_pct_per_material * (charMat('comerciante') + 1)) / 100 : 0) + (has('botanica') ? FE.botanica.seed_refund_chance : 0);
+  const RARE_GAIN = Object.entries(FE.botanica.rare_seed_odds).reduce((s2: number, [k, v]) => s2 + (v as number) * (RAR_MULT[k] - 1), 0);
+  const botanicaMult = () => (has('botanica') ? 1 + FE.botanica.rare_seed_chance * RARE_GAIN : 1);
+  const botanicaXp = () => (has('botanica') ? 1 + FE.botanica.harvest_xp_pct / 100 : 1);
+
+  // capacidade de trabalho por hora: cada um trabalha de 60 a 10 de energia e descansa de 10 a 60 (rodízio);
+  // o Gerente e o pet reduzem o gasto de energia, então quem trabalha fica mais tempo em campo. No máximo 3 em campo.
+  const workCapacity = (t = 0) => {
     const hired = chars.filter((c) => c.hired);
+    const E = CFG.chars.energy, pl = petLevel(t);
+    const duty = hired.map((c) => {
+      const use = E.use_per_work_hour * (1 - gerenteCut()) * (c.id === 'agricultor' ? 1 - (CFG.chars.pets.per_level_energy_use_pct * pl) / 100 : 1);
+      const work = (E.enter_field_at - E.leave_field_at) / use, rest = (E.enter_field_at - E.leave_field_at) / E.recover_per_rest_hour;
+      return work / (work + rest);
+    });
+    const sum = duty.reduce((a, b) => a + b, 0);
+    const scale = Math.min(1, CFG.chars.field_slots / sum);
     const caps = hired.map((c) => p.workPerHour * mats[c.mat].work_capacity_multiplier
       * (c.role === 'crops' || c.role === 'animals_orchard' ? 1 : CFG.chars.off_role_efficiency)
-      * (c.dura < dur.low_durability_threshold ? dur.low_durability_capacity_penalty_multiplier : 1));
-    const working = Math.min(CFG.chars.field_slots, (hired.length * 2) / 3);
-    return { total: working * (caps.reduce((a, b) => a + b, 0) / hired.length), frac: working / hired.length };
+      * (c.dura < dur.low_durability_threshold ? dur.low_durability_capacity_penalty_multiplier : 1)
+      * (c.id === 'agricultor' ? 1 + (CFG.chars.pets.per_level_work_pct * pl) / 100 : 1));
+    return { total: caps.reduce((a, c, i) => a + c * duty[i] * scale, 0), fracs: duty.map((d) => d * scale), hired };
   };
 
   const nextSessionAfter = (t: number) => { for (const s of sessionList) if (s > t) return s; return t + 24; };
@@ -222,7 +243,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
         const trips = Math.min(1 + CFG.exp.auto_repeat_max, gap / hours);
         const units = Math.min(remainingUnits, v.def.capacity * mult * trips);
         // valor esperado contra vender o mesmo na Barraca
-        const gain = units * (ev - CFG.exp.stall_price_ratio);
+        const gain = units * (ev - stallRatio());
         if (gain > bestVal) { bestVal = gain; bestRoute = { r, ev, units, trips: units / (v.def.capacity * mult) }; bestTrips = trips; }
       });
       if (!bestRoute) return;
@@ -232,7 +253,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       deeds += tr * bestRoute.r.deed_chance;
       for (const [rar, share] of Object.entries(bestRoute.r.kit_rarity)) kits[RAR.indexOf(rar)] += tr * bestRoute.r.kit_chance * (share as number);
     });
-    revenue += remainingUnits * perUnit * CFG.exp.stall_price_ratio;
+    revenue += remainingUnits * perUnit * stallRatio();
     const got = revenue * incomeMult(t);
     gold += got; income += got; dayIncome += got; incomeByLevel[level] += got;
     silo = { value: 0, units: 0 };
@@ -388,7 +409,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     hoursByLevel[level]++;
     if (t - lastSession >= SIM.offline_cap_hours) continue; // limite offline de 8 h
     // produção desta hora
-    const cap = workCapacity();
+    const cap = workCapacity(t);
     let labor = cap.total + freePerHour;
     let value = 0, units = 0, gainXp = 0;
     for (const o of orchards) if (o.fruit && t >= o.readyAt) {
@@ -397,7 +418,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       value += 4 * o.fruit.gold * f; units += 4 * o.fruit.units * f; gainXp += 4 * o.fruit.xp * f;
     }
     const plan = bestPlan(level, plots, Math.max(0, labor));
-    value += plan.gold; units += plan.units; gainXp += plan.xp; seeds += plan.seed;
+    value += plan.gold + plan.seed * seedBack(); units += plan.units; gainXp += plan.xp; seeds += plan.seed * (1 - seedBack());
+    // Botânica: sementes raras (média) e +XP nas colheitas de lavoura e pomar
+    value *= botanicaMult(); units *= botanicaMult(); gainXp *= botanicaMult() * botanicaXp();
     const rancheira = has('rancheira');
     for (const [hid, h] of Object.entries(houses)) if (h.animal && h.count > 0) {
       const a = h.animal;
@@ -412,12 +435,13 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const x = gainXp * weatherXp * 1.15; // +15% de XP das expedições
     addXp(x, t); dayXp += x;
     // personagens: horas, nível e desgaste
-    for (const c of chars) if (c.hired) {
-      c.hours += cap.frac;
+    for (const [i, c] of cap.hired.entries()) {
+      const frac = cap.fracs[i];
+      c.hours += frac;
       while (c.lvl < CFG.chars.character_level.max && c.hours >= CFG.chars.character_level.base_hours + CFG.chars.character_level.per_level_hours * c.lvl) {
         c.hours -= CFG.chars.character_level.base_hours + CFG.chars.character_level.per_level_hours * c.lvl; c.lvl++;
       }
-      c.dura = Math.max(0, c.dura - dur.loss_per_work_hour * cap.frac);
+      c.dura = Math.max(0, c.dura - dur.loss_per_work_hour * frac);
     }
   }
 

@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 7 (ferramentas, roupas, amuletos, lanches) · desgaste reduzido pela metade (decisão do dono)",
   "tool_durability_rules": {
     "max_durability": 100,
@@ -187,25 +187,29 @@
       "name_pt": "Pão de Queijo",
       "energy_restore": 25,
       "auto_trigger_below_energy_pct": 15,
-      "max_stack_in_slot": 5
+      "max_stack_in_slot": 5,
+      "price_R_ratio": 0.01
     },
     {
       "id": "snack_coffee",
       "name_pt": "Café Quente",
       "energy_restore": 40,
       "auto_trigger_below_energy_pct": 15,
-      "max_stack_in_slot": 5
+      "max_stack_in_slot": 5,
+      "price_R_ratio": 0.016
     },
     {
       "id": "snack_lunchbox",
       "name_pt": "Marmita da Fazenda",
       "energy_restore": 70,
       "auto_trigger_below_energy_pct": 15,
-      "max_stack_in_slot": 5
+      "max_stack_in_slot": 5,
+      "price_R_ratio": 0.028
     }
   ],
   "sprites": {
     "tool": "tool_{tool}_{material}",
     "note": "ex.: tool_hoe_wood; roupas, amuletos e lanches usam o próprio id"
-  }
+  },
+  "snack_price_note": "preço na Barraca = fração da Renda de Referência do nível da conta (aprovado pelo dono, 23/10)"
 }

@@ -99,3 +99,33 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outl
 .hud .tend[hidden] { display: none; }
 .row.top { margin: 0 0 10px; }
 .secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* fase 3: personagens, energia, habilidades, lanches e pets */
+.hud .labor { font: inherit; color: inherit; background: transparent; border: 0; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.mini-char { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+.ebar { display: block; width: 16px; height: 3px; background: #3a2c20; }
+.ebar::before { content: ''; display: block; height: 100%; width: var(--e); background: var(--green); }
+.warn { display: inline-grid; place-items: center; width: 16px; height: 16px; background: var(--danger); color: #fff; font-weight: 700; font-size: 12px; }
+.tabs.wrap { flex-wrap: wrap; }
+.tabs.wrap button { flex: 1 1 auto; padding: 6px 8px; font-size: 14px; }
+.grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.char-card .btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.char-card.bench { opacity: 0.85; border-style: dashed; }
+.energy { display: block; width: 100%; max-width: 220px; height: 8px; background: #3a2c20; border: 1px solid var(--panel-border); margin: 2px 0; }
+.energy > span { display: block; height: 100%; background: var(--green); }
+.energy.dura > span { background: #c9a36a; }
+.energy.dura.low > span { background: var(--danger); }
+.bad { color: #ffb4a8; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.chips button { display: inline-flex; align-items: center; gap: 4px; font: inherit; font-size: 14px; padding: 4px 8px; background: #3a2c20; color: var(--paper); border: 2px solid var(--panel-border); cursor: pointer; }
+.chips button[aria-selected='true'] { border-color: var(--gold); background: #4a3a20; }
+.skills li { gap: 8px; }
+.skills .node-name { min-width: 64px; font-weight: 700; color: var(--gold); font-size: 13px; }
+.skills li.future { opacity: 0.6; }
+.small-btn { min-width: 36px; padding: 4px 10px; font-weight: 700; }
+.check { display: inline-flex; align-items: center; gap: 4px; margin: 0; font-size: 13px; color: #d8c8a8; }
+.check input { display: inline; width: auto; margin: 0; }
+select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(--ink); background: var(--paper); border: 2px solid var(--panel-border); }
+.pet-face { font-size: 28px; line-height: 1; width: 36px; text-align: center; }
+.items li.active-pet { border-color: var(--gold); }
+.empty-box { width: 16px; height: 16px; border: 2px dashed var(--panel-border); }

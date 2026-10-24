@@ -77,7 +77,8 @@ begin
   s := public.get_farm();
   if (select stalled_reason from public.plots where user_id = a and plot_id = 'A1-1') is distinct from 'sem_ouro' then raise exception 'FALHA 14: canteiro não parou sem ouro'; end if;
   s := public.sell_at_stall('batata', (s -> 'silo' ->> 'batata')::int, 'teste-venda-3');
-  if (select state from public.plots where user_id = a and plot_id = 'A1-1') <> 'growing' then raise exception 'FALHA 15: não voltou a plantar depois da venda'; end if;
+  -- (fase 3: o Agricultor pode estar sem energia depois de 8 h; o canteiro só precisa deixar de estar parado)
+  if (select stalled_reason from public.plots where user_id = a and plot_id = 'A1-1') is not null then raise exception 'FALHA 15: não voltou a plantar depois da venda'; end if;
   -- ledger continua batendo com a carteira
   if (select sum(amount) from public.ledger where user_id = a) <> (s ->> 'gold')::numeric then raise exception 'FALHA 16: ledger diferente da carteira'; end if;
 

@@ -233,27 +233,27 @@ custo(n) = 0,28 × 1,10^(n−1) × R(⌈1,46 × n⌉)
 | 5 | C2 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
 | 6 | A6 | Lavoura | 9 | 24.000 | Não | 2 h 12 | 1,8 |
 | 7 | P1 | Pomar | 11 | 48.000 | Não | 2 h 24 | 2,3 |
-| 8 | A7 | Lavoura | 12 | 65.000 | Não | 2 h 36 | 3,5 |
+| 8 | A7 | Lavoura | 12 | 71.000 | Não | 2 h 36 | 3,8 |
 | 9 | A8 | Lavoura | 14 | 190.000 | Não | 2 h 48 | 5,3 |
-| 10 | P2 | Pomar | 15 | 260.000 | Não | 3 h 00 | 6,3 |
-| 11 | A5 | Lavoura | 17 | 470.000 | Não | 3 h 12 | 8,5 |
-| 12 | A10 | Lavoura | 18 | 620.000 | Não | 3 h 24 | 9,8 |
-| 13 | P3 | Pomar | 19 | 760.000 | Não | 3 h 36 | 10,8 |
-| 14 | A11 | Lavoura | 21 | 1.100.000 | Não | 3 h 48 | 14,3 |
-| 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 16,8 |
-| 16 | P4 | Pomar | 24 | 2.100.000 | Não | 4 h 12 | 19,5 |
-| 17 | A13 | Lavoura | 25 | 2.800.000 | Não | 4 h 24 | 21,8 |
-| 18 | A20 | Lavoura | 27 | 4.800.000 | Não | 4 h 36 | 24,9 |
-| 19 | L | Lago | 28 | 5.800.000 | Não | 4 h 48 | 27,5 |
-| 20 | P5 | Pomar | 30 | 8.000.000 | Sim | 5 h 00 | 33,3 |
-| 21 | A9 | Lavoura | 31 | 9.800.000 | Sim | 5 h 12 | 37,5 |
-| 22 | A14 | Lavoura | 33 | 13.000.000 | Sim | 5 h 24 | 41,5 |
-| 23 | P6 | Pomar | 34 | 16.000.000 | Sim | 5 h 36 | 44,3 |
-| 24 | A15 | Lavoura | 36 | 25.000.000 | Sim | 5 h 48 | 50,5 |
+| 10 | P2 | Pomar | 15 | 270.000 | Não | 3 h 00 | 6,3 |
+| 11 | A5 | Lavoura | 17 | 520.000 | Não | 3 h 12 | 8,8 |
+| 12 | A10 | Lavoura | 18 | 640.000 | Não | 3 h 24 | 9,5 |
+| 13 | P3 | Pomar | 19 | 770.000 | Não | 3 h 36 | 10,8 |
+| 14 | A11 | Lavoura | 21 | 1.200.000 | Não | 3 h 48 | 14,3 |
+| 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 17,5 |
+| 16 | P4 | Pomar | 24 | 2.200.000 | Não | 4 h 12 | 19,5 |
+| 17 | A13 | Lavoura | 25 | 3.000.000 | Não | 4 h 24 | 21,8 |
+| 18 | A20 | Lavoura | 27 | 5.000.000 | Não | 4 h 36 | 25,3 |
+| 19 | L | Lago | 28 | 5.900.000 | Não | 4 h 48 | 27,5 |
+| 20 | P5 | Pomar | 30 | 8.400.000 | Sim | 5 h 00 | 33,3 |
+| 21 | A9 | Lavoura | 31 | 10.000.000 | Sim | 5 h 12 | 37,5 |
+| 22 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 24 | 41,3 |
+| 23 | P6 | Pomar | 34 | 17.000.000 | Sim | 5 h 36 | 44,3 |
+| 24 | A15 | Lavoura | 36 | 25.000.000 | Sim | 5 h 48 | 50,3 |
 | 25 | A16 | Lavoura | 37 | 30.000.000 | Sim | 6 h 00 | 53,5 |
 | 26 | A17 | Lavoura | 38 | 36.000.000 | Sim | 6 h 12 | 56,9 |
 | 27 | A18 | Lavoura | 40 | 50.000.000 | Sim | 6 h 24 | 64,5 |
-| 28 | A19 | Lavoura | 41 | 59.000.000 | Sim | 6 h 36 | 68,5 |
+| 28 | A19 | Lavoura | 41 | 62.000.000 | Sim | 6 h 36 | 68,5 |
 | 29 | A21 | Lavoura | 43 | 81.000.000 | Sim | 6 h 48 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
@@ -370,6 +370,20 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
 
+🆕 **Fase 3 (decisões do dono, 23/10):** o trabalho de quem está em campo vai para uma fila única (lavoura e pomar): Agricultor e Rancheira a 100%, os outros a 60%. Antes das fases 4 e 5, as classes de apoio já têm função própria, sempre com o personagem num Slot de Campo ("por material" = Madeira 1 … Cristal 5):
+
+| Classe | Função na fase 3 | Depois |
+| --- | --- | --- |
+| Comerciante | Venda automática na Barraca dos itens marcados no Silo; +1 ponto no preço da Barraca e −1% nas sementes por material da Balança (Barraca nunca passa de 80% somando habilidades) | lidera ou bonifica as expedições (fase 5) |
+| Gerente | −5% no gasto de energia da equipe em campo, +2,5% por material acima da Madeira (Cristal −15%); paga sozinho o salário atrasado assim que entra ouro | ração e repetição de rotas (fases 4 e 5) |
+| Botânica | 2% de chance por colheita (lavoura e pomar) de 1 Semente Rara do mesmo cultivo (Incomum 72%, Raro 20%, Lendário 6%, Mítico 2%; vale 1 plantio, ×1,2 / ×1,5 / ×2 / ×3 em colheita e XP; na árvore, as 6 próximas colheitas); +5% de XP nas colheitas; 10% de chance de devolver o ouro da semente | itens botânicos nas expedições (fase 5) |
+
+- **Ferreiro contratado:** a limpeza dos lotes volta ao tempo da tabela (sem ele, o dobro). Conserto e melhoria das ferramentas de todos ficam na Forja.
+- **Energia:** só gasta quando o personagem produz trabalho. Com 3 ou menos personagens, quem chega a 0 fica parado no slot descansando até 60. O servidor avança a fazenda em passos de 10 min (energia, rodízio, lanches, salário e venda automática).
+- **Salário:** cobrado à meia-noite de Brasília até a fase 6 (depois, no fuso da conta). Sem ouro, o salário do dia vira dívida; com dívida o personagem fica Desmotivado (×0,5); com 3 dias devendo para de trabalhar. Paga-se no botão "Pagar salários" da Casa, ou sozinho com o Gerente em campo.
+- **Lanches na Barraca:** Pão de Queijo 1%, Café 1,6% e Marmita 2,8% da Renda de Referência do nível da conta.
+- **Habilidades:** os efeitos valem com o personagem em campo; nós de sistemas futuros (animais, expedições, mercado, missões, clima) ficam guardados e ligam na fase deles. A Mestria só abre com os dois nós do ramo cheios.
+
 ### Energia e rodízio
 
 - Energia máxima 100. Trabalhando gasta 12,5 por hora (8 h de trabalho); descansando recupera 25 por hora (4 h). Oito horas de trabalho batem com o limite offline de 8 h.
@@ -383,7 +397,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 170 | 1.600 | 8.000 | 20.000 | 44.000 | 94.000 | 170.000 | 300.000 | 460.000 | 520.000 |
+| Salário base/dia (ouro) | 170 | 1.600 | 8.200 | 20.000 | 46.000 | 98.000 | 170.000 | 300.000 | 460.000 | 540.000 |
 
 ### Nível do personagem
 
@@ -438,7 +452,7 @@ Cada classe tem uma árvore única com 3 ramos. Cada ramo = 2 nós de 5 pontos +
 
 ### Pets
 
-No nível 5 o jogador adota 1 dos 3 pets de graça; os outros podem ser adotados depois. Só 1 fica ativo, no ponto do pet na frente da Casa 🆕, e trocar o ativo tem espera de 7 dias. O pet sobe do nível 1 ao 5 com carinho diário (≈30 dias) e o efeito cresce de 40% para 100%.
+No nível 5 o jogador adota 1 dos 3 pets de graça; os outros podem ser adotados depois. 🆕 O 2º e o 3º custam 1 dia de Renda de Referência cada. **Carinho diário (fase 3):** 1 por dia em cada pet adotado (vira à meia-noite de Brasília), +1 de afinidade, sem perda se faltar um dia; níveis 2, 3, 4 e 5 com 4, 10, 18 e 30 de afinidade. O pet ativo fica vinculado a 1 personagem: +2% de trabalho e −2% de energia por nível do pet, +5 de energia a cada carinho, e no nível 5 +1 ponto na chance de Semente Rara. Os efeitos da tabela abaixo continuam e crescem de 40% (nível 1) a 100% (nível 5). Só 1 fica ativo, no ponto do pet na frente da Casa 🆕, e trocar o ativo tem espera de 7 dias. O pet sobe do nível 1 ao 5 com carinho diário (≈30 dias) e o efeito cresce de 40% para 100%.
 
 | Pet | Efeito no nível 5 |
 | --- | --- |
@@ -556,31 +570,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 866.580 | 2.900.000 |
-| 2 | 50 | 2.400 | | 27 | 997.880 | 3.400.000 |
-| 3 | 65 | 3.900 | | 28 | 1.168.570 | 3.700.000 |
-| 4 | 90 | 5.800 | | 29 | 1.313.000 | 4.200.000 |
-| 5 | 870 | 8.700 | | 30 | 1.313.000 | 4.700.000 |
-| 6 | 1.280 | 13.000 | | 31 | 1.361.100 | 5.200.000 |
-| 7 | 2.030 | 20.000 | | 32 | 1.570.500 | 5.900.000 |
-| 8 | 3.140 | 29.000 | | 33 | 1.675.200 | 6.500.000 |
-| 9 | 5.290 | 54.000 | | 34 | 1.884.600 | 7.200.000 |
-| 10 | 19.700 | 82.000 | | 35 | 2.198.700 | 8.400.000 |
-| 11 | 32.830 | 97.000 | | 36 | 2.512.800 | 9.900.000 |
-| 12 | 47.270 | 120.000 | | 37 | 2.826.900 | 11.000.000 |
-| 13 | 68.280 | 220.000 | | 38 | 3.245.700 | 12.000.000 |
-| 14 | 86.660 | 320.000 | | 39 | 3.664.500 | 13.000.000 |
-| 15 | 111.610 | 400.000 | | 40 | 4.083.300 | 15.000.000 |
-| 16 | 144.430 | 520.000 | | 41 | 4.502.100 | 16.000.000 |
-| 17 | 170.690 | 650.000 | | 42 | 4.920.900 | 18.000.000 |
-| 18 | 210.080 | 770.000 | | 43 | 5.549.100 | 20.000.000 |
-| 19 | 262.600 | 870.000 | | 44 | 6.072.600 | 21.000.000 |
-| 20 | 315.120 | 1.000.000 | | 45 | 6.700.800 | 23.000.000 |
-| 21 | 367.640 | 1.100.000 | | 46 | 7.224.300 | 24.000.000 |
-| 22 | 433.290 | 1.400.000 | | 47 | 7.643.100 | 24.000.000 |
-| 23 | 525.200 | 1.600.000 | | 48 | 8.061.900 | 25.000.000 |
-| 24 | 630.240 | 1.800.000 | | 49 | 8.271.300 | 26.000.000 |
-| 25 | 748.410 | 2.200.000 | | 50 | — | 26.000.000 |
+| 1 | 40 | 1.900 | | 26 | 891.000 | 3.000.000 |
+| 2 | 50 | 2.400 | | 27 | 1.026.000 | 3.500.000 |
+| 3 | 65 | 3.900 | | 28 | 1.201.500 | 3.800.000 |
+| 4 | 90 | 5.800 | | 29 | 1.350.000 | 4.300.000 |
+| 5 | 870 | 8.700 | | 30 | 1.350.000 | 4.900.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.435.200 | 5.400.000 |
+| 7 | 2.040 | 20.000 | | 32 | 1.656.000 | 6.000.000 |
+| 8 | 3.150 | 29.000 | | 33 | 1.766.400 | 6.700.000 |
+| 9 | 5.310 | 54.000 | | 34 | 1.987.200 | 7.400.000 |
+| 10 | 20.250 | 82.000 | | 35 | 2.318.400 | 8.600.000 |
+| 11 | 33.750 | 96.000 | | 36 | 2.649.600 | 10.000.000 |
+| 12 | 48.600 | 130.000 | | 37 | 2.980.800 | 11.000.000 |
+| 13 | 70.200 | 220.000 | | 38 | 3.422.400 | 12.000.000 |
+| 14 | 89.100 | 320.000 | | 39 | 3.864.000 | 13.000.000 |
+| 15 | 114.750 | 410.000 | | 40 | 4.305.600 | 15.000.000 |
+| 16 | 148.500 | 560.000 | | 41 | 4.747.200 | 17.000.000 |
+| 17 | 175.500 | 710.000 | | 42 | 5.188.800 | 19.000.000 |
+| 18 | 216.000 | 800.000 | | 43 | 5.851.200 | 20.000.000 |
+| 19 | 270.000 | 880.000 | | 44 | 6.403.200 | 22.000.000 |
+| 20 | 324.000 | 1.000.000 | | 45 | 7.065.600 | 23.000.000 |
+| 21 | 378.000 | 1.200.000 | | 46 | 7.617.600 | 24.000.000 |
+| 22 | 445.500 | 1.400.000 | | 47 | 8.059.200 | 25.000.000 |
+| 23 | 540.000 | 1.600.000 | | 48 | 8.500.800 | 25.000.000 |
+| 24 | 648.000 | 1.900.000 | | 49 | 8.721.600 | 26.000.000 |
+| 25 | 769.500 | 2.300.000 | | 50 | — | 27.000.000 |
 
 ### Raridade global 🆕
 

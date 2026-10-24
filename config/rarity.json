@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 9 (raridade global) · decisões do dono de 22/10/2026",
   "baseline": "common",
   "baseline_note": "a curva base (77 dias, 60 × 1,07^(n−1)) supõe tudo Comum",
@@ -48,8 +48,11 @@
       "mission_packs",
       "night_events"
     ],
-    "drop_rates": null,
-    "drop_rates_note": "a definir nas fases 3 (Botânica), 6 (eventos) e 7 (pacotes); o simulador usa 0 (linha base)"
+    "drop_rates": {
+      "botanica_per_harvest": 0.02
+    },
+    "drop_rates_note": "fase 3: a Botânica em campo dá 2% por colheita (raridade em characters.json); eventos (fase 6) e pacotes (fase 7) depois",
+    "tree_harvests": 6
   },
   "animals": {
     "rolled_on": "purchase",

@@ -8,6 +8,7 @@ import levelsCfg from '../config/levels.json';
 import toolsCfg from '../config/tools_and_items.json';
 import expeditionsCfg from '../config/expeditions.json';
 import charactersCfg from '../config/characters.json';
+import rarityCfg from '../config/rarity.json';
 
 export type Crop = (typeof cropsCfg.crops)[number] & { sapling_cost?: number; seed_cost?: number; tree_base?: string };
 export const CROP_LIST = cropsCfg.crops as Crop[];
@@ -24,6 +25,15 @@ export const TOOL_MATERIALS = toolsCfg.tool_materials;
 export const STALL_RATIO = expeditionsCfg.stall_price_ratio;
 export const VEHICLES = expeditionsCfg.vehicles;
 export const CLASSES = charactersCfg.classes;
+export const CHARS = charactersCfg;
+export type SkillNode = { effect: string; text_pt: string; phase?: number; per_point?: number; value?: number };
+export type SkillBranch = { id: string; name_pt: string; a: SkillNode; b: SkillNode; mastery: SkillNode };
+export const SKILL_TREE = charactersCfg.skill_tree as unknown as Record<string, SkillBranch[]>;
+export const PETS = charactersCfg.pets;
+export const SNACKS = toolsCfg.snack_cards;
+export const CLASS_TOOLS = toolsCfg.class_tool_cards;
+export const RARITIES = rarityCfg.tiers;
+export const RARITY_BY_ID: Record<string, (typeof rarityCfg.tiers)[number]> = Object.fromEntries(rarityCfg.tiers.map((t) => [t.id, t]));
 
 export type Pt = [number, number];
 export type Plot = { id: string; polygon: Pt[]; center: Pt };

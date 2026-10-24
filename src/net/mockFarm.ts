@@ -1,7 +1,7 @@
 // Estado falso da fazenda, só para desenvolvimento e screenshots (nunca entra no build de produção).
-import { CROPS, MAP_RULES, TOOL_MATERIALS } from '../data';
+import { CHARS, CROPS, MAP_RULES, PETS, SNACKS, TOOL_MATERIALS } from '../data';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
-import type { FarmState, PlotState } from './farmApi';
+import type { CharacterState, FarmState, PlotState } from './farmApi';
 
 const now = new Date().toISOString();
 const T = 50_000; // tempo da fazenda no começo do mock (s)
@@ -11,6 +11,12 @@ const growing = (id: string, crop: string, startAgo: number): PlotState => {
   const g = CROPS[crop].grow_minutes * 60;
   return { plot_id: id, crop_id: crop, state: 'growing', planted_crop_id: crop, planted_at: T - startAgo, ready_at: T - startAgo + g, harvests_done: 0, stalled_reason: null };
 };
+
+const char = (id: string, extra: Partial<CharacterState> = {}): CharacterState => ({
+  class_id: id, slot: 'field', energy: 100, parked: false, level: 1, work_hours: 0, skills: {}, skill_choice: null, reset_week: null,
+  debt: 0, unpaid_days: 0, snack_id: null, snack_qty: 0, cloth_id: null, amulet_id: null, material: 'wood', durability: 100,
+  rate: id === 'agricultor' || id === 'rancheira' ? 2.67 : 1.6, energy_max: 100, energy_use: 12.5, energy_rest: 25, active: true, salary: id === 'agricultor' ? 0 : 1950, ...extra,
+});
 
 const state: FarmState = {
   server_now: now, farm_time: T, synced_at: now, last_activity_at: now, offline_cap_hours: 8,
@@ -30,8 +36,22 @@ const state: FarmState = {
   ],
   silo: { batata: 6, cenoura: 3, alface: 9, maca: 4 },
   inventory: { deed: 1 },
-  tools: { agricultor: 'wood' },
+  tools: { agricultor: 'wood', rancheira: 'wood', ferreiro: 'wood' },
+  game_day: new Date().toISOString().slice(0, 10), labor_nominal: 6.94, last_payday: null, boosted_sale_day: null, pet_swapped_at: null,
+  auto_sell: ['batata'],
+  characters: [
+    char('agricultor', { energy: 62.5, level: 4, work_hours: 6.2, skills: { 'cultivo.a': 2 }, snack_id: 'snack_coffee', snack_qty: 3, durability: 71 }),
+    char('rancheira', { energy: 38, level: 2, work_hours: 3 }),
+    char('ferreiro', { energy: 12, parked: true, debt: 1950, unpaid_days: 1, rate: 0.8 }),
+  ],
+  pets: [{ pet_id: 'gato', affinity: 5, last_care: null, active: true, linked_class: 'agricultor' }],
+  pet: { id: 'gato', level: 2, factor: 0.55, linked: 'agricultor' },
+  snack_prices: Object.fromEntries(SNACKS.map((x) => [x.id, Math.round(96000 * x.price_R_ratio)])),
+  fx: { stall_ratio: 0.7, seed_discount: 0, sales_gold: 0, shop_discount: 0, auto_sell: false, auto_pay: false, rare_seed: 0, seed_refund: 0,
+    gerente_cut: 0, early_unlock: null, daily_boost: 0, growth_crop: 0.02, growth_orchard: 0, tree_initial: 0, cleanup: 0, tool_cost: 0, harvest_xp: 0, golden: 0 },
 };
+state.inventory['seed:alface:rare'] = 1;
+state.inventory.snack_cheese_bread = 4;
 
 export const mockFarm = {
   async rpc(fn: string, args: Record<string, unknown>): Promise<FarmState> {
@@ -81,6 +101,20 @@ export const mockFarm = {
       const next = TOOL_MATERIALS[i + 1];
       state.gold -= next.upgrade_cost_gold; state.tools.agricultor = next.id; state.labor_per_hour = 2.67 * next.work_capacity_multiplier;
     }
+    const ch = (id: unknown) => state.characters.find((c) => c.class_id === id);
+    if (fn === 'hire') { state.characters.push(char(args.p_class as string, { slot: state.characters.filter((c) => c.slot === 'field').length < CHARS.field_slots ? 'field' : 'bench' })); state.tools[args.p_class as string] = 'wood'; }
+    if (fn === 'set_slot') ch(args.p_class)!.slot = args.p_slot as 'field' | 'bench';
+    if (fn === 'pay_salaries') for (const c of state.characters) { state.gold -= c.debt; c.debt = 0; c.unpaid_days = 0; }
+    if (fn === 'skill_add') { const c = ch(args.p_class)!; c.skills[args.p_node as string] = (c.skills[args.p_node as string] ?? 0) + 1; }
+    if (fn === 'skill_reset') ch(args.p_class)!.skills = {};
+    if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);
+    if (fn === 'equip_snack') { const c = ch(args.p_class)!; c.snack_id = args.p_snack as string | null; c.snack_qty = args.p_snack ? 5 : 0; }
+    if (fn === 'repair_tool') ch(args.p_class)!.durability = 100;
+    if (fn === 'set_auto_sell') state.auto_sell = args.p_on ? [...state.auto_sell, args.p_item as string] : state.auto_sell.filter((x) => x !== args.p_item);
+    if (fn === 'adopt_pet') state.pets.push({ pet_id: args.p_pet as string, affinity: 0, last_care: null, active: false, linked_class: null });
+    if (fn === 'care_pet') { const p = state.pets.find((x) => x.pet_id === args.p_pet)!; p.affinity++; p.last_care = state.game_day; }
+    if (fn === 'link_pet') { state.pets.find((x) => x.active)!.linked_class = args.p_class as string; state.pet!.linked = args.p_class as string; }
+    void PETS;
     return structuredClone({ ...state, server_now: new Date().toISOString(), last_activity_at: new Date().toISOString() });
   },
 };

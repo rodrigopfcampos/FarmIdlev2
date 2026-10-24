@@ -126,24 +126,31 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
         <label>Lote<select name="value">${f.lots.filter((l: any) => l.ready_at > f.farm_time).map((l: any) => `<option value="${esc(l.lot_id)}">${esc(l.lot_id)} (falta ${Math.ceil((l.ready_at - f.farm_time) / 60)} min)</option>`).join('') || '<option value="">nenhum em limpeza</option>'}${f.lots.filter((l: any) => l.ready_at > f.farm_time).length > 1 ? '<option value="*">todos</option>' : ''}</select></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pomar"></label>
         <button class="primary small" type="submit">Terminar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="payday"><strong>Cobrar salário agora</strong>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o Desmotivado"></label>
+        <input name="value" type="hidden" value="1">
+        <button class="primary small" type="submit">Cobrar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
         <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form></div>
+      <p>Personagens: ${(f.characters ?? []).map((c: any) => `${esc(c.class_id)} Nv ${c.level} (${esc(c.slot === 'field' ? 'campo' : 'banco')}, energia ${Number(c.energy).toFixed(0)}${Number(c.debt) > 0 ? `, deve ${formatGold(Number(c.debt))} há ${c.unpaid_days} dia(s)` : ''})`).join(' · ') || '—'}
+        · Pets: ${(f.pets ?? []).map((p: any) => `${esc(p.pet_id)} (afinidade ${p.affinity}${p.active ? ', ativo' : ''})`).join(' · ') || '—'} · último salário: ${esc(f.last_payday ?? '—')}</p>
       ${f.trees.length ? `<p>Árvores: ${f.trees.map((t: any) => `${esc(t.lot_id)}-${t.slot}: ${esc(t.fruit_id ?? 'vazia')}`).join(' · ')}</p>` : ''}
       <table><thead><tr><th>Canteiro</th><th>Cultivo</th><th>Estado</th><th>Pronto em (tempo da fazenda)</th><th>Parado</th></tr></thead><tbody>${
       f.plots.map((p: any) => `<tr><td>${esc(p.plot_id)}</td><td>${esc(p.crop_id ?? '—')}</td><td>${esc(p.state)}</td><td>${p.ready_at ? (p.ready_at / 3600).toFixed(2) + ' h' : '—'}</td><td>${esc(p.stalled_reason ?? '')}</td></tr>`).join('')}</tbody></table>`;
   }
   box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div><div class="table-wrap">${body}</div></div>`;
   box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm')));
-  // ferramentas de teste (Escritura, nível, limpeza e ouro): o servidor exige 2FA e registra tudo na auditoria
+  // ferramentas de teste (Escritura, nível, limpeza, salário e ouro): o servidor exige 2FA e registra tudo na auditoria
   box.querySelectorAll<HTMLFormElement>('form.grant').forEach((form) => form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const d = new FormData(form);
     const msg = form.querySelector('.msg')!;
     const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
-    const call = form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
+    const call = form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })
+      : form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
       : form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
       : form.dataset.kind === 'level' ? supabase!.rpc('admin_set_level', { p_user: id, p_level: value, p_reason: reason })
       : supabase!.rpc('admin_grant_gold', { p_user: id, p_amount: value, p_reason: reason });

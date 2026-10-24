@@ -4037,50 +4037,6 @@
         0.5
       ]
     },
-    "char_agricultor_idle": {
-      "file": "sprites/characters/char_agricultor_idle.png",
-      "size": [
-        32,
-        48
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
-    "char_agricultor_act1": {
-      "file": "sprites/characters/char_agricultor_act1.png",
-      "size": [
-        32,
-        48
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
-    "char_agricultor_act2": {
-      "file": "sprites/characters/char_agricultor_act2.png",
-      "size": [
-        32,
-        48
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
-    "char_agricultor_act3": {
-      "file": "sprites/characters/char_agricultor_act3.png",
-      "size": [
-        32,
-        48
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
     "ui_coin": {
       "file": "sprites/ui/ui_coin.png",
       "size": [
@@ -4262,6 +4218,336 @@
       "size": [
         32,
         32
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_agricultor_idle": {
+      "file": "sprites/characters/char_agricultor_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act1": {
+      "file": "sprites/characters/char_agricultor_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act2": {
+      "file": "sprites/characters/char_agricultor_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_act3": {
+      "file": "sprites/characters/char_agricultor_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_rancheira_idle": {
+      "file": "sprites/characters/char_rancheira_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_rancheira_act1": {
+      "file": "sprites/characters/char_rancheira_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_rancheira_act2": {
+      "file": "sprites/characters/char_rancheira_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_rancheira_act3": {
+      "file": "sprites/characters/char_rancheira_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_ferreiro_idle": {
+      "file": "sprites/characters/char_ferreiro_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_ferreiro_act1": {
+      "file": "sprites/characters/char_ferreiro_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_ferreiro_act2": {
+      "file": "sprites/characters/char_ferreiro_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_ferreiro_act3": {
+      "file": "sprites/characters/char_ferreiro_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_gerente_idle": {
+      "file": "sprites/characters/char_gerente_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_gerente_act1": {
+      "file": "sprites/characters/char_gerente_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_gerente_act2": {
+      "file": "sprites/characters/char_gerente_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_gerente_act3": {
+      "file": "sprites/characters/char_gerente_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_comerciante_idle": {
+      "file": "sprites/characters/char_comerciante_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_comerciante_act1": {
+      "file": "sprites/characters/char_comerciante_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_comerciante_act2": {
+      "file": "sprites/characters/char_comerciante_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_comerciante_act3": {
+      "file": "sprites/characters/char_comerciante_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_botanica_idle": {
+      "file": "sprites/characters/char_botanica_idle.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_botanica_act1": {
+      "file": "sprites/characters/char_botanica_act1.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_botanica_act2": {
+      "file": "sprites/characters/char_botanica_act2.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_botanica_act3": {
+      "file": "sprites/characters/char_botanica_act3.png",
+      "size": [
+        32,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "char_agricultor_portrait": {
+      "file": "sprites/characters/char_agricultor_portrait.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_rancheira_portrait": {
+      "file": "sprites/characters/char_rancheira_portrait.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_ferreiro_portrait": {
+      "file": "sprites/characters/char_ferreiro_portrait.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_gerente_portrait": {
+      "file": "sprites/characters/char_gerente_portrait.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_comerciante_portrait": {
+      "file": "sprites/characters/char_comerciante_portrait.png",
+      "size": [
+        48,
+        48
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "char_botanica_portrait": {
+      "file": "sprites/characters/char_botanica_portrait.png",
+      "size": [
+        48,
+        48
       ],
       "anchor": [
         0.5,

@@ -63,7 +63,7 @@
 
 ## E. Artes que faltam
 - 🆕 (fase 4) 10 animais (card do slot); até lá o jogo usa emojis. Produtos: 7 ícones recortados da prancha "Produtos dos Animais" (Leite de cabra, Ovo de ganso e Lã de alpaca usam o ícone base com outra cor).
-- 🆕 (fase 3) 5 personagens: Rancheira, Ferreiro, Comerciante, Gerente e Botânica — mesma prancha do Agricultor (parado + 3 quadros de ação, 32×48 cada depois do recorte).
+- (fase 4) prancha "Imagem dos personagens": os 6 personagens (parado + 3 quadros de ação, 32×48) e 6 retratos 48×48; o Agricultor antigo foi trocado por este para manter o mesmo estilo. Molduras das cartas trocadas pela prancha nova "Moldura e parte de traz dos cards".
 - (fase 4) recortados também: 3 pets (2 quadros parados, 24×24) e os insumos Ração, Combustível e Chave (para as próximas fases).
 - (fase 1) recortadas também: estágios de 27 cultivos (pranchas Planta 2, 3 e 4), 40 ícones de produto, o Agricultor (parado + 3 quadros de ação) e a moeda da interface.
 - Estágios e ícone: Beterraba, Batata-doce, Mandioca, Pepino, Quiabo, Maracujá.

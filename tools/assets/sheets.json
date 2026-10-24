@@ -76,7 +76,7 @@
     },
     {
       "id": "card_frames",
-      "file": "raridade das cartas.png",
+      "file": "Moldura e parte de traz dos cards.png",
       "holes_min_area": 3000,
       "regions": [
         {
@@ -1407,57 +1407,6 @@
       ]
     },
     {
-      "id": "farmer",
-      "file": "fazendeiro_completo.jpg",
-      "regions": [
-        {
-          "name": "agricultor",
-          "cells": [
-            [
-              [
-                18,
-                4,
-                70,
-                100
-              ],
-              [
-                105,
-                388,
-                80,
-                90
-              ],
-              [
-                200,
-                388,
-                85,
-                90
-              ],
-              [
-                298,
-                388,
-                95,
-                90
-              ]
-            ]
-          ],
-          "size": [
-            32,
-            48
-          ],
-          "scale": "row",
-          "dir": "characters",
-          "names": [
-            [
-              "char_agricultor_idle",
-              "char_agricultor_act1",
-              "char_agricultor_act2",
-              "char_agricultor_act3"
-            ]
-          ]
-        }
-      ]
-    },
-    {
       "id": "interface",
       "file": "interface.jpg",
       "regions": [
@@ -1658,6 +1607,278 @@
       ],
       "note": "PNG limpo a partir do JPG do dono: sombras pintadas da cor do fundo (a trufa é escura e sumia com remove_dark_shadow)",
       "tolerance": 3
+    },
+    {
+      "id": "characters",
+      "file": "Imagem dos personagens.png",
+      "note": "linhas da prancha: Agricultor, Rancheira, Ferreiro, Gerente, Comerciante, Botânica; última linha = retratos",
+      "regions": [
+        {
+          "name": "personagens",
+          "cells": [
+            [
+              [
+                32,
+                13,
+                71,
+                141
+              ],
+              [
+                477,
+                13,
+                98,
+                141
+              ],
+              [
+                594,
+                13,
+                98,
+                138
+              ],
+              [
+                848,
+                13,
+                102,
+                141
+              ]
+            ],
+            [
+              [
+                14,
+                157,
+                90,
+                137
+              ],
+              [
+                127,
+                157,
+                90,
+                138
+              ],
+              [
+                484,
+                157,
+                77,
+                137
+              ],
+              [
+                1226,
+                158,
+                113,
+                139
+              ]
+            ],
+            [
+              [
+                29,
+                296,
+                77,
+                127
+              ],
+              [
+                483,
+                296,
+                80,
+                129
+              ],
+              [
+                595,
+                296,
+                81,
+                129
+              ],
+              [
+                1232,
+                300,
+                98,
+                125
+              ]
+            ],
+            [
+              [
+                28,
+                428,
+                72,
+                133
+              ],
+              [
+                606,
+                435,
+                74,
+                127
+              ],
+              [
+                1238,
+                438,
+                83,
+                128
+              ],
+              [
+                1373,
+                438,
+                92,
+                128
+              ]
+            ],
+            [
+              [
+                25,
+                571,
+                78,
+                127
+              ],
+              [
+                722,
+                573,
+                85,
+                126
+              ],
+              [
+                1230,
+                579,
+                93,
+                121
+              ],
+              [
+                1364,
+                578,
+                91,
+                122
+              ]
+            ],
+            [
+              [
+                22,
+                703,
+                79,
+                130
+              ],
+              [
+                142,
+                703,
+                75,
+                130
+              ],
+              [
+                1231,
+                719,
+                100,
+                113
+              ],
+              [
+                1366,
+                721,
+                99,
+                112
+              ]
+            ]
+          ],
+          "size": [
+            32,
+            48
+          ],
+          "scale": "all",
+          "dir": "characters",
+          "names": [
+            [
+              "char_agricultor_idle",
+              "char_agricultor_act1",
+              "char_agricultor_act2",
+              "char_agricultor_act3"
+            ],
+            [
+              "char_rancheira_idle",
+              "char_rancheira_act1",
+              "char_rancheira_act2",
+              "char_rancheira_act3"
+            ],
+            [
+              "char_ferreiro_idle",
+              "char_ferreiro_act1",
+              "char_ferreiro_act2",
+              "char_ferreiro_act3"
+            ],
+            [
+              "char_gerente_idle",
+              "char_gerente_act1",
+              "char_gerente_act2",
+              "char_gerente_act3"
+            ],
+            [
+              "char_comerciante_idle",
+              "char_comerciante_act1",
+              "char_comerciante_act2",
+              "char_comerciante_act3"
+            ],
+            [
+              "char_botanica_idle",
+              "char_botanica_act1",
+              "char_botanica_act2",
+              "char_botanica_act3"
+            ]
+          ]
+        },
+        {
+          "name": "retratos",
+          "cells": [
+            [
+              [
+                41,
+                840,
+                172,
+                180
+              ],
+              [
+                302,
+                844,
+                161,
+                177
+              ],
+              [
+                519,
+                845,
+                207,
+                176
+              ],
+              [
+                795,
+                840,
+                146,
+                181
+              ],
+              [
+                1014,
+                844,
+                181,
+                176
+              ],
+              [
+                1258,
+                837,
+                171,
+                184
+              ]
+            ]
+          ],
+          "size": [
+            48,
+            48
+          ],
+          "scale": "all",
+          "align": "center",
+          "dir": "characters",
+          "names": [
+            [
+              "char_agricultor_portrait",
+              "char_rancheira_portrait",
+              "char_ferreiro_portrait",
+              "char_gerente_portrait",
+              "char_comerciante_portrait",
+              "char_botanica_portrait"
+            ]
+          ]
+        }
+      ]
     }
   ]
 }

@@ -67,7 +67,7 @@ async function loadSheet(sheet) {
   const fg = new Uint8Array(W * H);
   for (let p = 0; p < W * H; p++) fg[p] = removed[p] ? 0 : 1;
   despeckle(fg, W, H, sheet.min_speck ?? cfg.default_min_speck);
-  return { data, W, H, fg, bg };
+  return { data, W, H, fg, bg, kernel: sheet.kernel };
 }
 
 // apaga pontinhos soltos (ruído de JPG) menores que minArea
@@ -169,9 +169,12 @@ function cropRGBA(img, b) {
   return out;
 }
 
-async function scaled(img, b, w, h) {
-  const { data } = await sharp(cropRGBA(img, b), { raw: { width: b.w, height: b.h, channels: 4 } })
-    .resize(w, h, { fit: 'fill', kernel: 'lanczos3' }).raw().toBuffer({ resolveWithObject: true });
+// pixel art: redução com "nearest" (sem filtro suave, sem borda cinza); em tamanho nativo nada é redimensionado
+async function scaled(img, b, w, h, kernel) {
+  const src = cropRGBA(img, b);
+  if (w === b.w && h === b.h) return src;
+  const { data } = await sharp(src, { raw: { width: b.w, height: b.h, channels: 4 } })
+    .resize(w, h, { fit: 'fill', kernel }).raw().toBuffer({ resolveWithObject: true });
   // pixel art: alfa binário, sem borda semitransparente
   for (let i = 3; i < data.length; i += 4) data[i] = data[i] >= 110 ? 255 : 0;
   return data;
@@ -206,13 +209,14 @@ async function renderRegion(img, region) {
       const [W, H] = sizeOf(r, c);
       let w, h;
       if (region.fit === 'fill') { w = W; h = H; }
+      else if (region.native) { w = b.w; h = b.h; } // resolução original da prancha (retratos da interface)
       else {
         let s = region.scale === 'row' ? rowScale[r] : region.scale === 'all' ? allScale : scaleFor(b, [W, H]);
         // estágios pequenos ficam maiores (sem passar da célula), para a muda aparecer no canteiro
         if (region.col_boost?.[c]) s = Math.min(s * region.col_boost[c], scaleFor(b, [W, H]));
         w = Math.max(1, Math.round(b.w * s)); h = Math.max(1, Math.round(b.h * s));
       }
-      const px = await scaled(img, b, w, h);
+      const px = await scaled(img, b, w, h, region.kernel ?? img.kernel ?? cfg.default_kernel ?? 'nearest');
       const canvas = Buffer.alloc(W * H * 4);
       const align = region.align ?? 'bottom';
       let ox = Math.floor((W - w) / 2), oy = align === 'center' ? Math.floor((H - h) / 2) : H - h;

@@ -7,7 +7,7 @@ import { bus } from '../core/bus';
 import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { petSprite, stageSprite } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
-import { cameraBounds, pointInPolygon, seedlingPositions, stageFor } from '../farm/geometry';
+import { cameraBounds, pointInPolygon, stageFor } from '../farm/geometry';
 import { bakeSway } from '../anim/bake';
 import { frameAt, phaseOf, reducedMotion, tableAt } from '../anim/frames';
 import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
@@ -50,6 +50,7 @@ export class FarmScene extends Phaser.Scene {
   private veh: Phaser.GameObjects.Sprite | null = null;     // veículo ativo na vaga da Garagem
   private vehLabel: Phaser.GameObjects.Text | null = null;  // contador da viagem ou "Receber"
   private vehKey = '';
+  private hoverLot = ''; // lote com o mouse em cima (mostra o cultivo planejado dos canteiros vazios)
 
   constructor() { super('farm'); }
 
@@ -62,10 +63,11 @@ export class FarmScene extends Phaser.Scene {
     for (const lot of LOTS) {
       // canteiros de todas as lavouras (as mudas só aparecem nos lotes que são seus)
       for (const p of lot.plots ?? []) {
-        const base = seedlingPositions(p.polygon);
-        const sprites = base.map(([x, y]) => this.add.image(x, y, 'crop_generic_stage1').setOrigin(0.5, 1).setVisible(false).setDepth(depthOf(y)));
-        // ícone do cultivo escolhido num canteiro vazio (esperando o clique ou a equipe)
-        const marker = this.add.image(p.center[0], p.center[1], 'crop_generic_stage1').setScale(0.5).setAlpha(0.75).setVisible(false).setDepth(depthOf(p.center[1]));
+        // 1 planta grande por canteiro (grade limpa 4×2 no lote), pé no centro do canteiro, ordem pelo Y
+        const base: Pt[] = [[p.center[0], p.center[1] + 3]];
+        const sprites = base.map(([x, y]) => this.add.image(x, y, 'crop_generic_stage1').setOrigin(0.5, 0.9).setVisible(false).setDepth(depthOf(y)));
+        // ícone do cultivo escolhido num canteiro vazio: só aparece com o mouse em cima do lote
+        const marker = this.add.image(p.center[0], p.center[1], 'crop_generic_stage1').setOrigin(0.5, 0.9).setAlpha(0.85).setVisible(false).setDepth(depthOf(p.center[1]));
         this.plots.push({ id: p.id, polygon: p.polygon, center: p.center, sprites, base, stage: -1, crop: null, marker, markerKey: '',
           phase: base.map(([x, y]) => phaseOf(x, y)), tex: '', growAt: -1 });
       }
@@ -222,6 +224,14 @@ export class FarmScene extends Phaser.Scene {
     this.updateGrains(time);
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
     const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
+    // 1 estágio por lote: as mudas que ainda crescem mostram o estágio da mais nova do lote; as maduras, o final
+    const lotStage = new Map<string, number>();
+    for (const p of s.plots) {
+      if (p.state !== 'growing' || p.planted_at === null || p.ready_at === null || p.ready_at <= now) continue;
+      const lot = p.plot_id.split('-')[0];
+      const st = stageFor((now - p.planted_at) / (p.ready_at - p.planted_at), FARM.visual.stage_thresholds);
+      lotStage.set(lot, Math.min(lotStage.get(lot) ?? st, st));
+    }
     for (const v of this.plots) {
       const p = byId.get(v.id);
       const look = p ? plotLook(p, now, lotReady.get(v.id.split('-')[0]) ?? 0) : 'empty';
@@ -229,16 +239,17 @@ export class FarmScene extends Phaser.Scene {
       const mk = look === 'planned' || look === 'cleanup' || look === 'stalled' ? `${look}:${p!.crop_id}` : '';
       if (mk !== v.markerKey) {
         v.markerKey = mk;
-        const icon = mk ? `icon_${p!.crop_id}` : '';
-        v.marker.setVisible(!!mk && this.textures.exists(icon));
-        if (mk && this.textures.exists(icon)) v.marker.setTexture(icon).setTint(look === 'stalled' ? 0xff7070 : 0xffffff).setAlpha(look === 'planned' ? 0.85 : 0.5);
+        // fantasma da muda (arte do 1º estágio do cultivo), não o ícone de item
+        const icon = mk ? stageSprite(store.manifest, p!.crop_id!, 0) : '';
+        v.marker.setVisible(false);
+        if (mk && this.textures.exists(icon)) v.marker.setTexture(icon).setTint(look === 'stalled' ? 0xff7070 : 0xffffff).setAlpha(look === 'planned' ? 0.6 : 0.4);
       }
+      v.marker.setVisible(!!v.markerKey && this.hoverLot === v.id.split('-')[0] && v.marker.texture.key !== '__MISSING');
       if (!p || p.state !== 'growing' || p.planted_at === null || p.ready_at === null) {
         if (v.stage !== -1) { v.sprites.forEach((sp) => sp.setVisible(false)); v.stage = -1; }
         continue;
       }
-      const progress = (now - p.planted_at) / (p.ready_at - p.planted_at);
-      const stage = stageFor(progress, FARM.visual.stage_thresholds);
+      const stage = p.ready_at <= now ? stageFor(1, FARM.visual.stage_thresholds) : lotStage.get(v.id.split('-')[0]) ?? 0;
       if (stage !== v.stage || p.planted_crop_id !== v.crop) {
         const key = stageSprite(store.manifest, p.planted_crop_id!, stage);
         // vento por faixas: quadros pré-assados da própria arte (a raiz fica, a ponta inclina)
@@ -262,9 +273,9 @@ export class FarmScene extends Phaser.Scene {
         if (Number(sp.frame.name) !== f) sp.setFrame(f);
       }
       let up = 0;
-      if (ready && !this.calm) up = tableAt(hop.up_px, hop.ms, time - i * hop.stagger_ms);
+      if (ready && !this.calm) up = tableAt(hop.up_px, hop.ms, time - (v.phase[i] % 16) * hop.stagger_ms);
       if (v.growAt >= 0) {
-        const el = time - v.growAt - i * grow.stagger_ms;
+        const el = time - v.growAt - (Number(v.id.split('-')[1]) - 1) * grow.stagger_ms;
         const total = grow.frames.reduce((s, f) => s + f.ms, 0);
         if (el >= 0 && el < total) up = grow.frames[frameAt(grow.frames, el, false)].up_px;
       }
@@ -413,6 +424,7 @@ export class FarmScene extends Phaser.Scene {
 
   private showHover(x: number, y: number): void {
     const hit = this.hitTest(x, y);
+    this.hoverLot = hit?.kind === 'plot' ? hit.id.split('-')[0] : '';
     this.hover.clear();
     this.input.setDefaultCursor(hit ? 'pointer' : 'default');
     if (!hit || !store.state) { this.label.setVisible(false); return; }

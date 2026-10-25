@@ -244,8 +244,8 @@
           "rows": 1,
           "cols": 3,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "scale": "row",
           "dir": "crops",
@@ -368,8 +368,8 @@
           "rows": 2,
           "cols": 7,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "dir": "crops",
           "names": [
@@ -410,8 +410,8 @@
           "rows": 9,
           "cols": 1,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "align": "center",
           "dir": "crops",
@@ -457,8 +457,8 @@
           "rows": 9,
           "cols": 4,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "scale": "row",
           "dir": "crops",
@@ -955,8 +955,8 @@
           "cols": 1,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "align": "center",
           "dir": "crops",
@@ -1002,8 +1002,8 @@
           "cols": 4,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "scale": "row",
           "dir": "crops",
@@ -1088,8 +1088,8 @@
           "cols": 1,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "align": "center",
           "dir": "crops",
@@ -1135,8 +1135,8 @@
           "cols": 4,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "scale": "row",
           "dir": "crops",
@@ -1221,8 +1221,8 @@
           "cols": 1,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "align": "center",
           "dir": "crops",
@@ -1268,8 +1268,8 @@
           "cols": 4,
           "uniform_rows": true,
           "size": [
-            16,
-            16
+            32,
+            32
           ],
           "scale": "row",
           "dir": "crops",
@@ -1861,8 +1861,8 @@
             ]
           ],
           "size": [
-            48,
-            48
+            176,
+            180
           ],
           "scale": "all",
           "align": "center",
@@ -1876,9 +1876,13 @@
               "char_comerciante_portrait",
               "char_botanica_portrait"
             ]
-          ]
+          ],
+          "native": true,
+          "note": "retratos na resolução original para os cards da interface"
         }
-      ]
+      ],
+      "tolerance": 6,
+      "tolerance_note": "fundo #141413 bem perto do contorno escuro: tolerância baixa para não comer a borda de 1 px"
     },
     {
       "id": "animals1",
@@ -2007,5 +2011,7 @@
         }
       ]
     }
-  ]
+  ],
+  "default_kernel": "nearest",
+  "default_kernel_note": "pixel art: redução sem filtro suave (nearest); antes era lanczos3 e borrava os sprites pequenos"
 }

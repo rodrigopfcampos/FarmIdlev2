@@ -155,3 +155,6 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 .minigame.shake { animation: mg-shake 0.25s; }
 @keyframes mg-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
 @media (prefers-reduced-motion: reduce) { .minigame.shake { animation: none; outline: 3px solid #e5383b; } .mg-arrow.now { transform: none; } }
+/* retrato nativo do personagem (176×180, 1:1); em tela estreita o texto desce para baixo */
+.char-card .px.portrait { image-rendering: pixelated; border: 2px solid var(--panel-border); background-color: #2a1f16; }
+@media (max-width: 520px) { .char-card { flex-wrap: wrap; } }

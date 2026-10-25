@@ -25,8 +25,9 @@ const state: FarmState = {
   level: 11, xp: 2100, xp_to_next: 3400,
   lots: [{ lot_id: 'A1', ready_at: 0, purchase_n: null }, { lot_id: 'A3', ready_at: T + 50 * 60, purchase_n: 1 }, { lot_id: 'P1', ready_at: 0, purchase_n: 2 }, { lot_id: 'C1', ready_at: 0, purchase_n: 3 }],
   plots: [
-    growing('A1-1', 'batata', 3700), growing('A1-2', 'batata', 500), growing('A1-3', 'cenoura', 1700), growing('A1-4', 'alface', 100),
-    growing('A1-5', 'espinafre', 300), growing('A1-6', 'morango', 4000), growing('A1-7', 'alface', 84), { ...empty('A1-8'), crop_id: 'tomate', stalled_reason: 'sem_ouro' },
+    // 1 cultivo por lote: A1 inteiro de batata, em idades diferentes (um canteiro vazio esperando)
+    growing('A1-1', 'batata', 3700), growing('A1-2', 'batata', 500), growing('A1-3', 'batata', 1700), growing('A1-4', 'batata', 100),
+    growing('A1-5', 'batata', 3000), growing('A1-6', 'batata', 4000), growing('A1-7', 'batata', 84), { ...empty('A1-8'), crop_id: 'batata' },
     ...Array.from({ length: 8 }, (_, i) => ({ ...empty(`A3-${i + 1}`), crop_id: 'alface' })),
   ],
   trees: [

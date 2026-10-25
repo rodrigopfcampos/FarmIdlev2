@@ -45,6 +45,7 @@
 10. ✅ Teste da fase 4 e "ok" (24/10).
 11. Testar a fase 5 em produção (lista na seção G) e dar o "ok".
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
+12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
 
 ## D. Fases (GDD seção 13)
@@ -65,6 +66,7 @@
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
 ## E. Artes que faltam
+- (25/10) 1 cultivo e 1 estágio por lote: o dono escolhe o cultivo do lote inteiro; 1 planta grande (32×32, sem esticar) por canteiro, numa grade 4×2; a muda planejada só aparece com o mouse em cima. Recortes com `nearest` (sem borrão). Retratos dos personagens no tamanho nativo (176×180) nos cards; Comerciante só com as colunas 1, 3, 4, 7, 8, 10, 11 e 12 da linha 5.
 - (fase 4) 10 animais recortados das pranchas "Animais 1" e "Animais 2" (6 quadros cada, 32×32). Produtos: 7 ícones recortados da prancha "Produtos dos Animais" (Leite de cabra, Ovo de ganso e Lã de alpaca usam o ícone base com outra cor).
 - (fase 4) prancha "Imagem dos personagens": os 6 personagens (parado + 3 quadros de ação, 32×48) e 6 retratos 48×48; o Agricultor antigo foi trocado por este para manter o mesmo estilo. Molduras das cartas trocadas pela prancha nova "Moldura e parte de traz dos cards".
 - (fase 4) recortados também: 3 pets (2 quadros parados, 24×24) e os insumos Ração, Combustível e Chave (para as próximas fases).

@@ -57,6 +57,11 @@ function charSprite(cls: string, scale = 2): string {
   const html = sprite(key, scale);
   return key === 'char_agricultor_idle' && CLASS_HUE[cls] ? html.replace('style="', `style="filter:hue-rotate(${CLASS_HUE[cls]}deg);`) : html;
 }
+/** retrato do personagem no tamanho nativo da arte (1:1, sem esticar nem borrar) */
+function charPortrait(cls: string): string {
+  const key = `char_${cls}_portrait`;
+  return store.manifest[key] ? sprite(key, 1, 'portrait') : charSprite(cls, 2);
+}
 const className = (id: string) => classDef(id)?.name_pt ?? id;
 const toolCard = (cls: string) => CLASS_TOOLS.find((t) => t.class_id === cls)!;
 const matDef = (id: string) => TOOL_MATERIALS.find((m) => m.id === id) ?? TOOL_MATERIALS[0];
@@ -295,47 +300,50 @@ function cropButton(c: Crop, selected: boolean, locked: boolean, attr: string): 
 }
 
 function openPlot(id: string): void {
+  // 1 cultivo por lote (decisão do dono, 25/10): a escolha vale para os 8 canteiros do lote
   const lot = id.split('-')[0];
-  show(`Canteiro ${id}`, () => {
+  show(`Lavoura ${lot}`, () => {
     const s = store.state;
     const p = s?.plots.find((x) => x.plot_id === id);
     if (!s || !p) return '<p>Carregando…</p>';
+    const mine = s.plots.filter((x) => x.plot_id.startsWith(`${lot}-`));
+    const count = new Map<string, number>();
+    for (const x of mine) if (x.crop_id) count.set(x.crop_id, (count.get(x.crop_id) ?? 0) + 1);
+    const lotCrop = [...count.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    const now = store.clock.farmNow();
+    const readyN = mine.filter((x) => x.state === 'growing' && x.ready_at !== null && x.ready_at <= now).length;
+    const growingN = mine.filter((x) => x.state === 'growing').length;
     const { open, next } = plotCrops(s.level);
-    const crops = [...[...open].reverse().map((c) => cropButton(c, p.crop_id === c.id, false, 'data-crop')), ...next.map((c) => cropButton(c, false, true, ''))].join('');
-    const ready = p.state === 'growing' && p.ready_at !== null && p.ready_at <= store.clock.farmNow();
-    const seeds = rareSeeds(s.inventory).filter((r) => CROPS[r.crop].kind !== 'orchard');
-    const canRare = !cleanupLeft(lot) && (p.state === 'empty' || (p.ready_at !== null && p.ready_at <= store.clock.farmNow()));
+    const crops = [...[...open].reverse().map((c) => cropButton(c, lotCrop === c.id, false, 'data-crop')), ...next.map((c) => cropButton(c, false, true, ''))].join('');
+    const seeds = rareSeeds(s.inventory).filter((r) => CROPS[r.crop].kind !== 'orchard' && (!lotCrop || r.crop === lotCrop));
+    const canRare = !cleanupLeft(lot) && (p.state === 'empty' || (p.ready_at !== null && p.ready_at <= now));
     const rare = seeds.length ? `<h3>Sementes raras</h3><div class="crops">${seeds.map((r) => {
       const t = RARITY_BY_ID[r.rarity];
       return `<button type="button" class="crop" data-rare="${r.crop}:${r.rarity}" ${canRare ? '' : 'disabled'}>${sprite(iconSprite(store.manifest, r.crop), 1)}
-        <span><strong style="color:${t.color_hex}">${esc(CROPS[r.crop].name_pt)} ${esc(t.name_pt)} × ${r.qty}</strong><small>Colheita e XP ×${nf1.format(t.multiplier)} neste plantio, sem pagar semente${canRare ? '' : ' · colha ou espere o canteiro ficar livre'}</small></span></button>`;
+        <span><strong style="color:${t.color_hex}">${esc(CROPS[r.crop].name_pt)} ${esc(t.name_pt)} × ${r.qty}</strong><small>Colheita e XP ×${nf1.format(t.multiplier)} no canteiro ${esc(id)}, sem pagar semente${canRare ? '' : ' · colha ou espere o canteiro ficar livre'}</small></span></button>`;
     }).join('')}</div>` : '';
-    return `<p class="status">${plotStatus(p)}</p>
+    const status = lotCrop
+      ? `<strong>${esc(CROPS[lotCrop].name_pt)}</strong> no lote · ${growingN} de ${mine.length} canteiros plantados${readyN ? ` · <strong>${readyN} prontos</strong>` : ''}`
+      : 'Lote parado. Escolha um cultivo para os 8 canteiros.';
+    return `<p class="status">${status}</p>
       <div class="row top">
-        ${ready ? '<button type="button" class="primary small" data-harvest>Colher agora</button>' : ''}
-        <button type="button" class="secondary" data-all ${p.crop_id ? '' : 'disabled'}>${p.crop_id ? `${esc(CROPS[p.crop_id].name_pt)} no lote ${esc(lot)} inteiro` : `Escolha um cultivo para usar no lote ${esc(lot)}`}</button>
-        ${p.crop_id ? '<button type="button" class="secondary" data-stop>Parar este canteiro</button>' : ''}
+        ${readyN ? `<button type="button" class="primary small" data-harvest>Colher o lote (${readyN})</button>` : ''}
+        ${lotCrop ? '<button type="button" class="secondary" data-stop>Parar o lote</button>' : ''}
       </div>
       ${rare}<div class="crops">${crops}</div>
-      <p class="hint">Com o jogo aberto, plantar e colher com clique é grátis. Quando você sai, a equipe em campo faz sozinha: ${nf1.format(WORK.plant)} de trabalho para plantar e ${nf1.format(WORK.harvest)} para colher (agora ${nf1.format(s.labor_per_hour)} por hora, enquanto tiverem energia). Cultivos longos rendem melhor enquanto você está fora.</p>`;
+      <p class="hint">Cada lote planta um cultivo só. Com o jogo aberto, plantar e colher com clique é grátis. Quando você sai, a equipe em campo faz sozinha: ${nf1.format(WORK.plant)} de trabalho para plantar e ${nf1.format(WORK.harvest)} para colher (agora ${nf1.format(s.labor_per_hour)} por hora, enquanto tiverem energia). Cultivos longos rendem melhor enquanto você está fora.</p>`;
   }, (el) => {
     el.querySelectorAll<HTMLButtonElement>('[data-crop]').forEach((b) => b.addEventListener('click', () => {
       const chosen = b.dataset.crop!;
-      const p = store.state?.plots.find((x) => x.plot_id === id);
-      const now = p?.state === 'empty' && !cleanupLeft(lot);
-      void act(() => setCrop(id, chosen), now ? `${CROPS[chosen].name_pt} plantada no canteiro ${id}` : `${CROPS[chosen].name_pt} no próximo plantio do canteiro ${id}`).then(close);
+      void act(() => setCrop(lot, chosen), `${CROPS[chosen].name_pt} no lote ${lot}`).then(close);
     }));
-    el.querySelector('[data-harvest]')?.addEventListener('click', () => void tend(id));
+    el.querySelector('[data-harvest]')?.addEventListener('click', () => void tend(lot));
     el.querySelectorAll<HTMLButtonElement>('[data-rare]').forEach((b) => b.addEventListener('click', () => {
       const [crop, rarity] = b.dataset.rare!.split(':');
       b.disabled = true;
       void act(() => plantRareSeed(id, crop, rarity), `${CROPS[crop].name_pt} ${RARITY_BY_ID[rarity].name_pt} plantada no canteiro ${id}`).then(close);
     }));
-    el.querySelector('[data-all]')?.addEventListener('click', () => {
-      const chosen = store.state?.plots.find((x) => x.plot_id === id)?.crop_id;
-      if (chosen) void act(() => setCrop(lot, chosen), `${CROPS[chosen].name_pt} em todo o lote ${lot}`);
-    });
-    el.querySelector('[data-stop]')?.addEventListener('click', () => void act(() => setCrop(id, null), `Canteiro ${id} parado`));
+    el.querySelector('[data-stop]')?.addEventListener('click', () => void act(() => setCrop(lot, null), `Lote ${lot} parado`));
   });
 }
 
@@ -594,7 +602,7 @@ function charCard(c: CharacterState, s: FarmState): string {
   const move = c.slot === 'field'
     ? `<button type="button" class="secondary" data-slot="${c.class_id}" data-to="bench">Para o banco</button>`
     : `<button type="button" class="secondary" data-slot="${c.class_id}" data-to="field" ${full ? 'disabled title="Campo cheio"' : ''}>Para o campo</button>`;
-  return `<div class="char-card ${c.slot}">${charSprite(c.class_id, 2)}<div class="grow">
+  return `<div class="char-card ${c.slot}">${charPortrait(c.class_id)}<div class="grow">
     <strong>${esc(className(c.class_id))} · Nv ${c.level}</strong>${energyBar(c)}
     <small>${charStatus(c)}</small>
     <small>${esc(role)} · ${nf1.format(c.rate)} de trabalho/h · gasta ${nf1.format(c.energy_use)} de energia/h, recupera ${nf1.format(c.energy_rest)}/h</small>

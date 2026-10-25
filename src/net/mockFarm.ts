@@ -26,7 +26,7 @@ const state: FarmState = {
   lots: [{ lot_id: 'A1', ready_at: 0, purchase_n: null }, { lot_id: 'A3', ready_at: T + 50 * 60, purchase_n: 1 }, { lot_id: 'P1', ready_at: 0, purchase_n: 2 }, { lot_id: 'C1', ready_at: 0, purchase_n: 3 }],
   plots: [
     growing('A1-1', 'batata', 3700), growing('A1-2', 'batata', 500), growing('A1-3', 'cenoura', 1700), growing('A1-4', 'alface', 100),
-    growing('A1-5', 'espinafre', 300), growing('A1-6', 'morango', 4000), empty('A1-7'), { ...empty('A1-8'), crop_id: 'tomate', stalled_reason: 'sem_ouro' },
+    growing('A1-5', 'espinafre', 300), growing('A1-6', 'morango', 4000), growing('A1-7', 'alface', 84), { ...empty('A1-8'), crop_id: 'tomate', stalled_reason: 'sem_ouro' },
     ...Array.from({ length: 8 }, (_, i) => ({ ...empty(`A3-${i + 1}`), crop_id: 'alface' })),
   ],
   trees: [

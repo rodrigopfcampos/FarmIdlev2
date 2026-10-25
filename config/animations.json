@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual",
+  "crop_sway": {
+    "trigger": "sempre, muda plantada",
+    "tip_px": [
+      0,
+      1,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      0
+    ],
+    "ms": 170,
+    "curve": 1.6,
+    "phase_ms_per_unit": 41,
+    "anchor": "pé (0,5; 1): a raiz não anda, a ponta inclina",
+    "priority": "fundo",
+    "reduced_motion": "parado"
+  },
+  "crop_ready_hop": {
+    "trigger": "muda madura esperando o clique",
+    "up_px": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      2,
+      0,
+      -1,
+      0,
+      0
+    ],
+    "ms": 70,
+    "stagger_ms": 90,
+    "priority": "clique",
+    "reduced_motion": "parado"
+  },
+  "crop_grow": {
+    "trigger": "muda troca de estágio",
+    "frames": [
+      {
+        "up_px": -1,
+        "ms": 90
+      },
+      {
+        "up_px": 2,
+        "ms": 70
+      },
+      {
+        "up_px": 3,
+        "ms": 70
+      },
+      {
+        "up_px": 1,
+        "ms": 90
+      },
+      {
+        "up_px": 0,
+        "ms": 1
+      }
+    ],
+    "stagger_ms": 40,
+    "dirt_grains": 3,
+    "dirt_up_px": [
+      3,
+      5,
+      6,
+      5,
+      3,
+      1
+    ],
+    "dirt_ms": 70,
+    "priority": "jogo",
+    "reduced_motion": "troca a arte sem pulo"
+  }
+}

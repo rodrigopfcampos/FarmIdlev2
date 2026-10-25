@@ -5,3 +5,4 @@ dist/
 !.env.example
 __pycache__/
 *.log
+tools/anim/out/

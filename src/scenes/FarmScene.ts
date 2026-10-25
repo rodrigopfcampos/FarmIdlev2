@@ -4,10 +4,12 @@
 // mostra o ícone do cultivo; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
-import { ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
+import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { petSprite, stageSprite } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
-import { cameraBounds, pointInPolygon, seedlingPositions, stageFor, windOffset } from '../farm/geometry';
+import { cameraBounds, pointInPolygon, seedlingPositions, stageFor } from '../farm/geometry';
+import { bakeSway } from '../anim/bake';
+import { frameAt, phaseOf, reducedMotion, tableAt } from '../anim/frames';
 import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
@@ -20,13 +22,17 @@ const ZONE_NAMES: Record<string, string> = {
 };
 const depthOf = (y: number) => 1 + y / 10000;
 
-type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string };
+type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string;
+  phase: number[]; tex: string; growAt: number };
+type Grain = { img: Phaser.GameObjects.Image; x: number; y: number; dx: number; born: number };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; fruit: Phaser.GameObjects.Image; look: string };
 type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
   private plots: PlotView[] = [];
+  private grains: Grain[] = [];             // terra que pula quando a muda cresce
+  private calm = reducedMotion();
   private trees: TreeView[] = [];
   private decor: LotDecor[] = [];
   private shade!: Phaser.GameObjects.Graphics;
@@ -60,7 +66,8 @@ export class FarmScene extends Phaser.Scene {
         const sprites = base.map(([x, y]) => this.add.image(x, y, 'crop_generic_stage1').setOrigin(0.5, 1).setVisible(false).setDepth(depthOf(y)));
         // ícone do cultivo escolhido num canteiro vazio (esperando o clique ou a equipe)
         const marker = this.add.image(p.center[0], p.center[1], 'crop_generic_stage1').setScale(0.5).setAlpha(0.75).setVisible(false).setDepth(depthOf(p.center[1]));
-        this.plots.push({ id: p.id, polygon: p.polygon, center: p.center, sprites, base, stage: -1, crop: null, marker, markerKey: '' });
+        this.plots.push({ id: p.id, polygon: p.polygon, center: p.center, sprites, base, stage: -1, crop: null, marker, markerKey: '',
+          phase: base.map(([x, y]) => phaseOf(x, y)), tex: '', growAt: -1 });
       }
       // vagas de árvore do pomar
       (lot.tree_slots ?? []).forEach(([x, y], i) => {
@@ -212,6 +219,7 @@ export class FarmScene extends Phaser.Scene {
     const t = time / 1000;
     const second = Math.floor(t);
     if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); this.refreshGarage(s); }
+    this.updateGrains(time);
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
     const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
     for (const v of this.plots) {
@@ -233,21 +241,58 @@ export class FarmScene extends Phaser.Scene {
       const stage = stageFor(progress, FARM.visual.stage_thresholds);
       if (stage !== v.stage || p.planted_crop_id !== v.crop) {
         const key = stageSprite(store.manifest, p.planted_crop_id!, stage);
-        v.sprites.forEach((sp, i) => {
-          sp.setTexture(key).setVisible(true);
-          if (v.stage !== -1) { // pulinho em sequência quando muda de estágio
-            sp.setScale(1, 0.7);
-            this.tweens.add({ targets: sp, scaleY: 1, duration: 220, delay: 80 + i * 32, ease: 'Back.Out' });
-          }
-        });
+        // vento por faixas: quadros pré-assados da própria arte (a raiz fica, a ponta inclina)
+        const sway = `sway_${key}`;
+        v.tex = !this.calm && bakeSway(this, key, sway, ANIM.crop_sway.tip_px, ANIM.crop_sway.curve) ? sway : key;
+        v.sprites.forEach((sp) => sp.setTexture(v.tex, v.tex === sway ? 0 : undefined).setVisible(true));
+        if (v.stage !== -1 && v.crop === p.planted_crop_id && !this.calm) { v.growAt = time; this.dirt(v, time); } // cresceu: abaixa, sobe e assenta
         v.stage = stage; v.crop = p.planted_crop_id;
       }
-      // vento: onda da esquerda para a direita, em pixels inteiros; maduro dá pulinhos esperando o clique
-      v.sprites.forEach((sp, i) => {
-        sp.setX(v.base[i][0] + windOffset(t, v.base[i][0], FARM.visual.wind_speed, FARM.visual.wind_strength_px));
-        sp.setY(v.base[i][1] - (look === 'ready' ? Math.round(Math.max(0, Math.sin(t * FARM.visual.ready_hop_speed - i * 0.6)) * FARM.visual.ready_hop_px) : 0));
-      });
+      this.animatePlot(v, look === 'ready', time);
     }
+  }
+
+  /** vento (quadro por fase), pulinho do maduro e o pulo de crescer — tudo em pixels inteiros e tempo por quadro */
+  private animatePlot(v: PlotView, ready: boolean, time: number): void {
+    const sw = ANIM.crop_sway, hop = ANIM.crop_ready_hop, grow = ANIM.crop_grow;
+    const swaying = v.tex.startsWith('sway_');
+    v.sprites.forEach((sp, i) => {
+      if (swaying) {
+        const f = Math.floor((time + v.phase[i] * sw.phase_ms_per_unit) / sw.ms) % sw.tip_px.length;
+        if (Number(sp.frame.name) !== f) sp.setFrame(f);
+      }
+      let up = 0;
+      if (ready && !this.calm) up = tableAt(hop.up_px, hop.ms, time - i * hop.stagger_ms);
+      if (v.growAt >= 0) {
+        const el = time - v.growAt - i * grow.stagger_ms;
+        const total = grow.frames.reduce((s, f) => s + f.ms, 0);
+        if (el >= 0 && el < total) up = grow.frames[frameAt(grow.frames, el, false)].up_px;
+      }
+      sp.setPosition(v.base[i][0], v.base[i][1] - up);
+    });
+    if (v.growAt >= 0 && time - v.growAt > grow.frames.reduce((s, f) => s + f.ms, 0) + grow.stagger_ms * v.sprites.length) v.growAt = -1;
+  }
+
+  /** 3 grãos de terra 1×1/2×1 que pulam do canteiro quando as mudas crescem */
+  private dirt(v: PlotView, time: number): void {
+    const n = ANIM.crop_grow.dirt_grains;
+    for (let k = 0; k < n; k++) {
+      const [bx, y] = v.base[(k * 2 + 1) % v.base.length];
+      const dx = k % 2 === 0 ? -1 : 1, x = bx + dx * 5; // ao lado da muda, onde a terra aparece
+      const img = this.add.image(x, y, 'dirt_grain').setOrigin(0.5, 1).setDepth(9).setVisible(false);
+      this.grains.push({ img, x, y, dx, born: time + k * ANIM.crop_grow.stagger_ms });
+    }
+  }
+
+  private updateGrains(time: number): void {
+    const g = ANIM.crop_grow;
+    this.grains = this.grains.filter((d) => {
+      const i = Math.floor((time - d.born) / g.dirt_ms);
+      if (i >= g.dirt_up_px.length) { d.img.destroy(); return false; }
+      const k = Math.max(0, i);
+      d.img.setPosition(d.x + d.dx * Math.floor(k / 2), d.y - g.dirt_up_px[k]).setVisible(i >= 0);
+      return true;
+    });
   }
 
   private updateTrees(s: FarmState, now: number): void {

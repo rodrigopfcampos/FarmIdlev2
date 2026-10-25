@@ -28,8 +28,16 @@ export class BootScene extends Phaser.Scene {
       const strip = m[`vehicle_${v}_idle`];
       if (strip) this.load.spritesheet(`vehicle_${v}_idle`, `assets/${strip.file}`, { frameWidth: strip.frame_size![0], frameHeight: strip.frame_size![1] });
     }
-    this.load.once('complete', () => { this.makeFruitTextures(); this.scene.start('farm'); });
+    this.load.once('complete', () => { this.makeFruitTextures(); this.makeBits(); this.scene.start('farm'); });
     this.load.start();
+  }
+
+  /** pedacinhos desenhados por código para as animações (pixel a pixel) */
+  private makeBits(): void {
+    const g = this.make.graphics({}, false);
+    g.fillStyle(0x3a2416, 1).fillRect(0, 0, 2, 2).fillStyle(0xd8b07a, 1).fillRect(0, 0, 1, 1);
+    g.generateTexture('dirt_grain', 2, 2);
+    g.destroy();
   }
 
   /** frutas 4×4 (base, brilho e sombra) por cima da árvore adulta: uma textura por fruta */

@@ -12,8 +12,15 @@ export class FarmClock {
   sync(s: ClockSync): void {
     this.base = s.farm_time;
     this.receivedAt = this.now();
+    this.serverMs = Date.parse(s.server_now);
     const capEnd = Date.parse(s.last_activity_at) + s.offline_cap_hours * 3600_000;
     this.remaining = Math.max(0, (capEnd - Date.parse(s.server_now)) / 1000);
+  }
+
+  private serverMs = 0;
+  /** hora real do servidor agora (ms), andando com o cronômetro do navegador */
+  serverNow(): number {
+    return this.serverMs + (this.now() - this.receivedAt);
   }
 
   /** tempo atual da fazenda, em segundos */

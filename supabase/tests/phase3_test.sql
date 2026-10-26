@@ -1,6 +1,8 @@
 -- Testes da fase 3: personagens, energia, salário, rodízio, lanches, habilidades, ferramentas,
 -- funções de apoio (Comerciante, Gerente, Botânica), sementes raras, pets e segurança (projeto de TESTE).
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

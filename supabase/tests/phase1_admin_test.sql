@@ -1,4 +1,6 @@
 -- Testes do painel do admin (projeto de TESTE). Esperado: erro "TESTES_OK".
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   adm uuid := gen_random_uuid();

@@ -1,5 +1,7 @@
 -- Testes da fase 2 (projeto de TESTE). Esperado: erro "TESTES_OK" (tudo é desfeito).
 -- "Passar o tempo" = recuar synced_at e last_activity_at (no máximo 8 h por vez, o limite offline).
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

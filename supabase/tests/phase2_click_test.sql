@@ -1,5 +1,7 @@
 -- Testes do plantio e da colheita por clique e das ferramentas de teste do admin (projeto de TESTE).
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

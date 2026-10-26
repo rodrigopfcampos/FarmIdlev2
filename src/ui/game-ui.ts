@@ -14,11 +14,13 @@ import { applyState, store } from '../farm/store';
 import {
   adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
   sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, skillAdd, skillChoose, skillReset, tendFarm, upgradeTool,
-  equipItem, mergeItems, refurbishVehicle, repairVehicle,
+  equipItem, mergeItems, refurbishVehicle, repairVehicle, setTimezone,
   type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
 import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
+import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
+import { deviceTz } from '../farm/weather';
 
 const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -87,8 +89,8 @@ export function mountGameUi(el: HTMLElement): void {
   root = el;
   lastLevel = 0;
   window.clearInterval(ticker);
-  ticker = window.setInterval(refreshTendButton, 1000); // maduros mudam com o tempo, sem esperar o servidor
-  root.innerHTML = `<div class="hud" id="hud"></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
+  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
+  root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" aria-live="polite" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
   panel.addEventListener('click', (e) => { if (e.target === panel) close(); });
@@ -125,6 +127,7 @@ function onState(s: FarmState): void {
     <span class="level" title="${xpText}">Nv ${s.level}<span class="xpbar" role="progressbar" aria-label="XP do nível" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></span></span>
     <span class="gold" title="Ouro">${sprite('ui_coin', 1, 'coin-img')}${formatGold(s.gold)}</span>
     ${deeds ? `<span class="deeds" title="Escrituras">${sprite('item_deed', 0.5)}${deeds}</span>` : ''}
+    <span class="wx-slot"></span>
     ${laborMeter(s)}
     <button type="button" class="hud-btn tend" data-tend hidden></button>
     <button type="button" class="hud-btn" data-open="casa_principal">Silo</button>
@@ -134,9 +137,38 @@ function onState(s: FarmState): void {
   hud.querySelector('[data-tend]')!.addEventListener('click', () => void tend(null));
   hud.querySelector('[data-team]')?.addEventListener('click', () => openZone('casa_principal', 'operadores'));
   refreshTendButton();
+  wxKey = '';
+  refreshWeather();
+  // fuso: na 1ª vez vem do aparelho (vale na hora); depois a troca é pelo painel do clima
+  if (s.weather && !s.weather.account.confirmed && !tzTried) { tzTried = true; void setTimezone(deviceTz()).then(applyState).catch(() => undefined); }
   if (lastLevel && s.level > lastLevel) levelUp(lastLevel, s.level);
   lastLevel = s.level;
   current?.();
+}
+
+let wxKey = '';
+let tzTried = false;
+/** selo do clima e faixa do evento (redesenha só quando o texto muda) */
+function refreshWeather(): void {
+  const s = store.state;
+  if (!s?.weather || !hud) return;
+  const ms = store.clock.serverNow();
+  const chip = weatherChip(s, ms), banner = weatherBanner(s, ms);
+  if (chip + banner === wxKey) return;
+  wxKey = chip + banner;
+  const slot = hud.querySelector<HTMLElement>('.wx-slot');
+  if (slot) { slot.innerHTML = chip; slot.querySelector('[data-weather]')?.addEventListener('click', openWeather); }
+  const b = root.querySelector<HTMLElement>('#wxbanner')!;
+  b.innerHTML = banner; b.hidden = !banner;
+}
+
+function openWeather(): void {
+  show('Clima', () => (store.state ? weatherPanel(store.state, store.clock.serverNow()) : '<p>Carregando…</p>'), (el) => {
+    el.querySelector<HTMLButtonElement>('[data-tz]')?.addEventListener('click', (e) => {
+      const tz = (e.currentTarget as HTMLButtonElement).dataset.tz!;
+      void act(() => setTimezone(tz), 'Troca de fuso marcada. Vale a partir da meia-noite.');
+    });
+  });
 }
 
 /** trabalho guardado da equipe (o que ela usa fora do jogo) e aviso de salário atrasado */

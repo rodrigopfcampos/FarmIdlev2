@@ -122,7 +122,8 @@ describe('personagens (fase 3)', () => {
     expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 4 }).locked).toBe(true);
     expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 5 }).locked).toBe(false);
     expect(skillNodeState('gerente', 'rota', 'a', {}).future).toBeNull(); // fase 5 ligou as expedições
-    expect(skillNodeState('botanica', 'clima', 'a', {}).future).toBe(6);
+    expect(skillNodeState('botanica', 'clima', 'a', {}).future).toBeNull(); // fase 6 ligou o ramo Clima
+    expect(skillNodeState('comerciante', 'mercado', 'a', {}).future).toBe(8);
     expect(skillNodeState('agricultor', 'cultivo', 'a', {}).future).toBeNull();
   });
   it('limpeza: sem Ferreiro o dobro; ramo Obras reduz', () => {

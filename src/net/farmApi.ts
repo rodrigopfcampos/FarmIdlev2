@@ -2,6 +2,7 @@
 import { supabase } from './supabase';
 import type { TreeState } from '../farm/rules';
 
+import type { WeatherView } from '../farm/weather';
 export type PlotState = {
   plot_id: string; crop_id: string | null; state: 'empty' | 'growing'; planted_crop_id: string | null;
   planted_at: number | null; ready_at: number | null; harvests_done: number; stalled_reason: string | null; rarity?: string | null;
@@ -52,9 +53,12 @@ export type FarmState = {
   vehicles: VehicleState[]; expeditions: ExpeditionState[]; exp_fail_streak: number; lead: LeadInfo | null;
   demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
   collected?: CollectedTrip[]; minigame?: MinigameEval;
+  weather: WeatherView;
 };
 
 const ERRORS: Record<string, string> = {
+  'fuso horário inválido': 'Esse fuso horário não existe.',
+  'esse já é o seu fuso': 'Esse já é o seu fuso horário.',
   'cultivo não liberado': 'Esse cultivo ainda não está liberado no seu nível.',
   'cultivo inválido': 'Esse cultivo não vai em canteiro.',
   'canteiro não encontrado': 'Esse canteiro não é seu.',
@@ -140,10 +144,16 @@ function normalize(s: FarmState): FarmState {
   return s;
 }
 
+/** mensagens do servidor em texto do jogo; a de troca de fuso já vem pronta com a data */
+function friendly(msg: string): string {
+  if (msg.startsWith('o fuso só pode')) return `O${msg.slice(1)}.`;
+  return ERRORS[msg] ?? 'Não deu certo. Tente de novo.';
+}
+
 async function rpc(fn: string, args: Record<string, unknown> = {}): Promise<FarmState> {
   if (mock) return normalize(await mock.rpc(fn, args));
   const { data, error } = await supabase!.rpc(fn, args);
-  if (error) throw new Error(ERRORS[error.message] ?? 'Não deu certo. Tente de novo.');
+  if (error) throw new Error(friendly(error.message));
   return normalize(data as FarmState);
 }
 
@@ -180,7 +190,7 @@ export const carePet = (pet: string) => rpc('care_pet', { p_pet: pet });
 export async function startMinigame(route: string, vehicles: number, manager: boolean, calm: boolean): Promise<MinigameStart> {
   if (mock) return (await mock.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm })) as unknown as MinigameStart;
   const { data, error } = await supabase!.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm });
-  if (error) throw new Error(ERRORS[error.message] ?? 'Não deu certo. Tente de novo.');
+  if (error) throw new Error(friendly(error.message));
   return data as MinigameStart;
 }
 export const launchExpedition = (o: { minigame: string; keys: { k: string; t: number }[]; vehicles: string[]; route: string; cargo: Record<string, number>; insurance: boolean; manager: boolean; repeat: boolean }) =>
@@ -191,6 +201,7 @@ export const setActiveVehicle = (v: string) => rpc('set_active_vehicle', { p_veh
 export const refurbishVehicle = (v: string) => rpc('refurbish_vehicle', { p_vehicle: v });
 export const repairVehicle = (v: string) => rpc('repair_vehicle', { p_vehicle: v });
 export const mergeItems = (item: string) => rpc('merge_items', { p_item: item });
+export const setTimezone = (tz: string) => rpc('set_timezone', { p_tz: tz });
 export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

@@ -14,6 +14,7 @@ import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
 import { duration, formatGold } from '../ui/format';
+import { WeatherLayer } from './weatherLayer';
 
 const MAP_W = 1672;
 const MAP_H = 940;
@@ -50,6 +51,7 @@ export class FarmScene extends Phaser.Scene {
   private veh: Phaser.GameObjects.Sprite | null = null;     // veículo ativo na vaga da Garagem
   private vehLabel: Phaser.GameObjects.Text | null = null;  // contador da viagem ou "Receber"
   private vehKey = '';
+  private wx!: WeatherLayer; // clima e noite por cima do mapa
   private hoverLot = ''; // lote com o mouse em cima (mostra o cultivo planejado dos canteiros vazios)
 
   constructor() { super('farm'); }
@@ -95,6 +97,8 @@ export class FarmScene extends Phaser.Scene {
       if (badge) this.tweens.add({ targets: [badge, badgeIcon], y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
       this.decor.push({ lot, sign, debris, timer, building, badge, badgeIcon });
     }
+
+    this.wx = new WeatherLayer(this, MAP_W, MAP_H, this.plots.map((p) => p.polygon), this.calm);
 
     // Carroça parada na vaga da Garagem, com a animação de parado
     const garage = ZONES.find((z) => z.id === 'garagem_expedicao');
@@ -222,6 +226,7 @@ export class FarmScene extends Phaser.Scene {
     const second = Math.floor(t);
     if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); this.refreshGarage(s); }
     this.updateGrains(time);
+    this.wx.update(time, s.weather, store.clock.serverNow());
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
     const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
     // 1 estágio por lote: as mudas que ainda crescem mostram o estágio da mais nova do lote; as maduras, o final

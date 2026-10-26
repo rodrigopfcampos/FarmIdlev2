@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 10",
   "average_bonus": {
     "income": 0.11,
@@ -85,8 +85,101 @@
         "sales_gold_pct": 40,
         "cap_R_ratio": 0.041667
       }
-    ]
+    ],
+    "admin_any_time": true,
+    "note": "o painel pode forçar um evento em qualquer horário (teste); o sorteio normal fica entre 19:00 e 20:15"
   },
   "timezone_change_days": 30,
-  "min_hours_between_events": 20
+  "min_hours_between_events": 20,
+  "forecast": {
+    "base_hours": 1,
+    "max_hours": 6,
+    "note": "previsão sem Botânica; o nó Clima soma +1 h por ponto até o máximo"
+  },
+  "growth_applies_to": [
+    "crops",
+    "orchard"
+  ],
+  "moon_counts": "vendas da Barraca, venda automática e expedições pela hora em que o veículo volta",
+  "caps_note": "clima conta como bônus permanente (teto permanente); evento conta no teto absoluto; o +40% da Lua Cheia tem teto próprio de R ÷ 24 por evento",
+  "names_pt": {
+    "sunny": "Ensolarado",
+    "hot_sun": "Sol forte",
+    "cloudy": "Nublado",
+    "rain": "Chuva",
+    "fog": "Neblina"
+  },
+  "part_names_pt": {
+    "day": "Dia",
+    "dusk": "Entardecer",
+    "night": "Noite"
+  },
+  "visual": {
+    "note": "filtros e partículas do mapa (seção 4); cores em hex, tempos em ms, velocidades em px por segundo",
+    "tint": {
+      "night": {
+        "color": "#141d4a",
+        "alpha": 0.42
+      },
+      "dusk": {
+        "color": "#d9733a",
+        "alpha": 0.14
+      },
+      "cloudy": {
+        "color": "#5d6675",
+        "alpha": 0.14
+      },
+      "rain": {
+        "color": "#3d4a63",
+        "alpha": 0.2
+      },
+      "fog": {
+        "color": "#b9c3cc",
+        "alpha": 0.1
+      },
+      "hot_sun": {
+        "color": "#ffe9a0",
+        "alpha": 0.08
+      }
+    },
+    "event_tint": {
+      "chuva_de_bencaos": "#6fb6ff",
+      "calor_dourado": "#f2c230",
+      "neblina_mistica": "#b38cff",
+      "lua_cheia": "#e8ecff"
+    },
+    "event_tint_alpha": 0.08,
+    "rain": {
+      "drops": 260,
+      "length_px": 4,
+      "speed_px": 240,
+      "slant": 0.5,
+      "splash_ms": 120
+    },
+    "wet_soil": {
+      "color": "#6e5644",
+      "alpha": 0.35,
+      "puddle_color": "#9fc4e0",
+      "puddles_per_plot": 2
+    },
+    "fog": {
+      "color": "#dde3e8",
+      "alpha": 0.3,
+      "bands": 7,
+      "band_h_px": 72,
+      "drift_px": 6
+    },
+    "sparkle": {
+      "count": 14,
+      "color": "#fff6c8",
+      "ms": 600
+    },
+    "fireflies": {
+      "count": 40,
+      "color": "#fbf7b0",
+      "blink_ms": 1100,
+      "drift_px": 4
+    },
+    "icon_px": 16
+  }
 }

@@ -1,5 +1,7 @@
 -- Testes da fase 0 (rodar no projeto de TESTE). Tudo é desfeito no fim:
 -- o resultado esperado é o erro "TESTES_OK"; qualquer outro erro "FALHA ..." diz o que quebrou.
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

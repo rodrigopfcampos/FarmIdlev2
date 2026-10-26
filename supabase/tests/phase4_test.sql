@@ -1,5 +1,7 @@
 -- Testes da fase 4: animais, vagas, Lago, ração por ciclo, coleta (clique e equipe), fome, ampliação, venda e segurança.
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
+-- fase 6: clima desligado (este teste não depende da hora do dia)
+select set_config('vif.weather', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

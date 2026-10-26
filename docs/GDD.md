@@ -690,6 +690,14 @@ O evento acontece das 19h às 21h **no horário de cada região**: quem mora em 
 - Fica em UTC o que é de todos: ranking semanal, Encomendas da Vila e o mercado (quando existir).
 - **Contra abuso:** trocar o fuso só 1 vez a cada 30 dias, valendo a partir da próxima meia-noite; no máximo 1 evento por conta a cada 20 h, mesmo trocando de fuso. Fuso da conta diferente do aparelho por 7 dias seguidos gera aviso ao jogador e alerta no painel.
 
+### Decisões da fase 6 🆕 (26/10/2026)
+- A agenda do dia é sorteada no servidor (gerador criptográfico) na 1ª vez que alguém do fuso precisa dela e fica guardada; quem tem o mesmo deslocamento de fuso vê o mesmo clima e o mesmo evento.
+- Sol forte e Calor Dourado aceleram lavoura **e pomar**, passo a passo enquanto duram (também fora do jogo, dentro das 8 h).
+- Lua Cheia conta a expedição pela hora em que o veículo volta (não pelo clique em Receber).
+- Previsão: 1 h sem Botânica, +1 h por ponto do ramo Clima (até 6 h). O evento aparece 10 min antes (30 com o Papagaio).
+- O fuso vem do aparelho na 1ª entrada; depois, 1 troca a cada 30 dias, valendo na próxima meia-noite. O salário vira à meia-noite do fuso da conta.
+- O painel pode forçar ou cancelar o evento de um dia num fuso, em qualquer horário (para teste), e fica registrado.
+
 ## 11. Missões e cartas de buff
 
 São **10 cartas**, cada uma em 5 raridades (50 versões). Usar uma carta liga um buff de 1 h a 2 h 30; guardar no **Armory** dá bônus permanente; e toda carta pode ser vendida ao Colecionador da Vila (e, se o mercado incluir cartas, a outros jogadores). Cartas continuam vindo só de missões: até 4 por semana das diárias e 2 das semanais. Na simulação, o jogador regular tira a 1ª Mítica na semana 12 e completa a 1ª carta no Armory na semana 22.

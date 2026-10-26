@@ -1,6 +1,7 @@
 // Estado falso da fazenda, só para desenvolvimento e screenshots (nunca entra no build de produção).
-import { ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID, SNACKS, TOOL_MATERIALS, VEHICLE_BY_ID } from '../data';
+import { WEATHER, ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID, SNACKS, TOOL_MATERIALS, VEHICLE_BY_ID } from '../data';
 import { cargoValue, evalMinigame } from '../farm/expeditions';
+import { localMinutes } from '../farm/weather';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
 import type { CharacterState, CollectedTrip, FarmState, PlotState } from './farmApi';
 
@@ -68,7 +69,34 @@ const state: FarmState = {
   lead: null,
   demand: { feira: ['batata', 'ovo', 'maca'], cidade: ['alface', 'leite', 'tomate'], capital: ['milho', 'la', 'uva'], porto: ['cafe', 'trufa', 'manga'], exportacao: ['cacau', 'la_de_alpaca', 'kiwi'] },
   demand_tomorrow: null,
+  weather: mockWeather(),
 };
+// clima do mock: ?ver=chuva|neblina|nublado|sol|solforte|noite|entardecer|lua|bencaos|calor|mistica|aviso
+function mockWeather(): FarmState['weather'] {
+  const ver = new URLSearchParams(location.search).get('ver') ?? 'sol';
+  const cond = ({ chuva: 'rain', neblina: 'fog', nublado: 'cloudy', solforte: 'hot_sun' } as Record<string, FarmState['weather']['cond']>)[ver] ?? 'sunny';
+  const ev = ({ lua: 'lua_cheia', bencaos: 'chuva_de_bencaos', calor: 'calor_dourado', mistica: 'neblina_mistica', aviso: 'lua_cheia' } as Record<string, string>)[ver];
+  // fuso em que agora é noite (eventos e "noite"), entardecer ou dia
+  const want = ver === 'entardecer' ? 18 * 60 + 20 : ev || ver === 'noite' ? 21 * 60 : 11 * 60;
+  let tz = 'America/Sao_Paulo', best = 1e9;
+  for (let n = -12; n <= 12; n++) {
+    const z = n === 0 ? 'Etc/GMT' : `Etc/GMT${n > 0 ? '+' : '-'}${Math.abs(n)}`;
+    const m = localMinutes(z, Date.now());
+    const d = Math.min(Math.abs(m - want), 1440 - Math.abs(m - want));
+    if (d < best) { best = d; tz = z; }
+  }
+  const t = Date.now(), iso = (ms: number) => new Date(ms).toISOString();
+  const start = ver === 'aviso' ? t + 6 * 60_000 : t - 10 * 60_000;
+  const name = ev ? WEATHER.night_event.events.find((e) => e.id === ev)!.name_pt : '';
+  return {
+    tz, cond, part: 'day', forecast_hours: 1, warn_minutes: 10,
+    forecast: [{ from: iso(t - 3600_000), to: iso(t + 2 * 3600_000), cond }, { from: iso(t + 2 * 3600_000), to: iso(t + 5 * 3600_000), cond: 'cloudy' }],
+    event: ev ? { id: ev, name_pt: name, start: iso(start), end: iso(start + 45 * 60_000), active: ver !== 'aviso', forced: false } : null,
+    bonus: { growth: cond === 'hot_sun' ? 0.1 : 0, account_xp: cond === 'rain' || cond === 'fog' ? 0.1 : 0, char_xp: cond === 'fog' ? 0.1 : 0, sales: ev || ver === 'noite' ? 0.05 : 0, moon: ev === 'lua_cheia' && ver !== 'aviso' ? 0.4 : 0 },
+    account: { timezone: tz, confirmed: true, pending: null, pending_at: null, can_change_at: null },
+  };
+}
+
 const mg: { arrows: string[]; limit: number; calm: boolean } = { arrows: [], limit: 0, calm: false };
 state.inventory['seed:alface:rare'] = 1;
 state.inventory.snack_cheese_bread = 4;

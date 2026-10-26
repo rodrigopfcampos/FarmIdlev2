@@ -2,7 +2,8 @@
 // O servidor só responde para admin com 2FA; aqui é só a tela.
 import { supabase, configMissing } from '../net/supabase';
 import { formatGold } from '../ui/format';
-import { EQUIP_CARDS, RARITY_BY_ID } from '../data';
+import { EQUIP_CARDS, RARITY_BY_ID, WEATHER } from '../data';
+import { condName } from '../farm/weather';
 
 // itens que o admin pode dar: Kits de Reforma e vestimentas/amuletos em cada raridade
 const ITEM_OPTIONS = [
@@ -77,11 +78,44 @@ type Player = { user_id: string; nickname: string; email: string; gold: number; 
 function panel(): void {
   screen(`<form class="card search" id="s"><input name="q" placeholder="Apelido, e-mail ou id do jogador" aria-label="Buscar jogador">
     <button class="primary small" type="submit">Buscar</button><button class="secondary" type="button" id="out">Sair</button></form>
-    <div id="results"></div><div id="detail"></div>`);
+    <div id="results"></div><div id="detail"></div><div id="weather"></div>`);
   root.querySelector('#out')!.addEventListener('click', async () => { await supabase!.auth.signOut(); void start(); });
   const s = root.querySelector<HTMLFormElement>('#s')!;
   s.addEventListener('submit', (e) => { e.preventDefault(); void search(String(new FormData(s).get('q') ?? '')); });
   void search('');
+  void weather('America/Sao_Paulo', new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }));
+}
+
+type WxDay = { day: string; offset_min: number; blocks: string[]; event_id: string | null; event_local: string | null; forced: boolean };
+const EVENT_NAME = (id: string | null) => (id ? WEATHER.night_event.events.find((e) => e.id === id)?.name_pt ?? id : 'sem evento');
+
+/** clima e evento noturno: agenda de ontem, hoje e amanhã num fuso; forçar ou cancelar o evento (fica registrado) */
+async function weather(tz: string, day: string, msg = ''): Promise<void> {
+  const box = root.querySelector<HTMLElement>('#weather')!;
+  const { data, error } = await supabase!.rpc('admin_weather', { p_tz: tz, p_day: day });
+  const days = (data as { days: WxDay[] } | null)?.days ?? [];
+  const rows = days.map((d) => `<tr><td>${esc(d.day)}</td><td>${d.blocks.map((b, i) => `${String(i * 3).padStart(2, '0')}h ${esc(condName(b))}`).join(' · ')}</td>
+    <td>${esc(EVENT_NAME(d.event_id))}${d.event_local ? ` às ${esc(d.event_local)}` : ''}${d.forced ? ' (forçado)' : ''}</td></tr>`).join('');
+  const opts = WEATHER.night_event.events.map((e) => `<option value="${e.id}">${esc(e.name_pt)}</option>`).join('');
+  box.innerHTML = `<div class="card"><h2>Clima e evento noturno</h2>
+    <form class="search" id="wxq"><input name="tz" value="${esc(tz)}" aria-label="Fuso (ex.: America/Sao_Paulo)"><input name="day" type="date" value="${esc(day)}" aria-label="Dia">
+      <button class="secondary" type="submit">Ver agenda</button></form>
+    ${error ? `<p>${esc(error.message)}</p>` : `<div class="table-wrap"><table><thead><tr><th>Dia</th><th>Clima (blocos de 3 h)</th><th>Evento</th></tr></thead><tbody>${rows}</tbody></table></div>`}
+    <form class="grant" id="wxf"><select name="event"><option value="">Cancelar o evento do dia</option>${opts}</select>
+      <input name="start" placeholder="Início HH:MM (vazio = mantém)" aria-label="Início">
+      <input name="reason" placeholder="Justificativa" aria-label="Justificativa" required>
+      <button class="primary small" type="submit">Aplicar em ${esc(day)}</button></form>
+    <p class="hint">Vale para todos do mesmo fuso. Para testar agora, use o horário atual arredondado para 5 min. ${esc(msg)}</p></div>`;
+  box.querySelector<HTMLFormElement>('#wxq')!.addEventListener('submit', (e) => {
+    e.preventDefault(); const d = new FormData(e.currentTarget as HTMLFormElement);
+    void weather(String(d.get('tz')), String(d.get('day')));
+  });
+  box.querySelector<HTMLFormElement>('#wxf')!.addEventListener('submit', async (e) => {
+    e.preventDefault(); const d = new FormData(e.currentTarget as HTMLFormElement);
+    const ev = String(d.get('event') ?? ''), st = String(d.get('start') ?? '').trim();
+    const r = await supabase!.rpc('admin_force_event', { p_tz: tz, p_day: day, p_event: ev || null, p_start_hm: st || null, p_reason: String(d.get('reason') ?? '') });
+    void weather(tz, day, r.error ? r.error.message : 'Feito e registrado.');
+  });
 }
 
 async function search(q: string): Promise<void> {

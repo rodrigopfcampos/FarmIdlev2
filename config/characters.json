@@ -1,6 +1,6 @@
 {
-  "version": 4,
-  "source": "GDD v2 seção 7 · fase 5: efeitos de expedição ligados (active_phase 5)",
+  "version": 5,
+  "source": "GDD v2 seção 7 · fase 6: efeitos de clima ligados (active_phase 6)",
   "field_slots": 3,
   "bench_slots": 3,
   "energy": {
@@ -135,7 +135,7 @@
     "linked_note": "o pet ativo fica vinculado a 1 personagem: os bônus por nível e a energia do carinho valem para ele"
   },
   "payday_timezone": "America/Sao_Paulo",
-  "payday_timezone_note": "até a fase 6 o dia vira à meia-noite de Brasília; depois, no fuso de cada conta",
+  "payday_timezone_note": "desde a fase 6 o salário vira à meia-noite do fuso de cada conta; este valor só sobra como padrão",
   "step_minutes": 10,
   "step_note": "o servidor avança a fazenda em passos desse tamanho para energia, rodízio, lanches e salário",
   "role_efficiency": {
@@ -551,6 +551,6 @@
       }
     ]
   },
-  "active_phase": 5,
+  "active_phase": 6,
   "active_phase_note": "efeitos de habilidade com \"phase\" maior que este número ficam guardados e ligam na fase deles"
 }

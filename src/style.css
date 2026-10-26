@@ -158,3 +158,19 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 /* retrato nativo do personagem (176×180, 1:1); em tela estreita o texto desce para baixo */
 .char-card .px.portrait { image-rendering: pixelated; border: 2px solid var(--panel-border); background-color: #2a1f16; }
 @media (max-width: 520px) { .char-card { flex-wrap: wrap; } }
+
+/* clima (fase 6): selo no topo, faixa do evento e painel */
+.wx-icon { image-rendering: pixelated; vertical-align: middle; flex: none; }
+.wx-chip { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: inherit; border: 1px solid var(--panel-border); padding: 2px 8px 2px 4px; font: inherit; font-size: 14px; cursor: pointer; }
+.wx-chip:hover { border-color: #f2c230; }
+.wx-banner { position: fixed; top: 64px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 8px;
+  background: #241a40ee; color: #f4eefc; border: 2px solid #b38cff; padding: 6px 12px; font-size: 14px; max-width: calc(100vw - 32px); }
+.wx-banner[hidden] { display: none; }
+.wx-bonus { margin: 4px 0 8px 18px; padding: 0; }
+.wx-forecast, .wx-events { list-style: none; margin: 4px 0 8px; padding: 0; display: grid; gap: 4px; }
+.wx-forecast li, .wx-events li { display: flex; align-items: center; gap: 8px; }
+.wx-events small { color: #d8c8a8; }
+.wx-event { display: flex; gap: 10px; align-items: center; background: #2b2148; border: 2px solid #b38cff; padding: 8px 10px; margin: 6px 0; }
+.wx-event small { display: block; color: #d8c8a8; }
+.warn-line { color: #f2c230; }
+@media (max-width: 520px) { .wx-chip span { display: none; } .wx-banner { top: 96px; font-size: 13px; } }

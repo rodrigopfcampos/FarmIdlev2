@@ -184,8 +184,10 @@
     },
     "icon_px": 16,
     "island": {
-      "note": "o clima só aparece em cima da ilha: o fundo escuro do mapa é achado pela cor das bordas",
-      "bg_tolerance": 24
+      "note": "o clima só aparece em cima da ilha: o fundo escuro do mapa é achado pela cor das bordas; a chuva fica a edge_margin_px da borda e não cai no paredão de pedra (os cliff_px de baixo de cada coluna)",
+      "bg_tolerance": 24,
+      "edge_margin_px": 6,
+      "cliff_px": 70
     }
   }
 }

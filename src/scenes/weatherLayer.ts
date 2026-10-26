@@ -26,6 +26,7 @@ export class WeatherLayer {
   private raining = false;
   private land: Uint8Array;                 // 1 = pixel da ilha (o clima não aparece no fundo escuro)
   private span: [number, number][] = [];    // por linha: primeiro e último pixel da ilha
+  private bottom: Int32Array;               // por coluna: último pixel da ilha (o paredão fica acima dele)
 
   constructor(private scene: Phaser.Scene, private w: number, private h: number, private plots: Pt[][], private calm: boolean) {
     WeatherLayer.textures(scene);
@@ -35,6 +36,8 @@ export class WeatherLayer {
       for (let x = 0; x < w; x++) if (this.land[y * w + x]) { if (a < 0) a = x; b = x; }
       this.span.push([a, b]);
     }
+    this.bottom = new Int32Array(w).fill(-1);
+    for (let x = 0; x < w; x++) for (let y = h - 1; y >= 0; y--) if (this.land[y * w + x]) { this.bottom[x] = y; break; }
     this.wet = scene.add.graphics().setDepth(0.6).setVisible(false);
     this.drawWet();
     const r = V.rain;
@@ -127,8 +130,15 @@ export class WeatherLayer {
     if (this.flies[0]?.img.visible) this.firefly(time);
   }
 
-  private onLand(x: number, y: number): boolean {
+  private inMask(x: number, y: number): boolean {
     return x >= 0 && y >= 0 && x < this.w && y < this.h && this.land[y * this.w + x] === 1;
+  }
+
+  /** ponto na parte de cima da ilha: longe da borda e fora do paredão de pedra */
+  private onLand(x: number, y: number): boolean {
+    const m = V.island.edge_margin_px;
+    return this.inMask(x, y) && this.inMask(x - m, y) && this.inMask(x + m, y) && this.inMask(x, y - m) && this.inMask(x, y + m)
+      && y < this.bottom[x] - V.island.cliff_px;
   }
 
   /** gotas caem em diagonal; ao tocar o chão, respingo de 2 px por um instante */
@@ -142,7 +152,8 @@ export class WeatherLayer {
       if (t * d.speed / 1000 < fall) {
         const dy = Math.floor(t * d.speed / 1000);
         const x = Math.round(d.x0 + dy * r.slant), y = d.y0 + dy;
-        d.img.setPosition(x, y).setVisible(this.onLand(x, y - 1));
+        // a gota inteira (ponta de baixo e de cima) precisa estar sobre a ilha
+        d.img.setPosition(x, y).setVisible(this.onLand(x, y - 1) && this.onLand(x - Math.ceil(V.rain.length_px * r.slant), y - V.rain.length_px));
         sp.setVisible(false);
       } else {
         d.img.setVisible(false);

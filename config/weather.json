@@ -150,11 +150,13 @@
     },
     "event_tint_alpha": 0.08,
     "rain": {
-      "drops": 260,
-      "length_px": 4,
+      "drops": 900,
+      "length_px": 7,
       "speed_px": 240,
       "slant": 0.5,
-      "splash_ms": 120
+      "splash_ms": 120,
+      "color": "#e2f1ff",
+      "alpha": 0.8
     },
     "wet_soil": {
       "color": "#6e5644",

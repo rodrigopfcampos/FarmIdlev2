@@ -30,10 +30,10 @@ export class WeatherLayer {
     this.drawWet();
     const r = V.rain;
     for (let i = 0; i < r.drops; i++) {
-      const img = scene.add.image(0, 0, 'wx_drop').setOrigin(0, 1).setDepth(11).setVisible(false);
+      const img = scene.add.image(0, 0, 'wx_drop').setOrigin(0, 1).setDepth(13.6).setAlpha(r.alpha).setVisible(false); // por cima do filtro da noite
       this.drops.push({ img, x0: Math.floor(rnd(i, 1) * (w + h * r.slant)) - h * r.slant, y0: -Math.floor(rnd(i, 2) * h), land: Math.floor(h * (0.15 + 0.85 * rnd(i, 3))),
         speed: r.speed_px * (0.85 + 0.3 * rnd(i, 4)), off: Math.floor(rnd(i, 5) * 4000) });
-      this.splashes.push(scene.add.image(0, 0, 'wx_splash').setOrigin(0.5, 1).setDepth(11).setVisible(false));
+      this.splashes.push(scene.add.image(0, 0, 'wx_splash').setOrigin(0.5, 1).setDepth(13.6).setAlpha(r.alpha).setVisible(false));
     }
     this.fog = scene.add.graphics().setDepth(12).setVisible(false);
     this.tint = scene.add.rectangle(0, 0, w, h, 0x000000, 0).setOrigin(0, 0).setDepth(13);
@@ -56,8 +56,9 @@ export class WeatherLayer {
       for (const [x, y, c] of px) { g.fillStyle(hex(c), 1); g.fillRect(x, y, 1, 1); }
       g.generateTexture(key, w, h); g.destroy();
     };
-    const drop = '#cfe6ff';
-    make('wx_drop', 2, 4, [[1, 0, drop], [1, 1, drop], [0, 2, drop], [0, 3, drop]]);
+    // gota em diagonal no mesmo sentido em que cai: 1 px de largura, comprimento e inclinação da config
+    const drop = V.rain.color, len = V.rain.length_px, sw = Math.ceil(len * V.rain.slant) + 1;
+    make('wx_drop', sw, len, Array.from({ length: len }, (_, k) => [Math.floor(k * V.rain.slant), k, drop] as [number, number, string]));
     make('wx_splash', 3, 1, [[0, 0, drop], [2, 0, drop]]);
     make('wx_spark', 1, 1, [[0, 0, V.sparkle.color]]);
     make('wx_fly', 2, 2, [[0, 0, V.fireflies.color], [1, 0, V.fireflies.color], [0, 1, V.fireflies.color], [1, 1, V.fireflies.color]]);
@@ -92,7 +93,7 @@ export class WeatherLayer {
       this.tint.setFillStyle(t ? hex(t.color) : 0, t ? t.alpha : 0);
       const et = (V.event_tint as Record<string, string>)[active];
       this.evTint.setFillStyle(et ? hex(et) : 0, et ? V.event_tint_alpha : 0);
-      this.wet.setVisible(cond === 'rain');
+      this.wet.setVisible(cond === 'rain' || active === 'chuva_de_bencaos');
       this.fog.setVisible(cond === 'fog' || active === 'neblina_mistica');
       const rain = cond === 'rain' || active === 'chuva_de_bencaos';
       this.drops.forEach((d) => d.img.setVisible(rain));

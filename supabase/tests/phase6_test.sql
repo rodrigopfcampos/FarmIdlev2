@@ -164,5 +164,18 @@ begin
   exception when insufficient_privilege then null; end;
   reset role;
 
+  -- 11. 1 cultivo por lote: escolher num canteiro vale para os 8; semente rara de outro cultivo é recusada
+  perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  s := public.set_crop('A1-3', 'alface');
+  reset role;
+  select count(*) into n from public.plots where user_id = b and plot_id like 'A1-%' and crop_id = 'alface';
+  if n <> 8 then raise exception 'FALHA 36: cultivo ficou em % canteiros (esperado 8)', n; end if;
+  insert into public.inventory (user_id, item_id, qty) values (b, 'seed:batata:rare', 1);
+  set local role authenticated;
+  begin perform public.plant_rare_seed('A1-1', 'batata', 'rare'); raise exception 'FALHA 37: plantou semente de outro cultivo no lote';
+  exception when check_violation then null; end;
+  reset role;
+
   raise exception 'TESTES_OK';
 end $$;

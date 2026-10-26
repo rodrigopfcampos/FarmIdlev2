@@ -24,6 +24,8 @@ begin
   if n <> 8 then raise exception 'FALHA 1: % canteiros no A1', n; end if;
   if abs((select labor_bank from public.farms where user_id = a) - 2.67) > 1e-6 then raise exception 'FALHA 2: trabalho inicial'; end if;
 
+  -- (fase 6: o cultivo vale para o lote inteiro; este teste usa um A1 com 1 canteiro só para manter as contas de 1 canteiro)
+  delete from public.plots where user_id = a and plot_id like 'A1-%' and plot_id <> 'A1-1';
   -- 2. como o jogador A: planta Batata no A1-1; com trabalho guardado, planta na hora
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
   set local role authenticated;

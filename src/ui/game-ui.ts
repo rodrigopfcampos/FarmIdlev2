@@ -347,7 +347,7 @@ function openPlot(id: string): void {
     const growingN = mine.filter((x) => x.state === 'growing').length;
     const { open, next } = plotCrops(s.level);
     const crops = [...[...open].reverse().map((c) => cropButton(c, lotCrop === c.id, false, 'data-crop')), ...next.map((c) => cropButton(c, false, true, ''))].join('');
-    const seeds = rareSeeds(s.inventory).filter((r) => CROPS[r.crop].kind !== 'orchard' && (!lotCrop || r.crop === lotCrop));
+    const seeds = rareSeeds(s.inventory).filter((r) => CROPS[r.crop].kind !== 'orchard' && r.crop === lotCrop); // só do cultivo do lote
     const canRare = !cleanupLeft(lot) && (p.state === 'empty' || (p.ready_at !== null && p.ready_at <= now));
     const rare = seeds.length ? `<h3>Sementes raras</h3><div class="crops">${seeds.map((r) => {
       const t = RARITY_BY_ID[r.rarity];

@@ -184,7 +184,10 @@ begin
 
   -- 11. Semente Rara: Mítica rende ×3 (Alface 3 → 9) e não cobra semente
   insert into public.inventory (user_id, item_id, qty) values (a, 'seed:alface:mythic', 1);
-  update public.plots set state = 'empty', planted_crop_id = null, ready_at = null, planted_at = null, crop_id = null where user_id = a and plot_id = 'A1-1';
+  update public.plots set state = 'empty', planted_crop_id = null, ready_at = null, planted_at = null, crop_id = 'alface' where user_id = a and plot_id = 'A1-1';
+  -- fase 6: a semente rara precisa ser do cultivo do lote (o resto do A1 fica sem cultivo e sem trabalho guardado para não plantar antes)
+  update public.plots set crop_id = null where user_id = a and plot_id like 'A1-%' and plot_id <> 'A1-1';
+  update public.farms set labor_bank = 0 where user_id = a;
   delete from public.silo where user_id = a and item_id = 'alface';
   set local role authenticated;
   select gold into v_gold from public.wallets where user_id = a;

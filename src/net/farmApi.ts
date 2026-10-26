@@ -58,6 +58,7 @@ export type FarmState = {
 
 const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
+  'semente de outro cultivo': 'Essa semente rara é de outro cultivo. Escolha esse cultivo no lote antes.',
   'esse já é o seu fuso': 'Esse já é o seu fuso horário.',
   'cultivo não liberado': 'Esse cultivo ainda não está liberado no seu nível.',
   'cultivo inválido': 'Esse cultivo não vai em canteiro.',

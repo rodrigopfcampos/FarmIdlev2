@@ -20,14 +20,17 @@ export function weatherChip(s: FarmState, ms: number): string {
   return `<button type="button" class="wx-chip" data-weather title="Clima: ${esc(label)} · ${hhmm(w.tz, ms)} no seu fuso">${weatherIcon(icon, 2, label)}<span>${esc(label)}</span>${ev?.kind === 'active' ? weatherIcon(ev.ev.id, 1, ev.ev.name_pt) : ''}</button>`;
 }
 
-/** faixa do evento: aviso antes (10 min; 30 com o Papagaio) e contagem até o fim */
+/** selo do evento no canto superior esquerdo: curto (nome e tempo); com o mouse em cima (ou toque) mostra o efeito e o horário */
 export function weatherBanner(s: FarmState, ms: number): string {
   const st = s.weather ? eventStatus(s.weather, ms) : null;
   if (!st) return '';
-  const txt = st.kind === 'soon'
-    ? `<strong>${esc(st.ev.name_pt)}</strong> começa em ${countdown(st.left_ms)}`
-    : `<strong>${esc(st.ev.name_pt)}</strong>: ${esc(eventEffect(st.ev.id))} · termina em ${countdown(st.left_ms)}`;
-  return `${weatherIcon(st.ev.id, 2, st.ev.name_pt)}<span>${txt}</span>`;
+  const w = s.weather;
+  const short = st.kind === 'soon' ? `em ${countdown(st.left_ms)}` : countdown(st.left_ms);
+  const when = st.kind === 'soon'
+    ? `Começa às ${hhmm(w.tz, Date.parse(st.ev.start))} e dura até ${hhmm(w.tz, Date.parse(st.ev.end))}.`
+    : `Acontecendo agora, até ${hhmm(w.tz, Date.parse(st.ev.end))} (faltam ${countdown(st.left_ms)}).`;
+  return `<div class="wx-ev-short">${weatherIcon(st.ev.id, 2, st.ev.name_pt)}<strong>${esc(st.ev.name_pt)}</strong><span>${short}</span></div>
+    <div class="wx-ev-more"><p>${esc(eventEffect(st.ev.id))}.</p><p>${when}</p><p>Vale também para a produção de quem está fora do jogo há menos de 8 h.</p></div>`;
 }
 
 /** painel do clima */
@@ -49,7 +52,7 @@ export function weatherPanel(s: FarmState, ms: number): string {
     ${dev && dev !== a.timezone && !a.pending ? `<p class="warn-line">Este aparelho está em <strong>${esc(tzName(dev))}</strong>.</p>
       <button type="button" class="secondary" data-tz="${esc(dev)}" ${canAt > ms ? 'disabled' : ''}>Usar o fuso deste aparelho</button>
       <p class="hint">Só dá para trocar 1 vez a cada ${WEATHER.timezone_change_days} dias, e a troca vale a partir da próxima meia-noite.${canAt > ms ? ` Próxima troca liberada em ${new Date(canAt).toLocaleDateString('pt-BR')}.` : ''}</p>` : ''}`;
-  return `<p class="status">${weatherIcon(part === 'night' && cond === 'sunny' ? 'night' : cond, 2)} <strong>${esc(condName(cond))}</strong> · ${esc(partName(part))} · ${hhmm(w.tz, ms)}</p>
+  return `<p class="status">${weatherIcon(part === 'night' && cond === 'sunny' ? 'night' : cond, 2)} <strong>${esc(part === 'night' && cond === 'sunny' ? 'Noite limpa' : condName(cond))}</strong> · ${esc(partName(part))} · ${hhmm(w.tz, ms)}</p>
     ${bonus.length ? `<ul class="wx-bonus">${bonus.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>` : '<p class="hint">Sem bônus do clima agora.</p>'}
     ${ev ? `<div class="wx-event">${weatherIcon(ev.ev.id, 2)}<div><strong>${esc(ev.ev.name_pt)}</strong> ${ev.kind === 'soon' ? `começa em ${countdown(ev.left_ms)}` : `até ${hhmm(w.tz, Date.parse(ev.ev.end))}`}<small>${esc(eventEffect(ev.ev.id))}</small></div></div>` : ''}
     <h3>Previsão (${String(w.forecast_hours).replace('.', ',')} h)</h3>

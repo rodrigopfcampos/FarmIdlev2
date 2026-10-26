@@ -90,7 +90,7 @@ export function mountGameUi(el: HTMLElement): void {
   lastLevel = 0;
   window.clearInterval(ticker);
   ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
-  root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" aria-live="polite" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
+  root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" tabindex="0" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
   panel.addEventListener('click', (e) => { if (e.target === panel) close(); });

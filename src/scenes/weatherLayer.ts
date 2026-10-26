@@ -23,15 +23,32 @@ export class WeatherLayer {
   private sparks: Dot[] = [];
   private flies: Dot[] = [];
   private key = '';
+  private raining = false;
+  private land: Uint8Array;                 // 1 = pixel da ilha (o clima não aparece no fundo escuro)
+  private span: [number, number][] = [];    // por linha: primeiro e último pixel da ilha
 
   constructor(private scene: Phaser.Scene, private w: number, private h: number, private plots: Pt[][], private calm: boolean) {
     WeatherLayer.textures(scene);
+    this.land = islandMask(scene, 'farm_base_map', w, h);
+    for (let y = 0; y < h; y++) {
+      let a = -1, b = -1;
+      for (let x = 0; x < w; x++) if (this.land[y * w + x]) { if (a < 0) a = x; b = x; }
+      this.span.push([a, b]);
+    }
     this.wet = scene.add.graphics().setDepth(0.6).setVisible(false);
     this.drawWet();
     const r = V.rain;
     for (let i = 0; i < r.drops; i++) {
       const img = scene.add.image(0, 0, 'wx_drop').setOrigin(0, 1).setDepth(13.6).setAlpha(r.alpha).setVisible(false); // por cima do filtro da noite
-      this.drops.push({ img, x0: Math.floor(rnd(i, 1) * (w + h * r.slant)) - h * r.slant, y0: -Math.floor(rnd(i, 2) * h), land: Math.floor(h * (0.15 + 0.85 * rnd(i, 3))),
+      // cada gota cai num ponto da ilha (tenta alguns sorteios fixos até achar um)
+      let lx = 0, ly = 0;
+      for (let k = 0; k < 12; k++) {
+        lx = Math.floor(rnd(i, 1 + k * 7) * w); ly = Math.floor(rnd(i, 3 + k * 7) * h);
+        if (this.onLand(lx, ly)) break;
+      }
+      const top = Math.max(0, this.span.findIndex(([a]) => a >= 0) - 40);
+      const fall = ly - top + Math.floor(rnd(i, 2) * 120);
+      this.drops.push({ img, x0: lx - Math.round(fall * r.slant), y0: ly - fall, land: ly,
         speed: r.speed_px * (0.85 + 0.3 * rnd(i, 4)), off: Math.floor(rnd(i, 5) * 4000) });
       this.splashes.push(scene.add.image(0, 0, 'wx_splash').setOrigin(0.5, 1).setDepth(13.6).setAlpha(r.alpha).setVisible(false));
     }
@@ -44,7 +61,9 @@ export class WeatherLayer {
       this.sparks.push({ img: scene.add.image(0, 0, 'wx_spark').setDepth(10).setVisible(false), x: Math.round(c[0] + (rnd(i, 8) - 0.5) * 30), y: Math.round(c[1] - 6 - rnd(i, 9) * 14), off: Math.floor(rnd(i, 10) * 3000) });
     }
     for (let i = 0; i < V.fireflies.count; i++) {
-      this.flies.push({ img: scene.add.image(0, 0, 'wx_fly').setDepth(14).setVisible(false), x: Math.round(60 + rnd(i, 11) * (w - 120)), y: Math.round(80 + rnd(i, 12) * (h - 160)), off: Math.floor(rnd(i, 13) * 5000) });
+      let fx = 0, fy = 0;
+      for (let k = 0; k < 12; k++) { fx = Math.round(rnd(i, 11 + k * 5) * w); fy = Math.round(rnd(i, 12 + k * 5) * h); if (this.onLand(fx, fy)) break; }
+      this.flies.push({ img: scene.add.image(0, 0, 'wx_fly').setDepth(14).setVisible(false), x: fx, y: fy, off: Math.floor(rnd(i, 13) * 5000) });
     }
   }
 
@@ -96,16 +115,20 @@ export class WeatherLayer {
       this.wet.setVisible(cond === 'rain' || active === 'chuva_de_bencaos');
       this.fog.setVisible(cond === 'fog' || active === 'neblina_mistica');
       const rain = cond === 'rain' || active === 'chuva_de_bencaos';
-      this.drops.forEach((d) => d.img.setVisible(rain));
-      if (!rain) this.splashes.forEach((s) => s.setVisible(false));
+      this.raining = rain;
+      if (!rain) { this.drops.forEach((d) => d.img.setVisible(false)); this.splashes.forEach((s) => s.setVisible(false)); }
       this.sparks.forEach((s) => s.img.setVisible(false));
       this.flies.forEach((f) => f.img.setVisible(!!active && part === 'night'));
     }
-    const rainOn = this.drops[0]?.img.visible;
-    if (rainOn) this.rain(time);
+    // (antes a chuva parava quando a 1ª gota estava no respingo: agora a chuva segue o clima, não a gota)
+    if (this.raining) this.rain(time);
     if (this.fog.visible) this.drawFog(time, this.key.includes('neblina_mistica'));
     if (cond === 'hot_sun' || active === 'calor_dourado') this.sparkle(time);
     if (this.flies[0]?.img.visible) this.firefly(time);
+  }
+
+  private onLand(x: number, y: number): boolean {
+    return x >= 0 && y >= 0 && x < this.w && y < this.h && this.land[y * this.w + x] === 1;
   }
 
   /** gotas caem em diagonal; ao tocar o chão, respingo de 2 px por um instante */
@@ -118,7 +141,8 @@ export class WeatherLayer {
       const sp = this.splashes[i];
       if (t * d.speed / 1000 < fall) {
         const dy = Math.floor(t * d.speed / 1000);
-        d.img.setPosition(Math.round(d.x0 + dy * r.slant), d.y0 + dy).setVisible(true);
+        const x = Math.round(d.x0 + dy * r.slant), y = d.y0 + dy;
+        d.img.setPosition(x, y).setVisible(this.onLand(x, y - 1));
         sp.setVisible(false);
       } else {
         d.img.setVisible(false);
@@ -142,8 +166,13 @@ export class WeatherLayer {
       for (let j = 0; j < rows; j++) {
         const t = (2 * j + 1) / rows - 1;               // −1 … 1 de cima para baixo
         const wRow = Math.round(len * Math.sqrt(1 - t * t) / step) * step;
+        const y = cy + (j - rows / 2) * step;
+        const [a, b] = this.span[Math.min(this.h - 1, Math.max(0, y + step / 2))] ?? [-1, -1];
+        if (a < 0) continue;
+        const x0 = Math.max(a, Math.round(cx - wRow / 2)), x1 = Math.min(b, Math.round(cx + wRow / 2));
+        if (x1 <= x0) continue;
         g.fillStyle(color, f.alpha * (1 - Math.abs(t)));
-        g.fillRect(Math.round(cx - wRow / 2), cy + (j - rows / 2) * step, wRow, step);
+        g.fillRect(x0, y, x1 - x0, step);
       }
     }
   }
@@ -164,6 +193,33 @@ export class WeatherLayer {
       d.img.setPosition(d.x + dx, d.y + dy).setAlpha(k % 3 === 0 ? 0.35 : 1);
     });
   }
+}
+
+/** pixels da ilha: tudo que não é o fundo escuro ligado às bordas da imagem do mapa (preenchimento a partir das bordas) */
+function islandMask(scene: Phaser.Scene, key: string, w: number, h: number): Uint8Array {
+  const land = new Uint8Array(w * h).fill(1);
+  const src = scene.textures.exists(key) ? (scene.textures.get(key).getSourceImage() as CanvasImageSource) : null;
+  if (!src || typeof document === 'undefined') return land;
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const g = cv.getContext('2d', { willReadFrequently: true });
+  if (!g) return land;
+  g.drawImage(src, 0, 0);
+  const px = g.getImageData(0, 0, w, h).data;
+  const tol = V.island.bg_tolerance;
+  const [br, bg, bb] = [px[0], px[1], px[2]];
+  const isBg = (i: number) => Math.abs(px[i * 4] - br) <= tol && Math.abs(px[i * 4 + 1] - bg) <= tol && Math.abs(px[i * 4 + 2] - bb) <= tol;
+  const stack: number[] = [];
+  const push = (i: number) => { if (land[i] === 1 && isBg(i)) { land[i] = 0; stack.push(i); } };
+  for (let x = 0; x < w; x++) { push(x); push((h - 1) * w + x); }
+  for (let y = 0; y < h; y++) { push(y * w); push(y * w + w - 1); }
+  while (stack.length) {
+    const i = stack.pop()!, x = i % w;
+    if (x > 0) push(i - 1);
+    if (x < w - 1) push(i + 1);
+    if (i >= w) push(i - w);
+    if (i < w * (h - 1)) push(i + w);
+  }
+  return land;
 }
 
 function centerOf(p: Pt[]): Pt {

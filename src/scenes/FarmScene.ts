@@ -4,6 +4,7 @@
 // mostra o ícone do cultivo; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
+import { mapView } from '../core/mapView';
 import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { petSprite, stageSprite } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
@@ -227,6 +228,8 @@ export class FarmScene extends Phaser.Scene {
     if (second !== this.lastSecond) { this.lastSecond = second; this.refreshDecor(); this.updateTrees(s, now); this.refreshGarage(s); }
     this.updateGrains(time);
     this.wx.update(time, s.weather, store.clock.serverNow());
+    const cam = this.cameras.main; // canto do mapa no canvas, para a interface
+    mapView.x = cam.x - cam.worldView.x * cam.zoom; mapView.y = cam.y - cam.worldView.y * cam.zoom; mapView.gameWidth = this.scale.width;
     const byId = new Map(s.plots.map((p) => [p.plot_id, p]));
     const lotReady = new Map(s.lots.map((l) => [l.lot_id, l.ready_at]));
     // 1 estágio por lote: as mudas que ainda crescem mostram o estágio da mais nova do lote; as maduras, o final

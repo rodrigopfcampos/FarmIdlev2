@@ -2,6 +2,7 @@
 // "Colher e plantar") e os painéis das zonas, dos canteiros, dos lotes à venda e do pomar.
 // Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
+import { mapView } from '../core/mapView';
 import { EQUIP_CARDS, EQUIP_RARITIES, EXP, RARITIES, VEHICLE_BY_ID, ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, SKILL_TREE, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
 import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
 import { RARITY_ORDER, rarityMult, refurbCost, refurbNext, repairCost, vehicleStatus } from '../farm/expeditions';
@@ -89,7 +90,7 @@ export function mountGameUi(el: HTMLElement): void {
   root = el;
   lastLevel = 0;
   window.clearInterval(ticker);
-  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
+  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); placeBanner(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
   root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" tabindex="0" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
@@ -102,6 +103,7 @@ let wired = false;
 function wire(): void {
   wired = true;
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  window.addEventListener('resize', () => placeBanner());
   bus.on('farm:state', onState);
   bus.on('farm:error', (msg: string) => toast(msg));
   bus.on('art:ready', () => { if (store.state) onState(store.state); });
@@ -160,6 +162,20 @@ function refreshWeather(): void {
   if (slot) { slot.innerHTML = chip; slot.querySelector('[data-weather]')?.addEventListener('click', openWeather); }
   const b = root.querySelector<HTMLElement>('#wxbanner')!;
   b.innerHTML = banner; b.hidden = !banner;
+  placeBanner();
+}
+
+/** o selo do evento fica dentro do mapa (canto superior esquerdo do desenho do jogo, não da janela) */
+function placeBanner(): void {
+  const b = root?.querySelector<HTMLElement>('#wxbanner');
+  const cv = document.querySelector<HTMLCanvasElement>('#game canvas, canvas');
+  if (!b || !cv || window.matchMedia('(max-width: 520px)').matches) { if (b) { b.style.left = ''; b.style.top = ''; } return; }
+  const r = cv.getBoundingClientRect(), base = root.getBoundingClientRect();
+  // canto da imagem do mapa na tela: a câmera pode deixar faixas escuras dos lados
+  const k = mapView.gameWidth ? r.width / mapView.gameWidth : 1;
+  const mx = mapView.x * k, my = mapView.y * k;
+  b.style.left = `${Math.max(12, Math.round(r.left - base.left + Math.max(0, mx) + 12))}px`;
+  b.style.top = `${Math.max(12, Math.round(r.top - base.top + Math.max(0, my) + 12))}px`;
 }
 
 function openWeather(): void {

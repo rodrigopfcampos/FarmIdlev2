@@ -229,4 +229,4 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 .pack .eff { text-align: left; }
 @media (prefers-reduced-motion: reduce) { .flip .face { transition: none; } }
 @media (max-width: 520px) { .card-detail { flex-direction: column; } }
-.tcard .tc-name { position: absolute; left: 16%; right: 16%; top: 84.5%; text-align: center; color: #4a2f17; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tcard .tc-name { position: absolute; left: 20.5%; right: 20.5%; top: 79.2%; height: 12.5%; display: flex; flex-direction: column; justify-content: center; text-align: center; color: #4a2f17; font-weight: 700; line-height: 1.05; overflow: hidden; }

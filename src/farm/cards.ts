@@ -35,7 +35,32 @@ const EFFECT_TEXT: Record<string, (v: number) => string> = {
   sales_gold_pct: (v) => `+${fmt(v)}% ouro em vendas`,
 };
 export function effectLines(eff: Record<string, number> | undefined): string[] {
-  return Object.entries(eff ?? {}).map(([k, v]) => EFFECT_TEXT[k]?.(v) ?? `${k} ${v}`);
+  return Object.entries(eff ?? {}).filter(([, v]) => v !== 0).map(([k, v]) => EFFECT_TEXT[k]?.(v) ?? `${k} ${v}`);
+}
+
+/** versão curta do efeito, para caber no quadro de texto da própria carta */
+const EFFECT_SHORT: Record<string, (v: number) => string> = {
+  crop_and_orchard_growth_speed_pct: (v) => `+${fmt(v)}% crescimento lavoura e pomar`,
+  golden_harvest_chance_pct: (v) => `+${fmt(v)}% chance de Colheita Dourada`,
+  animal_production_pct: (v) => `+${fmt(v)}% produção animal`,
+  account_and_character_xp_pct: (v) => `+${fmt(v)}% XP da conta e dos personagens`,
+  all_speed_pct: (v) => `+${fmt(v)}% velocidade de tudo`,
+  weather_and_night_event_boost_pct: (v) => `+${fmt(v)}% nos bônus de clima e evento`,
+  expedition_success_pts: (v) => `+${fmt(v)} de sucesso`,
+  expedition_loss_reduction_pct: (v) => (v >= 100 ? 'sem perda na falha' : `−${fmt(v)}% de perda`),
+  expedition_crit_pts: (v) => `+${fmt(v)} de crítico`,
+  expedition_crit_value_pct: (v) => `+${fmt(v)}% valor do crítico`,
+  item_and_kit_drop_boost_pct: (v) => `+${fmt(v)}% item e kit`,
+  energy_cost_reduction_pct: (v) => (v >= 100 ? 'sem gasto de energia' : `−${fmt(v)}% gasto de energia`),
+  energy_recovery_boost_pct: (v) => `+${fmt(v)}% recuperação`,
+  character_xp_pct: (v) => `+${fmt(v)}% XP dos personagens`,
+  production_gold_bonus_pct: (v) => `${fmt(v)}% da produção vira ouro`,
+};
+
+/** o que vai escrito na carta: o efeito do buff nessa raridade */
+export function cardFaceLines(cardId: string, rarity: string): string[] {
+  const eff = (cardDef(cardId)?.buff_effects as Record<string, Record<string, number>> | undefined)?.[rarity] ?? {};
+  return Object.entries(eff).filter(([, v]) => v !== 0).map(([k, v]) => EFFECT_SHORT[k]?.(v) ?? EFFECT_TEXT[k]?.(v) ?? `${k} ${v}`);
 }
 
 /** o que o buff da carta faz nessa raridade */

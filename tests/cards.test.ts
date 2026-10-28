@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { armoryLines, armoryStatus, buffDuration, buffLines, CARD_LIST, missionProgress, missionText, pityLeft } from '../src/farm/cards';
+import { armoryLines, armoryStatus, buffDuration, buffLines, CARD_LIST, cardFaceLines, missionProgress, missionText, pityLeft } from '../src/farm/cards';
 import { CARDS, MISSIONS } from '../src/data';
 
 describe('cartas no cliente', () => {
@@ -12,6 +12,15 @@ describe('cartas no cliente', () => {
         for (const l of lines) expect(l).not.toMatch(/_pct|_pts/); // nenhum efeito sem texto
       }
       for (const l of [...armoryLines(c.id, 'partial'), ...armoryLines(c.id, 'complete')]) expect(l).not.toMatch(/_pct|_pts/);
+    }
+  });
+  it('a carta mostra o efeito, não o nome', () => {
+    expect(cardFaceLines('cesta_dourada', 'common')).toEqual(['+10% chance de Colheita Dourada']);
+    expect(cardFaceLines('estrada_livre', 'common')).toEqual(['+3 de sucesso', '−10% de perda']); // efeito 0 não aparece
+    for (const c of CARD_LIST) for (const r of ['common', 'uncommon', 'rare', 'legendary', 'mythic']) {
+      const lines = cardFaceLines(c.id, r);
+      expect(lines.length).toBeGreaterThan(0);
+      for (const l of lines) { expect(l).not.toMatch(/_pct|_pts/); expect(l).not.toContain(c.name_pt); }
     }
   });
   it('duração do buff por raridade', () => {

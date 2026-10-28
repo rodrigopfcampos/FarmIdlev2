@@ -2,7 +2,7 @@
 // (Fichário, Armory e chances) e o pacote que abre virando a carta.
 import { CARDS } from '../data';
 import {
-  armoryLines, armoryStatus, buffDuration, buffLines, CARD_LIST, cardDef, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
+  armoryLines, armoryStatus, buffDuration, buffLines, CARD_LIST, cardDef, cardFaceLines, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
 } from '../farm/cards';
 import { store } from '../farm/store';
 import { armoryPlace, binderExpand, cardsSeen, rerollMission, sellCard, useCard, type CardState, type FarmState } from '../net/farmApi';
@@ -30,7 +30,17 @@ export function cardHtml(ctx: CardsCtx, cardId: string, rarity: string, scale = 
   const [w, h] = CARDS.dimensions.card_base, [aw, ah] = CARDS.dimensions.center_illustration;
   return `<span class="tcard r-${rarity} ${extra}" style="width:${w * scale}px;height:${h * scale}px" title="${ctx.esc(`${d?.name_pt ?? cardId} ${rarityInfo(rarity)?.name_pt ?? ''}`)}">
     <span class="tc-art" style="left:${((w - aw) / 2) * scale}px;top:${((h - ah) / 2) * scale}px">${ctx.sprite(d?.sprite_key ?? null, scale)}</span>
-    <span class="tc-frame">${ctx.sprite(frame, scale)}</span>${scale >= 2 ? `<span class="tc-name" style="font-size:${scale * 4}px">${ctx.esc(d?.name_pt ?? '')}</span>` : ''}</span>`;
+    <span class="tc-frame">${ctx.sprite(frame, scale)}</span>${scale >= 2 ? faceText(ctx, cardId, rarity, scale) : ''}</span>`;
+}
+
+/** efeito escrito no quadro da carta, com a fonte que couber (o quadro tem 38×12 da carta de 64×96) */
+function faceText(ctx: CardsCtx, cardId: string, rarity: string, scale: number): string {
+  const lines = cardFaceLines(cardId, rarity);
+  const w = 38 * scale, h = 12 * scale;
+  let f = scale * 4;
+  const rows = (size: number) => lines.reduce((n, l) => n + Math.ceil((l.length * size * 0.6) / w), 0);
+  while (f > 4.5 && rows(f) * f * 1.1 > h) f -= 0.25;
+  return `<span class="tc-name" style="font-size:${f}px">${lines.map((l) => `<span>${ctx.esc(l)}</span>`).join('')}</span>`;
 }
 
 /** botões do topo e os 3 slots de buff (ícone da carta e o tempo que falta) */

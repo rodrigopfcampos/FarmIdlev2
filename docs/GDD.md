@@ -809,6 +809,15 @@ Tudo soma, mas nunca passa destes tetos. "Permanente" = habilidades, Armory, pet
 | Recuperação de energia | +100% | +200% |
 | Redução do gasto de energia | 40% | 100% |
 
+### Decisões da fase 7 🆕 (27/10/2026)
+- Missões e Cartas ficam em botões no topo da tela, com os 3 buffs ativos e o tempo restante ao lado.
+- Banco de missões montado dos exemplos desta seção, só com o que já existe no jogo (vizinhos, mercado e encomendas entram na fase 8). Missão de animais, de 3 personagens em campo, de conserto e de expedição longe só aparecem para quem já tem o sistema.
+- Metas e prêmios pela produção do próprio jogador: média móvel por hora do valor produzido (preço da Feira) e do XP, com piso pelo R do nível. Diária paga 0,4 h de renda em ouro e 0,5 h de XP, fixados no sorteio; o Comerciante (Negócios B) soma +5% por ponto no ouro.
+- Tudo conta para as missões: clique, equipe e o tempo fora do jogo (dentro das 8 h).
+- 1 troca grátis por dia, só de diária ainda não completa.
+- O pacote abre na hora com a carta virando. Fichário cheio: a carta espera 7 dias na caixa de entrada e depois o Colecionador compra sozinho (o jogador não perde o valor).
+- Estrada Livre e Trevo valem para a expedição que sai durante o buff (ficam gravados nela). A Moeda da Sorte junta a % do valor produzido durante o buff e paga quando ele acaba (ou quando é trocado).
+
 ## 12. Painel administrativo e antitrapaça
 
 O painel é um app separado, só para contas com papel admin e 2FA, e compara cada jogador com as faixas da simulação para achar trapaça e problemas de balanceamento. 🆕 Fase 1: página `/admin.html` com entrada por 2FA (aplicativo autenticador), busca de jogador e as abas Ledger, Auditoria e Fazenda; cada consulta do admin fica registrada no audit_log.

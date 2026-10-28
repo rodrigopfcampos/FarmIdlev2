@@ -2,6 +2,8 @@
 -- o resultado esperado é o erro "TESTES_OK"; qualquer outro erro "FALHA ..." diz o que quebrou.
 -- fase 6: clima desligado (este teste não depende da hora do dia)
 select set_config('vif.weather', 'off', false);
+-- fase 7: missões desligadas (os prêmios mudariam as contas deste teste)
+select set_config('vif.missions', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

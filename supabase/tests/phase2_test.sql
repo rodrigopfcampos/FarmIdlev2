@@ -2,6 +2,8 @@
 -- "Passar o tempo" = recuar synced_at e last_activity_at (no máximo 8 h por vez, o limite offline).
 -- fase 6: clima desligado (este teste não depende da hora do dia)
 select set_config('vif.weather', 'off', false);
+-- fase 7: missões desligadas (os prêmios mudariam as contas deste teste)
+select set_config('vif.missions', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();

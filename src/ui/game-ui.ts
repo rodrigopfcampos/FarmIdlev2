@@ -21,6 +21,7 @@ import {
 import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
+import { hudCards, maybeOpenPack, openCards, openMissions, type CardsCtx } from './cards-ui';
 import { deviceTz } from '../farm/weather';
 
 const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
@@ -90,7 +91,7 @@ export function mountGameUi(el: HTMLElement): void {
   root = el;
   lastLevel = 0;
   window.clearInterval(ticker);
-  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); placeBanner(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
+  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); placeBanner(); refreshCards(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
   root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" tabindex="0" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
@@ -130,6 +131,7 @@ function onState(s: FarmState): void {
     <span class="gold" title="Ouro">${sprite('ui_coin', 1, 'coin-img')}${formatGold(s.gold)}</span>
     ${deeds ? `<span class="deeds" title="Escrituras">${sprite('item_deed', 0.5)}${deeds}</span>` : ''}
     <span class="wx-slot"></span>
+    <span class="cards-slot"></span>
     ${laborMeter(s)}
     <button type="button" class="hud-btn tend" data-tend hidden></button>
     <button type="button" class="hud-btn" data-open="casa_principal">Silo</button>
@@ -141,11 +143,32 @@ function onState(s: FarmState): void {
   refreshTendButton();
   wxKey = '';
   refreshWeather();
+  cardsKey = '';
+  refreshCards();
+  maybeOpenPack(cardsCtx(), s);
   // fuso: na 1ª vez vem do aparelho (vale na hora); depois a troca é pelo painel do clima
   if (s.weather && !s.weather.account.confirmed && !tzTried) { tzTried = true; void setTimezone(deviceTz()).then(applyState).catch(() => undefined); }
   if (lastLevel && s.level > lastLevel) levelUp(lastLevel, s.level);
   lastLevel = s.level;
   current?.();
+}
+
+let cardsKey = '';
+/** botões Missões e Cartas e os 3 slots de buff (o tempo que falta muda a cada minuto) */
+function refreshCards(): void {
+  const s = store.state;
+  const slot = hud?.querySelector<HTMLElement>('.cards-slot');
+  if (!s || !slot) return;
+  const html = hudCards(cardsCtx(), s, store.clock.serverNow());
+  if (html === cardsKey) return;
+  cardsKey = html;
+  slot.innerHTML = html;
+  slot.querySelector('[data-missions]')?.addEventListener('click', () => openMissions(cardsCtx()));
+  slot.querySelectorAll('[data-cards]').forEach((b) => b.addEventListener('click', () => openCards(cardsCtx())));
+}
+
+function cardsCtx(): CardsCtx {
+  return { show, act, sprite, esc, root };
 }
 
 let wxKey = '';

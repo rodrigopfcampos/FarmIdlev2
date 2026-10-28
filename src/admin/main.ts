@@ -2,7 +2,7 @@
 // O servidor só responde para admin com 2FA; aqui é só a tela.
 import { supabase, configMissing } from '../net/supabase';
 import { formatGold } from '../ui/format';
-import { EQUIP_CARDS, RARITY_BY_ID, WEATHER } from '../data';
+import { CARDS, EQUIP_CARDS, RARITY_BY_ID, WEATHER } from '../data';
 import { condName } from '../farm/weather';
 
 // itens que o admin pode dar: Kits de Reforma e vestimentas/amuletos em cada raridade
@@ -10,6 +10,10 @@ const ITEM_OPTIONS = [
   ...['uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="kit:${r}">Kit de Reforma ${RARITY_BY_ID[r].name_pt}</option>`),
   ...EQUIP_CARDS.flatMap((c) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="${c.id}:${r}">${c.name_pt} ${RARITY_BY_ID[r].name_pt}</option>`)),
 ].join('');
+
+// cartas que o admin pode dar: as 10 em cada raridade
+const CARD_OPTIONS = CARDS.cards.flatMap((c) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) =>
+  `<option value="${c.id}:${r}">${c.name_pt} ${(CARDS.rarities as Record<string, { name_pt: string }>)[r].name_pt}</option>`)).join('');
 
 const root = document.getElementById('admin')!;
 const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -184,6 +188,16 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
         <label>Quantidade<input name="value" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a reforma"></label>
         <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="card"><strong>Dar carta</strong>
+        <label>Carta<select name="item">${CARD_OPTIONS}</select></label>
+        <input name="value" type="hidden" value="1">
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o buff"></label>
+        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="missions"><strong>Completar missões</strong>
+        <label>Quais<select name="item"><option value="daily">Diárias de hoje</option><option value="weekly">Semanais</option></select></label>
+        <input name="value" type="hidden" value="1">
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pacote"></label>
+        <button class="primary small" type="submit">Completar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
@@ -207,6 +221,8 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
     const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
     const call = form.dataset.kind === 'trips' ? supabase!.rpc('admin_finish_expeditions', { p_user: id, p_reason: reason })
+      : form.dataset.kind === 'card' ? supabase!.rpc('admin_grant_card', { p_user: id, p_card: String(d.get('item')).split(':')[0], p_rarity: String(d.get('item')).split(':')[1], p_reason: reason })
+      : form.dataset.kind === 'missions' ? supabase!.rpc('admin_complete_missions', { p_user: id, p_kind: String(d.get('item')), p_reason: reason })
       : form.dataset.kind === 'item' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: String(d.get('item')), p_qty: value, p_reason: reason })
       : form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })

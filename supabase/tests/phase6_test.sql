@@ -1,6 +1,8 @@
 -- Testes da fase 6: agenda do clima por fuso, evento noturno (19–21 h locais, sem repetir), bônus do clima e do evento,
 -- crescimento acelerado, Lua Cheia com teto, 1 evento a cada 20 h, risco das expedições, troca de fuso e painel.
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
+-- fase 7: missões desligadas (os prêmios mudariam as contas deste teste)
+select set_config('vif.missions', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();   -- São Paulo
@@ -31,7 +33,7 @@ begin
     prev := r;
   end loop;
   select count(*) into n from public.weather_days where offset_min = -9999 and blocks[1] = 'sunny';
-  if n < 50 or n > 120 then raise exception 'FALHA 6: Ensolarado à meia-noite em % de 200 dias (esperado ~83)', n; end if;
+  if n < 75 or n > 135 then raise exception 'FALHA 6: Ensolarado à meia-noite em % de 200 dias (esperado ~104: 0,40 de 0,77 sem Sol forte e Neblina)', n; end if;
 
   -- 2. cada conta segue o próprio fuso: o evento das 19:00 locais acontece em instantes diferentes
   update public.profiles set timezone = tk where id = b;

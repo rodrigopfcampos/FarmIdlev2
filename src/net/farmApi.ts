@@ -54,10 +54,26 @@ export type FarmState = {
   demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
   collected?: CollectedTrip[]; minigame?: MinigameEval;
   weather: WeatherView;
+  // fase 7: missões e cartas
+  missions: MissionState[]; mission_week: { daily_packs: number; weekly_rewards: number }; reroll_used: boolean; pack_today: boolean;
+  cards: CardState[]; new_cards: { serial: number; card_id: string; rarity: string; origin: string }[];
+  buffs: BuffState[]; armory: { card_id: string; rarity: string }[]; pity: { rare: number; legendary: number; mythic: number };
+  binder_slots: number; prod_ref: { value_h: number; xp_h: number }; collector: Record<string, number>; binder_expand_cost: number;
 };
+export type MissionState = { kind: 'daily' | 'weekly'; slot: number; id: string; metric: string; target: number; progress: number; done: boolean; reward: { gold?: number; xp?: number } };
+export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox'; inbox_until: string | null; seen: boolean; origin: string };
+export type BuffState = { card_id: string; rarity: string; started_at: string; ends_at: string; coin_value: number };
 
 const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
+  'carta não encontrada': 'Essa carta não está mais no seu fichário.',
+  'raridade menor que a do buff ativo': 'Essa carta já está ativa com raridade maior. Use uma de raridade igual ou maior.',
+  'já tem 3 buffs ativos': 'Já tem 3 cartas ativas. Espere uma acabar.',
+  'essa raridade já está no Armory': 'Essa raridade dessa carta já está no Armory.',
+  'fichário já está no máximo': 'O fichário já está no tamanho máximo (200).',
+  'a troca grátis de hoje já foi usada': 'A troca grátis de hoje já foi usada.',
+  'missão não pode ser trocada': 'Essa missão não pode ser trocada.',
+  'não há outra missão disponível': 'Não há outra missão disponível para trocar agora.',
   'semente de outro cultivo': 'Essa semente rara é de outro cultivo. Escolha esse cultivo no lote antes.',
   'esse já é o seu fuso': 'Esse já é o seu fuso horário.',
   'cultivo não liberado': 'Esse cultivo ainda não está liberado no seu nível.',
@@ -203,6 +219,13 @@ export const refurbishVehicle = (v: string) => rpc('refurbish_vehicle', { p_vehi
 export const repairVehicle = (v: string) => rpc('repair_vehicle', { p_vehicle: v });
 export const mergeItems = (item: string) => rpc('merge_items', { p_item: item });
 export const setTimezone = (tz: string) => rpc('set_timezone', { p_tz: tz });
+// cartas e missões
+export const useCard = (serial: number) => rpc('use_card', { p_serial: serial });
+export const armoryPlace = (serial: number) => rpc('armory_place', { p_serial: serial });
+export const sellCard = (serial: number) => rpc('sell_card', { p_serial: serial });
+export const binderExpand = () => rpc('binder_expand');
+export const rerollMission = (slot: number) => rpc('reroll_mission', { p_slot: slot });
+export const cardsSeen = () => rpc('cards_seen');
 export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

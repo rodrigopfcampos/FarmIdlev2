@@ -3,6 +3,8 @@
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
 -- fase 6: clima desligado (este teste não depende da hora do dia)
 select set_config('vif.weather', 'off', false);
+-- fase 7: missões desligadas (os prêmios mudariam as contas deste teste)
+select set_config('vif.missions', 'off', false);
 do $$
 declare
   a uuid := gen_random_uuid();
@@ -167,6 +169,8 @@ begin
   set local role authenticated; s := public.get_farm(); s := public.collect_expeditions(null); reset role;
 
   -- 11. reforma: 3 Kits Incomuns viram 1 Raro; Incomum pede 1 kit + 30% do preço de referência; capacidade ×1,2
+  -- (a viagem pode ter trazido um Kit sorteado: soma em vez de duplicar)
+  delete from public.inventory where user_id = a and item_id like 'kit:%';
   insert into public.inventory (user_id, item_id, qty) values (a, 'kit:uncommon', 4);
   set local role authenticated;
   s := public.merge_items('kit:uncommon');
@@ -185,6 +189,7 @@ begin
 
   -- 12. conserto proporcional; vestimenta equipada (Chapéu Raro: +15 × 1,6 de energia máxima)
   update public.vehicles set durability = 50 where user_id = a and vehicle_id = 'carroca';
+  delete from public.inventory where user_id = a and item_id = 'cloth_hat:rare';
   insert into public.inventory (user_id, item_id, qty) values (a, 'cloth_hat:rare', 1);
   set local role authenticated;
   select gold into v_gold from public.wallets where user_id = a;

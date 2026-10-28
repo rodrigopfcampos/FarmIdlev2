@@ -70,6 +70,32 @@ const state: FarmState = {
   demand: { feira: ['batata', 'ovo', 'maca'], cidade: ['alface', 'leite', 'tomate'], capital: ['milho', 'la', 'uva'], porto: ['cafe', 'trufa', 'manga'], exportacao: ['cacau', 'la_de_alpaca', 'kiwi'] },
   demand_tomorrow: null,
   weather: mockWeather(),
+  missions: [
+    { kind: 'daily', slot: 1, id: 'd_colher', metric: 'harvest_value', target: 9000, progress: 6200, done: false, reward: { gold: 1700, xp: 700 } },
+    { kind: 'daily', slot: 2, id: 'd_barraca', metric: 'stall_gold', target: 3000, progress: 3000, done: true, reward: { gold: 1700, xp: 700 } },
+    { kind: 'daily', slot: 3, id: 'd_expedicoes', metric: 'expeditions_sent', target: 2, progress: 1, done: false, reward: { gold: 1700, xp: 700 } },
+    { kind: 'daily', slot: 4, id: 'd_xp', metric: 'xp_earned', target: 2100, progress: 400, done: false, reward: { gold: 1700, xp: 700 } },
+    { kind: 'daily', slot: 5, id: 'd_plantar_nivel', metric: 'plant_top', target: 8, progress: 8, done: true, reward: { gold: 1700, xp: 700 } },
+    { kind: 'weekly', slot: 1, id: 'w_expedicoes', metric: 'expeditions_sent', target: 10, progress: 4, done: false, reward: {} },
+    { kind: 'weekly', slot: 2, id: 'w_ouro', metric: 'gold_earned', target: 130000, progress: 130000, done: true, reward: {} },
+    { kind: 'weekly', slot: 3, id: 'w_nivel', metric: 'char_level', target: 1, progress: 0, done: false, reward: {} },
+    { kind: 'weekly', slot: 4, id: 'w_eventos', metric: 'night_events', target: 3, progress: 1, done: false, reward: {} },
+    { kind: 'weekly', slot: 5, id: 'w_colher', metric: 'harvest_value', target: 63000, progress: 20000, done: false, reward: {} },
+  ],
+  mission_week: { daily_packs: 2, weekly_rewards: 0 }, reroll_used: false, pack_today: false,
+  cards: [
+    { serial: 101, card_id: 'sol_de_verao', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
+    { serial: 102, card_id: 'sol_de_verao', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
+    { serial: 103, card_id: 'ampulheta', rarity: 'rare', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_3' },
+    { serial: 104, card_id: 'moeda_da_sorte', rarity: 'legendary', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
+    { serial: 105, card_id: 'trevo_quatro_folhas', rarity: 'uncommon', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
+    { serial: 106, card_id: 'tempestade', rarity: 'mythic', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_5' },
+  ],
+  new_cards: new URLSearchParams(location.search).get('ver') === 'pacote' ? [{ serial: 107, card_id: 'coruja_sabia', rarity: 'legendary', origin: 'daily_pack' }] : [],
+  buffs: [{ card_id: 'rebanho_feliz', rarity: 'rare', started_at: new Date(Date.now() - 20 * 60_000).toISOString(), ends_at: new Date(Date.now() + 80 * 60_000).toISOString(), coin_value: 0 }],
+  armory: [{ card_id: 'sol_de_verao', rarity: 'common' }, { card_id: 'sol_de_verao', rarity: 'uncommon' }, { card_id: 'sol_de_verao', rarity: 'rare' }, { card_id: 'folego', rarity: 'common' }],
+  pity: { rare: 4, legendary: 21, mythic: 63 }, binder_slots: 60, prod_ref: { value_h: 4500, xp_h: 1400 },
+  collector: { common: 200, uncommon: 400, rare: 800, legendary: 1300, mythic: 2300 }, binder_expand_cost: 50000,
 };
 // clima do mock: ?ver=chuva|neblina|nublado|sol|solforte|noite|entardecer|lua|bencaos|calor|mistica|aviso
 function mockWeather(): FarmState['weather'] {
@@ -165,6 +191,16 @@ export const mockFarm = {
     if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);
     if (fn === 'equip_snack') { const c = ch(args.p_class)!; c.snack_id = args.p_snack as string | null; c.snack_qty = args.p_snack ? 5 : 0; }
     if (fn === 'repair_tool') ch(args.p_class)!.durability = 100;
+    if (fn === 'use_card' || fn === 'armory_place' || fn === 'sell_card') {
+      const c = state.cards.find((x) => x.serial === args.p_serial)!;
+      state.cards = state.cards.filter((x) => x !== c);
+      if (fn === 'use_card') state.buffs = [...state.buffs.filter((b) => b.card_id !== c.card_id), { card_id: c.card_id, rarity: c.rarity, started_at: new Date().toISOString(), ends_at: new Date(Date.now() + 3600_000).toISOString(), coin_value: 0 }];
+      if (fn === 'armory_place') state.armory.push({ card_id: c.card_id, rarity: c.rarity });
+      if (fn === 'sell_card') state.gold += state.collector[c.rarity];
+    }
+    if (fn === 'cards_seen') { for (const n of state.new_cards) state.cards.push({ ...n, state: 'binder', inbox_until: null, seen: true }); state.new_cards = []; }
+    if (fn === 'reroll_mission') state.reroll_used = true;
+    if (fn === 'binder_expand') state.binder_slots += 20;
     if (fn === 'set_auto_sell') state.auto_sell = args.p_on ? [...state.auto_sell, args.p_item as string] : state.auto_sell.filter((x) => x !== args.p_item);
     if (fn === 'adopt_pet') state.pets.push({ pet_id: args.p_pet as string, affinity: 0, last_care: null, active: false, linked_class: null });
     if (fn === 'care_pet') { const p = state.pets.find((x) => x.pet_id === args.p_pet)!; p.affinity++; p.last_care = state.game_day; }

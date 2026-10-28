@@ -1,18 +1,187 @@
 {
-  "version": 1,
-  "source": "GDD v2 seção 11",
+  "version": 2,
+  "source": "GDD v2 seção 11 · fase 7: banco montado dos exemplos, só com sistemas prontos (sem vizinhos e mercado até a fase 8)",
   "daily": {
     "count": 5,
     "gold_hours_of_income": 0.4,
     "xp_hours_of_production": 0.5,
     "free_rerolls": 1,
     "pack_when_all_done": 1,
-    "max_packs_per_week": 4
+    "max_packs_per_week": 4,
+    "reroll_note": "1 troca grátis por dia, só de missão ainda não completa"
   },
   "weekly": {
     "count": 5,
     "cards_at_3": 1,
     "bonus_card_at_5": 1,
     "deed_at_5": 1
-  }
+  },
+  "production_reference": {
+    "note": "as metas e os prêmios usam a produção do próprio jogador: média móvel por hora do valor produzido (preço da Feira) e do XP, atualizada a cada virada do dia",
+    "new_day_weight": 0.3,
+    "floor_R_ratio": 0.25,
+    "initial_value_R_ratio_per_hour": 0.041667,
+    "initial_xp_per_hour_of_xp_to_next": 0.041667
+  },
+  "plant_top_window_levels": 3,
+  "bank": {
+    "daily": [
+      {
+        "id": "d_colher",
+        "metric": "harvest_value",
+        "target": {
+          "type": "hours_value",
+          "hours": 2
+        },
+        "text_pt": "Colha o equivalente a 2 h da sua produção ({n} em valor da Feira)"
+      },
+      {
+        "id": "d_barraca",
+        "metric": "stall_gold",
+        "target": {
+          "type": "hours_value",
+          "hours": 1,
+          "mult": 0.7
+        },
+        "text_pt": "Venda {n} de ouro na Barraca"
+      },
+      {
+        "id": "d_ouro",
+        "metric": "gold_earned",
+        "target": {
+          "type": "hours_value",
+          "hours": 1.5
+        },
+        "text_pt": "Ganhe {n} de ouro (vendas e expedições)"
+      },
+      {
+        "id": "d_expedicoes",
+        "metric": "expeditions_sent",
+        "target": {
+          "type": "count",
+          "n": 2
+        },
+        "text_pt": "Envie {n} expedições"
+      },
+      {
+        "id": "d_plantar_nivel",
+        "metric": "plant_top",
+        "target": {
+          "type": "count",
+          "n": 8
+        },
+        "text_pt": "Plante {n} canteiros de um cultivo dos seus últimos 3 níveis"
+      },
+      {
+        "id": "d_xp",
+        "metric": "xp_earned",
+        "target": {
+          "type": "hours_xp",
+          "hours": 1.5
+        },
+        "text_pt": "Ganhe {n} de XP com a produção"
+      },
+      {
+        "id": "d_animais",
+        "metric": "animal_products",
+        "target": {
+          "type": "animals",
+          "per_animal": 2,
+          "min": 2
+        },
+        "gate": "animals",
+        "text_pt": "Colete {n} produtos dos animais"
+      },
+      {
+        "id": "d_equipe",
+        "metric": "field3_hours",
+        "target": {
+          "type": "count",
+          "n": 2
+        },
+        "gate": "chars3",
+        "text_pt": "Mantenha 3 personagens trabalhando em campo por {n} h"
+      },
+      {
+        "id": "d_conserto",
+        "metric": "vehicle_repair",
+        "target": {
+          "type": "count",
+          "n": 1
+        },
+        "gate": "worn_vehicle",
+        "text_pt": "Conserte um veículo na Garagem"
+      }
+    ],
+    "weekly": [
+      {
+        "id": "w_expedicoes",
+        "metric": "expeditions_sent",
+        "target": {
+          "type": "count",
+          "n": 10
+        },
+        "text_pt": "Envie {n} expedições"
+      },
+      {
+        "id": "w_longe",
+        "metric": "exp_far_success",
+        "target": {
+          "type": "count",
+          "n": 1
+        },
+        "gate": "capital",
+        "text_pt": "Faça 1 expedição de sucesso para a Capital ou mais longe"
+      },
+      {
+        "id": "w_ouro",
+        "metric": "gold_earned",
+        "target": {
+          "type": "hours_value",
+          "hours": 30
+        },
+        "text_pt": "Ganhe {n} de ouro na semana"
+      },
+      {
+        "id": "w_nivel",
+        "metric": "char_level",
+        "target": {
+          "type": "count",
+          "n": 1
+        },
+        "text_pt": "Suba 1 nível de personagem"
+      },
+      {
+        "id": "w_eventos",
+        "metric": "night_events",
+        "target": {
+          "type": "count",
+          "n": 3
+        },
+        "text_pt": "Esteja com produção ativa em {n} eventos noturnos"
+      },
+      {
+        "id": "w_colher",
+        "metric": "harvest_value",
+        "target": {
+          "type": "hours_value",
+          "hours": 14
+        },
+        "text_pt": "Colha o equivalente a 14 h da sua produção ({n} em valor da Feira)"
+      },
+      {
+        "id": "w_animais",
+        "metric": "animal_products",
+        "target": {
+          "type": "animals",
+          "per_animal": 12,
+          "min": 10
+        },
+        "gate": "animals",
+        "text_pt": "Colete {n} produtos dos animais"
+      }
+    ]
+  },
+  "far_route": "capital",
+  "worn_vehicle_below_pct": 90
 }

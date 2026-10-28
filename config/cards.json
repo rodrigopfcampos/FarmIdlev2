@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "source": "GDD v2 seção 4 e seção 11 (ilustrações conferidas com a prancha Cartas buff.png)",
   "dimensions": {
     "card_base": [
@@ -38,7 +38,9 @@
     "expansion_slots": 20,
     "max_slots": 200,
     "expansion_cost_reference_income_ratio": 0.5,
-    "inbox_overflow_retention_days": 7
+    "inbox_overflow_retention_days": 7,
+    "inbox_expired": "sell_to_collector",
+    "inbox_note": "fichário cheio: a carta espera 7 dias na caixa de entrada; depois o Colecionador compra sozinho (o jogador não perde o valor)"
   },
   "gacha": {
     "opens_immediately": true,

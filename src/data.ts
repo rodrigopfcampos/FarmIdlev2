@@ -12,10 +12,14 @@ import rarityCfg from '../config/rarity.json';
 import animalsCfg from '../config/animals.json';
 import animationsCfg from '../config/animations.json';
 import weatherCfg from '../config/weather.json';
+import cardsCfg from '../config/cards.json';
+import missionsCfg from '../config/missions.json';
 
 /** fichas das animações (tempo por quadro, pixels inteiros) */
 export const ANIM = animationsCfg;
 export const WEATHER = weatherCfg;
+export const CARDS = cardsCfg;
+export const MISSIONS = missionsCfg;
 
 export type Crop = (typeof cropsCfg.crops)[number] & { sapling_cost?: number; seed_cost?: number; tree_base?: string };
 export const CROP_LIST = cropsCfg.crops as Crop[];

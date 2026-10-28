@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (26/10/2026, fase 6)
+# Village Idle Farm — mapa do projeto (27/10/2026, fase 7)
 
 ## A. Feito
 
@@ -20,10 +20,12 @@
 | **Fase 4** | Galinheiro e Celeiro com vagas e ampliação, Lago (+10% e +2 vagas de ave), 10 animais com raridade sorteada, ração por ciclo com fome, coleta por clique ou pela equipe, produtos no Silo e na Barraca, ramos de fase 4 (Criação, Mestria de Obras), Gato na produção, tetos de bônus; painel termina o ciclo dos animais | `supabase/migrations/…25000100`, `supabase/tests/phase4_test.sql` |
 | **Fase 5** | Garagem com 4 veículos (Carroça inicial, compra, veículo ativo na vaga com contador), 5 rotas, minigame de setas conferido no servidor (tempo, erro −0,5 s, robô), comboio, sorteio na volta (crítico, sucesso, falha parcial), seguro, garantia contra azar, repetição automática com os mesmos produtos, clique em Receber com relatório narrado, desgaste, conserto e reforma com Kits na Forja, itens (vestimenta e amuleto) equipáveis e 3→1, Escrituras, demanda do dia igual para todos, Gerente conduzindo, Cachorro e ramos de expedição; painel traz as viagens de volta e dá itens | `supabase/migrations/…26000100`, `supabase/tests/phase5_test.sql`, `src/ui/garage.ts` |
 | **Fase 6** | Clima por fuso em blocos de 3 h (sorteado e guardado, igual para todos do mesmo fuso), dia/entardecer/noite, evento noturno de 45 min entre 19:00 e 21:00 locais (nunca o mesmo da noite anterior, 1 por conta a cada 20 h), bônus no servidor (Sol forte e Calor Dourado aceleram lavoura e pomar a cada passo; chuva/neblina/eventos dão XP; noite +5% e Lua Cheia +40% com teto R ÷ 24), expedições −4/−8/−2, salário à meia-noite do fuso da conta, troca de fuso 1 vez a cada 30 dias (vale à meia-noite), ramo Clima da Botânica e aviso de 30 min do Papagaio; mapa com noite, chuva com respingo e terra molhada, neblina, brilho do sol forte e vagalumes; selo do clima, faixa do evento e painel com previsão; painel do admin vê a agenda e força/cancela eventos | `supabase/migrations/…27000100`, `supabase/tests/phase6_test.sql`, `src/scenes/weatherLayer.ts`, `src/ui/weather-ui.ts` |
+| **Fase 7** | 5 missões diárias e 5 semanais sorteadas de um banco (só sistemas já liberados), metas pela produção do próprio jogador (média por hora, com piso pelo R), ouro e XP fixados no sorteio, 1 troca grátis por dia; as 5 diárias dão 1 pacote (até 4 por semana), 3 semanais dão 1 carta e as 5 dão +1 carta e 1 Escritura; tudo conta, inclusive equipe e fora do jogo. 10 cartas × 5 raridades com número de série, garantia (Raro+ a cada 10, Lendário+ a cada 40, Mítico a cada 120), pacote abrindo com a carta virando, até 3 buffs (a mesma carta só troca por raridade igual ou maior), Moeda da Sorte paga no fim, Estrada Livre e Trevo gravados na expedição, Armory (parcial e completo), fichário de 60 com ampliação e caixa de entrada, Colecionador da Vila; botões Missões e Cartas no topo com os 3 buffs; painel do admin dá carta e completa missões | `supabase/migrations/…28000100`, `supabase/tests/phase7_test.sql`, `src/ui/cards-ui.ts`, `src/farm/cards.ts` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (27/10, fase 7) Fase 6 aprovada. Missões e Cartas em botões no topo, com os 3 buffs ativos ao lado; banco de missões montado dos exemplos do GDD só com sistemas prontos (vizinhos e mercado entram na fase 8); tudo conta para as missões (cliques, equipe e fora do jogo); o pacote abre com a carta virando.
 - 🆕 (26/10, fase 6) Fase 5 aprovada. Sol forte e Calor Dourado valem para lavoura e pomar; a Lua Cheia conta a expedição pela hora em que o veículo volta. Ícones do clima desenhados no código até chegar a arte (a prancha "Cards do climas" é a das 10 cartas da fase 7).
 - 🆕 (24/10, fase 5) Fase 4 aprovada. Expedições: o veículo volta e espera o clique em Receber; a repetição automática (até 2×) sai sozinha com os mesmos produtos e também fica guardada; demanda do dia igual para todos (meia-noite de Brasília); comboio com 1 minigame só. Molduras novas das cartas e prancha dos 6 personagens.
 - (24/10, fase 4) Fase 3 aprovada. Animais: coleta igual à lavoura (clique grátis; equipe gasta 0,5, 100% com Rancheira e 60% sem), casas mistas, ração cobrada no começo de cada ciclo.
@@ -46,7 +48,8 @@
 8. ✅ Teste da fase 3 e "ok" (24/10).
 10. ✅ Teste da fase 4 e "ok" (24/10).
 11. ✅ Teste da fase 5 e "ok" (26/10).
-13. Testar a fase 6 em produção (lista na seção G) e dar o "ok".
+13. ✅ Teste da fase 6 e "ok" (27/10).
+14. Testar a fase 7 em produção (lista na seção G) e dar o "ok".
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -61,8 +64,8 @@
 | 3 Personagens | 6 classes, energia, salário, desgaste, inventário, habilidades, pets | **feito e aprovado** (24/10) |
 | 4 Animais | Galinheiro, Celeiro, Lago, ampliações, 10 animais com raridade, ração | **feito e aprovado** (24/10) |
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | **feito e aprovado** (26/10) |
-| 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito** (26/10); falta o teste do dono em produção |
-| 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | — |
+| 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
+| 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito** (27/10); falta o teste do dono em produção |
 | 8 Multiplayer | Amigos, visitas, ranking, mercado (conteúdo a decidir) | — |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
@@ -78,29 +81,29 @@
 - Ícone 32×32: Tomate, Mamão, Goiaba, Acerola, Jabuticaba.
 - 2 medalhões de rota: Capital e Exportação.
 - Ícones da interface (HUD).
-- 🆕 Ícones do clima (hoje desenhados no código): 1 prancha PNG 1024×512, fundo #1C1C1C, grade 5×2 — Ensolarado, Sol forte, Nublado, Chuva, Neblina / Noite, Chuva de Bênçãos, Calor Dourado, Neblina Mística, Lua Cheia.
-- 🆕 Luz amarela nas janelas à noite (GDD seção 4): precisa da posição das janelas ou de uma versão noturna das casas.
+- Ícones do clima (hoje desenhados no código): 1 prancha PNG 1024×512, fundo #1C1C1C, grade 5×2 — Ensolarado, Sol forte, Nublado, Chuva, Neblina / Noite, Chuva de Bênçãos, Calor Dourado, Neblina Mística, Lua Cheia.
+- Luz amarela nas janelas à noite (GDD seção 4): precisa da posição das janelas ou de uma versão noturna das casas.
 - Cerca dos lotes à venda (o GDD cita cerca + placa + entulho; hoje só placa e entulho).
 - Opcional: Celeiro com telhado de telhas vermelhas; molduras de carta na proporção 2:3.
 
 ## F. Regras provisórias (mudam nas próximas fases)
-- 🆕 Cartas (Estrada Livre, Trevo, Tempestade) entram na fase 7.
-- 🆕 Números novos da fase 6 que o GDD não fixava: previsão sem Botânica = 1 h (+1 h por ponto, até 6 h); o clima conta no teto permanente e o evento no absoluto; o +40% da Lua Cheia tem teto próprio (R ÷ 24 por evento). O aviso de fuso diferente do aparelho por 7 dias (alerta no painel) fica para a fase 9.
-- 🆕 Números novos da fase 5 que o GDD não fixava (ajustáveis na config): conserto do veículo = 10% do preço de 0 a 100%; raridade dos itens que caem = mesma tabela dos Kits da rota; o simulador ainda não conta a demanda +20% nem o conserto.
-- 🆕 O sorteio da expedição acontece na volta (a chance fica fixada na saída), para a garantia contra azar contar só viagens que já voltaram.
-- 🆕 Salário vira à meia-noite do fuso da conta; carinho do pet, demanda do dia e venda 1,5× ainda viram à meia-noite de Brasília.
+- 🆕 Números novos da fase 7 que o GDD não fixava (ajustáveis em `config/missions.json` e `config/cards.json`): meta = horas da produção do próprio jogador (média móvel do valor da Feira por hora, peso 30% no dia novo, piso de 25% de R ÷ 24); prêmio da diária = 0,4 h de renda em ouro + 0,5 h de XP; missão nova "Ganhe XP com a produção" (para a troca grátis sempre ter opção); Negócios B do Comerciante dá +5% por ponto no ouro das missões; carta na caixa de entrada por 7 dias e depois vendida sozinha ao Colecionador (o jogador não perde o valor). O simulador ainda não conta missões nem cartas.
+- Números novos da fase 6 que o GDD não fixava: previsão sem Botânica = 1 h (+1 h por ponto, até 6 h); o clima conta no teto permanente e o evento no absoluto; o +40% da Lua Cheia tem teto próprio (R ÷ 24 por evento). O aviso de fuso diferente do aparelho por 7 dias (alerta no painel) fica para a fase 9.
+- Números novos da fase 5 que o GDD não fixava (ajustáveis na config): conserto do veículo = 10% do preço de 0 a 100%; raridade dos itens que caem = mesma tabela dos Kits da rota; o simulador ainda não conta a demanda +20% nem o conserto.
+- O sorteio da expedição acontece na volta (a chance fica fixada na saída), para a garantia contra azar contar só viagens que já voltaram.
+- Salário vira à meia-noite do fuso da conta; carinho do pet, demanda do dia e venda 1,5× ainda viram à meia-noite de Brasília.
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da fase 6 (dono, em produção)
-1. Abra o jogo: no topo aparece o selo do clima (ícone + nome). Clique nele: painel com o clima de agora, bônus, previsão de 1 h, os 4 eventos e o seu fuso (na 1ª entrada ele vem do aparelho).
-2. À noite (19:00–05:59 no seu fuso) o mapa escurece e o selo mostra a lua; no entardecer (18:00) fica alaranjado.
-3. Painel do admin → "Clima e evento noturno": aparece a agenda de ontem, hoje e amanhã (8 blocos de 3 h e o evento).
-4. Forçar agora: escolha "Lua Cheia", início = hora atual arredondada para 5 min (ex.: 14:35), justificativa → Aplicar. No jogo, em até 1 min, aparece a faixa roxa "Lua Cheia … termina em 45 min", vagalumes só se for noite.
-5. Venda na Barraca durante a Lua Cheia: o ouro vem 40% maior até o teto do dia (1/24 da renda do seu nível); passando do teto, volta ao normal.
-6. Força "Chuva de Bênçãos" num horário 8 min à frente: a faixa aparece 10 min antes ("começa em …") e a chuva cai no mapa quando começar. Cancele com "Cancelar o evento do dia".
-7. Segunda conta em outro fuso (ex.: celular em Lisboa): cada conta vê o evento entre 19:00 e 21:00 do próprio horário.
-8. Troca de fuso: com o aparelho em outro fuso, o painel do clima oferece "Usar o fuso deste aparelho"; a troca vale à meia-noite e a 2ª troca é recusada por 30 dias.
+## G. Teste da fase 7 (dono, em produção)
+1. Abra o jogo: no topo aparecem os botões **Missões** e **Cartas** e 3 espaços vazios de buff.
+2. Missões: 5 diárias e 5 semanais com barra de progresso, prêmio da diária (ouro e XP) e o que falta para o pacote. Venda algo na Barraca: a missão de vender/ganhar ouro anda. Use **Trocar** numa diária: troca 1 vez por dia; a 2ª é recusada.
+3. Painel do admin → sua conta → **Completar missões** → "Diárias de hoje" + justificativa. Volte ao jogo: o ouro e o XP das 5 entram e o pacote abre com a carta virando.
+4. Repita com "Semanais": 2 cartas e 1 Escritura no inventário.
+5. **Dar carta** no painel (ex.: Sol de Verão Mítico). Em Cartas → Fichário → clique na carta → **Usar**: aparece no topo com o tempo (2 h 30). Os cultivos crescem mais rápido. Usar a mesma carta com raridade menor é recusado; a 4ª carta ativa também.
+6. Dê Moeda da Sorte e use: quando o tempo acabar, chega o ouro de uma parte do que foi produzido nesse tempo.
+7. Dê 3 cartas iguais (Comum, Incomum, Raro) e use **Pôr no Armory** em cada uma: a guia Armory mostra o bônus parcial (prata); com as 5 raridades, o completo (ouro).
+8. **Vender** uma carta ao Colecionador: o ouro entra na hora. A guia Chances mostra as chances e quanto falta para cada garantia.
 
 ## H. Riscos e pontos em aberto
 - 🆕 Clique sem limite: um robô que clica sem parar vira um jogador sempre online (e sem o limite offline). Tratar no antitrapaça (fase 9): frequência de cliques, horas seguidas online.

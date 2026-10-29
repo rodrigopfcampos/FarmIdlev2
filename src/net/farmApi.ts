@@ -59,6 +59,21 @@ export type FarmState = {
   cards: CardState[]; new_cards: { serial: number; card_id: string; rarity: string; origin: string }[];
   buffs: BuffState[]; armory: { card_id: string; rarity: string }[]; pity: { rare: number; legendary: number; mythic: number };
   binder_slots: number; prod_ref: { value_h: number; xp_h: number }; collector: Record<string, number>; binder_expand_cost: number;
+  // fase 8a: pedidos e novidades (na própria fazenda) e ajudas valendo nos lotes (na visita)
+  social?: { incoming: number; unseen: number; helps: LotHelp[]; likes: number };
+  helps?: LotHelp[];
+};
+export type LotHelp = { lot_id: string; kind: 'growth' | 'cleanup'; pct: number; ends_at: string; from: string };
+export type FriendStatus = 'friend' | 'sent' | 'received' | 'blocked' | 'none';
+export type PlayerCard = { id: string; nickname: string; level: number; likes: number; status?: FriendStatus };
+export type SocialActivity = { kind: 'help' | 'like' | 'note'; from: PlayerCard; at: string; new: boolean; lot?: string; help?: 'growth' | 'cleanup'; pct?: number; emojis?: string[] };
+export type SocialState = {
+  friends: PlayerCard[]; incoming: PlayerCard[]; outgoing: PlayerCard[]; blocked: PlayerCard[]; activity: SocialActivity[];
+  helps_given: number; helps_received: number; likes: number;
+};
+export type VisitView = {
+  owner: PlayerCard; state: FarmState; cooldowns: Record<string, string>;
+  limits: { given: number; given_max: number; received: number; received_max: number; liked: boolean; noted: boolean; notes_today: number; help_xp: number };
 };
 export type MissionState = { kind: 'daily' | 'weekly'; slot: number; id: string; metric: string; target: number; progress: number; done: boolean; reward: { gold?: number; xp?: number } };
 export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox'; inbox_until: string | null; seen: boolean; origin: string };
@@ -146,6 +161,26 @@ const ERRORS: Record<string, string> = {
   'espaço inválido': 'Espaço inválido.',
   'item não serve nesse espaço': 'Esse item não serve nesse espaço.',
   'item não está no inventário': 'Você não tem esse item.',
+  'digite pelo menos 3 letras': 'Digite pelo menos 3 letras do apelido.',
+  'jogador não encontrado': 'Jogador não encontrado.',
+  'jogador indisponível': 'Esse jogador não está disponível.',
+  'vocês já são amigos': 'Vocês já são amigos.',
+  'pedido já enviado': 'O pedido já foi enviado. Espere a resposta.',
+  'limite de amigos': 'Limite de 50 amigos atingido.',
+  'muitos pedidos esperando': 'Muitos pedidos esperando resposta. Espere alguns serem aceitos.',
+  'pedido não encontrado': 'Esse pedido não existe mais.',
+  'motivo inválido': 'Escolha um motivo da lista.',
+  'denúncia já enviada hoje': 'Você já denunciou esse jogador hoje.',
+  'nenhuma fazenda para visitar agora': 'Nenhuma fazenda para visitar agora. Tente mais tarde.',
+  'ajudas de hoje acabaram': 'Suas 10 ajudas de hoje acabaram. Volte amanhã.',
+  'essa fazenda já recebeu todas as ajudas de hoje': 'Essa fazenda já recebeu as 10 ajudas de hoje.',
+  'esse lote já foi ajudado há pouco': 'Esse lote já foi ajudado há pouco. Tente outro.',
+  'lote não encontrado': 'Esse lote não é da fazenda.',
+  'nada para ajudar nesse lote': 'Nada para ajudar nesse lote agora (sem plantas crescendo nem limpeza).',
+  'já curtiu hoje': 'Você já curtiu essa fazenda hoje.',
+  'recado inválido': 'Escolha de 1 a 3 emojis da lista.',
+  'já deixou recado hoje': 'Você já deixou recado nessa fazenda hoje.',
+  'recados de hoje acabaram': 'Seus recados de hoje acabaram.',
 };
 
 function normalize(s: FarmState): FarmState {
@@ -226,6 +261,35 @@ export const sellCard = (serial: number) => rpc('sell_card', { p_serial: serial 
 export const binderExpand = () => rpc('binder_expand');
 export const rerollMission = (slot: number) => rpc('reroll_mission', { p_slot: slot });
 export const cardsSeen = () => rpc('cards_seen');
+// amigos e visitas (devolvem o painel Amigos ou a visita, não a fazenda)
+async function rpcJson<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
+  if (mock) return (await mock.rpc(fn, args)) as unknown as T;
+  const { data, error } = await supabase!.rpc(fn, args);
+  if (error) throw new Error(friendly(error.message));
+  return data as T;
+}
+/** estado da visita: o que o servidor não mostra (ouro, Silo, cartas…) vem vazio */
+function visitNorm(v: VisitView): VisitView {
+  const st = v.state as Partial<FarmState>;
+  v.state = normalize({
+    gold: 0, xp: 0, xp_to_next: null, silo: {}, inventory: {}, tools: {}, characters: [], auto_sell: [], snack_prices: {}, expeditions: [],
+    labor_bank: 0, labor_per_hour: 0, labor_nominal: 0, labor_cap_hours: 1, is_admin: false, last_payday: null, boosted_sale_day: null, pet_swapped_at: null,
+    fx: { cleanup: 0 } as FarmState['fx'], missions: [], new_cards: [], buffs: [], cards: [], armory: [], ...st,
+  } as FarmState);
+  return v;
+}
+export const getSocial = () => rpcJson<SocialState>('get_social');
+export const searchPlayers = (q: string) => rpcJson<PlayerCard[]>('search_players', { p_query: q });
+export const friendRequest = (id: string) => rpcJson<SocialState>('friend_request', { p_target: id });
+export const friendRespond = (id: string, accept: boolean) => rpcJson<SocialState>('friend_respond', { p_other: id, p_accept: accept });
+export const friendRemove = (id: string) => rpcJson<SocialState>('friend_remove', { p_other: id });
+export const blockPlayer = (id: string, block: boolean) => rpcJson<SocialState>('block_player', { p_target: id, p_block: block });
+export const reportPlayer = (id: string, reason: string) => rpcJson<SocialState>('report_player', { p_target: id, p_reason: reason });
+export const socialSeen = () => rpcJson<SocialState>('social_seen');
+export const visitFarm = async (id: string | null) => visitNorm(await rpcJson<VisitView>('visit_farm', { p_target: id }));
+export const helpLot = async (id: string, lot: string) => visitNorm(await rpcJson<VisitView>('help_lot', { p_target: id, p_lot: lot }));
+export const likeFarm = async (id: string) => visitNorm(await rpcJson<VisitView>('like_farm', { p_target: id }));
+export const sendNote = async (id: string, emojis: string[]) => visitNorm(await rpcJson<VisitView>('send_note', { p_target: id, p_emojis: emojis }));
 export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

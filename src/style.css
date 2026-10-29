@@ -230,3 +230,25 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 @media (prefers-reduced-motion: reduce) { .flip .face { transition: none; } }
 @media (max-width: 520px) { .card-detail { flex-direction: column; } }
 .tcard .tc-name { position: absolute; left: 20.5%; right: 20.5%; top: 79.2%; height: 12.5%; display: flex; flex-direction: column; justify-content: center; text-align: center; color: #4a2f17; font-weight: 700; line-height: 1.05; overflow: hidden; }
+
+/* fase 8a: amigos e visitas */
+.hud.visiting { border-color: #4caf50; }
+.visit-tag { color: var(--paper); }
+.visit-tag strong { color: #8fd18f; }
+.visit-lim { color: var(--gold); }
+.hud-btn:disabled { opacity: 0.55; cursor: default; }
+.plist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.prow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; padding: 6px 8px; background: #00000033; border: 2px solid transparent; }
+.prow.new { border-color: var(--gold); }
+.prow .who small { color: #bfae8c; margin-left: 4px; }
+.prow .acts { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.prow .acts .secondary, .prow .acts .primary.small { padding: 4px 8px; font-size: 13px; }
+.prow .acts small { color: #bfae8c; }
+.report-form { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; align-items: end; padding-top: 4px; }
+.report-form select { font: inherit; }
+.emojis { font-size: 18px; letter-spacing: 2px; }
+.emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 8px 0; }
+.emoji-btn { font-size: 24px; padding: 6px 0; background: #00000044; border: 2px solid var(--panel-border); cursor: pointer; }
+.emoji-btn.on { border-color: var(--gold); background: #f2c23033; }
+form.search { display: flex; gap: 8px; align-items: end; margin-bottom: 10px; }
+form.search input { width: 100%; font: inherit; padding: 6px; }

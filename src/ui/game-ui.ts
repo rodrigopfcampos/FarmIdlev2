@@ -23,6 +23,7 @@ import { duration, formatGold } from './format';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
 import { hudCards, maybeOpenPack, openCards, openMissions, type CardsCtx } from './cards-ui';
 import { deviceTz } from '../farm/weather';
+import { bindVisitHud, hudSocial, openHelp, openSocial, visitHud, type SocialCtx } from './social-ui';
 
 const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -108,20 +109,44 @@ function wire(): void {
   bus.on('farm:state', onState);
   bus.on('farm:error', (msg: string) => toast(msg));
   bus.on('art:ready', () => { if (store.state) onState(store.state); });
-  bus.on('ui:zone', (id: string) => openZone(id));
-  bus.on('ui:plot', (id: string) => onPlotClick(id));
-  bus.on('ui:locked', (id: string) => openLot(id));
-  bus.on('ui:orchard', (id: string) => onOrchardClick(id));
+  // na visita, clicar num lote abre o Ajudar; zonas e pet não fazem nada
+  const visiting = (lot?: string) => {
+    if (!store.visit) return false;
+    if (lot) openHelp(socialCtx(), lot); else toast('Na visita, clique num lote para ajudar.');
+    return true;
+  };
+  bus.on('ui:zone', (id: string) => { if (!visiting()) openZone(id); });
+  bus.on('ui:plot', (id: string) => { if (!visiting(id.split('-')[0])) onPlotClick(id); });
+  bus.on('ui:locked', (id: string) => { if (!visiting(id)) openLot(id); });
+  bus.on('ui:orchard', (id: string) => { if (!visiting(id)) onOrchardClick(id); });
   bus.on('ui:pet', () => {
+    if (visiting()) return;
     const s = store.state;
     const p = s?.pets.find((x) => x.active);
     if (s && p && p.last_care !== s.game_day) void act(() => carePet(p.pet_id), `${PET_EMOJI[p.pet_id]} Carinho feito! +${PETS.care_energy} de energia para ${className(p.linked_class ?? 'agricultor')}.`);
     else openZone('casa_principal', 'pets');
   });
-  bus.on('ui:pasture', (id: string) => onPastureClick(id));
+  bus.on('ui:pasture', (id: string) => { if (!visiting(id)) onPastureClick(id); });
+}
+
+function socialCtx(): SocialCtx {
+  return { show, close, toast, esc };
+}
+
+/** topo da visita: troca a barra inteira; o resto do jogo fica parado até voltar */
+function onVisitState(): void {
+  const v = store.visit!;
+  close();
+  hud.innerHTML = visitHud(socialCtx(), v);
+  hud.classList.add('visiting');
+  bindVisitHud(socialCtx(), hud, v);
+  wxKey = '';
+  refreshWeather();
 }
 
 function onState(s: FarmState): void {
+  if (store.visit) { onVisitState(); return; }
+  hud.classList.remove('visiting');
   const deeds = s.inventory.deed ?? 0;
   const pct = Math.round(xpProgress(s.xp, s.xp_to_next) * 100);
   const xpText = s.xp_to_next ? `${formatGold(s.xp)} de ${formatGold(s.xp_to_next)} XP` : 'nível máximo';
@@ -132,6 +157,7 @@ function onState(s: FarmState): void {
     ${deeds ? `<span class="deeds" title="Escrituras">${sprite('item_deed', 0.5)}${deeds}</span>` : ''}
     <span class="wx-slot"></span>
     <span class="cards-slot"></span>
+    ${hudSocial()}
     ${laborMeter(s)}
     <button type="button" class="hud-btn tend" data-tend hidden></button>
     <button type="button" class="hud-btn" data-open="casa_principal">Silo</button>
@@ -140,6 +166,7 @@ function onState(s: FarmState): void {
   hud.querySelector('[data-open]')!.addEventListener('click', () => openZone('casa_principal', 'silo'));
   hud.querySelector('[data-tend]')!.addEventListener('click', () => void tend(null));
   hud.querySelector('[data-team]')?.addEventListener('click', () => openZone('casa_principal', 'operadores'));
+  hud.querySelector('[data-social]')?.addEventListener('click', () => void openSocial(socialCtx()));
   refreshTendButton();
   wxKey = '';
   refreshWeather();

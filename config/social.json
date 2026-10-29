@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 9 (Visitas) e seção 15 (sem chat livre, com denúncia e bloqueio) · fase 8a",
+  "friends": {
+    "max_friends": 50,
+    "max_pending_out": 20,
+    "note": "pedido de amizade; quando os dois pedem, vira amizade na hora"
+  },
+  "search": {
+    "min_chars": 3,
+    "max_results": 10
+  },
+  "help": {
+    "growth_pct": 10,
+    "growth_minutes": 60,
+    "cleanup_pct": 10,
+    "lot_cooldown_minutes": 60,
+    "given_per_day": 10,
+    "received_per_day": 10,
+    "xp_minutes_of_production": 10,
+    "note": "Ajudar: +10% de crescimento por 1 h na lavoura ou pomar do lote, ou −10% no tempo que falta da limpeza. 1 ajuda por lote por hora. O Ferreiro em campo na fazenda ajudada aumenta o efeito (ramo Obras B)."
+  },
+  "likes": {
+    "per_target_per_day": 1
+  },
+  "notes": {
+    "emojis": ["👍", "❤️", "😀", "😂", "😮", "👋", "🌾", "🌻", "🐔", "🐄", "🚜", "⭐"],
+    "max_emojis": 3,
+    "per_target_per_day": 1,
+    "per_day": 20,
+    "keep_days": 7
+  },
+  "random_visit": {
+    "min_level": 2,
+    "active_days": 7
+  },
+  "activity_days": 7,
+  "activity_max": 40,
+  "report_reasons": [
+    { "id": "apelido", "text_pt": "Apelido ofensivo" },
+    { "id": "recados", "text_pt": "Recados ofensivos ou repetidos demais" },
+    { "id": "trapaca", "text_pt": "Suspeita de trapaça" }
+  ],
+  "reports_per_target_per_day": 1
+}

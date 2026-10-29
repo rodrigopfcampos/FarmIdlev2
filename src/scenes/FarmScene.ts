@@ -390,17 +390,31 @@ export class FarmScene extends Phaser.Scene {
     const s = store.state!;
     if (hit.kind === 'zone') return ZONE_NAMES[hit.id];
     if (hit.kind === 'pet') {
+      if (store.visit) return 'Pet';
       const mine = s.pets.find((p) => p.active);
       return mine && mine.last_care !== s.game_day ? 'Pet · clique para o carinho de hoje' : 'Pet';
     }
     const now = store.clock.farmNow();
+    const lotId = hit.kind === 'plot' ? hit.id.split('-')[0] : hit.id;
+    if (store.visit) {
+      // visitando: o que importa é se dá para ajudar o lote
+      if (hit.kind === 'locked') return `${LOT_TYPE_NAMES[LOTS.find((l) => l.id === lotId)!.type]} ${lotId} · ainda não é da fazenda`;
+      const cd = store.visit.cooldowns[lotId];
+      const help = (s.helps ?? []).find((h) => h.lot_id === lotId);
+      const base = `${LOT_TYPE_NAMES[LOTS.find((l) => l.id === lotId)!.type]} ${lotId}`;
+      if (help) return `${base} · ajudado por ${help.from} (+${help.pct}%)`;
+      if (cd && Date.parse(cd) > Date.now()) return `${base} · ajudado há pouco`;
+      return `${base} · clique para ajudar`;
+    }
+    const helped = (s.social?.helps ?? []).find((h) => h.lot_id === lotId && Date.parse(h.ends_at) > Date.now());
+    const helpTxt = helped ? ` · ajuda de ${helped.from} (+${helped.pct}%)` : '';
     if (hit.kind === 'plot') {
       const p = s.plots.find((x) => x.plot_id === hit.id);
       if (!p) return `Canteiro ${hit.id}`;
       const name = (id: string | null) => (id ? CROPS[id].name_pt : '');
       switch (plotLook(p, now, s.lots.find((l) => l.lot_id === hit.id.split('-')[0])?.ready_at ?? 0)) {
         case 'ready': return `${name(p.planted_crop_id)} pronta · clique para colher`;
-        case 'growing': return `${name(p.planted_crop_id)} · pronta em ${duration(p.ready_at! - now)}`;
+        case 'growing': return `${name(p.planted_crop_id)} · pronta em ${duration(p.ready_at! - now)}${helpTxt}`;
         case 'planned': return `${name(p.crop_id)} · clique para plantar`;
         case 'cleanup': return `${name(p.crop_id)} · depois da limpeza`;
         case 'stalled': return `${name(p.crop_id)} · falta ouro para a semente`;

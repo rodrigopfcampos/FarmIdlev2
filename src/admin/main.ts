@@ -133,9 +133,9 @@ async function search(q: string): Promise<void> {
   box.querySelectorAll<HTMLElement>('tr.pick').forEach((tr) => tr.addEventListener('click', () => void detail(tr.dataset.id!, 'ledger')));
 }
 
-async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<void> {
+async function detail(id: string, tab: 'ledger' | 'audit' | 'farm' | 'reports'): Promise<void> {
   const box = root.querySelector('#detail')!;
-  const tabs = [['ledger', 'Ledger'], ['audit', 'Auditoria'], ['farm', 'Fazenda']]
+  const tabs = [['ledger', 'Ledger'], ['audit', 'Auditoria'], ['farm', 'Fazenda'], ['reports', 'Denúncias']]
     .map(([k, n]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${n}</button>`).join('');
   let body = '';
   if (tab === 'ledger') {
@@ -144,6 +144,13 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
       (data as any[]).map((l) => `<tr><td>${l.id}</td><td>${when(l.created_at)}</td><td>${esc(l.reason)}</td>
         <td class="${Number(l.amount) < 0 ? 'neg' : 'pos'}">${Number(l.amount).toLocaleString('pt-BR')}</td><td>${Number(l.balance_after).toLocaleString('pt-BR')}</td>
         <td><code>${esc(JSON.stringify(l.ref))}</code></td></tr>`).join('')}</tbody></table>`;
+  }
+  if (tab === 'reports') {
+    const { data, error } = await supabase!.rpc('admin_player_reports', { p_user: id });
+    const list = (data ?? []) as any[];
+    body = error ? esc(error.message) : list.length ? `<table><thead><tr><th>#</th><th>Quando</th><th>Quem denunciou</th><th>Motivo</th><th>Situação</th></tr></thead><tbody>${
+      list.map((r) => `<tr><td>${r.id}</td><td>${when(r.at)}</td><td>${esc(r.reporter)}</td><td>${esc(r.reason)}</td><td>${r.status === 'open' ? 'aberta' : 'fechada'}</td></tr>`).join('')}</tbody></table>`
+      : '<p>Nenhuma denúncia contra este jogador.</p>';
   }
   if (tab === 'audit') {
     const { data, error } = await supabase!.rpc('admin_player_audit', { p_user: id, p_limit: 200 });
@@ -212,7 +219,7 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm'): Promise<voi
       f.plots.map((p: any) => `<tr><td>${esc(p.plot_id)}</td><td>${esc(p.crop_id ?? '—')}</td><td>${esc(p.state)}</td><td>${p.ready_at ? (p.ready_at / 3600).toFixed(2) + ' h' : '—'}</td><td>${esc(p.stalled_reason ?? '')}</td></tr>`).join('')}</tbody></table>`;
   }
   box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div><div class="table-wrap">${body}</div></div>`;
-  box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm')));
+  box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm' | 'reports')));
   // ferramentas de teste (Escritura, nível, limpeza, salário e ouro): o servidor exige 2FA e registra tudo na auditoria
   box.querySelectorAll<HTMLFormElement>('form.grant').forEach((form) => form.addEventListener('submit', async (e) => {
     e.preventDefault();

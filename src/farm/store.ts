@@ -5,11 +5,14 @@ import { FARM } from '../data';
 import { getFarm, type FarmState } from '../net/farmApi';
 import { FarmClock } from './clock';
 import type { Manifest } from './art';
+import type { VisitView } from '../net/farmApi';
 
 export const store = {
   state: null as FarmState | null,
   clock: new FarmClock(),
   manifest: {} as Manifest,
+  /** visitando outra fazenda: o mapa mostra a dela e a sincronização da sua fica parada */
+  visit: null as VisitView | null,
 };
 
 let timer: number | undefined;
@@ -22,12 +25,13 @@ export function applyState(s: FarmState): void {
 }
 
 export async function refresh(): Promise<void> {
+  if (store.visit) return;
   try { applyState(await getFarm()); } catch (e) { bus.emit('farm:error', e instanceof Error ? e.message : String(e)); }
 }
 
 function schedule(): void {
   window.clearTimeout(timer);
-  if (document.visibilityState !== 'visible' || !store.state) return;
+  if (document.visibilityState !== 'visible' || !store.state || store.visit) return;
   const now = store.clock.farmNow();
   const next = Math.min(...store.state.plots.filter((p) => p.ready_at !== null).map((p) => p.ready_at! - now), Infinity);
   const wait = Math.max(2, Math.min(FARM.sync_seconds, Number.isFinite(next) ? next + 1 : FARM.sync_seconds));
@@ -42,4 +46,18 @@ export function startSync(): void {
 export function stopSync(): void {
   window.clearTimeout(timer);
   store.state = null;
+  store.visit = null;
+}
+
+/** entra na visita (ou atualiza a visita): o mapa passa a mostrar a fazenda do outro */
+export function applyVisit(v: VisitView): void {
+  store.visit = v;
+  window.clearTimeout(timer);
+  applyState(v.state);
+}
+
+/** volta para a própria fazenda */
+export function leaveVisit(): void {
+  store.visit = null;
+  void refresh();
 }

@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "source": "GDD v2 seção 7 · fase 7: efeitos de missões ligados (active_phase 7)",
+  "version": 7,
+  "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
   "field_slots": 3,
   "bench_slots": 3,
   "energy": {
@@ -305,7 +305,8 @@
           "effect": "neighbor_help_pct",
           "per_point": 10,
           "text_pt": "+10% efeito da ajuda de vizinhos",
-          "phase": 8
+          "phase": 7,
+          "phase_note": "ligado na fase 8a (visitas); o número da fase segue o active_phase, que vira 8 quando o mercado abrir"
         },
         "mastery": {
           "effect": "expansion_cost_pct",

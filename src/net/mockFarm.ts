@@ -3,7 +3,7 @@ import { WEATHER, ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID,
 import { cargoValue, evalMinigame } from '../farm/expeditions';
 import { localMinutes } from '../farm/weather';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
-import type { CharacterState, CollectedTrip, FarmState, PlotState } from './farmApi';
+import type { CharacterState, CollectedTrip, FarmState, PlayerCard, PlotState, SocialState, VisitView } from './farmApi';
 
 const now = new Date().toISOString();
 const T = 50_000; // tempo da fazenda no começo do mock (s)
@@ -96,7 +96,33 @@ const state: FarmState = {
   armory: [{ card_id: 'sol_de_verao', rarity: 'common' }, { card_id: 'sol_de_verao', rarity: 'uncommon' }, { card_id: 'sol_de_verao', rarity: 'rare' }, { card_id: 'folego', rarity: 'common' }],
   pity: { rare: 4, legendary: 21, mythic: 63 }, binder_slots: 60, prod_ref: { value_h: 4500, xp_h: 1400 },
   collector: { common: 200, uncommon: 400, rare: 800, legendary: 1300, mythic: 2300 }, binder_expand_cost: 50000,
+  social: { incoming: 1, unseen: 2, likes: 7, helps: [{ lot_id: 'A1', kind: 'growth', pct: 10, ends_at: new Date(Date.now() + 40 * 60_000).toISOString(), from: 'Joana' }] },
 };
+
+// amigos e visitas do mock
+const P = (id: string, nickname: string, level: number, likes: number, status?: PlayerCard['status']): PlayerCard => ({ id, nickname, level, likes, status });
+const ago = (min: number) => new Date(Date.now() - min * 60_000).toISOString();
+const social: SocialState = {
+  friends: [P('u1', 'Joana', 14, 22), P('u2', 'Tião da Roça', 9, 5)],
+  incoming: [P('u3', 'Marcela', 6, 1)], outgoing: [P('u4', 'Beto', 21, 40)], blocked: [],
+  activity: [
+    { kind: 'help', from: P('u1', 'Joana', 14, 22), at: ago(20), new: true, lot: 'A1', help: 'growth', pct: 10 },
+    { kind: 'note', from: P('u2', 'Tião da Roça', 9, 5), at: ago(95), new: true, emojis: ['🌻', '👍'] },
+    { kind: 'like', from: P('u5', 'Lia', 3, 0), at: ago(60 * 26), new: false },
+  ],
+  helps_given: 3, helps_received: 1, likes: 7,
+};
+const visit = { liked: false, noted: false, given: 3, cooldowns: {} as Record<string, string> };
+function visitView(id: string): VisitView {
+  const o = [...social.friends, P('u5', 'Lia', 3, 0), P('u6', 'Fazenda Sol', 12, 9)].find((p) => p.id === id) ?? P('u6', 'Fazenda Sol', 12, 9);
+  const st = structuredClone({ ...state, nickname: o.nickname, level: o.level, server_now: new Date().toISOString() });
+  return {
+    owner: { ...o, status: social.friends.some((f) => f.id === o.id) ? 'friend' : 'none' },
+    state: { ...st, helps: Object.entries(visit.cooldowns).map(([lot_id, e]) => ({ lot_id, kind: 'growth' as const, pct: 10, ends_at: e, from: 'Rodrigo' })) },
+    cooldowns: visit.cooldowns,
+    limits: { given: visit.given, given_max: 10, received: 2, received_max: 10, liked: visit.liked, noted: visit.noted, notes_today: 0, help_xp: 230 },
+  };
+}
 // clima do mock: ?ver=chuva|neblina|nublado|sol|solforte|noite|entardecer|lua|bencaos|calor|mistica|aviso
 function mockWeather(): FarmState['weather'] {
   const ver = new URLSearchParams(location.search).get('ver') ?? 'sol';
@@ -143,6 +169,22 @@ export const mockFarm = {
         state.gold -= c.seed_cost ?? 0;
       }
     };
+    // amigos e visitas
+    const pid = (args.p_target ?? args.p_other) as string;
+    if (['get_social', 'social_seen', 'friend_request', 'friend_respond', 'friend_remove', 'block_player', 'report_player'].includes(fn)) {
+      if (fn === 'social_seen') for (const a of social.activity) a.new = false;
+      if (fn === 'friend_respond') { const p = social.incoming.find((x) => x.id === pid)!; social.incoming = social.incoming.filter((x) => x !== p); if (args.p_accept) social.friends.push(p); }
+      if (fn === 'friend_request') social.outgoing.push(P(pid, 'Novo amigo', 5, 0));
+      if (fn === 'friend_remove') { social.friends = social.friends.filter((x) => x.id !== pid); social.outgoing = social.outgoing.filter((x) => x.id !== pid); }
+      if (fn === 'block_player' && args.p_block) { social.friends = social.friends.filter((x) => x.id !== pid); social.blocked.push(P(pid, 'Bloqueado', 1, 0)); }
+      if (fn === 'block_player' && !args.p_block) social.blocked = social.blocked.filter((x) => x.id !== pid);
+      return structuredClone(social) as unknown as FarmState;
+    }
+    if (fn === 'search_players') return [P('u7', `${args.p_query}inho`, 8, 3, 'none'), P('u1', 'Joana', 14, 22, 'friend')] as unknown as FarmState;
+    if (fn === 'visit_farm') return visitView((args.p_target as string) ?? 'u6') as unknown as FarmState;
+    if (fn === 'like_farm') { visit.liked = true; return visitView(pid) as unknown as FarmState; }
+    if (fn === 'send_note') { visit.noted = true; return visitView(pid) as unknown as FarmState; }
+    if (fn === 'help_lot') { visit.given++; visit.cooldowns[args.p_lot as string] = new Date(Date.now() + 3600_000).toISOString(); return visitView(pid) as unknown as FarmState; }
     if (fn === 'set_crop') { for (const p of state.plots) if (inTarget(p.plot_id)) p.crop_id = args.p_crop as string | null; plantNow(); }
     if (fn === 'tend_farm') {
       for (const p of state.plots) if (inTarget(p.plot_id) && p.state === 'growing' && p.ready_at! <= t) {

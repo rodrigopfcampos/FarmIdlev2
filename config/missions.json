@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "source": "GDD v2 seção 11 · fase 7: banco montado dos exemplos, só com sistemas prontos (sem vizinhos e mercado até a fase 8)",
+  "version": 3,
+  "source": "GDD v2 seção 11 · fase 7: banco montado dos exemplos, só com sistemas prontos · fase 8a: ajudar vizinhos (mercado na 8c)",
   "daily": {
     "count": 5,
     "gold_hours_of_income": 0.4,
@@ -111,6 +111,15 @@
         },
         "gate": "worn_vehicle",
         "text_pt": "Conserte um veículo na Garagem"
+      },
+      {
+        "id": "d_ajudar",
+        "metric": "neighbors_helped",
+        "target": {
+          "type": "count",
+          "n": 2
+        },
+        "text_pt": "Ajude {n} vizinhos"
       }
     ],
     "weekly": [
@@ -179,6 +188,15 @@
         },
         "gate": "animals",
         "text_pt": "Colete {n} produtos dos animais"
+      },
+      {
+        "id": "w_ajudar",
+        "metric": "neighbors_helped",
+        "target": {
+          "type": "count",
+          "n": 10
+        },
+        "text_pt": "Ajude {n} vizinhos"
       }
     ]
   },

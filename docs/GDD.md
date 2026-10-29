@@ -648,6 +648,13 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - Até 10 ajudas dadas e 10 recebidas por dia. Quem ajuda ganha XP igual a 10 min da própria produção.
 - Sem presentes de ouro ou itens entre jogadores: o mercado, quando existir, é o único canal de troca.
 
+### Decisões da fase 8a 🆕 (29/10/2026)
+- Busca de amigos pelo começo do apelido (3 letras ou mais); pedido cruzado vira amizade na hora; até 50 amigos.
+- Ajudar: lavoura ou pomar com algo crescendo ganha +10% de crescimento por 1 h; lote em limpeza perde 10% do tempo que falta. 1 ajuda por lote por hora. O Ferreiro em campo na fazenda ajudada soma +10% por ponto de Obras B no efeito.
+- A visita mostra a fazenda do dono no horário e clima dele, sem ouro, Silo, inventário, cartas e missões.
+- Curtir 1 vez por dia por fazenda; recado com até 3 dos 12 emojis da lista, 1 por dia por fazenda e 20 por dia no total.
+- Bloqueio nos dois sentidos e denúncia com motivo da lista (o painel mostra; a análise entra na fase 9).
+
 ## 10. Clima, dia e noite e evento noturno
 
 O clima tem duas camadas: bônus pequenos que valem o dia todo e **1 evento forte por noite, entre 19h e 21h no horário local de cada jogador**. Juntos somam cerca de +11% de renda e +7% de XP, e isso já está dentro das tabelas.

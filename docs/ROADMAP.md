@@ -27,6 +27,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (29/10) Mercado (8c) **guardado como pendente** pelo dono: só entra quando o jogo estiver estável, para não refazer a cada mudança. Regras continuam como proposta no GDD (seção 9).
 - 🆕 (29/10, fase 8b) Fase 8a aprovada. Ranking semanal **adiado** pelo dono (entra depois; critério ainda a escolher — sugestão: Pontos da Vila). Encomenda e Estrelas como propostas (cartas e sementes por Estrelas + ouro, limite por semana, sem Mítico). Qualquer produto do Silo conta na Encomenda; os 3 pedidos da semana valem 1,5×.
 - 🆕 (29/10, fase 8a) A ajuda de crescimento vale para lavoura e pomar (não para o pasto); a de limpeza tira 10% do que falta na hora. O Ferreiro em campo na fazenda AJUDADA aumenta o efeito (Obras B). Bloqueio vale dos dois lados (um não acha, não visita e não manda nada ao outro). Denúncia com motivo da lista; o painel mostra, a análise fica para a fase 9.
 - 🆕 (29/10, antes da fase 8) Fase 7 aprovada (o visual das cartas o dono melhora depois). Mercado negocia produtos e cartas (regras da proposta do GDD). Drenos de fim de jogo: Encomendas da Vila e Estrelas da Vila (decorações ficam para depois). Fase 8 em 3 partes, com teste e "ok" em cada: 8a amigos e visitas; 8b ranking, Encomendas e Estrelas; 8c mercado.
@@ -56,7 +57,8 @@
 13. ✅ Teste da fase 6 e "ok" (27/10).
 14. ✅ Teste da fase 7 e "ok" (29/10).
 15. ✅ Teste da fase 8a e "ok" (29/10).
-16. ✅ Teste da fase 8b (29/10: "funcional"). Depois: 8c (mercado). Ranking semanal fica para depois (critério a escolher).
+16. ✅ Teste da fase 8b (29/10: "funcional").
+17. Pendentes guardados: mercado (8c) e ranking semanal (critério a escolher). Próxima fase: 9 (painel e antitrapaça), quando o dono disser "ok".
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -73,7 +75,7 @@
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | **feito e aprovado** (26/10) |
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
-| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a aprovada (29/10) · 8b aprovada (29/10) · ranking adiado |
+| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a e 8b aprovadas (29/10) · ranking e mercado (8c) **pendentes** |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |

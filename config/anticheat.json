@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 12 (painel e antitrapaça) · fase 9. Regras do mercado ficam para quando o mercado (8c) entrar.",
+  "check_every_minutes": 60,
+  "dedupe_hours": 24,
+  "risk_window_days": 30,
+  "review_from": 70,
+  "freeze_market_from": 90,
+  "notify_from": 70,
+  "rules": {
+    "income": {
+      "name_pt": "Renda impossível",
+      "score": 60,
+      "note": "ouro ganho em 24 h (sem presentes do painel) acima de X vezes a renda de referência do nível; a simulação do dedicado fica perto de 2×",
+      "max_R_per_day": 4,
+      "ignore_reasons": ["test_grant", "admin_grant", "admin_gold"]
+    },
+    "progress": {
+      "name_pt": "Progresso rápido demais",
+      "score": 40,
+      "note": "nível acima do jogador dedicado da simulação para a idade da conta, com 10% de folga",
+      "dedicated_level_days": [[1, 0], [10, 0.8], [30, 30], [50, 103]],
+      "slack": 0.1,
+      "min_level": 6
+    },
+    "cards": {
+      "name_pt": "Cartas a mais",
+      "score": 80,
+      "note": "cartas recebidas (sem o painel) acima do máximo por semana de conta: 6 das missões + 2 da Encomenda + 2 das Estrelas",
+      "max_per_week": 10,
+      "min_weeks": 1
+    },
+    "luck": {
+      "name_pt": "Sorte impossível nas expedições",
+      "score": 50,
+      "note": "nas últimas 100 viagens, sucessos acima do esperado com chance menor que 1 em 1 milhão (z > 5)",
+      "last_n": 100,
+      "min_n": 20,
+      "z": 5
+    },
+    "robot": {
+      "name_pt": "Robô (cliques com intervalo constante)",
+      "score": 50,
+      "note": "intervalo entre ações quase igual (desvio < 50 ms) por 30 min",
+      "window_minutes": 30,
+      "min_actions": 60,
+      "max_stddev_ms": 50
+    },
+    "refusals": {
+      "name_pt": "Tentativa de manipular",
+      "score": 30,
+      "note": "mais de 20 ações recusadas pela validação em 1 hora",
+      "per_hour": 20
+    },
+    "minigame_robot": {
+      "name_pt": "Minigame de robô",
+      "score": 30,
+      "note": "setas rápidas demais ou sempre no mesmo intervalo (a partida já vale só Concluída)"
+    },
+    "clock": {
+      "name_pt": "Relógio do aparelho diferente",
+      "score": 0,
+      "note": "diferença maior que 5 min: só registra (o servidor ignora o relógio do cliente)",
+      "max_skew_minutes": 5
+    },
+    "timezone": {
+      "name_pt": "Fuso da conta diferente do aparelho",
+      "score": 20,
+      "note": "fuso da conta diferente do aparelho por 7 dias seguidos",
+      "days": 7
+    }
+  },
+  "actions": {
+    "warn_text_max": 200,
+    "suspend_max_days": 30
+  },
+  "roles": {
+    "reader": "Leitor: só vê",
+    "moderator": "Moderador: advertir, suspender, revisar alertas e denúncias",
+    "admin": "Admin: tudo (banir, reverter transação, mudar config e papéis)"
+  },
+  "admin_session_minutes": 30
+}

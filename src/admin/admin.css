@@ -19,3 +19,13 @@ body.admin { overflow: auto; background: var(--bg); }
 .table-wrap { overflow-x: auto; }
 #admin .grants form { margin: 6px 0; }
 #admin .grants select { display: block; margin-top: 4px; padding: 9px; font: inherit; color: var(--ink); background: var(--paper); border: 2px solid var(--panel-border); }
+#admin .navbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+#admin .navbar .tabs.wide { max-width: none; flex: 1; flex-wrap: wrap; margin: 0; }
+#admin .navbar .tabs.wide button { flex: 0 0 auto; padding: 6px 10px; }
+#admin .kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; margin: 8px 0 12px; }
+#admin .kpi { background: #00000033; border: 1px solid var(--panel-border); padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+#admin .kpi small { color: #bfae8c; }
+#admin .kpi strong { font-size: 20px; color: var(--paper); }
+#admin tr.flag td { background: #5a2a2a55; }
+#admin .msg { color: var(--gold); }
+#admin .mod { margin: 6px 0; }

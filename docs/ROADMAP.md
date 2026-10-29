@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (29/10/2026, fase 8b)
+# Village Idle Farm — mapa do projeto (29/10/2026, fase 9)
 
 ## A. Feito
 
@@ -23,10 +23,12 @@
 | **Fase 7** | 5 missões diárias e 5 semanais sorteadas de um banco (só sistemas já liberados), metas pela produção do próprio jogador (média por hora, com piso pelo R), ouro e XP fixados no sorteio, 1 troca grátis por dia; as 5 diárias dão 1 pacote (até 4 por semana), 3 semanais dão 1 carta e as 5 dão +1 carta e 1 Escritura; tudo conta, inclusive equipe e fora do jogo. 10 cartas × 5 raridades com número de série, garantia (Raro+ a cada 10, Lendário+ a cada 40, Mítico a cada 120), pacote abrindo com a carta virando, até 3 buffs (a mesma carta só troca por raridade igual ou maior), Moeda da Sorte paga no fim, Estrada Livre e Trevo gravados na expedição, Armory (parcial e completo), fichário de 60 com ampliação e caixa de entrada, Colecionador da Vila; botões Missões e Cartas no topo com os 3 buffs; painel do admin dá carta e completa missões | `supabase/migrations/…28000100`, `supabase/tests/phase7_test.sql`, `src/ui/cards-ui.ts`, `src/farm/cards.ts` |
 | **Fase 8a** | Amigos (busca pelo começo do apelido, pedido, aceite, desfazer), visita à fazenda de um amigo ou aleatória (no horário e clima do dono, sem ouro, Silo, inventário, cartas e missões), Ajudar (+10% de crescimento por 1 h no lote, ou −10% do que falta da limpeza; 1 por lote por hora; 10 dadas e 10 recebidas por dia; XP de 10 min da própria produção; Ferreiro Obras B do dono aumenta), Curtir (1 por dia), recado só com 12 emojis (até 3), bloqueio e denúncia, novidades com aviso no botão Amigos, missões "Ajude X vizinhos"; painel do admin mostra as denúncias | `supabase/migrations/…29000100`, `supabase/tests/phase8a_test.sql`, `src/ui/social-ui.ts` |
 | **Fase 8b** | Encomenda da Vila: meta coletiva da semana (segunda 00:00 UTC), 3 pedidos (1 por faixa de nível, valem 1,5×), doação de qualquer produto do Silo (preço da Feira) e de ouro — tudo some do jogo; pontos = horas da renda do próprio nível; meta = 8 pontos por jogador ativo (mínimo 16); prêmio: meta batida e 2+ pontos = 1 carta e "Ajudante da Vila", top 10% = +1 carta e "Herói da Vila" (título por 1 semana, aparece no topo, nas listas e na visita). Estrelas da Vila: depois do nível 50, 10% do XP do nível 49 = 1 Estrela; pacote = 5 ⭐ + 1 R (2 por semana), semente Incomum/Rara/Lendária = 1/2/4 ⭐ + 0,1/0,2/0,4 R (5 por semana), sem Mítico. Painel do admin: dar Estrelas e encerrar a Encomenda | `supabase/migrations/…30000100`, `supabase/tests/phase8b_test.sql`, `src/ui/village-ui.ts` |
+| **Fase 9** | Painel completo: papéis Leitor/Moderador/Admin (sempre com 2FA, sai sozinho após 30 min parado), guias Visão geral (online, ativos por dia/semana/mês, novos, retenção D1/D7/D30, ouro criado/destruído), Alertas, Denúncias, Economia, Progresso, Expedições, Cartas, Missões, Balanceamento (versões da config e voltar versão), Auditoria e Moderação. Conta advertida (aviso no jogo), suspensa (dias) ou banida (só admin), sempre com justificativa; reverter lançamento do ledger (lança o contrário). Antitrapaça da seção 12 (renda impossível, progresso rápido, cartas a mais, sorte nas expedições, robô, ações recusadas, minigame de robô, relógio e fuso), 1 vez por hora por conta; nota de risco somada em 30 dias: 70+ revisar e aviso no Discord, 90+ trava o mercado; nunca bane sozinho | `supabase/migrations/…31000100`, `supabase/tests/phase9_test.sql`, `config/anticheat.json`, `src/admin/guides.ts` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (29/10, fase 9) Alertas vão para um canal do Discord por webhook guardado no Vault do Supabase (segredo `discord_alerts_webhook`, nunca no repositório). Regras do mercado (venda abaixo do preço, mesmo IP etc.) ficam para quando o mercado (8c) entrar.
 - 🆕 (29/10) Mercado (8c) **guardado como pendente** pelo dono: só entra quando o jogo estiver estável, para não refazer a cada mudança. Regras continuam como proposta no GDD (seção 9).
 - 🆕 (29/10, fase 8b) Fase 8a aprovada. Ranking semanal **adiado** pelo dono (entra depois; critério ainda a escolher — sugestão: Pontos da Vila). Encomenda e Estrelas como propostas (cartas e sementes por Estrelas + ouro, limite por semana, sem Mítico). Qualquer produto do Silo conta na Encomenda; os 3 pedidos da semana valem 1,5×.
 - 🆕 (29/10, fase 8a) A ajuda de crescimento vale para lavoura e pomar (não para o pasto); a de limpeza tira 10% do que falta na hora. O Ferreiro em campo na fazenda AJUDADA aumenta o efeito (Obras B). Bloqueio vale dos dois lados (um não acha, não visita e não manda nada ao outro). Denúncia com motivo da lista; o painel mostra, a análise fica para a fase 9.
@@ -58,7 +60,8 @@
 14. ✅ Teste da fase 7 e "ok" (29/10).
 15. ✅ Teste da fase 8a e "ok" (29/10).
 16. ✅ Teste da fase 8b (29/10: "funcional").
-17. Pendentes guardados: mercado (8c) e ranking semanal (critério a escolher). Próxima fase: 9 (painel e antitrapaça), quando o dono disser "ok".
+17. Pendentes guardados: mercado (8c) e ranking semanal (critério a escolher). Fase 9 feita (29/10).
+18. Guardar o webhook do Discord no Vault da produção (`discord_alerts_webhook`) e testar pelo botão do painel. Teste da fase 9 (seção G).
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -76,7 +79,7 @@
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
 | 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a e 8b aprovadas (29/10) · ranking e mercado (8c) **pendentes** |
-| 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
+| 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | **feito** (29/10), aguardando teste do dono |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
@@ -97,22 +100,23 @@
 
 ## F. Regras provisórias (mudam nas próximas fases)
 - 🆕 Números novos da fase 7 que o GDD não fixava (ajustáveis em `config/missions.json` e `config/cards.json`): meta = horas da produção do próprio jogador (média móvel do valor da Feira por hora, peso 30% no dia novo, piso de 25% de R ÷ 24); prêmio da diária = 0,4 h de renda em ouro + 0,5 h de XP; missão nova "Ganhe XP com a produção" (para a troca grátis sempre ter opção); Negócios B do Comerciante dá +5% por ponto no ouro das missões; carta na caixa de entrada por 7 dias e depois vendida sozinha ao Colecionador (o jogador não perde o valor). O simulador ainda não conta missões nem cartas.
-- Números novos da fase 6 que o GDD não fixava: previsão sem Botânica = 1 h (+1 h por ponto, até 6 h); o clima conta no teto permanente e o evento no absoluto; o +40% da Lua Cheia tem teto próprio (R ÷ 24 por evento). O aviso de fuso diferente do aparelho por 7 dias (alerta no painel) fica para a fase 9.
+- Números novos da fase 6 que o GDD não fixava: previsão sem Botânica = 1 h (+1 h por ponto, até 6 h); o clima conta no teto permanente e o evento no absoluto; o +40% da Lua Cheia tem teto próprio (R ÷ 24 por evento). O aviso de fuso diferente do aparelho por 7 dias entrou na fase 9.
 - Números novos da fase 5 que o GDD não fixava (ajustáveis na config): conserto do veículo = 10% do preço de 0 a 100%; raridade dos itens que caem = mesma tabela dos Kits da rota; o simulador ainda não conta a demanda +20% nem o conserto.
 - O sorteio da expedição acontece na volta (a chance fica fixada na saída), para a garantia contra azar contar só viagens que já voltaram.
 - Salário vira à meia-noite do fuso da conta; carinho do pet, demanda do dia e venda 1,5× ainda viram à meia-noite de Brasília.
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da fase 8b (dono, em produção)
-1. Botão **Vila** no topo → guia Encomenda: nome da semana, barra da meta da Vila, seus pontos, os 3 pedidos e tudo do seu Silo com quantos pontos vale.
-2. Doe um produto do Silo e um pouco de ouro: o Silo e o ouro baixam, seus pontos sobem. Com 2 pontos ou mais aparece "Você já passou do mínimo".
-3. Faça a segunda conta doar também. Painel do admin → qualquer jogador → **Encerrar a Encomenda da semana** (justificativa).
-4. Volte ao jogo (recarregue): quem passou do mínimo recebe a carta (abre virando) e o título aparece ao lado do nome; o top 10% (o maior doador) ganha 2 cartas e "Herói da Vila". Uma Encomenda nova já abre.
-5. Estrelas: painel do admin → sua conta → **Dar nível** 50 e **Dar Estrelas** 20. No jogo aparece ⭐ no topo; Vila → Estrelas: compre 1 pacote (5 ⭐ + 1 dia de renda em ouro) e 1 semente rara; o 3º pacote da semana é recusado.
+## G. Teste da fase 9 (dono, em produção)
+1. Painel do admin (com 2FA): guia **Visão geral** com online, ativos, novos, retenção e ouro do dia. Passe pelas guias Economia, Progresso, Expedições, Cartas, Missões, Balanceamento e Auditoria.
+2. Discord: guarde o webhook no Vault (segredo `discord_alerts_webhook`) → guia **Alertas** → **Mandar alerta de teste para o Discord**: a mensagem chega no canal.
+3. **Rodar o antitrapaça agora**: contas com problema aparecem na fila com a nota de risco; arquive ou escale um alerta.
+4. Guia **Moderação** com a conta de teste: advertir (o jogo mostra o aviso 1 vez), suspender 1 dia (o jogo bloqueia e diz até quando), reativar. Banir só com papel Admin.
+5. Ficha do jogador → ledger → **Reverter** um lançamento: aparece o lançamento contrário e o ouro volta.
+6. Dar o papel Leitor à conta de teste: ela vê as guias mas não consegue advertir nem reverter.
 
 ## H. Riscos e pontos em aberto
-- 🆕 Clique sem limite: um robô que clica sem parar vira um jogador sempre online (e sem o limite offline). Tratar no antitrapaça (fase 9): frequência de cliques, horas seguidas online.
+- Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).
 - Chance de semente rara (Lupa, pacotes, eventos): definir nas fases 3, 6 e 7; hoje o balanceamento supõe Comum.
 - Depois do mapa completo sobra ouro: drenos de fim de jogo antes da fase 8 (seção 9).
 - Plano grátis do Supabase: sem backup diário, sem recuperação por horário (o GDD pede) e sem bloqueio de senhas vazadas; avaliar o plano pago antes do beta.

@@ -660,6 +660,15 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - **Encomenda da Vila** (semanal, segunda 00:00 UTC): 3 pedidos (um cultivo de cada faixa de nível 1–12, 13–30, 31–50) valem 1,5×; qualquer outro produto do Silo (preço da Feira) e ouro também contam. Tudo o que é doado some do jogo. Pontos = horas da renda de referência do próprio nível. Meta = 8 pontos por jogador ativo na semana (mínimo 16). Prêmio: meta batida e 2+ pontos = 1 carta e o título "Ajudante da Vila"; top 10% dos que passaram do mínimo = +1 carta e "Herói da Vila" (mesmo sem a meta). O título vale por uma semana.
 - **Estrelas da Vila**: depois do nível 50, cada 10% do XP do nível 49 vira 1 Estrela. Pacote = 5 Estrelas + 1 dia de renda (2 por semana, conta para a garantia); semente Incomum/Rara/Lendária = 1/2/4 Estrelas + 0,1/0,2/0,4 dia de renda (5 por semana). Mítico não se compra.
 
+### Decisões da fase 9 🆕 (29/10/2026)
+- Papéis do painel: Leitor (só vê), Moderador (advertir, suspender até 30 dias, revisar alertas e denúncias, rodar o antitrapaça), Admin (tudo, inclusive banir, reverter lançamento, voltar versão de config e mudar papéis). Sempre 2FA; sai sozinho após 30 min parado. Ninguém muda a própria conta.
+- Situação da conta: ativa, advertida (o jogador vê o texto 1 vez), suspensa (até a data) ou banida. Conta bloqueada não faz nenhuma ação no servidor. Tudo com justificativa e registro na auditoria.
+- Reverter = lançar o valor contrário no ledger (nunca apagar), uma vez por lançamento.
+- Antitrapaça roda dentro da ação do próprio jogador, no máximo 1 vez por hora por conta (sem serviço extra). Regras e notas em `config/anticheat.json`: renda impossível (60), progresso rápido (40), cartas a mais (80), sorte nas expedições z > 5 (50), robô (50), mais de 20 recusas em 1 h (30), minigame de robô (30), relógio diferente (0, só registra), fuso diferente por 7 dias (20). Mesmo alerta no máximo 1 vez a cada 24 h.
+- Nota de risco = soma dos alertas não arquivados em 30 dias (teto 100). 70+ = revisar e aviso no Discord; 90+ = mercado travado. Nunca bane sozinho.
+- Discord: webhook do canal guardado no Vault do Supabase (`discord_alerts_webhook`), envio pelo pg_net (grátis). Sem o segredo, o alerta fica só no painel.
+- Regras do mercado (seção 12) ficam para quando o mercado (8c) entrar.
+
 ## 10. Clima, dia e noite e evento noturno
 
 O clima tem duas camadas: bônus pequenos que valem o dia todo e **1 evento forte por noite, entre 19h e 21h no horário local de cada jogador**. Juntos somam cerca de +11% de renda e +7% de XP, e isso já está dentro das tabelas.

@@ -15,7 +15,7 @@ import { applyState, store } from '../farm/store';
 import {
   adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
   sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, skillAdd, skillChoose, skillReset, tendFarm, upgradeTool,
-  equipItem, mergeItems, refurbishVehicle, repairVehicle, setTimezone,
+  equipItem, mergeItems, refurbishVehicle, repairVehicle, setTimezone, clientPing, warningSeen,
   type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
 import { supabase } from '../net/supabase';
@@ -108,7 +108,15 @@ function wire(): void {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   window.addEventListener('resize', () => placeBanner());
   bus.on('farm:state', onState);
-  bus.on('farm:error', (msg: string) => toast(msg));
+  bus.on('farm:error', (msg: string) => {
+    // conta suspensa ou banida: tela fixa com o motivo e o botão Sair
+    if (/suspensa|banida/.test(msg)) {
+      show('Conta bloqueada', () => `<p>${esc(msg)}</p><p class="hint">Se achar que foi um engano, fale com o suporte.</p>
+        <button type="button" class="secondary" data-logout>Sair</button>`, (el) => el.querySelector('[data-logout]')?.addEventListener('click', () => void supabase!.auth.signOut()));
+      return;
+    }
+    toast(msg);
+  });
   bus.on('art:ready', () => { if (store.state) onState(store.state); });
   // na visita, clicar num lote abre o Ajudar; zonas e pet não fazem nada
   const visiting = (lot?: string) => {
@@ -180,6 +188,16 @@ function onState(s: FarmState): void {
   maybeOpenPack(cardsCtx(), s);
   // fuso: na 1ª vez vem do aparelho (vale na hora); depois a troca é pelo painel do clima
   if (s.weather && !s.weather.account.confirmed && !tzTried) { tzTried = true; void setTimezone(deviceTz()).then(applyState).catch(() => undefined); }
+  // relógio e fuso do aparelho: 1 vez por sessão (o servidor só registra)
+  if (!pinged) { pinged = true; void clientPing(deviceTz()); }
+  // advertência do painel: aparece uma vez
+  if (s.account?.warning && !warnShown) {
+    warnShown = true;
+    show('Aviso da administração', () => `<p>${esc(s.account!.warning!)}</p><p class="hint">Repetir pode levar à suspensão da conta.</p>
+      <button type="button" class="primary small" data-warn-ok>Entendi</button>`, (el) => {
+      el.querySelector('[data-warn-ok]')?.addEventListener('click', () => { close(); void act(() => warningSeen()); });
+    });
+  }
   if (lastLevel && s.level > lastLevel) levelUp(lastLevel, s.level);
   lastLevel = s.level;
   current?.();
@@ -205,6 +223,8 @@ function cardsCtx(): CardsCtx {
 
 let wxKey = '';
 let tzTried = false;
+let pinged = false;
+let warnShown = false;
 /** selo do clima e faixa do evento (redesenha só quando o texto muda) */
 function refreshWeather(): void {
   const s = store.state;

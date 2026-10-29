@@ -4,6 +4,8 @@ import { supabase, configMissing } from '../net/supabase';
 import { formatGold } from '../ui/format';
 import { CARDS, EQUIP_CARDS, RARITY_BY_ID, WEATHER } from '../data';
 import { condName } from '../farm/weather';
+import { ANTICHEAT } from '../data';
+import { GUIDES, renderGuide, type Guide } from './guides';
 
 // itens que o admin pode dar: Kits de Reforma e vestimentas/amuletos em cada raridade
 const ITEM_OPTIONS = [
@@ -25,7 +27,8 @@ async function start(): Promise<void> {
   if (configMissing) { screen('<div class="card">Servidor não configurado.</div>'); return; }
   const { data } = await supabase!.auth.getSession();
   if (!data.session) return login();
-  const who = (await supabase!.rpc('admin_whoami')).data as { is_admin: boolean; aal: string } | null;
+  const who = (await supabase!.rpc('admin_whoami')).data as { is_admin: boolean; role: string | null; aal: string } | null;
+  role = who?.role ?? null;
   if (!who?.is_admin) {
     screen('<div class="card">Esta conta não é de admin. <button type="button" class="secondary" id="out">Sair</button></div>');
     root.querySelector('#out')!.addEventListener('click', async () => { await supabase!.auth.signOut(); void start(); });
@@ -79,15 +82,42 @@ async function mfa(): Promise<void> {
 
 type Player = { user_id: string; nickname: string; email: string; gold: number; created_at: string; last_activity_at: string | null };
 
-function panel(): void {
-  screen(`<form class="card search" id="s"><input name="q" placeholder="Apelido, e-mail ou id do jogador" aria-label="Buscar jogador">
-    <button class="primary small" type="submit">Buscar</button><button class="secondary" type="button" id="out">Sair</button></form>
-    <div id="results"></div><div id="detail"></div><div id="weather"></div>`);
+let role: string | null = null;
+const ROLE_PT: Record<string, string> = { reader: 'Leitor', moderator: 'Moderador', admin: 'Admin' };
+
+// sessão do painel expira depois de 30 min sem uso (GDD seção 12)
+let idleTimer: number | undefined;
+function touchIdle(): void {
+  window.clearTimeout(idleTimer);
+  idleTimer = window.setTimeout(async () => { await supabase!.auth.signOut(); screen('<div class="card">Sessão encerrada depois de 30 min sem uso. Recarregue para entrar de novo.</div>'); },
+    ANTICHEAT.admin_session_minutes * 60_000);
+}
+['click', 'keydown'].forEach((ev) => document.addEventListener(ev, touchIdle));
+
+function panel(view: 'players' | Guide = 'overview'): void {
+  const nav = [['players', 'Jogadores'], ...GUIDES].map(([k, n]) => `<button type="button" role="tab" data-view="${k}" aria-selected="${view === k}">${n}</button>`).join('');
+  screen(`<div class="card navbar"><div class="tabs wide" role="tablist">${nav}</div>
+      <span class="who">Papel: <strong>${esc(ROLE_PT[role ?? ''] ?? role)}</strong></span><button class="secondary" type="button" id="out">Sair</button></div>
+    <div id="players" ${view === 'players' ? '' : 'hidden'}><form class="card search" id="s"><input name="q" placeholder="Apelido, e-mail ou id do jogador" aria-label="Buscar jogador">
+    <button class="primary small" type="submit">Buscar</button></form>
+    <div id="results"></div><div id="detail"></div><div id="weather"></div></div><div id="guide"></div>`);
+  touchIdle();
   root.querySelector('#out')!.addEventListener('click', async () => { await supabase!.auth.signOut(); void start(); });
+  root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.addEventListener('click', () => panel(b.dataset.view as 'players' | Guide)));
+  if (view !== 'players') {
+    void renderGuide(view, { box: root.querySelector<HTMLElement>('#guide')!, esc, when, openPlayer });
+    return;
+  }
   const s = root.querySelector<HTMLFormElement>('#s')!;
   s.addEventListener('submit', (e) => { e.preventDefault(); void search(String(new FormData(s).get('q') ?? '')); });
   void search('');
   void weather('America/Sao_Paulo', new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }));
+}
+
+/** abre a ficha de um jogador vindo de uma guia */
+function openPlayer(id: string): void {
+  panel('players');
+  void detail(id, 'mod');
 }
 
 type WxDay = { day: string; offset_min: number; blocks: string[]; event_id: string | null; event_local: string | null; forced: boolean };
@@ -130,20 +160,45 @@ async function search(q: string): Promise<void> {
     <td>${formatGold(Number(p.gold ?? 0))}</td><td>${when(p.created_at)}</td><td>${when(p.last_activity_at)}</td></tr>`).join('');
   box.innerHTML = `<div class="card table-wrap"><table><thead><tr><th>Apelido</th><th>E-mail</th><th>Ouro</th><th>Conta criada</th><th>Última atividade</th></tr></thead>
     <tbody>${rows || '<tr><td colspan="5">Nenhum jogador.</td></tr>'}</tbody></table></div>`;
-  box.querySelectorAll<HTMLElement>('tr.pick').forEach((tr) => tr.addEventListener('click', () => void detail(tr.dataset.id!, 'ledger')));
+  box.querySelectorAll<HTMLElement>('tr.pick').forEach((tr) => tr.addEventListener('click', () => void detail(tr.dataset.id!, 'mod')));
 }
 
-async function detail(id: string, tab: 'ledger' | 'audit' | 'farm' | 'reports'): Promise<void> {
+type Tab = 'mod' | 'ledger' | 'audit' | 'farm' | 'reports';
+async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
   const box = root.querySelector('#detail')!;
-  const tabs = [['ledger', 'Ledger'], ['audit', 'Auditoria'], ['farm', 'Fazenda'], ['reports', 'Denúncias']]
+  const tabs = [['mod', 'Moderação'], ['ledger', 'Ledger'], ['audit', 'Auditoria'], ['farm', 'Fazenda'], ['reports', 'Denúncias']]
     .map(([k, n]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${n}</button>`).join('');
   let body = '';
+  if (tab === 'mod') {
+    const { data, error } = await supabase!.rpc('admin_player_summary', { p_user: id });
+    const p = data as any;
+    const STATUS: Record<string, string> = { active: 'ativa', warned: 'advertida', suspended: 'suspensa', banned: 'banida' };
+    body = error ? esc(error.message) : `<h2>${esc(p.nickname)} <small>· conta criada ${when(p.created_at)} · fuso ${esc(p.timezone)}</small></h2>
+      <p>Situação: <strong>${esc(STATUS[p.status] ?? p.status)}</strong>${p.status_until ? ` até ${when(p.status_until)}` : ''}${p.status_reason ? ` · "${esc(p.status_reason)}"` : ''}
+        · Papel: ${esc(ROLE_PT[p.role ?? ''] ?? 'jogador')} · <strong class="${p.risk >= ANTICHEAT.review_from ? 'neg' : ''}">Risco ${p.risk}</strong>${p.market_frozen ? ' · mercado congelado' : ''}</p>
+      <p>Cartas: ${Object.entries(p.cards ?? {}).map(([k, v]) => `${esc(k)} ${v}`).join(' · ') || '—'} (origem: ${Object.entries(p.cards_by_origin ?? {}).map(([k, v]) => `${esc(k)} ${v}`).join(', ') || '—'})
+        · Armory ${p.armory} · Estrelas ${p.stars} · Amigos ${p.friends} · Denúncias contra ${p.reports_against}</p>
+      <p>Dias com atividade (UTC): ${(p.days as any[]).slice(0, 14).map((d) => `${esc(d.day.slice(5))} (${d.actions})`).join(' · ') || '—'}</p>
+      <h3>Alertas</h3><table><thead><tr><th>#</th><th>Quando</th><th>Regra</th><th>Pontos</th><th>Situação</th><th>Evidência</th></tr></thead><tbody>${
+        (p.alerts as any[]).map((a) => `<tr><td>${a.id}</td><td>${when(a.at)}</td><td>${esc(a.rule)}</td><td>${a.score}</td><td>${esc(a.status)}</td><td><code>${esc(JSON.stringify(a.evidence))}</code></td></tr>`).join('') || '<tr><td colspan="6">Nenhum.</td></tr>'}</tbody></table>
+      <div class="grants"><p class="hint">Moderador: advertir e suspender. Admin: banir, reativar banida, papéis e reverter lançamento (no Ledger). Tudo fica na auditoria.</p>
+      <form class="row mod" data-status="warned"><strong>Advertir</strong><label style="flex:1">Mensagem para o jogador<input name="text" maxlength="${ANTICHEAT.actions.warn_text_max}" required placeholder="ex.: recados repetidos não são permitidos"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required></label><button class="primary small" type="submit">Advertir</button></form>
+      <form class="row mod" data-status="suspended"><strong>Suspender</strong><label>Dias<input name="days" type="number" min="1" max="${ANTICHEAT.actions.suspend_max_days}" value="3" style="width:80px"></label>
+        <label style="flex:1">Mensagem<input name="text" maxlength="${ANTICHEAT.actions.warn_text_max}"></label><label style="flex:1">Justificativa<input name="reason" minlength="5" required></label>
+        <button class="primary small" type="submit">Suspender</button></form>
+      <form class="row mod" data-status="banned"><strong>Banir</strong><label style="flex:1">Justificativa<input name="reason" minlength="5" required></label><button class="primary small" type="submit">Banir</button></form>
+      <form class="row mod" data-status="active"><strong>Reativar</strong><label style="flex:1">Justificativa<input name="reason" minlength="5" required></label><button class="primary small" type="submit">Reativar</button></form>
+      <form class="row mod" data-role><strong>Papel no painel</strong><label>Papel<select name="role"><option value="">Jogador</option><option value="reader">Leitor</option><option value="moderator">Moderador</option><option value="admin">Admin</option></select></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required></label><button class="primary small" type="submit">Mudar</button></form>
+      <button type="button" class="secondary" data-run-one>Rodar o antitrapaça nesta conta agora</button></div>`;
+  }
   if (tab === 'ledger') {
     const { data, error } = await supabase!.rpc('admin_player_ledger', { p_user: id, p_limit: 200 });
     body = error ? esc(error.message) : `<table><thead><tr><th>#</th><th>Quando</th><th>Motivo</th><th>Valor</th><th>Saldo</th><th>Detalhe</th></tr></thead><tbody>${
       (data as any[]).map((l) => `<tr><td>${l.id}</td><td>${when(l.created_at)}</td><td>${esc(l.reason)}</td>
         <td class="${Number(l.amount) < 0 ? 'neg' : 'pos'}">${Number(l.amount).toLocaleString('pt-BR')}</td><td>${Number(l.balance_after).toLocaleString('pt-BR')}</td>
-        <td><code>${esc(JSON.stringify(l.ref))}</code></td></tr>`).join('')}</tbody></table>`;
+        <td><code>${esc(JSON.stringify(l.ref))}</code></td><td>${role === 'admin' && l.reason !== 'admin_revert' ? `<button type="button" class="secondary" data-revert="${l.id}">Reverter</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
   }
   if (tab === 'reports') {
     const { data, error } = await supabase!.rpc('admin_player_reports', { p_user: id });
@@ -226,8 +281,26 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm' | 'reports'):
       <table><thead><tr><th>Canteiro</th><th>Cultivo</th><th>Estado</th><th>Pronto em (tempo da fazenda)</th><th>Parado</th></tr></thead><tbody>${
       f.plots.map((p: any) => `<tr><td>${esc(p.plot_id)}</td><td>${esc(p.crop_id ?? '—')}</td><td>${esc(p.state)}</td><td>${p.ready_at ? (p.ready_at / 3600).toFixed(2) + ' h' : '—'}</td><td>${esc(p.stalled_reason ?? '')}</td></tr>`).join('')}</tbody></table>`;
   }
-  box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div><div class="table-wrap">${body}</div></div>`;
-  box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as 'ledger' | 'audit' | 'farm' | 'reports')));
+  box.innerHTML = `<div class="card"><div class="tabs" role="tablist">${tabs}</div>${msg ? `<p class="msg">${esc(msg)}</p>` : ''}<div class="table-wrap">${body}</div></div>`;
+  box.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.addEventListener('click', () => void detail(id, b.dataset.tab as Tab)));
+  // moderação: situação da conta e papel
+  box.querySelectorAll<HTMLFormElement>('form.mod').forEach((form) => form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = new FormData(form), reason = String(d.get('reason') ?? '');
+    const r = form.dataset.role !== undefined
+      ? await supabase!.rpc('admin_set_role', { p_user: id, p_role: String(d.get('role')) || null, p_reason: reason })
+      : await supabase!.rpc('admin_set_status', { p_user: id, p_status: form.dataset.status, p_days: d.get('days') ? Number(d.get('days')) : null, p_text: String(d.get('text') ?? ''), p_reason: reason });
+    void detail(id, 'mod', r.error ? r.error.message : 'Feito e registrado.');
+  }));
+  box.querySelector('[data-run-one]')?.addEventListener('click', async () => {
+    const r = await supabase!.rpc('admin_run_anticheat', { p_user: id });
+    void detail(id, 'mod', r.error ? r.error.message : `Conferido: ${(r.data as any).alerts} alertas novos.`);
+  });
+  box.querySelectorAll<HTMLButtonElement>('[data-revert]').forEach((b) => b.addEventListener('click', async () => {
+    const reason = prompt('Justificativa para reverter este lançamento (fica registrada)') ?? '';
+    const r = await supabase!.rpc('admin_revert_ledger', { p_id: Number(b.dataset.revert), p_reason: reason });
+    void detail(id, 'ledger', r.error ? r.error.message : 'Revertido: lançamento contrário criado.');
+  }));
   // ferramentas de teste (Escritura, nível, limpeza, salário e ouro): o servidor exige 2FA e registra tudo na auditoria
   box.querySelectorAll<HTMLFormElement>('form.grant').forEach((form) => form.addEventListener('submit', async (e) => {
     e.preventDefault();

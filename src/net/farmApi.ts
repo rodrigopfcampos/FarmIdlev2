@@ -64,6 +64,8 @@ export type FarmState = {
   helps?: LotHelp[];
   // fase 8b: título da Vila e Estrelas
   village?: { title: string | null; stars: number };
+  // fase 9: situação da conta (advertência que o jogador ainda não viu)
+  account?: { status: string; warning: string | null };
 };
 export type VillageResult = { points: number; total: number; donors: number; goal_reached: boolean; qualified: boolean; rank: number | null; top: boolean };
 export type VillageState = {
@@ -198,6 +200,8 @@ const ERRORS: Record<string, string> = {
   'raridade inválida': 'Escolha Incomum, Raro ou Lendário.',
   'compra inválida': 'Compra inválida.',
   'estrelas insuficientes': 'Faltam Estrelas.',
+  'conta suspensa': 'Sua conta está suspensa temporariamente.',
+  'conta banida': 'Sua conta foi banida.',
 };
 
 function normalize(s: FarmState): FarmState {
@@ -219,10 +223,16 @@ function friendly(msg: string): string {
   return ERRORS[msg] ?? 'Não deu certo. Tente de novo.';
 }
 
+/** ação recusada pelo servidor: o jogo avisa (só conta para a regra de manipulação do antitrapaça) */
+function refused(fn: string, msg: string): void {
+  if (mock || fn === 'log_refusal' || fn === 'client_ping' || msg === 'precisa estar logado') return;
+  void supabase!.rpc('log_refusal', { p_fn: fn, p_msg: msg });
+}
+
 async function rpc(fn: string, args: Record<string, unknown> = {}): Promise<FarmState> {
   if (mock) return normalize(await mock.rpc(fn, args));
   const { data, error } = await supabase!.rpc(fn, args);
-  if (error) throw new Error(friendly(error.message));
+  if (error) { refused(fn, error.message); throw new Error(friendly(error.message)); }
   return normalize(data as FarmState);
 }
 
@@ -282,7 +292,7 @@ export const cardsSeen = () => rpc('cards_seen');
 async function rpcJson<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   if (mock) return (await mock.rpc(fn, args)) as unknown as T;
   const { data, error } = await supabase!.rpc(fn, args);
-  if (error) throw new Error(friendly(error.message));
+  if (error) { refused(fn, error.message); throw new Error(friendly(error.message)); }
   return data as T;
 }
 /** estado da visita: o que o servidor não mostra (ouro, Silo, cartas…) vem vazio */
@@ -311,6 +321,9 @@ export const sendNote = async (id: string, emojis: string[]) => visitNorm(await 
 export const getVillage = () => rpcJson<VillageState>('get_village');
 export const villageDonate = (item: string | null, qty: number) => rpcJson<VillageState>('village_donate', { p_item: item, p_qty: qty });
 export const starBuy = (kind: 'pack' | 'seed', crop?: string, rarity?: string) => rpcJson<VillageState>('star_buy', { p_kind: kind, p_crop: crop ?? null, p_rarity: rarity ?? null });
+// fase 9: relógio e fuso do aparelho (só registra) e advertência vista
+export const clientPing = (tz: string) => (mock ? Promise.resolve(null) : supabase!.rpc('client_ping', { p_client_ms: Date.now(), p_tz: tz }));
+export const warningSeen = () => rpc('warning_seen');
 export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

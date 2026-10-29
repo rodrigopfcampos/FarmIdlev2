@@ -15,6 +15,7 @@ import weatherCfg from '../config/weather.json';
 import cardsCfg from '../config/cards.json';
 import missionsCfg from '../config/missions.json';
 import socialCfg from '../config/social.json';
+import villageCfg from '../config/village.json';
 
 /** fichas das animações (tempo por quadro, pixels inteiros) */
 export const ANIM = animationsCfg;
@@ -22,6 +23,7 @@ export const WEATHER = weatherCfg;
 export const CARDS = cardsCfg;
 export const MISSIONS = missionsCfg;
 export const SOCIAL = socialCfg;
+export const VILLAGE = villageCfg;
 
 export type Crop = (typeof cropsCfg.crops)[number] & { sapling_cost?: number; seed_cost?: number; tree_base?: string };
 export const CROP_LIST = cropsCfg.crops as Crop[];

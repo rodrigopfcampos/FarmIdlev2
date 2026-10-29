@@ -181,7 +181,7 @@ function oddsBody(s: FarmState): string {
     <p>Dentro da raridade, as ${CARD_LIST.length} cartas têm a mesma chance.</p>
     <h3>Garantia</h3>
     <ul class="eff"><li>Raro ou melhor em até <strong>${p.rare}</strong> cartas</li><li>Lendário ou melhor em até <strong>${p.legendary}</strong></li><li>Mítico em até <strong>${p.mythic}</strong></li></ul>
-    <p class="hint">Cartas só vêm das missões: até ${CARDS.rules.weekly_mission_packs.max_daily_packs_per_week} pacotes por semana das diárias e 2 cartas das semanais. Não existe pacote à venda.</p>`;
+    <p class="hint">Cartas vêm das missões (até ${CARDS.rules.weekly_mission_packs.max_daily_packs_per_week} pacotes por semana das diárias e 2 cartas das semanais), da Encomenda da Vila e, depois do nível 50, das Estrelas. Nunca à venda por dinheiro.</p>`;
 }
 
 function bindCards(ctx: CardsCtx, el: HTMLElement): void {
@@ -210,7 +210,7 @@ export function maybeOpenPack(ctx: CardsCtx, s: FarmState): void {
   const ov = document.createElement('div');
   ov.className = 'pack-overlay';
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel' };
+  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel', encomenda: 'Prêmio da Encomenda da Vila', estrelas: 'Pacote comprado com Estrelas' };
   const draw = () => {
     const c = cards[i];
     const r = rarityInfo(c.rarity)!;

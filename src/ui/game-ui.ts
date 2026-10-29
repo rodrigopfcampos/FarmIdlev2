@@ -24,6 +24,7 @@ import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
 import { hudCards, maybeOpenPack, openCards, openMissions, type CardsCtx } from './cards-ui';
 import { deviceTz } from '../farm/weather';
 import { bindVisitHud, hudSocial, openHelp, openSocial, visitHud, type SocialCtx } from './social-ui';
+import { hudVillage, openVillage } from './village-ui';
 
 const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -151,13 +152,15 @@ function onState(s: FarmState): void {
   const pct = Math.round(xpProgress(s.xp, s.xp_to_next) * 100);
   const xpText = s.xp_to_next ? `${formatGold(s.xp)} de ${formatGold(s.xp_to_next)} XP` : 'nível máximo';
   hud.innerHTML = `
-    <span class="nick">${esc(s.nickname)}</span>
+    <span class="nick">${esc(s.nickname)}${s.village?.title ? ` <small class="vtitle">${esc(s.village.title)}</small>` : ''}</span>
     <span class="level" title="${xpText}">Nv ${s.level}<span class="xpbar" role="progressbar" aria-label="XP do nível" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></span></span>
+    ${s.level >= MAX_LEVEL ? `<span class="stars" title="Estrelas da Vila">⭐ ${s.village?.stars ?? 0}</span>` : ''}
     <span class="gold" title="Ouro">${sprite('ui_coin', 1, 'coin-img')}${formatGold(s.gold)}</span>
     ${deeds ? `<span class="deeds" title="Escrituras">${sprite('item_deed', 0.5)}${deeds}</span>` : ''}
     <span class="wx-slot"></span>
     <span class="cards-slot"></span>
     ${hudSocial()}
+    ${hudVillage()}
     ${laborMeter(s)}
     <button type="button" class="hud-btn tend" data-tend hidden></button>
     <button type="button" class="hud-btn" data-open="casa_principal">Silo</button>
@@ -167,6 +170,8 @@ function onState(s: FarmState): void {
   hud.querySelector('[data-tend]')!.addEventListener('click', () => void tend(null));
   hud.querySelector('[data-team]')?.addEventListener('click', () => openZone('casa_principal', 'operadores'));
   hud.querySelector('[data-social]')?.addEventListener('click', () => void openSocial(socialCtx()));
+  hud.querySelector('[data-village]')?.addEventListener('click', () => void openVillage({ show, toast, esc, itemIcon }));
+  hud.querySelector('.stars')?.addEventListener('click', () => void openVillage({ show, toast, esc, itemIcon }, 'stars'));
   refreshTendButton();
   wxKey = '';
   refreshWeather();

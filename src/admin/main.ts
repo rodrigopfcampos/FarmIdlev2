@@ -205,6 +205,14 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm' | 'reports'):
         <input name="value" type="hidden" value="1">
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pacote"></label>
         <button class="primary small" type="submit">Completar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="stars"><strong>Dar Estrelas</strong>
+        <label>Quantidade<input name="value" type="number" min="-1000" max="1000" value="10" required style="width:90px"></label>
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a loja de Estrelas"></label>
+        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="village"><strong>Encerrar a Encomenda da semana</strong> <small>(vale para todos; os prêmios saem no próximo acesso de cada um)</small>
+        <input name="value" type="hidden" value="1">
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar os prêmios"></label>
+        <button class="primary small" type="submit">Encerrar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
@@ -229,6 +237,8 @@ async function detail(id: string, tab: 'ledger' | 'audit' | 'farm' | 'reports'):
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
     const call = form.dataset.kind === 'trips' ? supabase!.rpc('admin_finish_expeditions', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'card' ? supabase!.rpc('admin_grant_card', { p_user: id, p_card: String(d.get('item')).split(':')[0], p_rarity: String(d.get('item')).split(':')[1], p_reason: reason })
+      : form.dataset.kind === 'stars' ? supabase!.rpc('admin_grant_stars', { p_user: id, p_amount: value, p_reason: reason })
+      : form.dataset.kind === 'village' ? supabase!.rpc('admin_close_village', { p_reason: reason })
       : form.dataset.kind === 'missions' ? supabase!.rpc('admin_complete_missions', { p_user: id, p_kind: String(d.get('item')), p_reason: reason })
       : form.dataset.kind === 'item' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: String(d.get('item')), p_qty: value, p_reason: reason })
       : form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })

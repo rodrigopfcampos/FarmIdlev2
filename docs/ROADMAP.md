@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (29/10/2026, fase 8a)
+# Village Idle Farm — mapa do projeto (29/10/2026, fase 8b)
 
 ## A. Feito
 
@@ -22,10 +22,12 @@
 | **Fase 6** | Clima por fuso em blocos de 3 h (sorteado e guardado, igual para todos do mesmo fuso), dia/entardecer/noite, evento noturno de 45 min entre 19:00 e 21:00 locais (nunca o mesmo da noite anterior, 1 por conta a cada 20 h), bônus no servidor (Sol forte e Calor Dourado aceleram lavoura e pomar a cada passo; chuva/neblina/eventos dão XP; noite +5% e Lua Cheia +40% com teto R ÷ 24), expedições −4/−8/−2, salário à meia-noite do fuso da conta, troca de fuso 1 vez a cada 30 dias (vale à meia-noite), ramo Clima da Botânica e aviso de 30 min do Papagaio; mapa com noite, chuva com respingo e terra molhada, neblina, brilho do sol forte e vagalumes; selo do clima, faixa do evento e painel com previsão; painel do admin vê a agenda e força/cancela eventos | `supabase/migrations/…27000100`, `supabase/tests/phase6_test.sql`, `src/scenes/weatherLayer.ts`, `src/ui/weather-ui.ts` |
 | **Fase 7** | 5 missões diárias e 5 semanais sorteadas de um banco (só sistemas já liberados), metas pela produção do próprio jogador (média por hora, com piso pelo R), ouro e XP fixados no sorteio, 1 troca grátis por dia; as 5 diárias dão 1 pacote (até 4 por semana), 3 semanais dão 1 carta e as 5 dão +1 carta e 1 Escritura; tudo conta, inclusive equipe e fora do jogo. 10 cartas × 5 raridades com número de série, garantia (Raro+ a cada 10, Lendário+ a cada 40, Mítico a cada 120), pacote abrindo com a carta virando, até 3 buffs (a mesma carta só troca por raridade igual ou maior), Moeda da Sorte paga no fim, Estrada Livre e Trevo gravados na expedição, Armory (parcial e completo), fichário de 60 com ampliação e caixa de entrada, Colecionador da Vila; botões Missões e Cartas no topo com os 3 buffs; painel do admin dá carta e completa missões | `supabase/migrations/…28000100`, `supabase/tests/phase7_test.sql`, `src/ui/cards-ui.ts`, `src/farm/cards.ts` |
 | **Fase 8a** | Amigos (busca pelo começo do apelido, pedido, aceite, desfazer), visita à fazenda de um amigo ou aleatória (no horário e clima do dono, sem ouro, Silo, inventário, cartas e missões), Ajudar (+10% de crescimento por 1 h no lote, ou −10% do que falta da limpeza; 1 por lote por hora; 10 dadas e 10 recebidas por dia; XP de 10 min da própria produção; Ferreiro Obras B do dono aumenta), Curtir (1 por dia), recado só com 12 emojis (até 3), bloqueio e denúncia, novidades com aviso no botão Amigos, missões "Ajude X vizinhos"; painel do admin mostra as denúncias | `supabase/migrations/…29000100`, `supabase/tests/phase8a_test.sql`, `src/ui/social-ui.ts` |
+| **Fase 8b** | Encomenda da Vila: meta coletiva da semana (segunda 00:00 UTC), 3 pedidos (1 por faixa de nível, valem 1,5×), doação de qualquer produto do Silo (preço da Feira) e de ouro — tudo some do jogo; pontos = horas da renda do próprio nível; meta = 8 pontos por jogador ativo (mínimo 16); prêmio: meta batida e 2+ pontos = 1 carta e "Ajudante da Vila", top 10% = +1 carta e "Herói da Vila" (título por 1 semana, aparece no topo, nas listas e na visita). Estrelas da Vila: depois do nível 50, 10% do XP do nível 49 = 1 Estrela; pacote = 5 ⭐ + 1 R (2 por semana), semente Incomum/Rara/Lendária = 1/2/4 ⭐ + 0,1/0,2/0,4 R (5 por semana), sem Mítico. Painel do admin: dar Estrelas e encerrar a Encomenda | `supabase/migrations/…30000100`, `supabase/tests/phase8b_test.sql`, `src/ui/village-ui.ts` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (29/10, fase 8b) Fase 8a aprovada. Ranking semanal **adiado** pelo dono (entra depois; critério ainda a escolher — sugestão: Pontos da Vila). Encomenda e Estrelas como propostas (cartas e sementes por Estrelas + ouro, limite por semana, sem Mítico). Qualquer produto do Silo conta na Encomenda; os 3 pedidos da semana valem 1,5×.
 - 🆕 (29/10, fase 8a) A ajuda de crescimento vale para lavoura e pomar (não para o pasto); a de limpeza tira 10% do que falta na hora. O Ferreiro em campo na fazenda AJUDADA aumenta o efeito (Obras B). Bloqueio vale dos dois lados (um não acha, não visita e não manda nada ao outro). Denúncia com motivo da lista; o painel mostra, a análise fica para a fase 9.
 - 🆕 (29/10, antes da fase 8) Fase 7 aprovada (o visual das cartas o dono melhora depois). Mercado negocia produtos e cartas (regras da proposta do GDD). Drenos de fim de jogo: Encomendas da Vila e Estrelas da Vila (decorações ficam para depois). Fase 8 em 3 partes, com teste e "ok" em cada: 8a amigos e visitas; 8b ranking, Encomendas e Estrelas; 8c mercado.
 - 🆕 (27/10, fase 7) Fase 6 aprovada. Missões e Cartas em botões no topo, com os 3 buffs ativos ao lado; banco de missões montado dos exemplos do GDD só com sistemas prontos (vizinhos e mercado entram na fase 8); tudo conta para as missões (cliques, equipe e fora do jogo); o pacote abre com a carta virando.
@@ -53,7 +55,8 @@
 11. ✅ Teste da fase 5 e "ok" (26/10).
 13. ✅ Teste da fase 6 e "ok" (27/10).
 14. ✅ Teste da fase 7 e "ok" (29/10).
-15. Testar a fase 8a em produção (lista na seção G) e dar o "ok". Antes da 8b: escolher o critério do ranking, o prêmio da Encomenda e o que as Estrelas compram (sugestões enviadas em 29/10).
+15. ✅ Teste da fase 8a e "ok" (29/10).
+16. Testar a fase 8b em produção (lista na seção G) e dar o "ok". Depois: 8c (mercado). Ranking semanal fica para depois (critério a escolher).
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -70,7 +73,7 @@
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | **feito e aprovado** (26/10) |
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
-| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a **feita** (29/10); falta o teste do dono |
+| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a aprovada (29/10) · 8b **feita** (29/10), falta o teste do dono · ranking adiado |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
@@ -99,16 +102,12 @@
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da fase 8a (dono, em produção)
-Precisa de 2 contas (ex.: uma no computador e outra no celular, em janela anônima).
-1. Conta A: botão **Amigos** no topo → Buscar → 3 letras do apelido da conta B → **Pedir amizade**.
-2. Conta B: o botão Amigos ganha um ponto vermelho; em Amigos, **Aceitar**.
-3. Conta A: **Visitar** a B. O topo vira "Visitando …" com Curtir, Recado e "Voltar para minha fazenda"; o mapa mostra a fazenda da B (sem ouro, Silo nem cartas).
-4. Clique num lote com plantas crescendo → **Ajudar**: aparece +XP; o mesmo lote fica "ajudado há pouco" por 1 h. Um lote em limpeza também aceita ajuda (−10% do tempo).
-5. **Curtir** (1 por dia) e **Recado** (até 3 emojis). Volte para a sua fazenda.
-6. Conta B: Amigos → **Novidades** mostra a ajuda, a curtida e o recado; o mouse em cima do lote ajudado diz "ajuda de … (+10%)".
-7. **Bloquear** a A na conta B: a A não acha mais a B na busca e não consegue visitar. **Denunciar** aparece no painel do admin (jogador → guia Denúncias).
-8. Amigos → **Visitar uma fazenda aleatória** (precisa de outra conta nível 2+ ativa na semana).
+## G. Teste da fase 8b (dono, em produção)
+1. Botão **Vila** no topo → guia Encomenda: nome da semana, barra da meta da Vila, seus pontos, os 3 pedidos e tudo do seu Silo com quantos pontos vale.
+2. Doe um produto do Silo e um pouco de ouro: o Silo e o ouro baixam, seus pontos sobem. Com 2 pontos ou mais aparece "Você já passou do mínimo".
+3. Faça a segunda conta doar também. Painel do admin → qualquer jogador → **Encerrar a Encomenda da semana** (justificativa).
+4. Volte ao jogo (recarregue): quem passou do mínimo recebe a carta (abre virando) e o título aparece ao lado do nome; o top 10% (o maior doador) ganha 2 cartas e "Herói da Vila". Uma Encomenda nova já abre.
+5. Estrelas: painel do admin → sua conta → **Dar nível** 50 e **Dar Estrelas** 20. No jogo aparece ⭐ no topo; Vila → Estrelas: compre 1 pacote (5 ⭐ + 1 dia de renda em ouro) e 1 semente rara; o 3º pacote da semana é recusado.
 
 ## H. Riscos e pontos em aberto
 - 🆕 Clique sem limite: um robô que clica sem parar vira um jogador sempre online (e sem o limite offline). Tratar no antitrapaça (fase 9): frequência de cliques, horas seguidas online.

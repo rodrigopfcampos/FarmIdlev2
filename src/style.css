@@ -252,3 +252,15 @@ select { font: inherit; padding: 8px; margin-top: 4px; width: 100%; color: var(-
 .emoji-btn.on { border-color: var(--gold); background: #f2c23033; }
 form.search { display: flex; gap: 8px; align-items: end; margin-bottom: 10px; }
 form.search input { width: 100%; font: inherit; padding: 6px; }
+
+/* fase 8b: Vila (Encomenda e Estrelas) */
+.vtitle { color: var(--gold); font-weight: 700; font-size: 11px; border: 1px solid var(--gold); padding: 0 4px; margin-left: 4px; }
+.hud .stars { color: var(--gold); font-weight: 700; cursor: pointer; }
+.vbar { height: 12px; background: #00000066; border: 2px solid var(--panel-border); margin: 6px 0 10px; }
+.vbar span { display: block; height: 100%; background: linear-gradient(90deg, #4caf50, var(--gold)); }
+.vlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.vreq, .vdon { display: flex; align-items: center; gap: 8px; padding: 4px 6px; background: #00000033; }
+.vdon .grow { flex: 1; }
+.vdon small, .vreq small { color: #bfae8c; }
+.vdon small.good { color: #8fd18f; }
+.vdon input { width: 90px; font: inherit; padding: 4px; }

@@ -3,7 +3,7 @@ import { WEATHER, ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID,
 import { cargoValue, evalMinigame } from '../farm/expeditions';
 import { localMinutes } from '../farm/weather';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
-import type { CharacterState, CollectedTrip, FarmState, PlayerCard, PlotState, SocialState, VisitView } from './farmApi';
+import type { CharacterState, CollectedTrip, FarmState, PlayerCard, PlotState, SocialState, VillageState, VisitView } from './farmApi';
 
 const now = new Date().toISOString();
 const T = 50_000; // tempo da fazenda no começo do mock (s)
@@ -96,7 +96,19 @@ const state: FarmState = {
   armory: [{ card_id: 'sol_de_verao', rarity: 'common' }, { card_id: 'sol_de_verao', rarity: 'uncommon' }, { card_id: 'sol_de_verao', rarity: 'rare' }, { card_id: 'folego', rarity: 'common' }],
   pity: { rare: 4, legendary: 21, mythic: 63 }, binder_slots: 60, prod_ref: { value_h: 4500, xp_h: 1400 },
   collector: { common: 200, uncommon: 400, rare: 800, legendary: 1300, mythic: 2300 }, binder_expand_cost: 50000,
+  village: { title: 'Ajudante da Vila', stars: 0 },
   social: { incoming: 1, unseen: 2, likes: 7, helps: [{ lot_id: 'A1', kind: 'growth', pct: 10, ends_at: new Date(Date.now() + 40 * 60_000).toISOString(), from: 'Joana' }] },
+};
+
+// Vila do mock (?ver=estrelas mostra a loja liberada)
+const village: VillageState = {
+  order: { id: 7, name: 'Festa da Colheita', items: ['batata', 'melao', 'gengibre'], goal: 120, ends_at: new Date(Date.now() + 3 * 86400_000 + 5 * 3600_000).toISOString(), players: 15 },
+  mine: { points: 3.2, total: 71.5, donors: 9, goal_reached: false, qualified: true, rank: 4, top: false },
+  per_unit: { batata: 0.0109, cenoura: 0.0035, alface: 0.0013, maca: 0.02, ovo: 0.01, trufa: 0.3, la_de_alpaca: 0.2, leite_de_cabra: 0.05 },
+  gold_per_point: 4000,
+  last: { name: 'Quermesse da Vila', result: { points: 6.4, total: 140, donors: 12, goal_reached: true, qualified: true, rank: 3, top: false }, reward: { cards: 1, title: 'Ajudante da Vila', points: 6.4 } },
+  title: 'Ajudante da Vila',
+  stars: { unlocked: new URLSearchParams(location.search).get('ver') === 'estrelas', stars: 12, xp: 520_000, per_star: 876_110, packs_week: 1, seeds_week: 2, R: 96_000 },
 };
 
 // amigos e visitas do mock
@@ -185,6 +197,15 @@ export const mockFarm = {
     if (fn === 'like_farm') { visit.liked = true; return visitView(pid) as unknown as FarmState; }
     if (fn === 'send_note') { visit.noted = true; return visitView(pid) as unknown as FarmState; }
     if (fn === 'help_lot') { visit.given++; visit.cooldowns[args.p_lot as string] = new Date(Date.now() + 3600_000).toISOString(); return visitView(pid) as unknown as FarmState; }
+    if (fn === 'get_village') return structuredClone(village) as unknown as FarmState;
+    if (fn === 'village_donate') {
+      const it = args.p_item as string | null, q = args.p_qty as number;
+      const pts = it ? q * (village.per_unit[it] ?? 0) : q / village.gold_per_point;
+      if (it) state.silo[it] -= q; else state.gold -= q;
+      village.mine.points += pts; village.mine.total += pts;
+      return structuredClone(village) as unknown as FarmState;
+    }
+    if (fn === 'star_buy') { village.stars.stars -= args.p_kind === 'pack' ? 5 : 2; if (args.p_kind === 'pack') village.stars.packs_week++; else village.stars.seeds_week++; return structuredClone(village) as unknown as FarmState; }
     if (fn === 'set_crop') { for (const p of state.plots) if (inTarget(p.plot_id)) p.crop_id = args.p_crop as string | null; plantNow(); }
     if (fn === 'tend_farm') {
       for (const p of state.plots) if (inTarget(p.plot_id) && p.state === 'growing' && p.ready_at! <= t) {

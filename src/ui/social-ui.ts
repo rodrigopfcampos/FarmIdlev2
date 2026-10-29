@@ -73,7 +73,7 @@ function body(ctx: SocialCtx): string {
 }
 
 function who(ctx: SocialCtx, p: PlayerCard): string {
-  return `<span class="who"><strong>${ctx.esc(p.nickname)}</strong> <small>Nv ${p.level} · ❤️ ${p.likes}</small></span>`;
+  return `<span class="who"><strong>${ctx.esc(p.nickname)}</strong>${p.title ? ` <small class="vtitle">${ctx.esc(p.title)}</small>` : ''} <small>Nv ${p.level} · ❤️ ${p.likes}</small></span>`;
 }
 
 function reportForm(ctx: SocialCtx, p: PlayerCard): string {
@@ -178,7 +178,7 @@ async function visitAct(ctx: SocialCtx, fn: () => Promise<VisitView>, ok?: strin
 /** topo durante a visita: dono, curtir, recado, ajudas e voltar */
 export function visitHud(ctx: SocialCtx, v: VisitView): string {
   const o = v.owner, l = v.limits;
-  return `<span class="visit-tag">Visitando <strong>${ctx.esc(o.nickname)}</strong> · Nv ${o.level} · ❤️ ${o.likes}</span>
+  return `<span class="visit-tag">Visitando <strong>${ctx.esc(o.nickname)}</strong>${o.title ? ` <small class="vtitle">${ctx.esc(o.title)}</small>` : ''} · Nv ${o.level} · ❤️ ${o.likes}</span>
     <span class="wx-slot"></span>
     <span class="visit-lim" title="Suas ajudas de hoje">🤝 ${l.given}/${l.given_max}</span>
     <button type="button" class="hud-btn ghost" data-like ${l.liked ? 'disabled' : ''}>${l.liked ? 'Curtido ❤️' : 'Curtir ❤️'}</button>

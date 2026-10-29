@@ -655,6 +655,11 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - Curtir 1 vez por dia por fazenda; recado com até 3 dos 12 emojis da lista, 1 por dia por fazenda e 20 por dia no total.
 - Bloqueio nos dois sentidos e denúncia com motivo da lista (o painel mostra; a análise entra na fase 9).
 
+### Decisões da fase 8b 🆕 (29/10/2026)
+- **Ranking semanal adiado** pelo dono; entra numa parte futura.
+- **Encomenda da Vila** (semanal, segunda 00:00 UTC): 3 pedidos (um cultivo de cada faixa de nível 1–12, 13–30, 31–50) valem 1,5×; qualquer outro produto do Silo (preço da Feira) e ouro também contam. Tudo o que é doado some do jogo. Pontos = horas da renda de referência do próprio nível. Meta = 8 pontos por jogador ativo na semana (mínimo 16). Prêmio: meta batida e 2+ pontos = 1 carta e o título "Ajudante da Vila"; top 10% dos que passaram do mínimo = +1 carta e "Herói da Vila" (mesmo sem a meta). O título vale por uma semana.
+- **Estrelas da Vila**: depois do nível 50, cada 10% do XP do nível 49 vira 1 Estrela. Pacote = 5 Estrelas + 1 dia de renda (2 por semana, conta para a garantia); semente Incomum/Rara/Lendária = 1/2/4 Estrelas + 0,1/0,2/0,4 dia de renda (5 por semana). Mítico não se compra.
+
 ## 10. Clima, dia e noite e evento noturno
 
 O clima tem duas camadas: bônus pequenos que valem o dia todo e **1 evento forte por noite, entre 19h e 21h no horário local de cada jogador**. Juntos somam cerca de +11% de renda e +7% de XP, e isso já está dentro das tabelas.

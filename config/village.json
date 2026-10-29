@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "source": "GDD v2 seção 9 (drenos de fim de jogo: Encomendas da Vila e Estrelas da Vila) · fase 8b; ranking semanal adiado pelo dono",
+  "encomenda": {
+    "note": "Meta coletiva da semana (segunda 00:00 UTC até a próxima): todos doam produção do Silo e ouro, que somem do jogo. Os pontos são horas da renda de referência do próprio nível, então nível baixo e alto contam igual.",
+    "week_starts": "monday_utc",
+    "names_pt": ["Festa da Colheita", "Feira de Inverno", "Quermesse da Vila", "Banquete do Prefeito", "Mercado das Flores", "Festival do Milho", "Arraial da Praça", "Encomenda do Porto"],
+    "requested_tiers": [[1, 12], [13, 30], [31, 50]],
+    "requested_kinds": ["crop", "recurring"],
+    "requested_bonus": 1.5,
+    "any_product_counts": true,
+    "gold_counts": true,
+    "active_days": 7,
+    "goal_points_per_active_player": 8,
+    "goal_min_points": 16,
+    "min_points_to_qualify": 2,
+    "top_pct": 10,
+    "reward": {
+      "card_if_goal_and_qualified": 1,
+      "card_if_top": 1,
+      "top_needs_goal": false
+    },
+    "titles": {
+      "participant": "Ajudante da Vila",
+      "top": "Herói da Vila"
+    }
+  },
+  "stars": {
+    "note": "Depois do nível 50, o XP vira Estrelas da Vila. Elas compram pacote de carta ou semente rara, sempre junto com ouro (dreno), com limite por semana e sem Mítico na compra direta.",
+    "unlock_level": 50,
+    "xp_per_star_ratio_of_level_49": 0.1,
+    "pack": { "stars": 5, "gold_R_ratio": 1, "per_week": 2 },
+    "seed": {
+      "per_week": 5,
+      "rarities": {
+        "uncommon": { "stars": 1, "gold_R_ratio": 0.1 },
+        "rare": { "stars": 2, "gold_R_ratio": 0.2 },
+        "legendary": { "stars": 4, "gold_R_ratio": 0.4 }
+      }
+    }
+  }
+}

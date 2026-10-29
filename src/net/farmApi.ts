@@ -62,10 +62,20 @@ export type FarmState = {
   // fase 8a: pedidos e novidades (na própria fazenda) e ajudas valendo nos lotes (na visita)
   social?: { incoming: number; unseen: number; helps: LotHelp[]; likes: number };
   helps?: LotHelp[];
+  // fase 8b: título da Vila e Estrelas
+  village?: { title: string | null; stars: number };
+};
+export type VillageResult = { points: number; total: number; donors: number; goal_reached: boolean; qualified: boolean; rank: number | null; top: boolean };
+export type VillageState = {
+  order: { id: number; name: string; items: string[]; goal: number; ends_at: string; players: number };
+  mine: VillageResult; per_unit: Record<string, number>; gold_per_point: number;
+  last: { name: string; result: VillageResult; reward: { cards: number; title: string | null; points: number } | null } | null;
+  title: string | null;
+  stars: { unlocked: boolean; stars: number; xp: number; per_star: number; packs_week: number; seeds_week: number; R: number };
 };
 export type LotHelp = { lot_id: string; kind: 'growth' | 'cleanup'; pct: number; ends_at: string; from: string };
 export type FriendStatus = 'friend' | 'sent' | 'received' | 'blocked' | 'none';
-export type PlayerCard = { id: string; nickname: string; level: number; likes: number; status?: FriendStatus };
+export type PlayerCard = { id: string; nickname: string; level: number; likes: number; status?: FriendStatus; title?: string | null };
 export type SocialActivity = { kind: 'help' | 'like' | 'note'; from: PlayerCard; at: string; new: boolean; lot?: string; help?: 'growth' | 'cleanup'; pct?: number; emojis?: string[] };
 export type SocialState = {
   friends: PlayerCard[]; incoming: PlayerCard[]; outgoing: PlayerCard[]; blocked: PlayerCard[]; activity: SocialActivity[];
@@ -181,6 +191,13 @@ const ERRORS: Record<string, string> = {
   'recado inválido': 'Escolha de 1 a 3 emojis da lista.',
   'já deixou recado hoje': 'Você já deixou recado nessa fazenda hoje.',
   'recados de hoje acabaram': 'Seus recados de hoje acabaram.',
+  'quantidade inválida': 'Quantidade inválida.',
+  'item sem preço': 'Esse item não pode ser doado.',
+  'estrelas liberam no nível 50': 'As Estrelas liberam no nível 50.',
+  'limite da semana atingido': 'Limite desta semana atingido.',
+  'raridade inválida': 'Escolha Incomum, Raro ou Lendário.',
+  'compra inválida': 'Compra inválida.',
+  'estrelas insuficientes': 'Faltam Estrelas.',
 };
 
 function normalize(s: FarmState): FarmState {
@@ -290,6 +307,10 @@ export const visitFarm = async (id: string | null) => visitNorm(await rpcJson<Vi
 export const helpLot = async (id: string, lot: string) => visitNorm(await rpcJson<VisitView>('help_lot', { p_target: id, p_lot: lot }));
 export const likeFarm = async (id: string) => visitNorm(await rpcJson<VisitView>('like_farm', { p_target: id }));
 export const sendNote = async (id: string, emojis: string[]) => visitNorm(await rpcJson<VisitView>('send_note', { p_target: id, p_emojis: emojis }));
+// Vila: Encomenda e Estrelas
+export const getVillage = () => rpcJson<VillageState>('get_village');
+export const villageDonate = (item: string | null, qty: number) => rpcJson<VillageState>('village_donate', { p_item: item, p_qty: qty });
+export const starBuy = (kind: 'pack' | 'seed', crop?: string, rarity?: string) => rpcJson<VillageState>('star_buy', { p_kind: kind, p_crop: crop ?? null, p_rarity: rarity ?? null });
 export const equipItem = (cls: string, slot: 'cloth' | 'amulet', item: string | null) => rpc('equip_item', { p_class: cls, p_slot: slot, p_item: item });
 
 // modo de demonstração só no desenvolvimento (?mock=1): estado falso para conferir a tela sem servidor

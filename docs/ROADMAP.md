@@ -25,6 +25,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (29/10, antes da fase 8) Fase 7 aprovada (o visual das cartas o dono melhora depois). Mercado negocia produtos e cartas (regras da proposta do GDD). Drenos de fim de jogo: Encomendas da Vila e Estrelas da Vila (decorações ficam para depois). Fase 8 em 3 partes, com teste e "ok" em cada: 8a amigos e visitas; 8b ranking, Encomendas e Estrelas; 8c mercado.
 - 🆕 (27/10, fase 7) Fase 6 aprovada. Missões e Cartas em botões no topo, com os 3 buffs ativos ao lado; banco de missões montado dos exemplos do GDD só com sistemas prontos (vizinhos e mercado entram na fase 8); tudo conta para as missões (cliques, equipe e fora do jogo); o pacote abre com a carta virando.
 - 🆕 (26/10, fase 6) Fase 5 aprovada. Sol forte e Calor Dourado valem para lavoura e pomar; a Lua Cheia conta a expedição pela hora em que o veículo volta. Ícones do clima desenhados no código até chegar a arte (a prancha "Cards do climas" é a das 10 cartas da fase 7).
 - 🆕 (24/10, fase 5) Fase 4 aprovada. Expedições: o veículo volta e espera o clique em Receber; a repetição automática (até 2×) sai sozinha com os mesmos produtos e também fica guardada; demanda do dia igual para todos (meia-noite de Brasília); comboio com 1 minigame só. Molduras novas das cartas e prancha dos 6 personagens.
@@ -49,7 +50,7 @@
 10. ✅ Teste da fase 4 e "ok" (24/10).
 11. ✅ Teste da fase 5 e "ok" (26/10).
 13. ✅ Teste da fase 6 e "ok" (27/10).
-14. Testar a fase 7 em produção (lista na seção G) e dar o "ok".
+14. ✅ Teste da fase 7 e "ok" (29/10).
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -65,8 +66,8 @@
 | 4 Animais | Galinheiro, Celeiro, Lago, ampliações, 10 animais com raridade, ração | **feito e aprovado** (24/10) |
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | **feito e aprovado** (26/10) |
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
-| 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito** (27/10); falta o teste do dono em produção |
-| 8 Multiplayer | Amigos, visitas, ranking, mercado (conteúdo a decidir) | — |
+| 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
+| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | — |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |

@@ -629,9 +629,9 @@ Roupas e amuletos continuam com a tabela própria (×1 / ×1,3 / ×1,6 / ×2 / �
 
 🆕 No simulador, até completar o mapa o regular gasta cerca de 95% do ouro ganho: terreno 57%, salários 11%, ferramentas 10%, sementes 6%, consertos de ferramenta 5% e o resto em veículos, reformas, animais, ração e ampliações (casual: terreno 51%, salários 15%). Depois do mapa completo sobra ouro. Por isso, antes da fase de mercado, crie **drenos de fim de jogo** que absorvam pelo menos 80% da renda: decorações e reformas cosméticas pagas em ouro (preço atrelado a R), Encomendas da Vila (metas coletivas em que todos doam produção e ouro, prêmio cosmético e título) e Estrelas da Vila (o XP depois do nível 50 vira estrelas para cosméticos).
 
-### Mercado entre jogadores 🆕 (proposta; decidir antes da fase 8)
+### Mercado entre jogadores 🆕 (decidido em 29/10: produtos e cartas)
 
-O que poderá ser negociado será decidido antes da fase 8. Até lá, produção sai pela Barraca e pelas expedições, e cartas são vendidas ao Colecionador da Vila (seção 11). As regras abaixo ficam como proposta:
+Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e cartas, com as regras abaixo. Drenos de fim de jogo da fase 8: Encomendas da Vila e Estrelas da Vila (decorações ficam para depois).
 
 - Libera no nível 12, com conta de 3 dias ou mais.
 - Produtos de cultivos e animais, e cartas (regras próprias na seção 11). Itens, Escrituras, Kits de Reforma e ferramentas nunca são negociáveis.

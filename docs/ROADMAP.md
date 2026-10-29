@@ -56,7 +56,7 @@
 13. ✅ Teste da fase 6 e "ok" (27/10).
 14. ✅ Teste da fase 7 e "ok" (29/10).
 15. ✅ Teste da fase 8a e "ok" (29/10).
-16. Testar a fase 8b em produção (lista na seção G) e dar o "ok". Depois: 8c (mercado). Ranking semanal fica para depois (critério a escolher).
+16. ✅ Teste da fase 8b (29/10: "funcional"). Depois: 8c (mercado). Ranking semanal fica para depois (critério a escolher).
 9. ✅ Artes dos animais, pets, personagens e molduras novas (24/10).
 12. ⏸️ Animações refeitas com a skill animacao-vif (pausado pelo dono em 25/10, voltar depois): 1 cultivos ✅; faltam colheita, árvores, animais, personagens, pets, veículos e vida do mapa.
 5. Antes do beta: escolher um serviço de e-mail (SMTP) — o e-mail grátis do Supabase só envia para a equipe do projeto.
@@ -73,7 +73,7 @@
 | 5 Expedições | Garagem, 4 veículos × 5 raridades, 5 rotas, minigame, seguro, relatório | **feito e aprovado** (26/10) |
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
-| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a aprovada (29/10) · 8b **feita** (29/10), falta o teste do dono · ranking adiado |
+| 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a aprovada (29/10) · 8b aprovada (29/10) · ranking adiado |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | — |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |

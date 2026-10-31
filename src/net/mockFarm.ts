@@ -24,7 +24,7 @@ const state: FarmState = {
   server_now: now, farm_time: T, synced_at: now, last_activity_at: now, offline_cap_hours: 8,
   labor_bank: 1.9, labor_per_hour: 2.67, labor_cap_hours: 1, nickname: 'Rodrigo', is_admin: false, gold: 64_300,
   level: 11, xp: 2100, xp_to_next: 3400,
-  lots: [{ lot_id: 'A1', ready_at: 0, purchase_n: null }, { lot_id: 'A3', ready_at: T + 50 * 60, purchase_n: 1 }, { lot_id: 'P1', ready_at: 0, purchase_n: 2 }, { lot_id: 'C1', ready_at: 0, purchase_n: 3 }],
+  lots: [{ lot_id: 'A1', ready_at: 0, purchase_n: null }, { lot_id: 'A3', ready_at: T + 50 * 60, purchase_n: 1 }, { lot_id: 'P1', ready_at: 0, purchase_n: 2 }, { lot_id: 'C2', ready_at: 0, purchase_n: 3 }, { lot_id: 'C1', ready_at: 0, purchase_n: 4 }, { lot_id: 'L', ready_at: 0, purchase_n: 5 }],
   plots: [
     // 1 cultivo por lote: A1 inteiro de batata, em idades diferentes (um canteiro vazio esperando)
     growing('A1-1', 'batata', 3700), growing('A1-2', 'batata', 500), growing('A1-3', 'batata', 1700), growing('A1-4', 'batata', 100),
@@ -58,9 +58,12 @@ const state: FarmState = {
     { house_id: 'galinheiro', slot: 1, animal_id: 'galinha', rarity: 'common', state: 'growing', cycle_start: T - 7300, ready_at: T - 100 },
     { house_id: 'galinheiro', slot: 2, animal_id: 'galinha', rarity: 'rare', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'galinheiro', slot: 3, animal_id: 'coelho', rarity: 'mythic', state: 'hungry', cycle_start: T - 100, ready_at: null },
+    { house_id: 'galinheiro', slot: 4, animal_id: 'pato', rarity: 'common', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
+    { house_id: 'celeiro', slot: 1, animal_id: 'vaca', rarity: 'common', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
+    { house_id: 'celeiro', slot: 2, animal_id: 'vaca', rarity: 'uncommon', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
   ],
-  houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' }, celeiro: { owned: false, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' } },
-  lake: false,
+  houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' } },
+  lake: true,
   vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
     { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
   expeditions: [{ id: 'm1', convoy_id: 'c1', vehicle_id: 'carro', route_id: 'cidade', cargo: { batata: 80, alface: 40 }, insurance: 120, led: false, minigame: 'done',

@@ -29,10 +29,10 @@ describe('compra de lotes', () => {
     expect(o.needLevel).toBe(10);
     expect(o.problems).toEqual(['nivel']);
   });
-  it('da 20ª compra em diante precisa de Escritura', () => {
-    const owned = new Set(['A1', 'A3', 'A4', 'A2', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13', 'A14', 'A15', 'A16', 'A17', 'P2', 'P3', 'P1']);
+  it('da 19ª compra em diante precisa de Escritura (mapa v3, 28 compras)', () => {
+    const owned = new Set(['A1', 'A3', 'A4', 'A2', 'A5', 'A6', 'A7', 'A8', 'A10', 'A11', 'A12', 'A13', 'A14', 'A15', 'A16', 'A17', 'P2', 'P3', 'P1']);
     const o = lotOffer('P5', owned, 50, 0, 1e12)!;
-    expect(o.n).toBe(20);
+    expect(o.n).toBe(19);
     expect(o.needsDeed).toBe(true);
     expect(o.problems).toEqual(['escritura']);
     expect(lotOffer('P5', owned, 50, 1, 1e12)!.problems).toEqual([]);

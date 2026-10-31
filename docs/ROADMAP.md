@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (29/10/2026, fase 9)
+# Village Idle Farm — mapa do projeto (31/10/2026, reformulação v3 · R1)
 
 ## A. Feito
 
@@ -24,10 +24,12 @@
 | **Fase 8a** | Amigos (busca pelo começo do apelido, pedido, aceite, desfazer), visita à fazenda de um amigo ou aleatória (no horário e clima do dono, sem ouro, Silo, inventário, cartas e missões), Ajudar (+10% de crescimento por 1 h no lote, ou −10% do que falta da limpeza; 1 por lote por hora; 10 dadas e 10 recebidas por dia; XP de 10 min da própria produção; Ferreiro Obras B do dono aumenta), Curtir (1 por dia), recado só com 12 emojis (até 3), bloqueio e denúncia, novidades com aviso no botão Amigos, missões "Ajude X vizinhos"; painel do admin mostra as denúncias | `supabase/migrations/…29000100`, `supabase/tests/phase8a_test.sql`, `src/ui/social-ui.ts` |
 | **Fase 8b** | Encomenda da Vila: meta coletiva da semana (segunda 00:00 UTC), 3 pedidos (1 por faixa de nível, valem 1,5×), doação de qualquer produto do Silo (preço da Feira) e de ouro — tudo some do jogo; pontos = horas da renda do próprio nível; meta = 8 pontos por jogador ativo (mínimo 16); prêmio: meta batida e 2+ pontos = 1 carta e "Ajudante da Vila", top 10% = +1 carta e "Herói da Vila" (título por 1 semana, aparece no topo, nas listas e na visita). Estrelas da Vila: depois do nível 50, 10% do XP do nível 49 = 1 Estrela; pacote = 5 ⭐ + 1 R (2 por semana), semente Incomum/Rara/Lendária = 1/2/4 ⭐ + 0,1/0,2/0,4 R (5 por semana), sem Mítico. Painel do admin: dar Estrelas e encerrar a Encomenda | `supabase/migrations/…30000100`, `supabase/tests/phase8b_test.sql`, `src/ui/village-ui.ts` |
 | **Fase 9** | Painel completo: papéis Leitor/Moderador/Admin (sempre com 2FA, sai sozinho após 30 min parado), guias Visão geral (online, ativos por dia/semana/mês, novos, retenção D1/D7/D30, ouro criado/destruído), Alertas, Denúncias, Economia, Progresso, Expedições, Cartas, Missões, Balanceamento (versões da config e voltar versão), Auditoria e Moderação. Conta advertida (aviso no jogo), suspensa (dias) ou banida (só admin), sempre com justificativa; reverter lançamento do ledger (lança o contrário). Antitrapaça da seção 12 (renda impossível, progresso rápido, cartas a mais, sorte nas expedições, robô, ações recusadas, minigame de robô, relógio e fuso), 1 vez por hora por conta; nota de risco somada em 30 dias: 70+ revisar e aviso no Discord, 90+ trava o mercado; nunca bane sozinho | `supabase/migrations/…31000100`, `supabase/tests/phase9_test.sql`, `config/anticheat.json`, `src/admin/guides.ts` |
+| **v3 · R1** | Mapa novo (`Novo mapa.png`): 29 lotes (20 lavouras, 6 pomares, Celeiro em cima no C1 com as vacas, Galinheiro embaixo no C2, Lago); o A9 virou o Celeiro; tabela de compras refeita para 28 compras (Escritura da 19ª em diante, 10 no total) e R recalibrado pelo simulador; mato único (`locked_plot_overlay`) cobrindo 85% dos lotes bloqueados, que some com partículas quando a limpeza termina; pomar com cova, broto, jovem e adulta (fruta pintada na cor de cada fruta); animais andando nos pastos (vaca, galinha, pato, coelho; 4 FPS parado, 6 FPS andando); peixes no Lago (6 a 12, 1 espécie nova a cada 10 níveis, anéis na água); carroça com cavalo andando e veículos a motor com balanço, fumaça e poeira saindo e voltando pela estrada; painel do admin zera a fazenda (o ledger fica) | `supabase/migrations/…01000100_v3_map_reset.sql`, `supabase/tests/v3_r1_test.sql`, `src/scenes/lifeLayer.ts`, `src/farm/life.ts` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (31/10) **Reformulação v3** (instrução "Especificação master v3.0"): fazenda com sistema de cartas. Feita em partes: R1 visual e mapa novo; R2 as 20 cartas novas (consumo em dias, mão, manutenção), simulador; R3 pesca e árvore de habilidades da conta (substitui as árvores dos personagens). O dono autorizou zerar as contas de teste. Decisões pendentes: lista de valores das cartas, mão de 3→5, manutenção só da Comum, carta de veículo (Garagem para de vender?).
 - 🆕 (29/10, fase 9) Alertas vão para um canal do Discord por webhook guardado no Vault do Supabase (segredo `discord_alerts_webhook`, nunca no repositório). Regras do mercado (venda abaixo do preço, mesmo IP etc.) ficam para quando o mercado (8c) entrar.
 - 🆕 (29/10) Mercado (8c) **guardado como pendente** pelo dono: só entra quando o jogo estiver estável, para não refazer a cada mudança. Regras continuam como proposta no GDD (seção 9).
 - 🆕 (29/10, fase 8b) Fase 8a aprovada. Ranking semanal **adiado** pelo dono (entra depois; critério ainda a escolher — sugestão: Pontos da Vila). Encomenda e Estrelas como propostas (cartas e sementes por Estrelas + ouro, limite por semana, sem Mítico). Qualquer produto do Silo conta na Encomenda; os 3 pedidos da semana valem 1,5×.
@@ -79,7 +81,8 @@
 | 6 Clima e evento | Agenda por fuso, evento 19–21 h, filtros visuais | **feito e aprovado** (27/10) |
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
 | 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a e 8b aprovadas (29/10) · ranking e mercado (8c) **pendentes** |
-| 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | **feito** (29/10), aguardando teste do dono |
+| 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | **feito e aprovado** (31/10) · Discord pendente (webhook no Vault) |
+| v3 Reformulação | R1 mapa e visual · R2 cartas novas e mão · R3 pesca e árvore da conta | R1 **feito** (31/10), aguardando teste do dono |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
@@ -107,13 +110,13 @@
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da fase 9 (dono, em produção)
-1. Painel do admin (com 2FA): guia **Visão geral** com online, ativos, novos, retenção e ouro do dia. Passe pelas guias Economia, Progresso, Expedições, Cartas, Missões, Balanceamento e Auditoria.
-2. Discord: guarde o webhook no Vault (segredo `discord_alerts_webhook`) → guia **Alertas** → **Mandar alerta de teste para o Discord**: a mensagem chega no canal.
-3. **Rodar o antitrapaça agora**: contas com problema aparecem na fila com a nota de risco; arquive ou escale um alerta.
-4. Guia **Moderação** com a conta de teste: advertir (o jogo mostra o aviso 1 vez), suspender 1 dia (o jogo bloqueia e diz até quando), reativar. Banir só com papel Admin.
-5. Ficha do jogador → ledger → **Reverter** um lançamento: aparece o lançamento contrário e o ouro volta.
-6. Dar o papel Leitor à conta de teste: ela vê as guias mas não consegue advertir nem reverter.
+## G. Teste da parte R1 da v3 (dono, em produção)
+1. As contas foram zeradas: entre e veja o mapa novo (Celeiro e Galinheiro desenhados, garagem com telhado em cima à esquerda).
+2. Os lotes bloqueados têm o mato com pedras; compre o A3 (nível 2) e, no painel, **Terminar limpeza**: o mato some com partículas.
+3. Painel → **Dar nível** 11 e ouro; compre o Galinheiro (C2, embaixo) e o Celeiro (C1, em cima), coloque animais: eles andam pelo pasto.
+4. Compre o P1 e plante uma árvore: cova → broto → jovem → adulta com fruta na cor da fruta.
+5. Compre o Lago: os peixes aparecem (6 no nível 1; mais espécies nos níveis 10, 20, 30 e 40).
+6. Mande a Carroça numa expedição com o jogo aberto: o cavalo sai andando pela estrada; na volta ele chega pelo mesmo caminho.
 
 ## H. Riscos e pontos em aberto
 - Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).

@@ -25,9 +25,9 @@ check(levels.levels.length === 50 && levels.max_level === 50, 'levels.json tem o
 // mapa
 const byId = new Map<string, any>(map.lots.map((l: any) => [l.id, l]));
 const count = (t: string) => map.lots.filter((l: any) => l.type === t).length;
-check(map.lots.length === 30, 'mapa tem 30 lotes');
-check(count('lavoura') === 21 && count('pomar') === 6 && count('pasto_galinheiro') === 1 && count('pasto_celeiro') === 1 && count('pasto_lago') === 1,
-  '21 lavouras, 6 pomares, Galinheiro, Celeiro e Lago');
+check(map.lots.length === 29, 'mapa tem 29 lotes');
+check(count('lavoura') === 20 && count('pomar') === 6 && count('pasto_galinheiro') === 1 && count('pasto_celeiro') === 1 && count('pasto_lago') === 1,
+  '20 lavouras, 6 pomares, Galinheiro, Celeiro e Lago');
 check(map.lots.every((l: any) => l.neighbors.every((n: string) => byId.get(n)?.neighbors.includes(l.id))), 'vizinhança é simétrica');
 check(map.lots.filter((l: any) => l.type === 'lavoura').every((l: any) => l.plots.length === 8), 'toda lavoura tem 8 canteiros');
 check(map.lots.filter((l: any) => l.type === 'pomar').every((l: any) => l.tree_slots.length === 4), 'todo pomar tem 4 vagas de árvore');
@@ -36,7 +36,7 @@ check(zones === 'barraca_comerciante,casa_principal,garagem_expedicao,oficina_fe
 
 // tabela de compras
 const { rules, purchases, simulated_order: order, model_check: mc } = lots;
-check(purchases.length === 29, '29 compras');
+check(purchases.length === 28, '28 compras');
 let formulaOk = true, increasing = true;
 purchases.forEach((p: any, i: number) => {
   const L = Math.min(50, Math.ceil(rules.min_level.k * p.n - 1e-9));
@@ -46,7 +46,7 @@ purchases.forEach((p: any, i: number) => {
 });
 check(formulaOk, 'cada custo e nível batem com a fórmula');
 check(increasing, 'custo sobe a cada compra');
-check(purchases[28].min_level <= 50, `última compra pede nível ${purchases[28].min_level} (máximo 50)`);
+check(purchases[27].min_level <= 50, `última compra pede nível ${purchases[27].min_level} (máximo 50)`);
 check(purchases.filter((p: any) => p.requires_deed).length === 10, '10 Escrituras no total');
 check(Math.max(...purchases.map((p: any) => p.cleanup_minutes_blacksmith)) <= 480, 'nenhuma limpeza passa de 8 h');
 
@@ -62,7 +62,7 @@ for (const o of order) {
 }
 check(adjOk, 'ordem simulada respeita a vizinhança a partir do A1');
 check(floorOk, 'ordem simulada respeita os pisos de nível por tipo');
-check(owned.size === 30, 'ordem simulada compra todos os 29 lotes');
+check(owned.size === 29, 'ordem simulada compra todos os 28 lotes');
 
 // metas da seção 14 no modelo
 check(mc.regular.map_complete_day >= 65 && mc.regular.map_complete_day <= 85, `regular completa o mapa no dia ${mc.regular.map_complete_day} (65 a 85)`);

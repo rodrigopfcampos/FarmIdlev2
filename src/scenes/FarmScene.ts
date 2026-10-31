@@ -1,17 +1,19 @@
-// Mapa vivo da fazenda: fundo em escala inteira; lotes que não são seus escurecidos, com placa e entulho;
-// lote comprado mostra o entulho e o tempo de limpeza até ficar pronto; 6 mudas por canteiro com vento
+// Mapa vivo da fazenda (v3): fundo em escala inteira; lotes que não são seus escurecidos, com placa e mato;
+// lote comprado mostra o mato e o tempo de limpeza; na hora que fica pronto o mato some com partículas; 6 mudas por canteiro com vento
 // e pulinho na troca de estágio; canteiro maduro pula esperando o clique; canteiro vazio com cultivo escolhido
 // mostra o ícone do cultivo; árvores do pomar (muda, adulta, com fruta); prédio dos pastos; zonas clicáveis.
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
 import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
+import { orchardLook } from '../farm/life';
+import { LifeLayer } from './lifeLayer';
 import { petSprite, stageSprite } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
 import { cameraBounds, pointInPolygon, stageFor } from '../farm/geometry';
 import { bakeSway } from '../anim/bake';
 import { frameAt, phaseOf, reducedMotion, tableAt } from '../anim/frames';
-import { animalLook, lotOffer, plotLook, treeLook } from '../farm/rules';
+import { animalLook, lotOffer, plotLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
 import { duration, formatGold } from '../ui/format';
@@ -27,8 +29,8 @@ const depthOf = (y: number) => 1 + y / 10000;
 type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string;
   phase: number[]; tex: string; growAt: number };
 type Grain = { img: Phaser.GameObjects.Image; x: number; y: number; dx: number; born: number };
-type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; fruit: Phaser.GameObjects.Image; look: string };
-type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; debris: Phaser.GameObjects.Image[]; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
+type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; look: string };
+type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Image; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
@@ -54,6 +56,12 @@ export class FarmScene extends Phaser.Scene {
   private vehKey = '';
   private wx!: WeatherLayer; // clima e noite por cima do mapa
   private hoverLot = ''; // lote com o mouse em cima (mostra o cultivo planejado dos canteiros vazios)
+  private life!: LifeLayer; // animais nos pastos e peixes no lago
+  private vehDrive: { tween: Phaser.Tweens.Tween; moving: boolean } | null = null; // veículo saindo ou chegando
+  private vehWas = '';          // situação anterior do veículo (para animar só a mudança vista ao vivo)
+  private vehMotor = false;     // veículo a motor (balança, fumaça) ou carroça com cavalo
+  private fxAt = 0;             // último fumacinha/poeira
+  private dustAt = 0;
 
   constructor() { super('farm'); }
 
@@ -76,30 +84,37 @@ export class FarmScene extends Phaser.Scene {
       }
       // vagas de árvore do pomar
       (lot.tree_slots ?? []).forEach(([x, y], i) => {
-        const tree = this.add.image(x, y, 'tree_leafy_sapling').setOrigin(0.5, 1).setVisible(false).setDepth(depthOf(y));
-        const fruit = this.add.image(x, y, 'tree_leafy_sapling').setOrigin(0.5, 1).setVisible(false).setDepth(depthOf(y) + 0.00001);
-        this.trees.push({ lot: lot.id, slot: i + 1, tree, fruit, look: '' });
+        // arte 64×64 com a base de terra: o pé da base (y 51–60 da arte) fica na vaga
+        const tree = this.add.image(x, y, 'orchard_pit').setOrigin(0.5, 0.9).setVisible(false).setDepth(depthOf(y));
+        this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '' });
       });
-      // placa, entulho, contador da limpeza e prédio do pasto
-      const debris = (FARM.visual.no_debris_types.includes(lot.type) ? [] : lot.debris_anchors ?? []).map(([x, y], i) =>
-        this.add.image(x, y, FARM.visual.debris_sprites[i % FARM.visual.debris_sprites.length]).setOrigin(0.5, 1).setDepth(depthOf(y)).setVisible(false));
+      // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
+      const hasOverlay = (lot.type === 'lavoura' || lot.type === 'pomar') && this.textures.exists(ANIM.locked_overlay.sprite);
+      const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
+      const overlay = hasOverlay
+        ? this.add.image(lot.center[0], lot.center[1], ANIM.locked_overlay.sprite).setOrigin(0.5, 0.47)
+          .setScale((polyW * ANIM.locked_overlay.cover_ratio) / 60).setDepth(depthOf(lot.center[1])).setVisible(false)
+        : undefined;
       const sign = lot.sign_anchor ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
       const timer = this.text().setOrigin(0.5, 0.5).setPosition(lot.center[0], lot.center[1] - 26).setDepth(19).setVisible(false);
-      const building = lot.building && lot.building_anchor
+      // Celeiro e Galinheiro já estão desenhados no mapa v3 (building_in_map): só o aviso fica por cima
+      const inMap = (lot as Lot & { building_in_map?: boolean }).building_in_map;
+      const building = lot.building && lot.building_anchor && !inMap
         ? this.add.image(lot.building_anchor[0], lot.building_anchor[1], `building_${lot.building}`).setOrigin(0.5, 1).setDepth(depthOf(lot.building_anchor[1])).setVisible(false)
         : undefined;
       // aviso em cima da casa dos animais: produto pronto (emoji do animal) ou fome (!)
-      const badge = building && lot.building_anchor
+      const badge = lot.building && lot.building_anchor
         ? this.add.text(lot.building_anchor[0], lot.building_anchor[1] - 46, '', { fontFamily: 'system-ui, sans-serif', fontSize: '12px', fontStyle: 'bold', backgroundColor: '#000000aa', padding: { x: 3, y: 1 } })
           .setOrigin(0.5, 1).setResolution(2).setDepth(21).setVisible(false)
         : undefined;
       // arte do animal pronto ao lado do aviso
       const badgeIcon = badge ? this.add.image(lot.building_anchor![0] - 14, lot.building_anchor![1] - 46, '__DEFAULT').setOrigin(1, 1).setDepth(21).setVisible(false) : undefined;
       if (badge) this.tweens.add({ targets: [badge, badgeIcon], y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-      this.decor.push({ lot, sign, debris, timer, building, badge, badgeIcon });
+      this.decor.push({ lot, sign, overlay, overlayOn: null, timer, building, badge, badgeIcon });
     }
 
     this.wx = new WeatherLayer(this, MAP_W, MAP_H, this.plots.map((p) => p.polygon), this.calm);
+    this.life = new LifeLayer(this, this.calm);
 
     // Carroça parada na vaga da Garagem, com a animação de parado
     const garage = ZONES.find((z) => z.id === 'garagem_expedicao');
@@ -107,8 +122,10 @@ export class FarmScene extends Phaser.Scene {
       for (const v of ['carroca', 'carro', 'picape', 'caminhao']) {
         if (this.textures.exists(`vehicle_${v}_idle`)) this.anims.create({ key: `${v}_idle`, frames: this.anims.generateFrameNumbers(`vehicle_${v}_idle`, { start: 0, end: 3 }), frameRate: FARM.visual.vehicle_idle_fps, repeat: -1 });
       }
+      const V = ANIM.vehicles;
+      if (this.textures.exists(V.horse_sprite)) this.anims.create({ key: 'horse_walk', frames: this.anims.generateFrameNumbers(V.horse_sprite, {}), frameRate: V.horse_fps, repeat: -1 });
       const [x, y] = garage.parked_vehicle_anchor;
-      this.veh = this.add.sprite(x, y, 'vehicle_carroca_idle').setOrigin(0.5, 1).setDepth(2).play('carroca_idle');
+      this.veh = this.add.sprite(x, y, this.textures.exists(V.horse_sprite) ? V.horse_sprite : 'vehicle_carroca_idle', 0).setOrigin(0.5, 1).setDepth(depthOf(y));
       this.vehLabel = this.text().setOrigin(0.5, 1).setPosition(x, y - 40).setDepth(19).setVisible(false);
     }
 
@@ -165,10 +182,12 @@ export class FarmScene extends Phaser.Scene {
     this.petImg?.setVisible(!!s.pet && hasArt);
     this.pet?.setText(s.pet ? PET_EMOJI[s.pet.id] ?? '' : '').setVisible(!!s.pet && !hasArt);
     this.refreshGarage(s);
+    this.life.apply(s);
     if (this.pointer) this.showHover(this.pointer.x, this.pointer.y); // o rótulo do lote muda depois da compra
   }
 
-  /** só o veículo ativo aparece na vaga; viajando, a vaga fica vazia com o contador até a volta */
+  /** só o veículo ativo aparece na vaga; viajando, a vaga fica vazia com o contador até a volta.
+   *  Visto ao vivo: sai pela estrada (cavalo andando, ou motor com fumaça e poeira) e volta pelo mesmo caminho. */
   private refreshGarage(s: FarmState): void {
     if (!this.veh || !this.vehLabel) return;
     const v = s.vehicles.find((x) => x.active) ?? s.vehicles[0];
@@ -177,17 +196,90 @@ export class FarmScene extends Phaser.Scene {
     const st = vehicleStatus(s, v, now);
     const anyBack = s.expeditions.some((x) => x.status === 'back');
     const parked = st.status === 'idle' || st.status === 'back';
-    this.veh.setVisible(parked);
-    if (parked) {
-      const key = v.rarity === 'common' && this.anims.exists(`${v.vehicle_id}_idle`) ? `${v.vehicle_id}_idle` : `vehicle_${v.vehicle_id}_${v.rarity}`;
-      if (key !== this.vehKey) {
-        this.vehKey = key;
-        if (key.endsWith('_idle')) this.veh.play(key);
-        else if (this.textures.exists(key)) this.veh.stop().setTexture(key);
-      }
+    const V = ANIM.vehicles;
+    const horse = v.vehicle_id === 'carroca' && v.rarity === 'common' && this.textures.exists(V.horse_sprite);
+    const key = horse ? V.horse_sprite : v.rarity === 'common' && this.anims.exists(`${v.vehicle_id}_idle`) ? `${v.vehicle_id}_idle` : `vehicle_${v.vehicle_id}_${v.rarity}`;
+    if (key !== this.vehKey) {
+      this.vehKey = key;
+      this.vehMotor = v.vehicle_id !== 'carroca';
+      if (horse) this.veh.stop().setTexture(key, 0);
+      else if (key.endsWith('_idle')) this.veh.play(key);
+      else if (this.textures.exists(key)) this.veh.stop().setTexture(key);
     }
+    const state = parked ? 'parked' : 'away';
+    if (this.vehWas && this.vehWas !== state && !this.calm) this.drive(state === 'away');
+    else if (!this.vehDrive) this.veh.setVisible(parked);
+    this.vehWas = state;
     const text = st.status === 'travel' ? `Volta em ${duration(st.until! - now)}` : st.status === 'refurb' ? `Reforma: ${duration(st.until! - now)}` : anyBack ? 'Receber!' : '';
     this.vehLabel.setText(text).setVisible(!!text);
+  }
+
+  /** veículo saindo (vaga → fim da estrada) ou chegando (fim da estrada → vaga) */
+  private drive(out: boolean): void {
+    const z = ZONES.find((x) => x.id === 'garagem_expedicao') as (typeof ZONES)[number] & { exit_path?: Pt[] };
+    if (!this.veh || !z?.exit_path) return;
+    const path = out ? z.exit_path : [...z.exit_path].reverse();
+    const lens = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - path[i][1]));
+    const total = lens.reduce((a, b) => a + b, 0);
+    this.vehDrive?.tween.stop();
+    const obj = { t: 0 };
+    this.veh.setVisible(true).setPosition(path[0][0], path[0][1]);
+    if (this.vehKey === ANIM.vehicles.horse_sprite) this.veh.play('horse_walk', true);
+    const tween = this.tweens.add({ targets: obj, t: 1, duration: ANIM.vehicles.drive_ms, ease: out ? 'Sine.In' : 'Sine.Out',
+      onUpdate: () => {
+        let d = obj.t * total, k = 0;
+        while (k < lens.length - 1 && d > lens[k]) { d -= lens[k]; k++; }
+        const a = path[k], b = path[k + 1], f = lens[k] ? Math.min(1, d / lens[k]) : 1;
+        const x = Math.round(a[0] + (b[0] - a[0]) * f), y = Math.round(a[1] + (b[1] - a[1]) * f);
+        this.veh!.setPosition(x, y).setDepth(depthOf(y)).setFlipX(b[0] > a[0]); // a arte olha para a esquerda
+      },
+      onComplete: () => {
+        this.vehDrive = null;
+        const anchor = z.parked_vehicle_anchor!;
+        this.veh!.setFlipX(false).setPosition(anchor[0], anchor[1]).setDepth(depthOf(anchor[1])).setVisible(!out);
+        if (this.vehKey === ANIM.vehicles.horse_sprite) this.veh!.stop().setFrame(0);
+        else if (this.vehKey.endsWith('_idle')) this.veh!.play(this.vehKey);
+      } });
+    this.vehDrive = { tween, moving: true };
+  }
+
+  /** motor: balança 1 px e solta fumaça; andando: poeira nas rodas (pedacinhos de 2×2 que sobem e somem) */
+  private vehicleFx(time: number): void {
+    if (!this.veh?.visible || this.calm) return;
+    const V = ANIM.vehicles, anchor = (ZONES.find((x) => x.id === 'garagem_expedicao')?.parked_vehicle_anchor ?? [0, 0]) as Pt;
+    const baseY = this.vehDrive ? this.veh.y : anchor[1];
+    if (this.vehMotor) {
+      const up = Math.floor(time / V.motor_bob_ms) % 2;
+      if (!this.vehDrive) this.veh.setY(baseY - up);
+      if (time - this.fxAt > V.exhaust_every_ms) {
+        this.fxAt = time;
+        const back = this.veh.flipX ? -1 : 1; // escapamento atrás (a arte olha para a esquerda)
+        this.puff(this.veh.x + back * this.veh.displayWidth * 0.45, this.veh.y - 10, V.exhaust_color, V.exhaust_ms, -10);
+      }
+    }
+    if (this.vehDrive && time - this.dustAt > V.dust_every_ms) {
+      this.dustAt = time;
+      this.puff(this.veh.x + (Math.random() - 0.5) * this.veh.displayWidth * 0.6, this.veh.y - 1, V.dust_color, V.dust_ms, -5);
+    }
+  }
+
+  private puff(x: number, y: number, hex: string, ms: number, rise: number): void {
+    const c = Phaser.Display.Color.HexStringToColor(hex).color;
+    const r = this.add.rectangle(Math.round(x), Math.round(y), 2, 2, c, 0.8).setDepth(depthOf(y) + 0.0001);
+    this.tweens.add({ targets: r, y: Math.round(y + rise), x: Math.round(x + (Math.random() - 0.5) * 6), alpha: 0, scale: 2, duration: ms, onComplete: () => r.destroy() });
+  }
+
+  /** mato sumindo quando a limpeza termina: some aos poucos e solta pedacinhos de terra e folha */
+  private clearFx(d: LotDecor): void {
+    const o = d.overlay!, L = ANIM.locked_overlay;
+    this.tweens.add({ targets: o, alpha: 0, duration: L.fade_ms, onComplete: () => o.setVisible(false).setAlpha(1) });
+    for (let k = 0; k < L.particles; k++) {
+      const c = Phaser.Display.Color.HexStringToColor(L.particle_colors[k % L.particle_colors.length]).color;
+      const x = o.x + (Math.random() - 0.5) * o.displayWidth * 0.8, y = o.y + (Math.random() - 0.5) * o.displayHeight * 0.5;
+      const r = this.add.rectangle(Math.round(x), Math.round(y), 2, 2, c, 1).setDepth(depthOf(y) + 0.001);
+      this.tweens.add({ targets: r, x: Math.round(x + (Math.random() - 0.5) * 30), y: Math.round(y - 10 - Math.random() * 18), alpha: 0,
+        duration: L.particle_ms, delay: Math.random() * 150, ease: 'Quad.Out', onComplete: () => r.destroy() });
+    }
   }
 
   /** placa só nos lotes à venda; entulho até o fim da limpeza; prédio do pasto depois dela */
@@ -198,7 +290,15 @@ export class FarmScene extends Phaser.Scene {
       const end = this.cleaning.get(d.lot.id);
       const inCleanup = end !== undefined && end > now;
       d.sign?.setVisible(!mine);
-      d.debris.forEach((x) => x.setVisible(!mine || inCleanup));
+      if (d.overlay) {
+        const on = !mine || inCleanup;
+        if (on !== d.overlayOn) {
+          // ficou pronto agora (com o jogo aberto): o mato some com partículas
+          if (!on && d.overlayOn && mine && !this.calm) this.clearFx(d);
+          else d.overlay.setVisible(on).setAlpha(1);
+          d.overlayOn = on;
+        }
+      }
       d.building?.setVisible(mine && !inCleanup);
       d.timer.setVisible(inCleanup);
       if (inCleanup) d.timer.setText(`Limpeza ${duration(end! - now)}`);
@@ -219,9 +319,11 @@ export class FarmScene extends Phaser.Scene {
     }
   }
 
-  update(time: number): void {
+  update(time: number, delta: number): void {
     const s = store.state;
     if (!s) return;
+    this.life.update(time, delta);
+    this.vehicleFx(time);
     const now = store.clock.farmNow();
     const t = time / 1000;
     const second = Math.floor(t);
@@ -318,15 +420,16 @@ export class FarmScene extends Phaser.Scene {
     const byKey = new Map(s.trees.map((x) => [`${x.lot_id}:${x.slot}`, x]));
     for (const v of this.trees) {
       const tr = byKey.get(`${v.lot}:${v.slot}`);
-      const look = tr ? treeLook(tr, now) : 'empty';
+      const ready = this.owned.has(v.lot) && !this.cleaning.has(v.lot);
+      const look = ready ? orchardLook(tr, now, true) : 'empty';
       const key = `${look}:${tr?.fruit_id ?? ''}`;
       if (key === v.look) continue;
-      const base = tr?.fruit_id ? CROPS[tr.fruit_id].tree_base ?? 'leafy' : 'leafy';
-      v.tree.setVisible(look !== 'empty');
-      if (look !== 'empty') v.tree.setTexture(`tree_${base}_${look === 'sapling' ? 'sapling' : 'adult'}`);
-      v.fruit.setVisible(look === 'fruit');
-      if (look === 'fruit') v.fruit.setTexture(`fruit_${tr!.fruit_id}`);
-      if (v.look !== '' && look !== 'empty') { // pulinho quando a árvore muda
+      const O = ANIM.orchard.sprites;
+      const tex = look === 'pit' ? O.pit : look === 'sprout' ? O.sprout : look === 'young' ? O.young
+        : look === 'adult' ? 'orchard_adult_leaf' : look === 'fruit' ? `orchard_adult_${tr!.fruit_id}` : '';
+      v.tree.setVisible(!!tex && this.textures.exists(tex));
+      if (tex && this.textures.exists(tex)) v.tree.setTexture(tex);
+      if (v.look !== '' && look !== 'empty' && look !== 'pit' && !this.calm) { // pulinho quando a árvore muda
         v.tree.setScale(1, 0.85);
         this.tweens.add({ targets: v.tree, scaleY: 1, duration: 260, ease: 'Back.Out' });
       }

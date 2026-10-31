@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "GDD v2 seção 12 (painel e antitrapaça) · fase 9. Regras do mercado ficam para quando o mercado (8c) entrar.",
   "check_every_minutes": 60,
   "dedupe_hours": 24,
@@ -13,13 +13,35 @@
       "score": 60,
       "note": "ouro ganho em 24 h (sem presentes do painel) acima de X vezes a renda de referência do nível; a simulação do dedicado fica perto de 2×",
       "max_R_per_day": 4,
-      "ignore_reasons": ["test_grant", "admin_grant", "admin_gold"]
+      "ignore_reasons": [
+        "test_grant",
+        "admin_grant",
+        "admin_gold",
+        "farm_reset"
+      ]
     },
     "progress": {
       "name_pt": "Progresso rápido demais",
       "score": 40,
       "note": "nível acima do jogador dedicado da simulação para a idade da conta, com 10% de folga",
-      "dedicated_level_days": [[1, 0], [10, 0.8], [30, 30], [50, 103]],
+      "dedicated_level_days": [
+        [
+          1,
+          0
+        ],
+        [
+          10,
+          0.8
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          50,
+          103
+        ]
+      ],
       "slack": 0.1,
       "min_level": 6
     },

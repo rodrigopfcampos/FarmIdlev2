@@ -214,47 +214,46 @@ O mapa tem **30 lotes**: o inicial (A1, lavoura) + 29 para comprar (20 lavouras 
 Regras que mantêm o equilíbrio:
 
 - **Preço pela quantidade de lotes já comprados (n), não pela posição.** A escolha do lote é livre e o custo continua previsível.
-- **Dois requisitos: nível mínimo e ouro.** Nível mínimo da n-ésima compra = arredondar para cima (1,46 × n). Pisos por tipo: Galinheiro nível 3, Celeiro 8, Pomar 10, Lago 11 (vale o maior dos dois).
+- **Dois requisitos: nível mínimo e ouro.** Nível mínimo da n-ésima compra = arredondar para cima (1,53 × n). Pisos por tipo: Galinheiro nível 3, Celeiro 8, Pomar 10, Lago 11 (vale o maior dos dois).
 - **Vizinhança:** só dá para comprar um lote que divide um lado com um lote seu (sem diagonal). As ligações exatas, inclusive pomar–lavoura, pomar–pomar e lago–lavoura, estão em `config/mapConfig.json`. **Exceção:** Galinheiro e Celeiro podem ser comprados de qualquer lugar, para os animais não ficarem presos atrás de outras compras (o início é no A1, longe dos pastos).
 - **Escritura da 20ª compra em diante:** cada compra exige 1 Escritura (missão semanal completa ou expedição Capital ou mais longe). Continuam 10 no total, como antes; elas começam a acumular desde a primeira semana.
 - **Limpeza:** o lote comprado vem com pedras e tocos. O Ferreiro limpa em 1 h + 12 min × n (outra classe leva o dobro; 🆕 até a fase 3 não há Ferreiro, então vale o dobro). Os canteiros já aceitam o cultivo durante a limpeza e começam quando ela acaba. Cada vizinho que ajuda corta 10% do tempo, até 5 ajudas por dia. A limpeza mais longa (6 h 48) cabe no limite offline de 8 h.
 - A placa do lote mostra preço, nível exigido e "≈ X dias de renda".
 
-**Fórmula** (R = Renda de Referência por dia, seção 9, no nível ⌈1,46 × n⌉, sem o piso do tipo; arredondado para 2 algarismos):
+**Fórmula** (R = Renda de Referência por dia, seção 9, no nível ⌈1,53 × n⌉, sem o piso do tipo; arredondado para 2 algarismos):
 
-custo(n) = 0,28 × 1,10^(n−1) × R(⌈1,46 × n⌉)
+custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 
 | Compra n | Lote (ordem simulada) | Tipo | Nível mínimo | Custo (ouro) | Escritura | Limpeza (Ferreiro) | Dia (regular) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | A3 | Lavoura | 2 | 670 | Não | 1 h 12 | 0,3 |
-| 2 | C1 | Galinheiro | 3 | 1.200 | Não | 1 h 24 | 0,3 |
+| 1 | A3 | Lavoura | 2 | 650 | Não | 1 h 12 | 0,3 |
+| 2 | C2 | Galinheiro | 4 | 1.700 | Não | 1 h 24 | 0,5 |
 | 3 | A4 | Lavoura | 5 | 2.900 | Não | 1 h 36 | 0,5 |
-| 4 | A2 | Lavoura | 6 | 4.800 | Não | 1 h 48 | 0,9 |
-| 5 | C2 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
-| 6 | A6 | Lavoura | 9 | 24.000 | Não | 2 h 12 | 1,8 |
-| 7 | P1 | Pomar | 11 | 50.000 | Não | 2 h 24 | 2,3 |
-| 8 | A7 | Lavoura | 12 | 76.000 | Não | 2 h 36 | 3,8 |
-| 9 | A8 | Lavoura | 14 | 190.000 | Não | 2 h 48 | 5,3 |
-| 10 | P2 | Pomar | 15 | 280.000 | Não | 3 h 00 | 6,3 |
-| 11 | A5 | Lavoura | 17 | 510.000 | Não | 3 h 12 | 8,8 |
-| 12 | A10 | Lavoura | 18 | 640.000 | Não | 3 h 24 | 9,8 |
-| 13 | P3 | Pomar | 19 | 780.000 | Não | 3 h 36 | 10,8 |
-| 14 | A11 | Lavoura | 21 | 1.200.000 | Não | 3 h 48 | 14,3 |
-| 15 | A12 | Lavoura | 22 | 1.500.000 | Não | 4 h 00 | 17,5 |
-| 16 | P4 | Pomar | 24 | 2.200.000 | Não | 4 h 12 | 19,8 |
-| 17 | A13 | Lavoura | 25 | 3.000.000 | Não | 4 h 24 | 21,9 |
-| 18 | A20 | Lavoura | 27 | 5.000.000 | Não | 4 h 36 | 25,3 |
-| 19 | L | Lago | 28 | 5.900.000 | Não | 4 h 48 | 27,5 |
-| 20 | P5 | Pomar | 30 | 8.400.000 | Sim | 5 h 00 | 33,3 |
-| 21 | A9 | Lavoura | 31 | 10.000.000 | Sim | 5 h 12 | 37,5 |
-| 22 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 24 | 41,5 |
-| 23 | P6 | Pomar | 34 | 17.000.000 | Sim | 5 h 36 | 44,3 |
-| 24 | A15 | Lavoura | 36 | 25.000.000 | Sim | 5 h 48 | 50,3 |
-| 25 | A16 | Lavoura | 37 | 30.000.000 | Sim | 6 h 00 | 53,5 |
-| 26 | A17 | Lavoura | 38 | 36.000.000 | Sim | 6 h 12 | 56,9 |
-| 27 | A18 | Lavoura | 40 | 50.000.000 | Sim | 6 h 24 | 64,5 |
-| 28 | A19 | Lavoura | 41 | 62.000.000 | Sim | 6 h 36 | 68,5 |
-| 29 | A21 | Lavoura | 43 | 85.000.000 | Sim | 6 h 48 | 77,3 |
+| 4 | A2 | Lavoura | 7 | 7.400 | Não | 1 h 48 | 0,9 |
+| 5 | C1 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
+| 6 | A6 | Lavoura | 10 | 38.000 | Não | 2 h 12 | 1,8 |
+| 7 | P1 | Pomar | 11 | 49.000 | Não | 2 h 24 | 2,3 |
+| 8 | A7 | Lavoura | 13 | 110.000 | Não | 2 h 36 | 4,8 |
+| 9 | A8 | Lavoura | 14 | 170.000 | Não | 2 h 48 | 5,8 |
+| 10 | P2 | Pomar | 16 | 350.000 | Não | 3 h 00 | 6,9 |
+| 11 | A5 | Lavoura | 17 | 480.000 | Não | 3 h 12 | 9,3 |
+| 12 | A10 | Lavoura | 19 | 770.000 | Não | 3 h 24 | 10,9 |
+| 13 | P3 | Pomar | 20 | 940.000 | Não | 3 h 36 | 13,3 |
+| 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 3 h 48 | 17,3 |
+| 15 | A12 | Lavoura | 23 | 1.900.000 | Não | 4 h 00 | 18,8 |
+| 16 | P4 | Pomar | 25 | 3.000.000 | Não | 4 h 12 | 21,8 |
+| 17 | A13 | Lavoura | 27 | 4.900.000 | Não | 4 h 24 | 25,3 |
+| 18 | A20 | Lavoura | 28 | 5.900.000 | Não | 4 h 36 | 27,8 |
+| 19 | L | Lago | 30 | 8.300.000 | Sim | 4 h 48 | 33,3 |
+| 20 | P5 | Pomar | 31 | 10.000.000 | Sim | 5 h 00 | 37,9 |
+| 21 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 12 | 41,3 |
+| 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 5 h 24 | 44,5 |
+| 23 | P6 | Pomar | 36 | 27.000.000 | Sim | 5 h 36 | 50,3 |
+| 24 | A16 | Lavoura | 37 | 33.000.000 | Sim | 5 h 48 | 53,5 |
+| 25 | A17 | Lavoura | 39 | 43.000.000 | Sim | 6 h 00 | 60,8 |
+| 26 | A18 | Lavoura | 40 | 55.000.000 | Sim | 6 h 12 | 64,5 |
+| 27 | A19 | Lavoura | 42 | 77.000.000 | Sim | 6 h 24 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 95.000.000 | Sim | 6 h 36 | 79,8 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -365,7 +364,7 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Rancheira | Regador | Animais e pomar | 3 | 5.800 |
 | Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
 | Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 120.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 480.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 400.000 |
 | Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
@@ -397,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 170 | 1.600 | 8.400 | 20.000 | 46.000 | 98.000 | 170.000 | 300.000 | 460.000 | 540.000 |
+| Salário base/dia (ouro) | 170 | 1.700 | 7.400 | 20.000 | 46.000 | 94.000 | 170.000 | 300.000 | 460.000 | 540.000 |
 
 ### Nível do personagem
 
@@ -579,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 894.300 | 3.000.000 |
-| 2 | 50 | 2.400 | | 27 | 1.029.800 | 3.500.000 |
-| 3 | 65 | 3.900 | | 28 | 1.205.950 | 3.800.000 |
-| 4 | 90 | 5.800 | | 29 | 1.355.000 | 4.300.000 |
-| 5 | 870 | 8.700 | | 30 | 1.355.000 | 4.900.000 |
-| 6 | 1.280 | 13.000 | | 31 | 1.441.700 | 5.400.000 |
-| 7 | 2.040 | 20.000 | | 32 | 1.663.500 | 6.000.000 |
-| 8 | 3.150 | 29.000 | | 33 | 1.774.400 | 6.700.000 |
-| 9 | 5.310 | 54.000 | | 34 | 1.996.200 | 7.400.000 |
-| 10 | 20.330 | 82.000 | | 35 | 2.328.900 | 8.600.000 |
-| 11 | 33.880 | 100.000 | | 36 | 2.661.600 | 10.000.000 |
-| 12 | 48.780 | 140.000 | | 37 | 2.994.300 | 11.000.000 |
-| 13 | 70.460 | 220.000 | | 38 | 3.437.900 | 12.000.000 |
-| 14 | 89.430 | 320.000 | | 39 | 3.881.500 | 13.000.000 |
-| 15 | 115.180 | 420.000 | | 40 | 4.325.100 | 15.000.000 |
-| 16 | 149.050 | 550.000 | | 41 | 4.768.700 | 17.000.000 |
-| 17 | 176.150 | 700.000 | | 42 | 5.212.300 | 19.000.000 |
-| 18 | 216.800 | 800.000 | | 43 | 5.877.700 | 21.000.000 |
-| 19 | 271.000 | 890.000 | | 44 | 6.432.200 | 22.000.000 |
-| 20 | 325.200 | 1.000.000 | | 45 | 7.097.600 | 23.000.000 |
-| 21 | 379.400 | 1.200.000 | | 46 | 7.652.100 | 24.000.000 |
-| 22 | 447.150 | 1.400.000 | | 47 | 8.095.700 | 25.000.000 |
-| 23 | 542.000 | 1.600.000 | | 48 | 8.539.300 | 25.000.000 |
-| 24 | 650.400 | 1.900.000 | | 49 | 8.761.100 | 26.000.000 |
-| 25 | 772.350 | 2.300.000 | | 50 | — | 27.000.000 |
+| 1 | 40 | 1.900 | | 26 | 852.720 | 2.900.000 |
+| 2 | 50 | 2.400 | | 27 | 981.920 | 3.400.000 |
+| 3 | 65 | 3.900 | | 28 | 1.149.880 | 3.700.000 |
+| 4 | 90 | 5.800 | | 29 | 1.292.000 | 4.100.000 |
+| 5 | 870 | 8.700 | | 30 | 1.292.000 | 4.700.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.380.600 | 5.100.000 |
+| 7 | 2.040 | 20.000 | | 32 | 1.593.000 | 5.800.000 |
+| 8 | 3.150 | 29.000 | | 33 | 1.699.200 | 6.500.000 |
+| 9 | 5.310 | 54.000 | | 34 | 1.911.600 | 7.200.000 |
+| 10 | 19.380 | 83.000 | | 35 | 2.230.200 | 8.400.000 |
+| 11 | 32.300 | 98.000 | | 36 | 2.548.800 | 10.000.000 |
+| 12 | 46.510 | 130.000 | | 37 | 2.867.400 | 11.000.000 |
+| 13 | 67.180 | 190.000 | | 38 | 3.292.200 | 12.000.000 |
+| 14 | 85.270 | 270.000 | | 39 | 3.717.000 | 13.000.000 |
+| 15 | 109.820 | 370.000 | | 40 | 4.141.800 | 15.000.000 |
+| 16 | 142.120 | 510.000 | | 41 | 4.566.600 | 17.000.000 |
+| 17 | 167.960 | 630.000 | | 42 | 4.991.400 | 19.000.000 |
+| 18 | 206.720 | 760.000 | | 43 | 5.628.600 | 21.000.000 |
+| 19 | 258.400 | 900.000 | | 44 | 6.159.600 | 22.000.000 |
+| 20 | 310.080 | 1.000.000 | | 45 | 6.796.800 | 23.000.000 |
+| 21 | 361.760 | 1.200.000 | | 46 | 7.327.800 | 24.000.000 |
+| 22 | 426.360 | 1.400.000 | | 47 | 7.752.600 | 25.000.000 |
+| 23 | 516.800 | 1.600.000 | | 48 | 8.177.400 | 25.000.000 |
+| 24 | 620.160 | 1.900.000 | | 49 | 8.389.800 | 26.000.000 |
+| 25 | 736.440 | 2.300.000 | | 50 | — | 27.000.000 |
 
 ### Raridade global 🆕
 
@@ -659,6 +658,15 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - **Ranking semanal adiado** pelo dono; entra numa parte futura.
 - **Encomenda da Vila** (semanal, segunda 00:00 UTC): 3 pedidos (um cultivo de cada faixa de nível 1–12, 13–30, 31–50) valem 1,5×; qualquer outro produto do Silo (preço da Feira) e ouro também contam. Tudo o que é doado some do jogo. Pontos = horas da renda de referência do próprio nível. Meta = 8 pontos por jogador ativo na semana (mínimo 16). Prêmio: meta batida e 2+ pontos = 1 carta e o título "Ajudante da Vila"; top 10% dos que passaram do mínimo = +1 carta e "Herói da Vila" (mesmo sem a meta). O título vale por uma semana.
 - **Estrelas da Vila**: depois do nível 50, cada 10% do XP do nível 49 vira 1 Estrela. Pacote = 5 Estrelas + 1 dia de renda (2 por semana, conta para a garantia); semente Incomum/Rara/Lendária = 1/2/4 Estrelas + 0,1/0,2/0,4 dia de renda (5 por semana). Mítico não se compra.
+
+### Reformulação v3 🆕 (31/10/2026) — parte R1 (mapa e visual)
+- Mapa novo `Novo mapa.png` (1672×940): 29 lotes — 20 lavouras, 6 pomares (faixa de grama à direita, 4 árvores cada), Celeiro no pasto de cima (C1, vacas), Galinheiro no de baixo (C2, aves e coelho) e Lago. O A9 deixou de existir (virou o Celeiro). Prédios já desenhados no fundo.
+- 28 compras: nível ⌈1,53 n⌉, custo 0,27 × 1,11^(n−1) × R(nível); Escritura da 19ª compra em diante (10 no total). R e XP recalibrados pelo simulador (mapa completo do regular no dia ~79).
+- Lote bloqueado: 1 arte de mato e pedras no centro cobrindo 85% do lote; some com partículas quando a limpeza termina.
+- Animais andando nos pastos (só visual, até 6 por pasto): os 10 animais usam as 4 artes (vaca; galinha/peru; pato/ganso; coelho).
+- Lago: 6 a 12 peixes nadando em curva, 85% visíveis, anel na água ao virar; 1 espécie nova a cada 10 níveis (Tilápia 1, Truta 10, Bagre 20, Koi 30, Esturjão 40). A pesca (coleta no píer) entra na R3.
+- Veículos: carroça com cavalo (5 quadros); veículos a motor balançam 1 px a cada 120 ms, soltam fumaça e poeira; saem e voltam pela estrada da Garagem.
+- Números visuais em `config/animations.json` (v2).
 
 ### Decisões da fase 9 🆕 (29/10/2026)
 - Papéis do painel: Leitor (só vê), Moderador (advertir, suspender até 30 dias, revisar alertas e denúncias, rodar o antitrapaça), Admin (tudo, inclusive banir, reverter lançamento, voltar versão de config e mudar papéis). Sempre 2FA; sai sozinho após 30 min parado. Ninguém muda a própria conta.

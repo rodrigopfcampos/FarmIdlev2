@@ -1,4 +1,4 @@
-// Gera config/lots.json: regras de compra, tabela das 29 compras e uma ordem simulada que respeita a vizinhança do mapa.
+// Gera config/lots.json: regras de compra, tabela das compras (lotes do mapa − 1) e uma ordem simulada que respeita a vizinhança do mapa.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -8,9 +8,9 @@ import { evaluate } from './lots-search.ts';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const map = JSON.parse(readFileSync(join(root, 'config', 'mapConfig.json'), 'utf8'));
 
-// Parâmetros escolhidos pela busca com o simulador completo (tools/sim): metas da seção 14 com 29 compras
-const PARAMS = { k: 1.46, growth: 1.1, base: 0.28, purchases: 29 };
-const DEED_FROM = 20; // Escritura da 20ª compra em diante: continuam 10 Escrituras no total
+// Parâmetros escolhidos pela busca (npm run balance:search): metas da seção 14 com 28 compras (mapa v3, 29 lotes)
+const PARAMS = { k: 1.53, growth: 1.11, base: 0.27, purchases: 28 };
+const DEED_FROM = 19; // Escritura da 19ª compra em diante: continuam 10 Escrituras no total
 const TYPE_FLOOR: Record<string, number> = { pasto_galinheiro: 3, pasto_celeiro: 8, pomar: 10, pasto_lago: 11 };
 const CLEANUP = { base_minutes: 60, per_purchase_minutes: 12, other_class_multiplier: 2, neighbor_help_reduction: 0.1, max_neighbor_helps_per_day: 5 };
 
@@ -20,7 +20,7 @@ const ev = evaluate(table);
 // Ordem simulada por tipo (mesmo ritmo da simulação antiga: pastos cedo, um pomar a cada ~3 compras)
 const PLAN = ['lavoura', 'pasto_galinheiro', 'lavoura', 'lavoura', 'pasto_celeiro', 'lavoura', 'pomar', 'lavoura',
   'lavoura', 'pomar', 'lavoura', 'lavoura', 'pomar', 'lavoura', 'lavoura', 'pomar', 'lavoura', 'pasto_lago',
-  'lavoura', 'pomar', 'lavoura', 'lavoura', 'pomar', 'lavoura', 'lavoura', 'lavoura', 'lavoura', 'lavoura', 'lavoura'];
+  'lavoura', 'pomar', 'lavoura', 'lavoura', 'pomar', 'lavoura', 'lavoura', 'lavoura', 'lavoura', 'lavoura'];
 
 type Lot = { id: string; type: string; neighbors: string[] };
 const lots: Lot[] = map.lots;
@@ -70,7 +70,7 @@ if (pending.length) throw new Error('tipos que não couberam na ordem: ' + pendi
 if (owned.size !== lots.length) throw new Error('sobrou lote fora da ordem');
 
 const out = {
-  version: 2,
+  version: 7,
   source: 'GDD v2 seção 5 · gerado por tools/balance/build-lots.ts',
   rules: {
     start_lot: map.start_lot,

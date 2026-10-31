@@ -65,21 +65,22 @@ begin
   if not exists (select 1 from public.plots where user_id = a and plot_id like 'A3-%' and state = 'growing') then raise exception 'FALHA 11: não plantou depois da limpeza'; end if;
   reset role;
 
-  -- 5. Galinheiro pode ser comprado longe (nível 3)
-  update public.farms set level = 3 where user_id = a;
+  -- 5. Galinheiro pode ser comprado longe (2ª compra: nível 4)
+  update public.farms set level = 4 where user_id = a;
+  perform public.ledger_post(a, 5000, 'test_grant');
   set local role authenticated;
-  s := public.buy_lot('C1');
-  if not exists (select 1 from public.owned_lots where user_id = a and lot_id = 'C1') then raise exception 'FALHA 12: Galinheiro não comprado de longe'; end if;
+  s := public.buy_lot('C2'); -- mapa v3: o Galinheiro é o C2 (embaixo)
+  if not exists (select 1 from public.owned_lots where user_id = a and lot_id = 'C2') then raise exception 'FALHA 12: Galinheiro não comprado de longe'; end if;
   reset role;
 
-  -- 6. da 20ª compra em diante precisa de Escritura (dada pelo painel do admin)
+  -- 6. da 19ª compra em diante precisa de Escritura (mapa v3: 28 compras) (dada pelo painel do admin)
   insert into public.owned_lots (user_id, lot_id, purchase_n)
     select a, x ->> 'id', 100 from jsonb_array_elements(public.config_get('map_rules') -> 'lots') x
-    where x ->> 'id' in ('A4','A2','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14','A15','A16','A17','P2','P3'); -- 20 lotes: a próxima é a 20ª compra
+    where x ->> 'id' in ('A4','A2','A5','A6','A7','A8','A10','A11','A12','A13','A14','A15','A16','A17','P2','P3'); -- 19 lotes: a próxima é a 19ª compra
   update public.farms set level = 30 where user_id = a;
   perform public.ledger_post(a, 20000000, 'test_grant');
   set local role authenticated;
-  begin perform public.buy_lot('P5'); raise exception 'FALHA 13: 20ª compra sem Escritura';
+  begin perform public.buy_lot('P5'); raise exception 'FALHA 13: 19ª compra sem Escritura';
   exception when check_violation then if sqlerrm <> 'precisa de Escritura' then raise exception 'FALHA 13b: %', sqlerrm; end if; end;
   reset role;
   perform set_config('request.jwt.claims', json_build_object('sub', adm, 'role', 'authenticated', 'aal', 'aal2')::text, true);
@@ -90,7 +91,7 @@ begin
   set local role authenticated;
   s := public.buy_lot('P5');
   if (s -> 'inventory' ->> 'deed') is not null then raise exception 'FALHA 14: Escritura não foi gasta'; end if;
-  if (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5') <> 20 then raise exception 'FALHA 15: nº da compra %', (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5'); end if;
+  if (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5') <> 19 then raise exception 'FALHA 15: nº da compra %', (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5'); end if;
   reset role;
 
   -- 7. pomar: muda só depois da limpeza, colhe sozinho, derruba grátis, fruta respeita o nível

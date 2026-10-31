@@ -9,7 +9,10 @@ describe('artes recortadas', () => {
   it('tem uma arte para cada nome de tools/assets/sheets.json', () => {
     const sheets = JSON.parse(readFileSync('tools/assets/sheets.json', 'utf8')).sheets as any[];
     let expected = 0;
-    for (const sh of sheets) for (const r of sh.regions) expected += r.strip ? r.strip.length : r.names.flat().filter(Boolean).length;
+    for (const sh of sheets) {
+      if (sh.native) { expected += 1; continue; } // arte v3 copiada inteira (1 sprite ou 1 tira)
+      for (const r of sh.regions) expected += r.strip ? r.strip.length : r.names.flat().filter(Boolean).length;
+    }
     expect(Object.keys(manifest).length).toBe(expected);
   });
   it('cada PNG tem o tamanho do manifest e fundo transparente', async () => {

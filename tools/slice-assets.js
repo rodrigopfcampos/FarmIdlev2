@@ -277,8 +277,41 @@ async function writePreview(sheetName) {
   previews.length = 0;
 }
 
+// ---------- artes já transparentes e no tamanho do jogo (v3): cópia direta, sem tirar fundo ----------
+// grade [colunas, linhas] com "count" quadros vira uma tira horizontal; "size" reduz cada quadro (nearest) cabendo na caixa
+async function renderNative(sheet) {
+  const { data, info } = await sharp(join(root, cfg.raw_dir, sheet.file)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const [cols, rows] = sheet.grid ?? [1, 1];
+  const count = sheet.count ?? cols * rows;
+  const cw = Math.floor(info.width / cols), ch = Math.floor(info.height / rows);
+  const [W, H] = sheet.size ?? [cw, ch];
+  const s = Math.min(W / cw, H / ch);
+  const w = Math.round(cw * s), h = Math.round(ch * s);
+  const frames = [];
+  for (let k = 0; k < count; k++) {
+    const cx = (k % cols) * cw, cy = Math.floor(k / cols) * ch;
+    const cell = Buffer.alloc(cw * ch * 4);
+    for (let y = 0; y < ch; y++) data.copy(cell, y * cw * 4, ((cy + y) * info.width + cx) * 4, ((cy + y) * info.width + cx + cw) * 4);
+    let px = cell;
+    if (w !== cw || h !== ch) {
+      px = (await sharp(cell, { raw: { width: cw, height: ch, channels: 4 } }).resize(w, h, { fit: 'fill', kernel: 'nearest' }).raw().toBuffer());
+    }
+    for (let i = 3; i < px.length; i += 4) px[i] = px[i] >= 110 ? 255 : 0;
+    const canvas = Buffer.alloc(W * H * 4);
+    blit(canvas, W, px, w, h, Math.floor((W - w) / 2), H - h);
+    frames.push(canvas);
+    previews.push({ name: `${sheet.key}_${k}`, canvas, W, H });
+  }
+  const region = { dir: sheet.dir, align: sheet.align ?? 'bottom' };
+  if (count === 1) return save(sheet.key, frames[0], W, H, region);
+  const strip = Buffer.alloc(W * count * H * 4);
+  frames.forEach((f, k) => blit(strip, W * count, f, W, H, k * W, 0));
+  return save(sheet.key, strip, W * count, H, region, { frames: count, frame_size: [W, H] });
+}
+
 for (const sheet of cfg.sheets) {
   if (only && sheet.id !== only) continue;
+  if (sheet.native) { await renderNative(sheet); await writePreview(sheet.id); console.log(`ok  ${sheet.id} (cópia)`); continue; }
   const img = await loadSheet(sheet);
   for (const region of sheet.regions) await renderRegion(img, region);
   await writePreview(sheet.id);

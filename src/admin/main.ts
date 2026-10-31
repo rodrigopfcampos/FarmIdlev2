@@ -271,7 +271,11 @@ async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
       <form class="row grant" data-kind="gold"><strong>Dar ouro</strong>
         <label>Valor<input name="value" type="number" min="-1000000000" max="1000000000" step="1" value="10000" required style="width:140px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a compra de lotes"></label>
-        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form></div>
+        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
+      <form class="row grant" data-kind="reset"><strong>Zerar a fazenda</strong> <small>(volta ao começo: só o A1, nível 1 e ouro inicial; o histórico fica)</small>
+        <input name="value" type="hidden" value="1">
+        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: recomeçar no mapa novo"></label>
+        <button class="primary small" style="background:#c0392b;color:#fff;border-color:#7a1f16" type="submit">Zerar</button><span class="msg" role="status"></span></form></div>
       <p>Veículos: ${(f.vehicles ?? []).map((v: any) => `${esc(v.vehicle_id)} (${esc(v.rarity)}, ${Number(v.durability).toFixed(0)}%${v.refurb_rarity ? `, reforma → ${esc(v.refurb_rarity)}` : ''})`).join(' · ') || '—'}
         · Viagens: ${(f.expeditions ?? []).map((x: any) => `${esc(x.vehicle_id)} → ${esc(x.route_id)} ${x.status === 'back' ? '(voltou)' : `(volta em ${Math.max(0, Math.ceil((x.returns_at - f.farm_time) / 60))} min)`}${x.seq ? ` rep. ${x.seq}` : ''}`).join(' · ') || '—'} · falhas seguidas: ${f.exp_fail_streak ?? 0}</p>
       <p>Animais: ${(f.animals ?? []).map((a: any) => `${esc(a.house_id)}-${a.slot} ${esc(a.animal_id)} (${esc(a.rarity)}${a.state === 'hungry' ? ', com fome' : ''})`).join(' · ') || '—'}</p>
@@ -308,7 +312,9 @@ async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
     const msg = form.querySelector('.msg')!;
     const raw = String(d.get('value') ?? ''), value = Number(raw), reason = String(d.get('reason'));
     if (form.dataset.kind === 'cleanup' && !raw) { msg.textContent = 'Nenhum lote em limpeza.'; return; }
-    const call = form.dataset.kind === 'trips' ? supabase!.rpc('admin_finish_expeditions', { p_user: id, p_reason: reason })
+    if (form.dataset.kind === 'reset' && !confirm('Zerar a fazenda deste jogador? Não dá para desfazer.')) return;
+    const call = form.dataset.kind === 'reset' ? supabase!.rpc('admin_reset_farm', { p_user: id, p_reason: reason })
+      : form.dataset.kind === 'trips' ? supabase!.rpc('admin_finish_expeditions', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'card' ? supabase!.rpc('admin_grant_card', { p_user: id, p_card: String(d.get('item')).split(':')[0], p_rarity: String(d.get('item')).split(':')[1], p_reason: reason })
       : form.dataset.kind === 'stars' ? supabase!.rpc('admin_grant_stars', { p_user: id, p_amount: value, p_reason: reason })
       : form.dataset.kind === 'village' ? supabase!.rpc('admin_close_village', { p_reason: reason })

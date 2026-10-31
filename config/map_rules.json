@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "gerado de config/mapConfig.json por tools/db/map-rules.ts",
   "start_lot": "A1",
   "exempt_types": [
@@ -95,8 +95,7 @@
       "type": "lavoura",
       "neighbors": [
         "A2",
-        "A8",
-        "A9"
+        "A8"
       ],
       "plots": [
         "A5-1",
@@ -175,25 +174,6 @@
       "tree_slots": 0
     },
     {
-      "id": "A9",
-      "type": "lavoura",
-      "neighbors": [
-        "A5",
-        "A13"
-      ],
-      "plots": [
-        "A9-1",
-        "A9-2",
-        "A9-3",
-        "A9-4",
-        "A9-5",
-        "A9-6",
-        "A9-7",
-        "A9-8"
-      ],
-      "tree_slots": 0
-    },
-    {
       "id": "A10",
       "type": "lavoura",
       "neighbors": [
@@ -262,7 +242,6 @@
       "type": "lavoura",
       "neighbors": [
         "A8",
-        "A9",
         "A17",
         "C1"
       ],
@@ -511,7 +490,7 @@
     },
     {
       "id": "C1",
-      "type": "pasto_galinheiro",
+      "type": "pasto_celeiro",
       "neighbors": [
         "A13",
         "C2"
@@ -521,7 +500,7 @@
     },
     {
       "id": "C2",
-      "type": "pasto_celeiro",
+      "type": "pasto_galinheiro",
       "neighbors": [
         "A20",
         "C1"

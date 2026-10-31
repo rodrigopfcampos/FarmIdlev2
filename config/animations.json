@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual",
+  "version": 2,
+  "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual · v3: mapa novo, animais, lago e veículos",
   "crop_sway": {
     "trigger": "sempre, muda plantada",
     "tip_px": [
@@ -82,5 +82,150 @@
     "dirt_ms": 70,
     "priority": "jogo",
     "reduced_motion": "troca a arte sem pulo"
+  },
+  "locked_overlay": {
+    "trigger": "lote que não é seu ou em limpeza",
+    "sprite": "locked_plot_overlay",
+    "cover_ratio": 0.85,
+    "fade_ms": 600,
+    "particles": 14,
+    "particle_ms": 700,
+    "particle_colors": [
+      "#6b4a2b",
+      "#8a6a43",
+      "#4f7a2c",
+      "#9aa36a"
+    ],
+    "priority": "jogo",
+    "reduced_motion": "some sem partículas"
+  },
+  "animals_wander": {
+    "trigger": "animais no pasto (só visual: mostram que está produzindo)",
+    "frames": 5,
+    "walk_frames": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "idle_frames": [
+      0,
+      3
+    ],
+    "idle_fps": 4,
+    "walk_fps": 6,
+    "scale": 1,
+    "speed_px_s": {
+      "cow": 9,
+      "chicken": 14,
+      "duck": 11,
+      "rabbit": 18
+    },
+    "idle_ms": [
+      1500,
+      4500
+    ],
+    "max_per_pasture": 6,
+    "step_px": [
+      24,
+      70
+    ],
+    "sprite_by_animal": {
+      "vaca": "cow",
+      "ovelha": "cow",
+      "porco": "cow",
+      "cabra": "cow",
+      "alpaca": "cow",
+      "galinha": "chicken",
+      "peru": "chicken",
+      "pato": "duck",
+      "ganso": "duck",
+      "coelho": "rabbit"
+    },
+    "faces": "esquerda (espelha ao andar para a direita)",
+    "priority": "fundo",
+    "reduced_motion": "parados no 1º quadro"
+  },
+  "lake_fish": {
+    "trigger": "Lago da fazenda comprado",
+    "species": [
+      {
+        "sprite": "fish_1",
+        "name_pt": "Tilápia Comum",
+        "level": 1,
+        "faces": "right"
+      },
+      {
+        "sprite": "fish_2",
+        "name_pt": "Truta Arco-Íris",
+        "level": 10,
+        "faces": "left"
+      },
+      {
+        "sprite": "fish_3",
+        "name_pt": "Bagre do Rio",
+        "level": 20,
+        "faces": "right"
+      },
+      {
+        "sprite": "fish_4",
+        "name_pt": "Carpa Koi Lendária",
+        "level": 30,
+        "faces": "right"
+      },
+      {
+        "sprite": "fish_5",
+        "name_pt": "Esturjão Mítico",
+        "level": 40,
+        "faces": "right"
+      }
+    ],
+    "count_min": 6,
+    "count_max": 12,
+    "alpha": 0.85,
+    "speed_px_s": [
+      8,
+      16
+    ],
+    "wave_px": 3,
+    "wave_hz": 0.6,
+    "scale": 1,
+    "ripple_ms": 900,
+    "ripple_radius_px": [
+      3,
+      10
+    ],
+    "faces": "por espécie (a arte de cada peixe olha para um lado)",
+    "priority": "fundo",
+    "reduced_motion": "parados"
+  },
+  "vehicles": {
+    "horse_sprite": "vehicle_horse_cart",
+    "horse_fps": 6,
+    "motor_bob_px": 1,
+    "motor_bob_ms": 120,
+    "exhaust_every_ms": 260,
+    "exhaust_ms": 900,
+    "exhaust_color": "#9a9a9a",
+    "dust_every_ms": 90,
+    "dust_ms": 500,
+    "dust_color": "#8a6a43",
+    "drive_ms": 2600,
+    "faces": "esquerda",
+    "priority": "jogo",
+    "reduced_motion": "sem fumaça e poeira; o veículo aparece direto"
+  },
+  "orchard": {
+    "sprites": {
+      "pit": "orchard_pit",
+      "sprout": "orchard_sprout",
+      "young": "orchard_young",
+      "adult": "orchard_adult"
+    },
+    "sprout_until": 0.25,
+    "fruit_ref_red": 182,
+    "leaf_hex": "#497d33",
+    "note": "a fruta vermelha da arte adulta é pintada na cor de cada fruta (farm.json visual.fruit_hex); sem fruta, vira folha"
   }
 }

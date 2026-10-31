@@ -5213,6 +5213,196 @@
         0.5,
         1
       ]
+    },
+    "locked_plot_overlay": {
+      "file": "sprites/map/locked_plot_overlay.png",
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "animal_walk_cow": {
+      "file": "sprites/animals/animal_walk_cow.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_chicken": {
+      "file": "sprites/animals/animal_walk_chicken.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_duck": {
+      "file": "sprites/animals/animal_walk_duck.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_rabbit": {
+      "file": "sprites/animals/animal_walk_rabbit.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "vehicle_horse_cart": {
+      "file": "sprites/vehicles/vehicle_horse_cart.png",
+      "size": [
+        480,
+        76
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        96,
+        76
+      ]
+    },
+    "fish_1": {
+      "file": "sprites/fish/fish_1.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fish_2": {
+      "file": "sprites/fish/fish_2.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fish_3": {
+      "file": "sprites/fish/fish_3.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fish_4": {
+      "file": "sprites/fish/fish_4.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "fish_5": {
+      "file": "sprites/fish/fish_5.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "orchard_pit": {
+      "file": "sprites/trees/orchard_pit.png",
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "orchard_sprout": {
+      "file": "sprites/trees/orchard_sprout.png",
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "orchard_young": {
+      "file": "sprites/trees/orchard_young.png",
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "orchard_adult": {
+      "file": "sprites/trees/orchard_adult.png",
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
     }
   }
 }

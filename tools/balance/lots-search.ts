@@ -1,4 +1,4 @@
-// Procura os parâmetros da tabela de lotes para 29 compras (30 lotes) que mantêm as metas da seção 14.
+// Procura os parâmetros da tabela de lotes (compras = lotes do mapa − 1) que mantêm as metas da seção 14.
 // Usa o modelo calibrado na tabela antiga (calibration.json). Saída: ranking e a tabela escolhida.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -45,6 +45,8 @@ export function runFast(table: LotRow[], xp: number, gold: number) {
 }
 
 const P = cal.profiles;
+const MAP = JSON.parse(readFileSync(join(here, '..', '..', 'config', 'mapConfig.json'), 'utf8'));
+export const PURCHASES: number = MAP.lots.length - 1;
 export function evaluate(table: LotRow[]) {
   const reg = runFast(table, P.regular.xp, P.regular.gold);
   const cas = runFast(table, P.casual.xp, P.casual.gold);
@@ -58,10 +60,10 @@ export function evaluate(table: LotRow[]) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const results: any[] = [];
-  for (let k = 1.4; k <= 1.5001; k += 0.01)
+  for (let k = 1.4; k <= 1.7801; k += 0.01)
     for (let growth = 1.06; growth <= 1.1601; growth += 0.005)
       for (let base = 0.2; base <= 0.3601; base += 0.01) {
-        const params = { k: +k.toFixed(2), growth: +growth.toFixed(3), base: +base.toFixed(2), purchases: 29 };
+        const params = { k: +k.toFixed(2), growth: +growth.toFixed(3), base: +base.toFixed(2), purchases: PURCHASES };
         const ev = evaluate(makeTable(params));
         results.push({ params, ...ev });
       }

@@ -22,11 +22,11 @@ begin
   set local role authenticated;
   begin perform public.buy_animal('galinheiro', 1, 'galinha'); raise exception 'FALHA 1: comprou animal sem o Galinheiro';
   exception when check_violation then null; end;
-  s := public.buy_lot('C1');
+  s := public.buy_lot('C2');
   begin perform public.buy_animal('galinheiro', 1, 'galinha'); raise exception 'FALHA 2: comprou com o pasto em limpeza';
   exception when check_violation then null; end;
   reset role;
-  update public.owned_lots set ready_at = 0 where user_id = a and lot_id = 'C1';
+  update public.owned_lots set ready_at = 0 where user_id = a and lot_id = 'C2';
 
   -- 2. comprar a Galinha: preço da compra + ração do 1º ciclo; raridade sorteada; pronta em 2 h
   select gold into v_gold from public.wallets where user_id = a;
@@ -53,7 +53,7 @@ begin
   update public.characters set energy = 0, parked = true where user_id = a; -- ninguém da equipe trabalha
   select gold into v_gold from public.wallets where user_id = a;
   set local role authenticated;
-  s := public.tend_farm('C1');
+  s := public.tend_farm('C2');
   if coalesce((s -> 'silo' ->> 'ovo')::int, 0) <> 1 then raise exception 'FALHA 11: clique coletou % ovos', s -> 'silo' ->> 'ovo'; end if;
   if (s ->> 'gold')::numeric <> v_gold - feed_galinha then raise exception 'FALHA 12: ração do novo ciclo não cobrada'; end if;
   if (s -> 'animals' -> 0 ->> 'ready_at')::double precision <= (s ->> 'farm_time')::double precision then raise exception 'FALHA 13: não começou outro ciclo'; end if;
@@ -63,7 +63,7 @@ begin
   perform public.ledger_post(a, -(select gold from public.wallets where user_id = a), 'test_spend');
   update public.animals set ready_at = 0 where user_id = a;
   set local role authenticated;
-  s := public.tend_farm('C1');
+  s := public.tend_farm('C2');
   if s -> 'animals' -> 0 ->> 'state' <> 'hungry' then raise exception 'FALHA 14: sem ouro não ficou com fome'; end if;
   s := public.sell_at_stall('ovo', 2, 'teste-ovo-venda-1');
   if (s ->> 'gold')::numeric <> round(2 * 410 * 0.7, 2) - feed_galinha then raise exception 'FALHA 15: venda do ovo ou volta da ração errada (ouro %)', s ->> 'gold'; end if;
@@ -113,7 +113,7 @@ begin
   delete from public.silo where user_id = a and item_id = 'ovo';
   update public.characters set energy = 0, parked = true where user_id = a;
   set local role authenticated;
-  s := public.tend_farm('C1');
+  s := public.tend_farm('C2');
   if (s -> 'silo' ->> 'ovo')::int not in (3, 4) then raise exception 'FALHA 25: Galinha Mítica com Lago coletou %', s -> 'silo' ->> 'ovo'; end if;
   reset role;
 

@@ -2010,6 +2010,140 @@
           ]
         }
       ]
+    },
+    {
+      "id": "v3_overlay",
+      "file": "v3/locked_plot_overlay.png",
+      "native": true,
+      "key": "locked_plot_overlay",
+      "dir": "map"
+    },
+    {
+      "id": "v3_cow",
+      "file": "v3/cow_walk.png",
+      "native": true,
+      "key": "animal_walk_cow",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_chicken",
+      "file": "v3/chicken_walk.png",
+      "native": true,
+      "key": "animal_walk_chicken",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_duck",
+      "file": "v3/duck_walk.png",
+      "native": true,
+      "key": "animal_walk_duck",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_rabbit",
+      "file": "v3/rabbit_walk.png",
+      "native": true,
+      "key": "animal_walk_rabbit",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_horse",
+      "file": "v3/horse_cart.png",
+      "native": true,
+      "key": "vehicle_horse_cart",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        96,
+        76
+      ]
+    },
+    {
+      "id": "v3_fish1",
+      "file": "v3/fish_1.png",
+      "native": true,
+      "key": "fish_1",
+      "dir": "fish"
+    },
+    {
+      "id": "v3_fish2",
+      "file": "v3/fish_2.png",
+      "native": true,
+      "key": "fish_2",
+      "dir": "fish"
+    },
+    {
+      "id": "v3_fish3",
+      "file": "v3/fish_3.png",
+      "native": true,
+      "key": "fish_3",
+      "dir": "fish"
+    },
+    {
+      "id": "v3_fish4",
+      "file": "v3/fish_4.png",
+      "native": true,
+      "key": "fish_4",
+      "dir": "fish"
+    },
+    {
+      "id": "v3_fish5",
+      "file": "v3/fish_5.png",
+      "native": true,
+      "key": "fish_5",
+      "dir": "fish"
+    },
+    {
+      "id": "v3_orchard_pit",
+      "file": "v3/orchard_pit.png",
+      "native": true,
+      "key": "orchard_pit",
+      "dir": "trees"
+    },
+    {
+      "id": "v3_orchard_sprout",
+      "file": "v3/orchard_sprout.png",
+      "native": true,
+      "key": "orchard_sprout",
+      "dir": "trees"
+    },
+    {
+      "id": "v3_orchard_young",
+      "file": "v3/orchard_young.png",
+      "native": true,
+      "key": "orchard_young",
+      "dir": "trees"
+    },
+    {
+      "id": "v3_orchard_adult",
+      "file": "v3/orchard_adult.png",
+      "native": true,
+      "key": "orchard_adult",
+      "dir": "trees"
     }
   ],
   "default_kernel": "nearest",

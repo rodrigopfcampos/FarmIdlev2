@@ -262,11 +262,11 @@ export class FarmScene extends Phaser.Scene {
     this.tweens.add({ targets: r, y: Math.round(y + rise), x: Math.round(x + (Math.random() - 0.5) * 6), alpha: 0, scale: 2, duration: ms, onComplete: () => r.destroy() });
   }
 
-  /** lavoura bloqueada: canteiro escurecido (a placa fica por cima) */
+  /** lavoura bloqueada: a terra do canteiro escurecida (a borda de pedra fica; a placa fica por cima) */
   private lockedOverlay(lot: Lot): Phaser.GameObjects.Graphics {
     const L = ANIM.locked_overlay;
     return this.add.graphics().fillStyle(Phaser.Display.Color.HexStringToColor(L.shade_hex).color, L.shade_alpha)
-      .fillPoints(lot.polygon.map(([x, y]) => new Phaser.Math.Vector2(x, y)), true).setDepth(0.5).setVisible(false);
+      .fillPoints(((lot as Lot & { soil_polygon?: Pt[] }).soil_polygon ?? lot.polygon).map(([x, y]) => new Phaser.Math.Vector2(x, y)), true).setDepth(0.5).setVisible(false);
   }
 
   /** limpeza terminou: o escuro some aos poucos e solta pedacinhos de terra e folha */

@@ -6318,8 +6318,8 @@
         ]
       ],
       "parked_vehicle_anchor": [
-        222,
-        276
+        262,
+        322
       ],
       "parked_vehicle_size": [
         96,
@@ -6327,22 +6327,23 @@
       ],
       "exit_path": [
         [
-          222,
-          276
+          262,
+          322
         ],
         [
-          150,
-          330
+          180,
+          345
         ],
         [
-          60,
-          382
+          90,
+          390
         ],
         [
           -60,
-          440
+          450
         ]
-      ]
+      ],
+      "parked_note": "veículo parado na frente da garagem (no chão de terra), não debaixo do telhado"
     }
   ]
 }

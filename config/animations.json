@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual · v3: mapa novo, animais, lago e veículos",
   "crop_sway": {
     "trigger": "sempre, muda plantada",
@@ -86,7 +86,6 @@
   "locked_overlay": {
     "trigger": "lote que não é seu ou em limpeza",
     "sprite": "locked_plot_overlay",
-    "cover_ratio": 0.85,
     "fade_ms": 600,
     "particles": 14,
     "particle_ms": 700,
@@ -97,7 +96,15 @@
       "#9aa36a"
     ],
     "priority": "jogo",
-    "reduced_motion": "some sem partículas"
+    "reduced_motion": "some sem partículas",
+    "layout": "grid",
+    "grid": [
+      2,
+      2
+    ],
+    "scale": 1,
+    "lift_px": 0,
+    "layout_note": "grid: cópias da arte em escala inteira ao longo do losango do lote (nítido); single: 1 cópia no centro"
   },
   "animals_wander": {
     "trigger": "animais no pasto (só visual: mostram que está produzindo)",

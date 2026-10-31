@@ -30,7 +30,7 @@ type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObj
   phase: number[]; tex: string; growAt: number };
 type Grain = { img: Phaser.GameObjects.Image; x: number; y: number; dx: number; born: number };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; look: string };
-type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Image; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
+type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Container; overlayW: number; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
@@ -91,10 +91,7 @@ export class FarmScene extends Phaser.Scene {
       // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
       const hasOverlay = (lot.type === 'lavoura' || lot.type === 'pomar') && this.textures.exists(ANIM.locked_overlay.sprite);
       const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
-      const overlay = hasOverlay
-        ? this.add.image(lot.center[0], lot.center[1], ANIM.locked_overlay.sprite).setOrigin(0.5, 0.47)
-          .setScale((polyW * ANIM.locked_overlay.cover_ratio) / 60).setDepth(depthOf(lot.center[1])).setVisible(false)
-        : undefined;
+      const overlay = hasOverlay ? this.lockedOverlay(lot) : undefined;
       const sign = lot.sign_anchor ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
       const timer = this.text().setOrigin(0.5, 0.5).setPosition(lot.center[0], lot.center[1] - 26).setDepth(19).setVisible(false);
       // Celeiro e Galinheiro já estão desenhados no mapa v3 (building_in_map): só o aviso fica por cima
@@ -110,7 +107,7 @@ export class FarmScene extends Phaser.Scene {
       // arte do animal pronto ao lado do aviso
       const badgeIcon = badge ? this.add.image(lot.building_anchor![0] - 14, lot.building_anchor![1] - 46, '__DEFAULT').setOrigin(1, 1).setDepth(21).setVisible(false) : undefined;
       if (badge) this.tweens.add({ targets: [badge, badgeIcon], y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-      this.decor.push({ lot, sign, overlay, overlayOn: null, timer, building, badge, badgeIcon });
+      this.decor.push({ lot, sign, overlay, overlayW: polyW, overlayOn: null, timer, building, badge, badgeIcon });
     }
 
     this.wx = new WeatherLayer(this, MAP_W, MAP_H, this.plots.map((p) => p.polygon), this.calm);
@@ -269,13 +266,30 @@ export class FarmScene extends Phaser.Scene {
     this.tweens.add({ targets: r, y: Math.round(y + rise), x: Math.round(x + (Math.random() - 0.5) * 6), alpha: 0, scale: 2, duration: ms, onComplete: () => r.destroy() });
   }
 
+  /** mato do lote bloqueado em escala inteira (pixel nítido): 1 arte no centro ou uma grade de artes
+   *  (layout "grid": colunas × linhas ao longo dos lados do losango do lote), ordenadas pelo Y */
+  private lockedOverlay(lot: Lot): Phaser.GameObjects.Container {
+    const L = ANIM.locked_overlay as typeof ANIM.locked_overlay & { layout?: string; grid?: number[]; scale?: number; lift_px?: number };
+    const [p0, p1, , p3] = lot.polygon; // esquerda, cima, (direita), baixo
+    const [cols, rows] = L.layout === 'grid' ? L.grid ?? [2, 2] : [1, 1];
+    const pts: Pt[] = [];
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const u = (i + 0.5) / cols, v = (j + 0.5) / rows;
+      pts.push([Math.round(p0[0] + u * (p3[0] - p0[0]) + v * (p1[0] - p0[0])), Math.round(p0[1] + u * (p3[1] - p0[1]) + v * (p1[1] - p0[1]))]);
+    }
+    pts.sort((a, b) => a[1] - b[1]);
+    const c = this.add.container(0, 0).setDepth(depthOf(lot.center[1])).setVisible(false);
+    for (const [x, y] of pts) c.add(this.add.image(x, y + (L.lift_px ?? 0), L.sprite).setOrigin(0.5, 0.6).setScale(L.scale ?? 1));
+    return c;
+  }
+
   /** mato sumindo quando a limpeza termina: some aos poucos e solta pedacinhos de terra e folha */
   private clearFx(d: LotDecor): void {
     const o = d.overlay!, L = ANIM.locked_overlay;
     this.tweens.add({ targets: o, alpha: 0, duration: L.fade_ms, onComplete: () => o.setVisible(false).setAlpha(1) });
     for (let k = 0; k < L.particles; k++) {
       const c = Phaser.Display.Color.HexStringToColor(L.particle_colors[k % L.particle_colors.length]).color;
-      const x = o.x + (Math.random() - 0.5) * o.displayWidth * 0.8, y = o.y + (Math.random() - 0.5) * o.displayHeight * 0.5;
+      const x = d.lot.center[0] + (Math.random() - 0.5) * d.overlayW * 0.8, y = d.lot.center[1] + (Math.random() - 0.5) * d.overlayW * 0.3;
       const r = this.add.rectangle(Math.round(x), Math.round(y), 2, 2, c, 1).setDepth(depthOf(y) + 0.001);
       this.tweens.add({ targets: r, x: Math.round(x + (Math.random() - 0.5) * 30), y: Math.round(y - 10 - Math.random() * 18), alpha: 0,
         duration: L.particle_ms, delay: Math.random() * 150, ease: 'Quad.Out', onComplete: () => r.destroy() });

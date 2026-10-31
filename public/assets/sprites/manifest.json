@@ -5360,17 +5360,6 @@
         1
       ]
     },
-    "orchard_pit": {
-      "file": "sprites/trees/orchard_pit.png",
-      "size": [
-        64,
-        64
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
     "orchard_sprout": {
       "file": "sprites/trees/orchard_sprout.png",
       "size": [

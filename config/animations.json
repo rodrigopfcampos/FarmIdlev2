@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual · v3: mapa novo, animais, lago e veículos",
   "crop_sway": {
     "trigger": "sempre, muda plantada",
@@ -84,7 +84,7 @@
     "reduced_motion": "troca a arte sem pulo"
   },
   "locked_overlay": {
-    "trigger": "lote que não é seu ou em limpeza",
+    "trigger": "lavoura que não é sua ou em limpeza (pomar e pastos sem mato)",
     "sprite": "locked_plot_overlay",
     "fade_ms": 600,
     "particles": 14,
@@ -225,7 +225,6 @@
   },
   "orchard": {
     "sprites": {
-      "pit": "orchard_pit",
       "sprout": "orchard_sprout",
       "young": "orchard_young",
       "adult": "orchard_adult"
@@ -233,6 +232,6 @@
     "sprout_until": 0.25,
     "fruit_ref_red": 182,
     "leaf_hex": "#497d33",
-    "note": "a fruta vermelha da arte adulta é pintada na cor de cada fruta (farm.json visual.fruit_hex); sem fruta, vira folha"
+    "note": "a fruta vermelha da arte adulta é pintada na cor de cada fruta (farm.json visual.fruit_hex); sem fruta, vira folha; vaga vazia não mostra nada (sem cova)"
   }
 }

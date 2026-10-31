@@ -2118,13 +2118,6 @@
       "dir": "fish"
     },
     {
-      "id": "v3_orchard_pit",
-      "file": "v3/orchard_pit.png",
-      "native": true,
-      "key": "orchard_pit",
-      "dir": "trees"
-    },
-    {
       "id": "v3_orchard_sprout",
       "file": "v3/orchard_sprout.png",
       "native": true,

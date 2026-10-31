@@ -39,7 +39,6 @@ export class FarmScene extends Phaser.Scene {
   private calm = reducedMotion();
   private trees: TreeView[] = [];
   private decor: LotDecor[] = [];
-  private shade!: Phaser.GameObjects.Graphics;
   private hover!: Phaser.GameObjects.Graphics;
   private label!: Phaser.GameObjects.Text;
   private downAt: { x: number; y: number } | null = null;
@@ -67,7 +66,6 @@ export class FarmScene extends Phaser.Scene {
 
   create(): void {
     this.add.image(0, 0, 'farm_base_map').setOrigin(0, 0);
-    this.shade = this.add.graphics().setDepth(0.5);
     this.hover = this.add.graphics().setDepth(5);
     this.label = this.text().setDepth(20).setVisible(false);
 
@@ -89,7 +87,7 @@ export class FarmScene extends Phaser.Scene {
         this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '' });
       });
       // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
-      const hasOverlay = (lot.type === 'lavoura' || lot.type === 'pomar') && this.textures.exists(ANIM.locked_overlay.sprite);
+      const hasOverlay = lot.type === 'lavoura' && this.textures.exists(ANIM.locked_overlay.sprite);
       const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
       const overlay = hasOverlay ? this.lockedOverlay(lot) : undefined;
       const sign = lot.sign_anchor ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
@@ -168,9 +166,7 @@ export class FarmScene extends Phaser.Scene {
   private applyState(s: FarmState): void {
     this.owned = new Set(s.lots.map((l) => l.lot_id));
     this.cleaning = new Map(s.lots.filter((l) => l.ready_at > store.clock.farmNow()).map((l) => [l.lot_id, l.ready_at]));
-    // lotes que ainda não são seus ficam escurecidos
-    this.shade.clear().fillStyle(0x140c08, 0.5);
-    for (const lot of LOTS) if (!this.owned.has(lot.id)) this.shade.fillPoints(lot.polygon.map(([x, y]) => new Phaser.Math.Vector2(x, y)), true);
+    // sem escurecer os lotes que não são seus (o dono não quer marcação no terreno)
     this.refreshDecor();
     const PET_EMOJI: Record<string, string> = { cachorro: '🐶', gato: '🐱', papagaio: '🦜' };
     const petKey = s.pet ? petSprite(store.manifest, s.pet.id, this.petFrame) : null;
@@ -439,7 +435,7 @@ export class FarmScene extends Phaser.Scene {
       const key = `${look}:${tr?.fruit_id ?? ''}`;
       if (key === v.look) continue;
       const O = ANIM.orchard.sprites;
-      const tex = look === 'pit' ? O.pit : look === 'sprout' ? O.sprout : look === 'young' ? O.young
+      const tex = look === 'pit' ? '' : look === 'sprout' ? O.sprout : look === 'young' ? O.young
         : look === 'adult' ? 'orchard_adult_leaf' : look === 'fruit' ? `orchard_adult_${tr!.fruit_id}` : '';
       v.tree.setVisible(!!tex && this.textures.exists(tex));
       if (tex && this.textures.exists(tex)) v.tree.setTexture(tex);

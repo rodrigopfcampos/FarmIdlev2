@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual · v3: mapa novo, animais, lago e veículos",
   "crop_sway": {
     "trigger": "sempre, muda plantada",
@@ -97,14 +97,14 @@
     ],
     "priority": "jogo",
     "reduced_motion": "some sem partículas",
-    "layout": "grid",
+    "layout": "single",
     "grid": [
       2,
       2
     ],
     "scale": 1,
     "lift_px": 0,
-    "layout_note": "grid: cópias da arte em escala inteira ao longo do losango do lote (nítido); single: 1 cópia no centro"
+    "layout_note": "1 arte no centro do lote, no tamanho original (sem esticar); arte ideal 192×128 com o losango de 176×88"
   },
   "animals_wander": {
     "trigger": "animais no pasto (só visual: mostram que está produzindo)",

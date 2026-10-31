@@ -4,11 +4,14 @@ select set_config('vif.weather', 'off', false);
 select set_config('vif.missions', 'off', false);
 do $$
 declare
-  a uuid := gen_random_uuid(); adm uuid := gen_random_uuid(); s jsonb; n_ledger int; v_start numeric;
+  a uuid := gen_random_uuid(); b uuid := gen_random_uuid(); adm uuid := gen_random_uuid(); s jsonb; n_ledger int; v_start numeric;
 begin
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at) values
     (a, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'v3-a-' || a || '@exemplo.test', '{"nickname":"V3a","birth_date":"1990-01-01"}', now(), now()),
+    (b, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'v3-b-' || b || '@exemplo.test', '{"nickname":"V3b","birth_date":"1990-01-01"}', now(), now()),
     (adm, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'v3-adm-' || adm || '@exemplo.test', '{"nickname":"V3adm","birth_date":"1990-01-01"}', now(), now());
+  -- amizade com outro jogador (aponta para a linha da fazenda): zerar não pode quebrar nem apagar
+  insert into public.friendships (user_a, user_b, requested_by, status) values (least(a, b), greatest(a, b), a, 'accepted');
   update public.profiles set is_admin = true where id = adm;
   v_start := (public.config_get('levels') ->> 'starting_gold')::numeric;
 
@@ -60,6 +63,7 @@ begin
   if (select sum(amount) from public.ledger where user_id = a) <> (select gold from public.wallets where user_id = a) then raise exception 'FALHA 15: ledger × carteira'; end if;
   if (select count(*) from public.plots where user_id = a) <> 8 then raise exception 'FALHA 16: canteiros %', (select count(*) from public.plots where user_id = a); end if;
   if not exists (select 1 from public.audit_log where target_user_id = a and action = 'admin.reset_farm') then raise exception 'FALHA 17: sem auditoria'; end if;
+  if not exists (select 1 from public.friendships where user_a = least(a, b) and user_b = greatest(a, b)) then raise exception 'FALHA 19: a amizade sumiu'; end if;
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
   set local role authenticated;
   s := public.get_farm();

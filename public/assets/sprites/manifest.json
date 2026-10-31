@@ -5214,17 +5214,6 @@
         1
       ]
     },
-    "locked_plot_overlay": {
-      "file": "sprites/map/locked_plot_overlay.png",
-      "size": [
-        64,
-        64
-      ],
-      "anchor": [
-        0.5,
-        1
-      ]
-    },
     "animal_walk_cow": {
       "file": "sprites/animals/animal_walk_cow.png",
       "size": [

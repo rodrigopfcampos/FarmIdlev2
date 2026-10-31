@@ -2012,13 +2012,6 @@
       ]
     },
     {
-      "id": "v3_overlay",
-      "file": "v3/locked_plot_overlay.png",
-      "native": true,
-      "key": "locked_plot_overlay",
-      "dir": "map"
-    },
-    {
       "id": "v3_cow",
       "file": "v3/cow_walk.png",
       "native": true,

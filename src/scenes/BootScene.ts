@@ -8,7 +8,7 @@ import { store } from '../farm/store';
 import { bus } from '../core/bus';
 
 const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_', 'pet_', 'vehicle_', 'animal_', 'fish_', 'orchard_'];
-const MAP_KEYS = ['ui_coin', 'lot_sign', 'locked_plot_overlay'];
+const MAP_KEYS = ['ui_coin', 'lot_sign'];
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('boot'); }

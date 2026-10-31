@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "source": "skill animacao-vif · fichas das animações (tempo por quadro, pixels inteiros); só visual · v3: mapa novo, animais, lago e veículos",
   "crop_sway": {
     "trigger": "sempre, muda plantada",
@@ -84,8 +84,9 @@
     "reduced_motion": "troca a arte sem pulo"
   },
   "locked_overlay": {
-    "trigger": "lavoura que não é sua ou em limpeza (pomar e pastos sem mato)",
-    "sprite": "locked_plot_overlay",
+    "trigger": "lavoura que não é sua ou em limpeza: canteiro escurecido com a placa (pomar e pastos sem marcação)",
+    "shade_hex": "#140c08",
+    "shade_alpha": 0.5,
     "fade_ms": 600,
     "particles": 14,
     "particle_ms": 700,
@@ -96,15 +97,7 @@
       "#9aa36a"
     ],
     "priority": "jogo",
-    "reduced_motion": "some sem partículas",
-    "layout": "single",
-    "grid": [
-      2,
-      2
-    ],
-    "scale": 1,
-    "lift_px": 0,
-    "layout_note": "1 arte no centro do lote, no tamanho original (sem esticar); arte ideal 192×128 com o losango de 176×88"
+    "reduced_motion": "some sem partículas"
   },
   "animals_wander": {
     "trigger": "animais no pasto (só visual: mostram que está produzindo)",

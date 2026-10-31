@@ -30,7 +30,7 @@ type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObj
   phase: number[]; tex: string; growAt: number };
 type Grain = { img: Phaser.GameObjects.Image; x: number; y: number; dx: number; born: number };
 type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; look: string };
-type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Container; overlayW: number; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
+type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Graphics; overlayW: number; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
 export class FarmScene extends Phaser.Scene {
@@ -87,7 +87,7 @@ export class FarmScene extends Phaser.Scene {
         this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '' });
       });
       // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
-      const hasOverlay = lot.type === 'lavoura' && this.textures.exists(ANIM.locked_overlay.sprite);
+      const hasOverlay = lot.type === 'lavoura';
       const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
       const overlay = hasOverlay ? this.lockedOverlay(lot) : undefined;
       const sign = lot.sign_anchor ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
@@ -262,24 +262,14 @@ export class FarmScene extends Phaser.Scene {
     this.tweens.add({ targets: r, y: Math.round(y + rise), x: Math.round(x + (Math.random() - 0.5) * 6), alpha: 0, scale: 2, duration: ms, onComplete: () => r.destroy() });
   }
 
-  /** mato do lote bloqueado em escala inteira (pixel nítido): 1 arte no centro ou uma grade de artes
-   *  (layout "grid": colunas × linhas ao longo dos lados do losango do lote), ordenadas pelo Y */
-  private lockedOverlay(lot: Lot): Phaser.GameObjects.Container {
-    const L = ANIM.locked_overlay as typeof ANIM.locked_overlay & { layout?: string; grid?: number[]; scale?: number; lift_px?: number };
-    const [p0, p1, , p3] = lot.polygon; // esquerda, cima, (direita), baixo
-    const [cols, rows] = L.layout === 'grid' ? L.grid ?? [2, 2] : [1, 1];
-    const pts: Pt[] = [];
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const u = (i + 0.5) / cols, v = (j + 0.5) / rows;
-      pts.push([Math.round(p0[0] + u * (p3[0] - p0[0]) + v * (p1[0] - p0[0])), Math.round(p0[1] + u * (p3[1] - p0[1]) + v * (p1[1] - p0[1]))]);
-    }
-    pts.sort((a, b) => a[1] - b[1]);
-    const c = this.add.container(0, 0).setDepth(depthOf(lot.center[1])).setVisible(false);
-    for (const [x, y] of pts) c.add(this.add.image(x, y + (L.lift_px ?? 0), L.sprite).setOrigin(0.5, 0.6).setScale(L.scale ?? 1));
-    return c;
+  /** lavoura bloqueada: canteiro escurecido (a placa fica por cima) */
+  private lockedOverlay(lot: Lot): Phaser.GameObjects.Graphics {
+    const L = ANIM.locked_overlay;
+    return this.add.graphics().fillStyle(Phaser.Display.Color.HexStringToColor(L.shade_hex).color, L.shade_alpha)
+      .fillPoints(lot.polygon.map(([x, y]) => new Phaser.Math.Vector2(x, y)), true).setDepth(0.5).setVisible(false);
   }
 
-  /** mato sumindo quando a limpeza termina: some aos poucos e solta pedacinhos de terra e folha */
+  /** limpeza terminou: o escuro some aos poucos e solta pedacinhos de terra e folha */
   private clearFx(d: LotDecor): void {
     const o = d.overlay!, L = ANIM.locked_overlay;
     this.tweens.add({ targets: o, alpha: 0, duration: L.fade_ms, onComplete: () => o.setVisible(false).setAlpha(1) });

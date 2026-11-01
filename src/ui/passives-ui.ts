@@ -72,37 +72,52 @@ function edges(br: AccountBranch): [string, string][] {
   const [a, b, c, d, u] = br.nodes.map((n) => n.id);
   return [[ACCOUNT_TREE.root.id, a], [a, b], [a, c], [b, d], [c, d], [d, u]];
 }
-const posOf = (id: string): [number, number] => id === ACCOUNT_TREE.root.id ? ACCOUNT_TREE.root.pos
-  : ACCOUNT_TREE.branches.flatMap((b) => b.nodes).find((n) => n.id === id)!.pos;
+// espaçamento vertical condensado (a árvore fica mais junta): y da config × 0,8, com folga em cima para os nomes
+const SQUEEZE = 0.8, TOP = 70;
+const Y = (y: number) => Math.round(TOP + (y - 80) * SQUEEZE);
+const posOf = (id: string): [number, number] => {
+  const p = id === ACCOUNT_TREE.root.id ? ACCOUNT_TREE.root.pos : ACCOUNT_TREE.branches.flatMap((b) => b.nodes).find((n) => n.id === id)!.pos;
+  return [p[0], Y(p[1])];
+};
+// linha de cada caminho: Natureza = cipó curvo e brilhante; Comércio = ouro sólido; Resistência = vermelha robusta
+function edgePath(br: AccountBranch, x1: number, y1: number, x2: number, y2: number): string {
+  if (br.id !== 'natureza') return `M${x1} ${y1} L${x2} ${y2}`;
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
+  const off = 14; // curva para o lado (como uma raiz)
+  return `M${x1} ${y1} Q${Math.round(mx - (dy / len) * off)} ${Math.round(my + (dx / len) * off)} ${x2} ${y2}`;
+}
 
 function treeSvg(s: FarmState): string {
   const skills = s.account_tree?.skills ?? {};
   const free = accountPoints(s.level, skills).free;
-  const [W, H] = ACCOUNT_TREE.canvas;
+  const W = ACCOUNT_TREE.canvas[0], H = Y(ACCOUNT_TREE.root.pos[1]) + 40;
   let lines = '', nodes = '';
   for (const br of ACCOUNT_TREE.branches) {
     for (const [from, to] of edges(br)) {
       const [x1, y1] = posOf(from), [x2, y2] = posOf(to);
-      const st = passiveState(to, skills, free).state;
-      const cls = st === 'locked' ? 'off' : (skills[to] ?? 0) > 0 ? 'done' : 'lit';
+      // a linha só acende quando o nó de onde ela sai tem pelo menos 1 ponto (a Fazenda sempre está acesa)
+      const on = from === ACCOUNT_TREE.root.id || (skills[from] ?? 0) > 0;
       const anim = justBought === to ? ' fill' : '';
-      lines += `<line class="pl ${cls}${anim}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="--bc:${br.color_hex}" pathLength="100"/>`;
+      lines += `<path class="pl ${br.id} ${on ? 'on' : 'off'}${anim}" d="${edgePath(br, x1, y1, x2, y2)}" style="--bc:${br.color_hex}" pathLength="100"/>`;
     }
     for (const n of br.nodes) {
       const st = passiveState(n.id, skills, free).state;
-      const r = n.ultimate ? 30 : 22;
+      const r = n.ultimate ? 28 : 21, lv = skills[n.id] ?? 0;
+      const [x, y] = posOf(n.id);
       const sparks = st === 'maxed' ? [0, 1, 2].map((k) => `<circle class="spark-dot" r="1.8" cx="${(k - 1) * r * 0.7}" cy="${-r}" style="animation-delay:${k * 0.5}s"/>`).join('') : '';
-      nodes += `<g class="pn ${st}${n.ultimate ? ' ult' : ''}${justBought === n.id ? ' shake' : ''}" transform="translate(${n.pos[0]} ${n.pos[1]})" style="--bc:${br.color_hex}"
-          data-node="${n.id}" tabindex="0" role="button" aria-label="${n.name_pt}">
+      // pontos investidos: quadradinhos embaixo do losango, na cor do caminho
+      const pw = 7, gap = 3, tot = n.max * pw + (n.max - 1) * gap;
+      const pips = Array.from({ length: n.max }, (_, k) => `<rect class="pip ${k < lv ? 'got' : ''}" x="${-tot / 2 + k * (pw + gap)}" y="${r + 7}" width="${pw}" height="${pw}"/>`).join('');
+      nodes += `<g class="pn ${st}${n.ultimate ? ' ult' : ''}${justBought === n.id ? ' shake' : ''}" transform="translate(${x} ${y})" style="--bc:${br.color_hex}"
+          data-node="${n.id}" tabindex="0" role="button" aria-label="${n.name_pt} ${lv} de ${n.max}">
         <polygon class="halo" points="0,${-r - 6} ${r + 6},0 0,${r + 6} ${-r - 6},0"/>
         <polygon class="dia" points="0,${-r} ${r},0 0,${r} ${-r},0"/>
-        <text class="ico" y="1" font-size="${n.ultimate ? 26 : 19}">${n.icon}</text>${sparks}</g>`;
+        <text class="ico" y="1" font-size="${n.ultimate ? 24 : 18}">${n.icon}</text>${sparks}<g class="pips">${pips}</g></g>`;
     }
   }
-  const [rx, ry] = ACCOUNT_TREE.root.pos;
-  nodes += `<g class="pn root" transform="translate(${rx} ${ry})"><circle class="dia" r="26"/><text class="ico" y="1" font-size="24">${ACCOUNT_TREE.root.icon}</text></g>`;
-  // nome dos caminhos no alto de cada ramo
-  const labels = ACCOUNT_TREE.branches.map((br) => `<text class="bl" x="${br.nodes[4].pos[0]}" y="${br.nodes[4].pos[1] - 46}" style="fill:${br.color_hex}">${br.name_pt}</text>`).join('');
+  const [rx, ry] = posOf(ACCOUNT_TREE.root.id);
+  nodes += `<g class="pn root" transform="translate(${rx} ${ry})"><circle class="dia" r="25"/><text class="ico" y="1" font-size="22">${ACCOUNT_TREE.root.icon}</text></g>`;
+  const labels = ACCOUNT_TREE.branches.map((br) => { const [x, y] = posOf(br.nodes[4].id); return `<text class="bl" x="${x}" y="${y - 40}" style="fill:${br.color_hex}">${br.name_pt}</text>`; }).join('');
   return `<svg class="ptree" viewBox="0 0 ${W} ${H}" role="img" aria-label="Árvore de Passivas">${lines}${labels}${nodes}</svg>`;
 }
 
@@ -150,6 +165,7 @@ export function openPassives(ctx: PassivesCtx): void {
       g.addEventListener('blur', () => { tip.hidden = true; });
       const buy = () => {
         const id = g.dataset.node!, st = passiveState(id, store.state!.account_tree!.skills, accountPoints(store.state!.level, store.state!.account_tree!.skills).free).state;
+        g.classList.remove('tap'); void g.getBoundingClientRect(); g.classList.add('tap'); // tremor de clique (100 ms)
         if (st !== 'available' && st !== 'bought') { place(g); return; }
         justBought = id;
         pling();

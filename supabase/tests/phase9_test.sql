@@ -86,7 +86,7 @@ begin
   -- 5. antitrapaça: cada regra gera seu alerta
   perform public.ledger_post(a, public.ref_income(30) * 5, 'stall_sale', '{}');                     -- renda impossível (para o nível 30 abaixo)
   update public.farms set level = 30 where user_id = a;                                             -- nível 30 com conta de 0 dia
-  insert into public.cards (user_id, card_id, rarity, origin) select a, 'sol_de_verao', 'common', 'daily_pack' from generate_series(1, 11);
+  insert into public.cards (user_id, card_id, rarity, origin) select a, 'sol', 'common', 'daily_pack' from generate_series(1, 11);
   insert into public.expeditions (user_id, convoy_id, vehicle_id, route_id, cargo, cargo_value, minigame, chance, started_at, returns_at, status, outcome)
     select a, gen_random_uuid(), 'carroca', 'feira', '{}', 0, 'done', 0.3, 0, 0, 'back', 'success' from generate_series(1, 30);
   insert into public.action_times (user_id, at) select a, now() - make_interval(secs => g) from generate_series(1, 80) g;   -- 1 ação por segundo, exata

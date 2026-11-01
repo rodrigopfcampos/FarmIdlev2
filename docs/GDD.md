@@ -231,29 +231,29 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 3 | A4 | Lavoura | 5 | 2.900 | Não | 1 h 36 | 0,5 |
 | 4 | A2 | Lavoura | 7 | 7.400 | Não | 1 h 48 | 0,9 |
 | 5 | C1 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
-| 6 | A6 | Lavoura | 10 | 38.000 | Não | 2 h 12 | 1,8 |
-| 7 | P1 | Pomar | 11 | 49.000 | Não | 2 h 24 | 2,3 |
-| 8 | A7 | Lavoura | 13 | 110.000 | Não | 2 h 36 | 4,8 |
-| 9 | A8 | Lavoura | 14 | 170.000 | Não | 2 h 48 | 5,8 |
-| 10 | P2 | Pomar | 16 | 350.000 | Não | 3 h 00 | 6,9 |
-| 11 | A5 | Lavoura | 17 | 480.000 | Não | 3 h 12 | 9,3 |
-| 12 | A10 | Lavoura | 19 | 770.000 | Não | 3 h 24 | 10,9 |
+| 6 | A6 | Lavoura | 10 | 40.000 | Não | 2 h 12 | 1,8 |
+| 7 | P1 | Pomar | 11 | 56.000 | Não | 2 h 24 | 2,3 |
+| 8 | A7 | Lavoura | 13 | 120.000 | Não | 2 h 36 | 4,8 |
+| 9 | A8 | Lavoura | 14 | 210.000 | Não | 2 h 48 | 5,5 |
+| 10 | P2 | Pomar | 16 | 380.000 | Não | 3 h 00 | 6,8 |
+| 11 | A5 | Lavoura | 17 | 530.000 | Não | 3 h 12 | 9,3 |
+| 12 | A10 | Lavoura | 19 | 810.000 | Não | 3 h 24 | 10,9 |
 | 13 | P3 | Pomar | 20 | 940.000 | Não | 3 h 36 | 13,3 |
-| 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 3 h 48 | 17,3 |
+| 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 3 h 48 | 17,5 |
 | 15 | A12 | Lavoura | 23 | 1.900.000 | Não | 4 h 00 | 18,8 |
-| 16 | P4 | Pomar | 25 | 3.000.000 | Não | 4 h 12 | 21,8 |
-| 17 | A13 | Lavoura | 27 | 4.900.000 | Não | 4 h 24 | 25,3 |
-| 18 | A20 | Lavoura | 28 | 5.900.000 | Não | 4 h 36 | 27,8 |
-| 19 | L | Lago | 30 | 8.300.000 | Sim | 4 h 48 | 33,3 |
-| 20 | P5 | Pomar | 31 | 10.000.000 | Sim | 5 h 00 | 37,9 |
+| 16 | P4 | Pomar | 25 | 2.800.000 | Não | 4 h 12 | 20,8 |
+| 17 | A13 | Lavoura | 27 | 4.600.000 | Não | 4 h 24 | 25,3 |
+| 18 | A20 | Lavoura | 28 | 5.600.000 | Não | 4 h 36 | 27,8 |
+| 19 | L | Lago | 30 | 7.600.000 | Sim | 4 h 48 | 33,3 |
+| 20 | P5 | Pomar | 31 | 9.200.000 | Sim | 5 h 00 | 35,8 |
 | 21 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 12 | 41,3 |
-| 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 5 h 24 | 44,5 |
-| 23 | P6 | Pomar | 36 | 27.000.000 | Sim | 5 h 36 | 50,3 |
-| 24 | A16 | Lavoura | 37 | 33.000.000 | Sim | 5 h 48 | 53,5 |
-| 25 | A17 | Lavoura | 39 | 43.000.000 | Sim | 6 h 00 | 60,8 |
-| 26 | A18 | Lavoura | 40 | 55.000.000 | Sim | 6 h 12 | 64,5 |
-| 27 | A19 | Lavoura | 42 | 77.000.000 | Sim | 6 h 24 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 95.000.000 | Sim | 6 h 36 | 79,8 |
+| 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 5 h 24 | 44,3 |
+| 23 | P6 | Pomar | 36 | 26.000.000 | Sim | 5 h 36 | 50,3 |
+| 24 | A16 | Lavoura | 37 | 30.000.000 | Sim | 5 h 48 | 53,5 |
+| 25 | A17 | Lavoura | 39 | 40.000.000 | Sim | 6 h 00 | 60,8 |
+| 26 | A18 | Lavoura | 40 | 51.000.000 | Sim | 6 h 12 | 64,5 |
+| 27 | A19 | Lavoura | 42 | 69.000.000 | Sim | 6 h 24 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 86.000.000 | Sim | 6 h 36 | 78,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -363,8 +363,8 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Agricultor | Enxada | Plantar e colher a lavoura | 1 (inicial) | grátis |
 | Rancheira | Regador | Animais e pomar | 3 | 5.800 |
 | Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
-| Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 120.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 400.000 |
+| Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 130.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 510.000 |
 | Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 170 | 1.700 | 7.400 | 20.000 | 46.000 | 94.000 | 170.000 | 300.000 | 460.000 | 540.000 |
+| Salário base/dia (ouro) | 180 | 1.700 | 8.800 | 20.000 | 44.000 | 86.000 | 160.000 | 280.000 | 440.000 | 520.000 |
 
 ### Nível do personagem
 
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 852.720 | 2.900.000 |
-| 2 | 50 | 2.400 | | 27 | 981.920 | 3.400.000 |
-| 3 | 65 | 3.900 | | 28 | 1.149.880 | 3.700.000 |
-| 4 | 90 | 5.800 | | 29 | 1.292.000 | 4.100.000 |
-| 5 | 870 | 8.700 | | 30 | 1.292.000 | 4.700.000 |
-| 6 | 1.280 | 13.000 | | 31 | 1.380.600 | 5.100.000 |
-| 7 | 2.040 | 20.000 | | 32 | 1.593.000 | 5.800.000 |
-| 8 | 3.150 | 29.000 | | 33 | 1.699.200 | 6.500.000 |
-| 9 | 5.310 | 54.000 | | 34 | 1.911.600 | 7.200.000 |
-| 10 | 19.380 | 83.000 | | 35 | 2.230.200 | 8.400.000 |
-| 11 | 32.300 | 98.000 | | 36 | 2.548.800 | 10.000.000 |
-| 12 | 46.510 | 130.000 | | 37 | 2.867.400 | 11.000.000 |
-| 13 | 67.180 | 190.000 | | 38 | 3.292.200 | 12.000.000 |
-| 14 | 85.270 | 270.000 | | 39 | 3.717.000 | 13.000.000 |
-| 15 | 109.820 | 370.000 | | 40 | 4.141.800 | 15.000.000 |
-| 16 | 142.120 | 510.000 | | 41 | 4.566.600 | 17.000.000 |
-| 17 | 167.960 | 630.000 | | 42 | 4.991.400 | 19.000.000 |
-| 18 | 206.720 | 760.000 | | 43 | 5.628.600 | 21.000.000 |
-| 19 | 258.400 | 900.000 | | 44 | 6.159.600 | 22.000.000 |
-| 20 | 310.080 | 1.000.000 | | 45 | 6.796.800 | 23.000.000 |
-| 21 | 361.760 | 1.200.000 | | 46 | 7.327.800 | 24.000.000 |
-| 22 | 426.360 | 1.400.000 | | 47 | 7.752.600 | 25.000.000 |
-| 23 | 516.800 | 1.600.000 | | 48 | 8.177.400 | 25.000.000 |
-| 24 | 620.160 | 1.900.000 | | 49 | 8.389.800 | 26.000.000 |
-| 25 | 736.440 | 2.300.000 | | 50 | — | 27.000.000 |
+| 1 | 40 | 1.900 | | 26 | 861.960 | 2.700.000 |
+| 2 | 50 | 2.400 | | 27 | 992.560 | 3.200.000 |
+| 3 | 65 | 3.900 | | 28 | 1.162.340 | 3.500.000 |
+| 4 | 90 | 5.800 | | 29 | 1.306.000 | 3.900.000 |
+| 5 | 870 | 8.800 | | 30 | 1.306.000 | 4.300.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.381.900 | 4.700.000 |
+| 7 | 2.040 | 20.000 | | 32 | 1.594.500 | 5.500.000 |
+| 8 | 3.150 | 29.000 | | 33 | 1.700.800 | 6.300.000 |
+| 9 | 5.310 | 55.000 | | 34 | 1.913.400 | 7.000.000 |
+| 10 | 19.590 | 87.000 | | 35 | 2.232.300 | 8.100.000 |
+| 11 | 32.650 | 110.000 | | 36 | 2.551.200 | 9.800.000 |
+| 12 | 47.020 | 140.000 | | 37 | 2.870.100 | 10.000.000 |
+| 13 | 67.910 | 210.000 | | 38 | 3.295.300 | 11.000.000 |
+| 14 | 86.200 | 340.000 | | 39 | 3.720.500 | 12.000.000 |
+| 15 | 111.010 | 440.000 | | 40 | 4.145.700 | 14.000.000 |
+| 16 | 143.660 | 550.000 | | 41 | 4.570.900 | 15.000.000 |
+| 17 | 169.780 | 690.000 | | 42 | 4.996.100 | 17.000.000 |
+| 18 | 208.960 | 840.000 | | 43 | 5.633.900 | 19.000.000 |
+| 19 | 261.200 | 950.000 | | 44 | 6.165.400 | 21.000.000 |
+| 20 | 313.440 | 1.000.000 | | 45 | 6.803.200 | 22.000.000 |
+| 21 | 365.680 | 1.200.000 | | 46 | 7.334.700 | 23.000.000 |
+| 22 | 430.980 | 1.400.000 | | 47 | 7.759.900 | 24.000.000 |
+| 23 | 522.400 | 1.600.000 | | 48 | 8.185.100 | 24.000.000 |
+| 24 | 626.880 | 1.900.000 | | 49 | 8.397.700 | 25.000.000 |
+| 25 | 744.420 | 2.200.000 | | 50 | — | 26.000.000 |
 
 ### Raridade global 🆕
 
@@ -658,6 +658,11 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - **Ranking semanal adiado** pelo dono; entra numa parte futura.
 - **Encomenda da Vila** (semanal, segunda 00:00 UTC): 3 pedidos (um cultivo de cada faixa de nível 1–12, 13–30, 31–50) valem 1,5×; qualquer outro produto do Silo (preço da Feira) e ouro também contam. Tudo o que é doado some do jogo. Pontos = horas da renda de referência do próprio nível. Meta = 8 pontos por jogador ativo na semana (mínimo 16). Prêmio: meta batida e 2+ pontos = 1 carta e o título "Ajudante da Vila"; top 10% dos que passaram do mínimo = +1 carta e "Herói da Vila" (mesmo sem a meta). O título vale por uma semana.
 - **Estrelas da Vila**: depois do nível 50, cada 10% do XP do nível 49 vira 1 Estrela. Pacote = 5 Estrelas + 1 dia de renda (2 por semana, conta para a garantia); semente Incomum/Rara/Lendária = 1/2/4 Estrelas + 0,1/0,2/0,4 dia de renda (5 por semana). Mítico não se compra.
+
+### Reformulação v3 🆕 (01/11/2026) — parte R2 (cartas)
+- 20 cartas (tabela na seção 11, "As 20 cartas"): vida em dias na mão, mão de 3 a 5, presa 1 dia, guarda o que sobra ao sair, Comum repara com ouro (2 dias por 5% da renda de 1 dia), as outras somem; álbum registra sozinho.
+- **Garagem não vende**: Carro, Picape e Caminhão liberam de graça nos níveis 6, 16 e 30. A carta de Veículo dá carga, lucro, tempo, roubo e jackpot às expedições que partem com ela, e o veículo aparece com a cara da carta.
+- O simulador ainda não conta as cartas; com a Garagem sem venda o R foi recalibrado (mapa completo do regular no dia ~78).
 
 ### Reformulação v3 🆕 (31/10/2026) — parte R1 (mapa e visual)
 - Mapa novo `Novo mapa.png` (1672×940): 29 lotes — 20 lavouras, 6 pomares (faixa de grama à direita, 4 árvores cada), Celeiro no pasto de cima (C1, vacas), Galinheiro no de baixo (C2, aves e coelho) e Lago. O A9 deixou de existir (virou o Celeiro). Prédios já desenhados no fundo.
@@ -740,34 +745,44 @@ São **10 cartas**, cada uma em 5 raridades (50 versões). Usar uma carta liga u
 - Banco de diárias (exemplos): colher X unidades; enviar 2 expedições; coletar X produtos animais; ajudar 2 vizinhos; vender na Barraca (ou no mercado, quando existir); plantar um cultivo do seu nível; manter 3 personagens em campo por 2 h; consertar um veículo.
 - Banco de semanais (exemplos): 10 expedições; 1 expedição Capital ou mais longe com sucesso; ganhar X de ouro; subir 1 nível de personagem; ajudar 10 vizinhos; estar com produção ativa em 3 eventos noturnos; vender 5 anúncios no mercado (só depois da fase 8 🆕).
 
-### As 10 cartas e seus buffs
+### As 20 cartas (v3) 🆕
 
-Usar uma carta liga o buff por um tempo que depende da raridade: **Comum 1 h, Incomum 1 h 20, Raro 1 h 40, Lendário 2 h, Mítico 2 h 30**. Até 3 buffs ativos ao mesmo tempo (os 3 Slots de Cartas no topo da tela), de cartas diferentes. Usar a mesma carta de novo só troca o buff se a raridade for igual ou maior, e reinicia o tempo. O tempo corre com o jogo fechado.
+A carta funciona **enquanto está na mão** e gasta os dias dela online ou offline: **Comum 2 dias, Incomum e Rara 3 dias, Lendária e Mítica 4 dias**. A mão começa com **3 cartas**, ganha a 4ª no nível 15 e a 5ª no nível 30, sem repetir a mesma carta. Depois de equipada, a carta fica **presa pelo menos 1 dia**; ao tirar, ela guarda os dias que sobraram. Quando os dias acabam, a **Comum fica gasta** e volta com **reparo em ouro** (devolve 2 dias por 5% da renda de 1 dia do nível); as outras **somem**. A fazenda, os 6 personagens e a Carroça funcionam sem cartas: elas são multiplicadores temporários.
 
-Cada raridade foi ajustada para render **o mesmo em todas as cartas**, medido em minutos da produção normal do próprio jogador: Comum ≈6 min, Incomum ≈12, Raro ≈22, Lendário ≈38, Mítico ≈65. Por isso nenhuma carta é "a melhor": a escolha depende do momento.
+Os valores são bem menores que os da v2 porque a carta fica dias na mão (e até 5 ao mesmo tempo). Tetos da seção abaixo continuam valendo.
 
-| Carta | O que o buff faz | Comum (1 h) | Incomum (1 h 20) | Raro (1 h 40) | Lendário (2 h) | Mítico (2 h 30) |
+| Carta | O que faz | Comum (2 d) | Incomum (3 d) | Rara (3 d) | Lendária (4 d) | Mítica (4 d) |
 | --- | --- | --- | --- | --- | --- | --- |
-| Sol de Verão | Velocidade de crescimento da lavoura e do pomar | +15% | +20% | +30% | +40% | +60% |
-| Cesta Dourada | Chance de Colheita Dourada (vale 2,5×) na lavoura e no pomar | +10% | +13% | +20% | +28% | +40% |
-| Rebanho Feliz | Produção animal | +40% | +60% | +90% | +130% | +175% |
-| Moeda da Sorte | Ouro bônus = % do valor (preço da Feira) de tudo que for produzido no buff, pago no fim | 13% | 20% | 30% | 42% | 58% |
-| Estrada Livre | Expedições lançadas no buff: sucesso / perda na falha / chance de crítico | +3 / −10% / — | +5 / −20% / +2 | +8 / −35% / +7 | +12 / −60% / +16 | +16 / sem perda / +36 |
-| Coruja Sábia | XP da conta e dos personagens | +15% | +22% | +32% | +45% | +62% |
-| Ampulheta | Tudo anda mais rápido: lavoura, pomar, animais e limpeza de lote | +10% | +15% | +22% | +32% | +43% |
-| Trevo de Quatro Folhas | Expedições lançadas no buff: chance de crítico / valor do crítico / chance de item e kit | +4 / +10% / +20% | +6 / +15% / +35% | +9 / +22% / +50% | +12 / +32% / +75% | +16 / +42% / +100% |
-| Tempestade 🆕 | Aumenta os bônus de clima e do evento noturno (melhor durante o evento) | +35% | +65% | +120% | +190% | +300% |
-| Fôlego | Em campo: gasto de energia / no banco: recuperação / XP dos personagens | −30% / +30% / +15% | −45% / +45% / +22% | −60% / +60% / +32% | −80% / +80% / +45% | sem gasto / +100% / +62% |
+| Sol | Fazenda: Crescimento da lavoura e do pomar | +5% | +7% | +10% | +14% | +20% |
+| Ampulheta | Fazenda: Velocidade geral: lavoura, pomar, animais e limpeza | +3% | +4% | +5% | +7% | +10% |
+| Cesta | Fazenda: Rendimento de colheita (unidades) | +4% | +5% | +7% | +9% | +12% |
+| Rebanho | Fazenda: Produção dos animais | +6% | +8% | +10% | +14% | +20% |
+| Moeda | Fazenda: % do valor produzido vira ouro (pago quando a carta sai da mão) | +3% | +4% | +5% | +7% | +10% |
+| Coruja | Fazenda: XP da conta e dos heróis | +6% | +8% | +10% | +14% | +20% |
+| Tempestade | Fazenda: Bônus do clima e do evento noturno | +20% | +25% | +35% | +50% | +75% |
+| Ferradura | Fazenda: Expedições que partem com a carta: crítico / valor do crítico e chance de item e Kit | +2 / +5% / +5% | +3 / +7% / +7% | +4 / +10% / +10% | +6 / +14% / +14% | +9 / +20% / +20% |
+| Engrenagem | Fazenda: Automação e frota: trabalho da equipe / desgaste dos veículos | +4% / −4% | +5% / −5% | +7% / −7% | +9% / −9% | +12% / −12% |
+| Luvas | Trabalhadores: Trabalho por hora da equipe | +4% | +5% | +7% | +9% | +12% |
+| Cantil | Trabalhadores: Gasto de energia em campo | −6% | −8% | −10% | −13% | −18% |
+| Café | Trabalhadores: Recuperação de energia no banco | +8% | +10% | +13% | +17% | +25% |
+| Pesca | Trabalhadores: Lucro na pesca (vale na R3) | +6% | +8% | +10% | +14% | +20% |
+| Forcado | Ferramentas: Trabalho para coletar animais e colher o pomar (menos) | +4% | +5% | +7% | +9% | +12% |
+| Enxada | Ferramentas: Trabalho para plantar e colher a lavoura (menos) | +4% | +5% | +7% | +9% | +12% |
+| Martelo | Ferramentas: Limpeza de lote, desgaste das ferramentas e dos veículos | +8% | +10% | +13% | +17% | +25% |
+| Balança | Ferramentas: Ouro nas vendas | +3% | +4% | +5% | +7% | +10% |
+| Lupa | Ferramentas: Chance de Semente Rara (sobre a chance atual) | +8% | +10% | +13% | +17% | +25% |
+| Prancheta | Ferramentas: Expedições que partem com a carta: sucesso / tempo de viagem | +2 / −5% | +3 / −6% | +4 / −8% | +5 / −10% | +7 / −15% |
+| Veículo | Veículo: Expedições que partem com a carta (o veículo na Garagem aparece com a cara da carta) | +5% carga e lucro, −3% tempo | +10% carga e lucro, −6% tempo | +15% carga e lucro, −8% tempo, −10% roubo | +22% carga e lucro, −12% tempo, −20% roubo | +35% carga e lucro, +5 jackpot |
 
-- **Moeda da Sorte** paga sobre o que foi produzido, não sobre o que foi vendido: ninguém ganha segurando vendas (mesmo motivo do limite da Lua Cheia).
-- **Estrada Livre** e **Trevo** valem para expedições que **partem** durante o buff. O valor deles supõe que o jogador junta até 4 h de produção para mandar no buff.
-- **Trevo** e **Fôlego** têm parte do valor estimada (itens e energia): medir no beta. Fôlego rende muito mais com 1 a 3 personagens; serve de carta de começo de jogo.
-- Combinar 3 buffs é estratégia (ex.: Sol de Verão + Ampulheta + Tempestade durante o Calor Dourado), sempre limitado pelos tetos abaixo.
-- 🆕 **Arte:** as 10 ilustrações estão prontas, na ordem da prancha: 1 Sol de Verão, 2 Cesta Dourada, 3 Rebanho Feliz, 4 Coruja Sábia, 5 Ampulheta, 6 Tempestade (antes Lua Prateada; a arte é uma nuvem com raio), 7 Estrada Livre (ferradura), 8 Fôlego (engrenagem), 9 Trevo de Quatro Folhas, 10 Moeda da Sorte. Tudo em `config/cards.json`.
+- **Veículo:** cada veículo libera de graça no nível dele (Carro 6, Picape 16, Caminhão 30; a Garagem não vende). A carta de Veículo dá os bônus da tabela às expedições que partem com ela na mão, e o veículo na Garagem aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão).
+- **Moeda** paga sobre o que foi produzido, não sobre o que foi vendido; o ouro sai quando a carta deixa a mão.
+- **Ferradura, Prancheta e Veículo** valem para expedições que **partem** com a carta na mão.
+- **Pesca** só passa a valer quando a pesca entrar (parte R3).
+- **Arte:** uma prancha por carta com as 5 raridades (moldura, ilustração e texto). Os números das artes seguem esta tabela; se o simulador mudar um número, o dono gera a arte nova.
 
 ### Armory (coleção permanente)
 
-- Cada carta tem 5 molduras no Armory, uma por raridade. **Colocar uma carta no Armory consome a cópia**: ela fica exposta para sempre e não pode mais ser usada nem vendida. Sem isso, a mesma Mítica passaria de conta em conta completando o Armory de todo mundo.
+- 🆕 (v3) Cada carta tem 5 molduras no Armory (álbum), uma por raridade. **O álbum registra sozinho** a carta e a raridade na primeira vez que ela entra na mão; a carta continua sendo usada normalmente.
 - **Bônus parcial** (selo prata): Comum + Incomum + Raro da mesma carta. **Bônus completo** (selo dourado): as 5 raridades; substitui o parcial.
 - Completar as 10 cartas: título "Guardião do Armory", moldura de perfil Mítica e uma vitrine animada na Casa (só visual).
 

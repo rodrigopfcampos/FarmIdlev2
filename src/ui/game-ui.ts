@@ -21,7 +21,7 @@ import {
 import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
-import { hudCards, maybeOpenPack, openCards, openMissions, type CardsCtx } from './cards-ui';
+import { hudCards, maybeOpenPack, openCards, openMissions, renderHand, type CardsCtx } from './cards-ui';
 import { deviceTz } from '../farm/weather';
 import { bindVisitHud, hudSocial, openHelp, openSocial, visitHud, type SocialCtx } from './social-ui';
 import { hudVillage, openVillage } from './village-ui';
@@ -209,12 +209,22 @@ function refreshCards(): void {
   const s = store.state;
   const slot = hud?.querySelector<HTMLElement>('.cards-slot');
   if (!s || !slot) return;
-  const html = hudCards(cardsCtx(), s, store.clock.serverNow());
+  renderHandThrottled(s);
+  const html = hudCards(cardsCtx(), s);
   if (html === cardsKey) return;
   cardsKey = html;
   slot.innerHTML = html;
   slot.querySelector('[data-missions]')?.addEventListener('click', () => openMissions(cardsCtx()));
   slot.querySelectorAll('[data-cards]').forEach((b) => b.addEventListener('click', () => openCards(cardsCtx())));
+}
+
+let handKey = '';
+/** mão no rodapé: redesenha quando muda a carta ou o minuto que falta */
+function renderHandThrottled(s: FarmState): void {
+  const k = `${!!store.manifest.deck_crate}|${s.hand_slots}|${s.buffs.map((b) => `${b.card_id}:${b.serial}:${Math.floor((Date.parse(b.ends_at) - store.clock.serverNow()) / 60_000)}`).join(',')}|${!!store.visit}`;
+  if (k === handKey) return;
+  handKey = k;
+  renderHand(cardsCtx(), s);
 }
 
 function cardsCtx(): CardsCtx {

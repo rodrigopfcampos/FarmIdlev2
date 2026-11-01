@@ -77,71 +77,106 @@ begin
   delete from public.cards where user_id = a and origin = 'admin';
   update public.farms set binder_slots = 60 where user_id = a;
 
-  -- 6. usar carta: buff ativo com o efeito; raridade menor recusada; no máximo 3 buffs
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'sol_de_verao', 'mythic', 'admin') returning serial into v_serial;
+  -- 6. (v3) equipar na mão: efeito da carta; a mesma carta não entra duas vezes; mão de 3 no nível baixo
+  update public.farms set level = 5 where user_id = a;
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'sol', 'mythic', 'admin') returning serial into v_serial;
   set local role authenticated;
-  s := public.use_card(v_serial);
+  s := public.equip_card(v_serial);
   reset role;
-  if jsonb_array_length(s -> 'buffs') <> 1 then raise exception 'FALHA 17: buff não ligou'; end if;
+  if jsonb_array_length(s -> 'buffs') <> 1 or (s ->> 'hand_slots')::int <> 3 then raise exception 'FALHA 17: carta não entrou na mão (%, mão %)', s -> 'buffs', s -> 'hand_slots'; end if;
   fx := public.team_fx(a);
-  if abs((fx ->> 'w_growth')::numeric - 0.60) > 0.001 then raise exception 'FALHA 18: Sol de Verão Mítico deu % de crescimento', fx ->> 'w_growth'; end if;
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'sol_de_verao', 'rare', 'admin') returning serial into v_serial;
+  if abs((fx ->> 'w_growth')::numeric - 0.20) > 0.001 then raise exception 'FALHA 18: Sol Mítico deu % de crescimento', fx ->> 'w_growth'; end if;
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'sol', 'rare', 'admin') returning serial into v_serial;
   set local role authenticated;
-  begin perform public.use_card(v_serial); raise exception 'FALHA 19: raridade menor trocou o buff';
+  begin perform public.equip_card(v_serial); raise exception 'FALHA 19: a mesma carta entrou duas vezes';
   exception when check_violation then null; end;
   reset role;
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'coruja_sabia', 'common', 'admin'), (a, 'folego', 'mythic', 'admin'), (a, 'moeda_da_sorte', 'common', 'admin');
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'coruja', 'common', 'admin'), (a, 'cantil', 'mythic', 'admin'), (a, 'moeda', 'common', 'admin');
   set local role authenticated;
-  perform public.use_card((select serial from public.cards where user_id = a and card_id = 'coruja_sabia' and rarity = 'common' and state = 'binder' limit 1));
-  perform public.use_card((select serial from public.cards where user_id = a and card_id = 'folego' and rarity = 'mythic' and state = 'binder' limit 1));
-  begin perform public.use_card((select serial from public.cards where user_id = a and card_id = 'moeda_da_sorte' and rarity = 'common' and state = 'binder' limit 1));
-    raise exception 'FALHA 20: 4º buff aceito';
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'coruja' and state = 'binder' limit 1));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'cantil' and state = 'binder' limit 1));
+  begin perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' limit 1));
+    raise exception 'FALHA 20: 4ª carta numa mão de 3';
   exception when check_violation then null; end;
   reset role;
   fx := public.team_fx(a);
-  if abs((fx ->> 'account_xp')::numeric - 0.15) > 0.001 then raise exception 'FALHA 21: Coruja Comum deu % de XP', fx ->> 'account_xp'; end if;
-  if (public.char_energy((select ch from public.characters ch where user_id = a and class_id = 'agricultor'), fx) ->> 'use')::numeric <> 0 then raise exception 'FALHA 22: Fôlego Mítico ainda gasta energia'; end if;
+  if abs((fx ->> 'account_xp')::numeric - 0.06) > 0.001 then raise exception 'FALHA 21: Coruja Comum deu % de XP', fx ->> 'account_xp'; end if;
+  if abs((fx ->> 'card_use_cut')::numeric - 0.18) > 0.001 then raise exception 'FALHA 22: Cantil Mítico corta %', fx ->> 'card_use_cut'; end if;
+  -- trava de 1 dia: não sai antes; depois sai guardando a vida que sobrou
+  set local role authenticated;
+  begin perform public.unequip_card('coruja'); raise exception 'FALHA 22b: saiu antes da trava';
+  exception when check_violation then null; end;
+  reset role;
+  update public.card_buffs set locked_until = now() - interval '1 second', ends_at = now() + interval '1 day' where user_id = a and card_id in ('coruja', 'cantil');
+  set local role authenticated;
+  perform public.unequip_card('coruja');
+  perform public.unequip_card('cantil');
+  reset role;
+  if (select state from public.cards where user_id = a and card_id = 'coruja') <> 'binder'
+     or abs((select life_seconds from public.cards where user_id = a and card_id = 'coruja') - 86400) > 60 then
+    raise exception 'FALHA 22c: ao sair não guardou a vida (%, %)', (select state from public.cards where user_id = a and card_id = 'coruja'), (select life_seconds from public.cards where user_id = a and card_id = 'coruja'); end if;
 
-  -- 7. Moeda da Sorte: % do valor produzido no buff, pago no fim
-  delete from public.card_buffs where user_id = a and card_id in ('coruja_sabia', 'folego');
+  -- 7. Moeda: % do valor produzido com a carta na mão, pago quando sai; a Comum gasta vira "gasta" e repara com ouro
   set local role authenticated;
-  perform public.use_card((select serial from public.cards where user_id = a and card_id = 'moeda_da_sorte' and rarity = 'common' and state = 'binder' limit 1));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' limit 1));
   reset role;
-  update public.card_buffs set coin_value = 0 where user_id = a;  -- só conta a produção abaixo
+  update public.card_buffs set coin_value = 0 where user_id = a;
   perform public.produced(a, 'batata', 100, 0, 'crop');
-  if abs((select coin_value from public.card_buffs where user_id = a and card_id = 'moeda_da_sorte') - round(100 * public.item_price('batata') * 0.13, 2)) > 0.02 then
-    raise exception 'FALHA 23: Moeda juntou %', (select coin_value from public.card_buffs where user_id = a and card_id = 'moeda_da_sorte'); end if;
+  if abs((select coin_value from public.card_buffs where user_id = a and card_id = 'moeda') - round(100 * public.item_price('batata') * 0.03, 2)) > 0.02 then
+    raise exception 'FALHA 23: Moeda juntou %', (select coin_value from public.card_buffs where user_id = a and card_id = 'moeda'); end if;
   select gold into v_gold from public.wallets where user_id = a;
-  update public.card_buffs set ends_at = now() - interval '1 second', started_at = now() - interval '2 hours' where user_id = a and card_id = 'moeda_da_sorte';
+  update public.card_buffs set ends_at = now() - interval '1 second', started_at = now() - interval '2 days' where user_id = a and card_id = 'moeda';
   perform public.buffs_expire(a, now());
   if (select gold from public.wallets where user_id = a) <= v_gold then raise exception 'FALHA 24: Moeda não pagou no fim'; end if;
-
-  -- 8. Estrada Livre: fica gravada na expedição que parte no buff
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'estrada_livre', 'mythic', 'admin') returning serial into v_serial;
+  if (select state from public.cards where user_id = a and card_id = 'moeda') <> 'worn' then raise exception 'FALHA 24b: Comum gasta não ficou "gasta"'; end if;
+  select gold into v_gold from public.wallets where user_id = a;
   set local role authenticated;
-  perform public.use_card(v_serial);
+  perform public.repair_card((select serial from public.cards where user_id = a and card_id = 'moeda'));
   reset role;
-  fx := public.team_fx(a);
-  if (fx -> 'exp_card' ->> 'loss_red')::numeric <> 100 or (fx -> 'exp_card' ->> 'crit_pts')::numeric <> 36 then raise exception 'FALHA 25: Estrada Livre %', fx -> 'exp_card'; end if;
-
-  -- 9. Armory: Comum + Incomum + Raro = bônus parcial; a mesma raridade de novo é recusada
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'rebanho_feliz', 'common', 'admin'), (a, 'rebanho_feliz', 'uncommon', 'admin'),
-    (a, 'rebanho_feliz', 'rare', 'admin'), (a, 'rebanho_feliz', 'rare', 'admin');
+  if (select state from public.cards where user_id = a and card_id = 'moeda') <> 'binder' or (select life_seconds from public.cards where user_id = a and card_id = 'moeda') <> 2 * 86400
+     or abs(v_gold - (select gold from public.wallets where user_id = a) - public.card_repair_cost(a)) > 0.01 then raise exception 'FALHA 24c: reparo da Comum'; end if;
+  -- a Mítica gasta some (não tem reparo)
+  update public.card_buffs set ends_at = now() - interval '1 second' where user_id = a and card_id = 'sol';
+  perform public.buffs_expire(a, now());
+  if (select state from public.cards where user_id = a and card_id = 'sol' and rarity = 'mythic') <> 'used' then raise exception 'FALHA 24d: Mítica gasta não sumiu'; end if;
   set local role authenticated;
-  for v_serial in select serial from public.cards where user_id = a and card_id = 'rebanho_feliz' and origin = 'admin' and state = 'binder' order by serial limit 3 loop
-    perform public.armory_place(v_serial);
-  end loop;
-  begin perform public.armory_place((select serial from public.cards where user_id = a and card_id = 'rebanho_feliz' and rarity = 'rare' and state = 'binder' limit 1));
-    raise exception 'FALHA 26: mesma raridade duas vezes no Armory';
+  begin perform public.repair_card((select serial from public.cards where user_id = a and card_id = 'sol' and rarity = 'rare')); raise exception 'FALHA 24e: reparou carta Rara';
   exception when check_violation then null; end;
   reset role;
-  if public.jnum(public.card_fx(a, now()) -> 'armory', 'animal_production_pct') <> 8 then raise exception 'FALHA 27: bônus parcial %', public.card_fx(a, now()); end if;
+
+  -- 8. Ferradura: fica gravada na expedição que parte com ela na mão
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'ferradura', 'mythic', 'admin') returning serial into v_serial;
+  set local role authenticated;
+  perform public.equip_card(v_serial);
+  reset role;
+  fx := public.team_fx(a);
+  if (fx -> 'exp_card' ->> 'crit_pts')::numeric <> 9 or (fx -> 'exp_card' ->> 'crit_val')::numeric <> 20 then raise exception 'FALHA 25: Ferradura %', fx -> 'exp_card'; end if;
+
+  -- 9. álbum: registra sozinho na 1ª vez na mão; Comum + Incomum + Raro = bônus parcial; colocar à mão não existe
+  if not exists (select 1 from public.armory where user_id = a and card_id = 'sol' and rarity = 'mythic') then raise exception 'FALHA 26: álbum não registrou'; end if;
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'rebanho', 'common', 'admin'), (a, 'rebanho', 'uncommon', 'admin'),
+    (a, 'rebanho', 'rare', 'admin'), (a, 'rebanho', 'rare', 'admin');
+  for v_serial in select serial from public.cards where user_id = a and card_id = 'rebanho' and origin = 'admin' and state = 'binder' order by serial limit 3 loop
+    set local role authenticated;
+    perform public.equip_card(v_serial);
+    reset role;
+    update public.card_buffs set locked_until = now() - interval '1 second' where user_id = a and card_id = 'rebanho';
+    set local role authenticated;
+    perform public.unequip_card('rebanho');
+    reset role;
+  end loop;
+  set local role authenticated;
+  begin perform public.armory_place((select serial from public.cards where user_id = a and card_id = 'rebanho' and rarity = 'rare' and state = 'binder' limit 1));
+    raise exception 'FALHA 26b: colocou no álbum à mão';
+  exception when check_violation then null; end;
+  reset role;
+  if public.jnum(public.card_fx(a, now()) -> 'armory', 'animal_production_pct') <> 1.2 then raise exception 'FALHA 27: bônus parcial %', public.card_fx(a, now()); end if;
 
   -- 10. Colecionador paga a raridade sobre o R do nível
   select level into v_level from public.farms where user_id = a;
   select gold into v_gold from public.wallets where user_id = a;
   set local role authenticated;
-  perform public.sell_card((select serial from public.cards where user_id = a and card_id = 'rebanho_feliz' and rarity = 'rare' and state = 'binder' limit 1));
+  perform public.sell_card((select serial from public.cards where user_id = a and card_id = 'rebanho' and rarity = 'rare' and state = 'binder' order by serial desc limit 1));
   reset role;
   if abs((select gold from public.wallets where user_id = a) - v_gold - round(public.ref_income(v_level) * 0.008, 2)) > 0.01 then raise exception 'FALHA 28: preço do Colecionador'; end if;
 
@@ -176,15 +211,15 @@ begin
   -- 13. painel: só admin dá carta e completa missões; fica registrado
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated', 'aal', 'aal2')::text, true);
   set local role authenticated;
-  begin perform public.admin_grant_card(a, 'sol_de_verao', 'mythic', 'teste de jogador'); raise exception 'FALHA 34: jogador se deu carta';
+  begin perform public.admin_grant_card(a, 'sol', 'mythic', 'teste de jogador'); raise exception 'FALHA 34: jogador se deu carta';
   exception when insufficient_privilege then null; end;
   reset role;
   perform set_config('request.jwt.claims', json_build_object('sub', adm, 'role', 'authenticated', 'aal', 'aal2')::text, true);
   set local role authenticated;
-  s := public.admin_grant_card(a, 'trevo_quatro_folhas', 'legendary', 'teste do painel');
+  s := public.admin_grant_card(a, 'ferradura', 'legendary', 'teste do painel');
   s := public.admin_complete_missions(a, 'daily', 'teste do painel');
   reset role;
-  if not exists (select 1 from public.cards where user_id = a and card_id = 'trevo_quatro_folhas' and rarity = 'legendary') then raise exception 'FALHA 35: painel não deu carta'; end if;
+  if not exists (select 1 from public.cards where user_id = a and card_id = 'ferradura' and rarity = 'legendary') then raise exception 'FALHA 35: painel não deu carta'; end if;
   if exists (select 1 from public.missions where user_id = a and kind = 'daily' and period = public.user_day(a, now()) and done_at is null) then raise exception 'FALHA 36: painel não completou'; end if;
   if not exists (select 1 from public.audit_log where action = 'admin.complete_missions' and actor_id = adm) then raise exception 'FALHA 37: sem registro'; end if;
 

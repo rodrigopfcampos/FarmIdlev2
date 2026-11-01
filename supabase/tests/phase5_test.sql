@@ -152,19 +152,27 @@ begin
   set local role authenticated; s := public.get_farm(); s := public.collect_expeditions(null); reset role;
   if (select leading_id from public.characters where user_id = a and class_id = 'gerente') is not null then raise exception 'FALHA 41: Gerente não voltou'; end if;
 
-  -- 10. comprar o Carro e mandar comboio (1 minigame com +2 setas e +1,5 s)
+  -- 10. (v3) a Garagem não vende: o Carro libera sozinho no nível 6; a carta de Veículo Incomum dá +10% de carga; comboio com 1 minigame
   set local role authenticated;
-  select gold into v_gold from public.wallets where user_id = a;
-  s := public.buy_vehicle('carro');
-  if (s ->> 'gold')::numeric <> v_gold - 33000 then raise exception 'FALHA 42: preço do Carro'; end if;
+  begin perform public.buy_vehicle('carro'); raise exception 'FALHA 42: a Garagem vendeu';
+  exception when check_violation then null; end;
+  reset role;
+  update public.farms set level = greatest(level, 6) where user_id = a;
+  set local role authenticated; s := public.get_farm(); reset role;
+  if not exists (select 1 from public.vehicles where user_id = a and vehicle_id = 'carro') then raise exception 'FALHA 42b: Carro não liberou no nível 6'; end if;
+  if exists (select 1 from public.vehicles where user_id = a and vehicle_id = 'picape') then raise exception 'FALHA 42c: Picape liberou antes do nível 16'; end if;
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'veiculo', 'uncommon', 'admin') returning serial into n;
+  set local role authenticated;
+  s := public.equip_card(n);
   mg := public.start_minigame('cidade', 2, false, false);
   if jsonb_array_length(mg -> 'arrows') <> 7 or (mg ->> 'limit_ms')::int <> 7500 then raise exception 'FALHA 43: minigame do comboio %', mg; end if;
   s := public.launch_expedition((mg ->> 'id')::uuid, '[]', array['carro', 'carroca'], 'cidade', '{"batata":150}', false, false, false);
   reset role;
   if (select count(distinct convoy_id) from public.expeditions where user_id = a and status = 'travel') <> 1
      or (select sum((cargo ->> 'batata')::int) from public.expeditions where user_id = a and status = 'travel') <> 150
-     or (select (cargo ->> 'batata')::int from public.expeditions where user_id = a and status = 'travel' and vehicle_id = 'carro') <> 120 then
-    raise exception 'FALHA 44: comboio dividiu a carga errado'; end if;
+     or (select (cargo ->> 'batata')::int from public.expeditions where user_id = a and status = 'travel' and vehicle_id = 'carro') <> 132 then
+    raise exception 'FALHA 44: comboio dividiu a carga errado (%)', (select jsonb_agg(cargo) from public.expeditions where user_id = a and status = 'travel'); end if;
+  delete from public.card_buffs where user_id = a and card_id = 'veiculo';
   update public.expeditions set returns_at = 0 where user_id = a and status = 'travel';
   set local role authenticated; s := public.get_farm(); s := public.collect_expeditions(null); reset role;
 

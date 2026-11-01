@@ -1,4 +1,4 @@
-# Village Idle Farm — mapa do projeto (31/10/2026, reformulação v3 · R1)
+# Village Idle Farm — mapa do projeto (01/11/2026, reformulação v3 · R2)
 
 ## A. Feito
 
@@ -24,11 +24,13 @@
 | **Fase 8a** | Amigos (busca pelo começo do apelido, pedido, aceite, desfazer), visita à fazenda de um amigo ou aleatória (no horário e clima do dono, sem ouro, Silo, inventário, cartas e missões), Ajudar (+10% de crescimento por 1 h no lote, ou −10% do que falta da limpeza; 1 por lote por hora; 10 dadas e 10 recebidas por dia; XP de 10 min da própria produção; Ferreiro Obras B do dono aumenta), Curtir (1 por dia), recado só com 12 emojis (até 3), bloqueio e denúncia, novidades com aviso no botão Amigos, missões "Ajude X vizinhos"; painel do admin mostra as denúncias | `supabase/migrations/…29000100`, `supabase/tests/phase8a_test.sql`, `src/ui/social-ui.ts` |
 | **Fase 8b** | Encomenda da Vila: meta coletiva da semana (segunda 00:00 UTC), 3 pedidos (1 por faixa de nível, valem 1,5×), doação de qualquer produto do Silo (preço da Feira) e de ouro — tudo some do jogo; pontos = horas da renda do próprio nível; meta = 8 pontos por jogador ativo (mínimo 16); prêmio: meta batida e 2+ pontos = 1 carta e "Ajudante da Vila", top 10% = +1 carta e "Herói da Vila" (título por 1 semana, aparece no topo, nas listas e na visita). Estrelas da Vila: depois do nível 50, 10% do XP do nível 49 = 1 Estrela; pacote = 5 ⭐ + 1 R (2 por semana), semente Incomum/Rara/Lendária = 1/2/4 ⭐ + 0,1/0,2/0,4 R (5 por semana), sem Mítico. Painel do admin: dar Estrelas e encerrar a Encomenda | `supabase/migrations/…30000100`, `supabase/tests/phase8b_test.sql`, `src/ui/village-ui.ts` |
 | **Fase 9** | Painel completo: papéis Leitor/Moderador/Admin (sempre com 2FA, sai sozinho após 30 min parado), guias Visão geral (online, ativos por dia/semana/mês, novos, retenção D1/D7/D30, ouro criado/destruído), Alertas, Denúncias, Economia, Progresso, Expedições, Cartas, Missões, Balanceamento (versões da config e voltar versão), Auditoria e Moderação. Conta advertida (aviso no jogo), suspensa (dias) ou banida (só admin), sempre com justificativa; reverter lançamento do ledger (lança o contrário). Antitrapaça da seção 12 (renda impossível, progresso rápido, cartas a mais, sorte nas expedições, robô, ações recusadas, minigame de robô, relógio e fuso), 1 vez por hora por conta; nota de risco somada em 30 dias: 70+ revisar e aviso no Discord, 90+ trava o mercado; nunca bane sozinho | `supabase/migrations/…31000100`, `supabase/tests/phase9_test.sql`, `config/anticheat.json`, `src/admin/guides.ts` |
+| **v3 · R2** | 20 cartas novas (Fazenda 9, Trabalhadores 3 + Pesca, Ferramentas 6, Veículo) com a arte inteira de cada raridade; a carta vale dias na mão (Comum 2, Incomum e Rara 3, Lendária e Mítica 4), online ou offline, presa 1 dia, e ao sair guarda o que sobrou; Comum gasta repara com ouro, as outras somem; mão de 3 (4 no nível 15, 5 no 30) em leque no rodapé com o caixote do baralho (recolher com animação elástica, brilho na cor da raridade, flash e partículas ao encaixar); álbum registra sozinho; efeitos novos (rendimento, trabalho, desgaste, pesca, Lupa, Balança, Prancheta, Veículo); a Garagem não vende: Carro, Picape e Caminhão liberam de graça nos níveis 6, 16 e 30; R recalibrado pelo simulador | `supabase/migrations/…02000100_v3_cards.sql`, `supabase/tests/v3_r2_test.sql`, `src/ui/cards-ui.ts` |
 | **v3 · R1** | Mapa novo (`Novo mapa.png`): 29 lotes (20 lavouras, 6 pomares, Celeiro em cima no C1 com as vacas, Galinheiro embaixo no C2, Lago); o A9 virou o Celeiro; tabela de compras refeita para 28 compras (Escritura da 19ª em diante, 10 no total) e R recalibrado pelo simulador; mato único (`locked_plot_overlay`) cobrindo 85% dos lotes bloqueados, que some com partículas quando a limpeza termina; pomar com cova, broto, jovem e adulta (fruta pintada na cor de cada fruta); animais andando nos pastos (vaca, galinha, pato, coelho; 4 FPS parado, 6 FPS andando); peixes no Lago (6 a 12, 1 espécie nova a cada 10 níveis, anéis na água); carroça com cavalo andando e veículos a motor com balanço, fumaça e poeira saindo e voltando pela estrada; painel do admin zera a fazenda (o ledger fica) | `supabase/migrations/…01000100_v3_map_reset.sql` e `…01000200`, `supabase/tests/v3_r1_test.sql`, `src/scenes/lifeLayer.ts`, `src/farm/life.ts` |
 | **Fase 0** | Repositório, Supabase teste/produção (São Paulo), login com e-mail, 18+, ouro inicial, ledger e audit_log imutáveis, RLS, deploy automático no Cloudflare, CI no GitHub, simulador completo | ver seção D |
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (01/11, R2) Dono aprovou: lista de valores das cartas (gerar artes novas com os números da tabela da GDD seção 11), mão 3→5, só a Comum repara, Café só recupera, Engrenagem automação e frota. Veículos: primeiro "só pela carta"; o simulador mostrou que o mapa não fecharia (sem Escrituras e renda das rotas longas) e o dono escolheu **veículos liberam por nível** e a carta dá bônus e troca a aparência.
 - 🆕 (31/10) **Reformulação v3** (instrução "Especificação master v3.0"): fazenda com sistema de cartas. Feita em partes: R1 visual e mapa novo; R2 as 20 cartas novas (consumo em dias, mão, manutenção), simulador; R3 pesca e árvore de habilidades da conta (substitui as árvores dos personagens). O dono autorizou zerar as contas de teste. Decisões pendentes: lista de valores das cartas, mão de 3→5, manutenção só da Comum, carta de veículo (Garagem para de vender?).
 - 🆕 (29/10, fase 9) Alertas vão para um canal do Discord por webhook guardado no Vault do Supabase (segredo `discord_alerts_webhook`, nunca no repositório). Regras do mercado (venda abaixo do preço, mesmo IP etc.) ficam para quando o mercado (8c) entrar.
 - 🆕 (29/10) Mercado (8c) **guardado como pendente** pelo dono: só entra quando o jogo estiver estável, para não refazer a cada mudança. Regras continuam como proposta no GDD (seção 9).
@@ -82,7 +84,7 @@
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
 | 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a e 8b aprovadas (29/10) · ranking e mercado (8c) **pendentes** |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | **feito e aprovado** (31/10) · Discord pendente (webhook no Vault) |
-| v3 Reformulação | R1 mapa e visual · R2 cartas novas e mão · R3 pesca e árvore da conta | R1 **feito** (31/10), aguardando teste do dono |
+| v3 Reformulação | R1 mapa e visual · R2 cartas novas e mão · R3 pesca e árvore da conta | R1 aprovada · R2 **feita** (01/11), aguardando teste do dono |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 
@@ -110,13 +112,15 @@
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste da parte R1 da v3 (dono, em produção)
-1. As contas foram zeradas: entre e veja o mapa novo (Celeiro e Galinheiro desenhados, garagem com telhado em cima à esquerda).
-2. Os lotes bloqueados têm o mato com pedras; compre o A3 (nível 2) e, no painel, **Terminar limpeza**: o mato some com partículas.
-3. Painel → **Dar nível** 11 e ouro; compre o Galinheiro (C2, embaixo) e o Celeiro (C1, em cima), coloque animais: eles andam pelo pasto.
-4. Compre o P1 e plante uma árvore: cova → broto → jovem → adulta com fruta na cor da fruta.
-5. Compre o Lago: os peixes aparecem (6 no nível 1; mais espécies nos níveis 10, 20, 30 e 40).
-6. Mande a Carroça numa expedição com o jogo aberto: o cavalo sai andando pela estrada; na volta ele chega pelo mesmo caminho.
+## G. Teste da parte R2 da v3 (dono, em produção)
+1. Rodapé: a mão com 3 vagas e o caixote no canto. A setinha recolhe e abre a mão.
+2. Painel do admin → sua conta → **Dar carta** (algumas, de raridades diferentes). No jogo, a carta abre virando.
+3. Clique no caixote (ou numa vaga +) → Fichário → escolha uma carta → **Colocar na mão**: ela entra com flash e partículas; passe o mouse para ver ela subir e brilhar.
+4. Clique na carta da mão: mostra quanto falta; **Tirar da mão** só depois de 1 dia.
+5. Dê uma 4ª carta: com a mão cheia (nível abaixo de 15) não entra.
+6. Garagem: sem botão de comprar; o Carro aparece sozinho no nível 6. Com a carta de Veículo na mão, a Garagem mostra o bônus e o veículo no mapa muda de cara.
+7. Fichário: carta Comum gasta aparece cinza com "gasta" e o botão **Reparar**.
+8. As artes ainda têm os números antigos: gere as novas com os números da tabela da GDD (seção 11, "As 20 cartas").
 
 ## H. Riscos e pontos em aberto
 - Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).

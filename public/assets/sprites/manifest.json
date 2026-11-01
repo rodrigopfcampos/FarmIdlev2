@@ -5381,6 +5381,1139 @@
         0.5,
         1
       ]
+    },
+    "card_full_ferradura_common": {
+      "file": "sprites/cards_v3/card_full_ferradura_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ferradura_uncommon": {
+      "file": "sprites/cards_v3/card_full_ferradura_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ferradura_rare": {
+      "file": "sprites/cards_v3/card_full_ferradura_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ferradura_legendary": {
+      "file": "sprites/cards_v3/card_full_ferradura_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ferradura_mythic": {
+      "file": "sprites/cards_v3/card_full_ferradura_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_moeda_common": {
+      "file": "sprites/cards_v3/card_full_moeda_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_moeda_uncommon": {
+      "file": "sprites/cards_v3/card_full_moeda_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_moeda_rare": {
+      "file": "sprites/cards_v3/card_full_moeda_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_moeda_legendary": {
+      "file": "sprites/cards_v3/card_full_moeda_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_moeda_mythic": {
+      "file": "sprites/cards_v3/card_full_moeda_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ampulheta_common": {
+      "file": "sprites/cards_v3/card_full_ampulheta_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ampulheta_uncommon": {
+      "file": "sprites/cards_v3/card_full_ampulheta_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ampulheta_rare": {
+      "file": "sprites/cards_v3/card_full_ampulheta_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ampulheta_legendary": {
+      "file": "sprites/cards_v3/card_full_ampulheta_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_ampulheta_mythic": {
+      "file": "sprites/cards_v3/card_full_ampulheta_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_rebanho_common": {
+      "file": "sprites/cards_v3/card_full_rebanho_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_rebanho_uncommon": {
+      "file": "sprites/cards_v3/card_full_rebanho_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_rebanho_rare": {
+      "file": "sprites/cards_v3/card_full_rebanho_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_rebanho_legendary": {
+      "file": "sprites/cards_v3/card_full_rebanho_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_rebanho_mythic": {
+      "file": "sprites/cards_v3/card_full_rebanho_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_sol_common": {
+      "file": "sprites/cards_v3/card_full_sol_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_sol_uncommon": {
+      "file": "sprites/cards_v3/card_full_sol_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_sol_rare": {
+      "file": "sprites/cards_v3/card_full_sol_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_sol_legendary": {
+      "file": "sprites/cards_v3/card_full_sol_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_sol_mythic": {
+      "file": "sprites/cards_v3/card_full_sol_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_tempestade_common": {
+      "file": "sprites/cards_v3/card_full_tempestade_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_tempestade_uncommon": {
+      "file": "sprites/cards_v3/card_full_tempestade_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_tempestade_rare": {
+      "file": "sprites/cards_v3/card_full_tempestade_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_tempestade_legendary": {
+      "file": "sprites/cards_v3/card_full_tempestade_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_tempestade_mythic": {
+      "file": "sprites/cards_v3/card_full_tempestade_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cesta_common": {
+      "file": "sprites/cards_v3/card_full_cesta_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cesta_uncommon": {
+      "file": "sprites/cards_v3/card_full_cesta_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cesta_rare": {
+      "file": "sprites/cards_v3/card_full_cesta_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cesta_legendary": {
+      "file": "sprites/cards_v3/card_full_cesta_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cesta_mythic": {
+      "file": "sprites/cards_v3/card_full_cesta_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_coruja_common": {
+      "file": "sprites/cards_v3/card_full_coruja_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_coruja_uncommon": {
+      "file": "sprites/cards_v3/card_full_coruja_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_coruja_rare": {
+      "file": "sprites/cards_v3/card_full_coruja_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_coruja_legendary": {
+      "file": "sprites/cards_v3/card_full_coruja_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_coruja_mythic": {
+      "file": "sprites/cards_v3/card_full_coruja_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_engrenagem_common": {
+      "file": "sprites/cards_v3/card_full_engrenagem_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_engrenagem_uncommon": {
+      "file": "sprites/cards_v3/card_full_engrenagem_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_engrenagem_rare": {
+      "file": "sprites/cards_v3/card_full_engrenagem_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_engrenagem_legendary": {
+      "file": "sprites/cards_v3/card_full_engrenagem_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_engrenagem_mythic": {
+      "file": "sprites/cards_v3/card_full_engrenagem_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_pesca_common": {
+      "file": "sprites/cards_v3/card_full_pesca_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_pesca_uncommon": {
+      "file": "sprites/cards_v3/card_full_pesca_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_pesca_rare": {
+      "file": "sprites/cards_v3/card_full_pesca_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_pesca_legendary": {
+      "file": "sprites/cards_v3/card_full_pesca_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_pesca_mythic": {
+      "file": "sprites/cards_v3/card_full_pesca_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_forcado_common": {
+      "file": "sprites/cards_v3/card_full_forcado_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_forcado_uncommon": {
+      "file": "sprites/cards_v3/card_full_forcado_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_forcado_rare": {
+      "file": "sprites/cards_v3/card_full_forcado_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_forcado_legendary": {
+      "file": "sprites/cards_v3/card_full_forcado_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_forcado_mythic": {
+      "file": "sprites/cards_v3/card_full_forcado_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_enxada_common": {
+      "file": "sprites/cards_v3/card_full_enxada_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_enxada_uncommon": {
+      "file": "sprites/cards_v3/card_full_enxada_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_enxada_rare": {
+      "file": "sprites/cards_v3/card_full_enxada_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_enxada_legendary": {
+      "file": "sprites/cards_v3/card_full_enxada_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_enxada_mythic": {
+      "file": "sprites/cards_v3/card_full_enxada_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_prancheta_common": {
+      "file": "sprites/cards_v3/card_full_prancheta_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_prancheta_uncommon": {
+      "file": "sprites/cards_v3/card_full_prancheta_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_prancheta_rare": {
+      "file": "sprites/cards_v3/card_full_prancheta_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_prancheta_legendary": {
+      "file": "sprites/cards_v3/card_full_prancheta_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_prancheta_mythic": {
+      "file": "sprites/cards_v3/card_full_prancheta_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_martelo_common": {
+      "file": "sprites/cards_v3/card_full_martelo_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_martelo_uncommon": {
+      "file": "sprites/cards_v3/card_full_martelo_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_martelo_rare": {
+      "file": "sprites/cards_v3/card_full_martelo_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_martelo_legendary": {
+      "file": "sprites/cards_v3/card_full_martelo_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_martelo_mythic": {
+      "file": "sprites/cards_v3/card_full_martelo_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_lupa_common": {
+      "file": "sprites/cards_v3/card_full_lupa_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_lupa_uncommon": {
+      "file": "sprites/cards_v3/card_full_lupa_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_lupa_rare": {
+      "file": "sprites/cards_v3/card_full_lupa_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_lupa_legendary": {
+      "file": "sprites/cards_v3/card_full_lupa_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_lupa_mythic": {
+      "file": "sprites/cards_v3/card_full_lupa_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_balanca_common": {
+      "file": "sprites/cards_v3/card_full_balanca_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_balanca_uncommon": {
+      "file": "sprites/cards_v3/card_full_balanca_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_balanca_rare": {
+      "file": "sprites/cards_v3/card_full_balanca_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_balanca_legendary": {
+      "file": "sprites/cards_v3/card_full_balanca_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_balanca_mythic": {
+      "file": "sprites/cards_v3/card_full_balanca_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_veiculo_common": {
+      "file": "sprites/cards_v3/card_full_veiculo_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_veiculo_uncommon": {
+      "file": "sprites/cards_v3/card_full_veiculo_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_veiculo_rare": {
+      "file": "sprites/cards_v3/card_full_veiculo_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_veiculo_legendary": {
+      "file": "sprites/cards_v3/card_full_veiculo_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_veiculo_mythic": {
+      "file": "sprites/cards_v3/card_full_veiculo_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cafe_common": {
+      "file": "sprites/cards_v3/card_full_cafe_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cafe_uncommon": {
+      "file": "sprites/cards_v3/card_full_cafe_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cafe_rare": {
+      "file": "sprites/cards_v3/card_full_cafe_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cafe_legendary": {
+      "file": "sprites/cards_v3/card_full_cafe_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cafe_mythic": {
+      "file": "sprites/cards_v3/card_full_cafe_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cantil_common": {
+      "file": "sprites/cards_v3/card_full_cantil_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cantil_uncommon": {
+      "file": "sprites/cards_v3/card_full_cantil_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cantil_rare": {
+      "file": "sprites/cards_v3/card_full_cantil_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cantil_legendary": {
+      "file": "sprites/cards_v3/card_full_cantil_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_cantil_mythic": {
+      "file": "sprites/cards_v3/card_full_cantil_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_luvas_common": {
+      "file": "sprites/cards_v3/card_full_luvas_common.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_luvas_uncommon": {
+      "file": "sprites/cards_v3/card_full_luvas_uncommon.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_luvas_rare": {
+      "file": "sprites/cards_v3/card_full_luvas_rare.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_luvas_legendary": {
+      "file": "sprites/cards_v3/card_full_luvas_legendary.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_full_luvas_mythic": {
+      "file": "sprites/cards_v3/card_full_luvas_mythic.png",
+      "size": [
+        140,
+        290
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "card_back_v3": {
+      "file": "sprites/cards_v3/card_back_v3.png",
+      "size": [
+        140,
+        200
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "deck_crate": {
+      "file": "sprites/cards_v3/deck_crate.png",
+      "size": [
+        200,
+        200
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "deck_toggle": {
+      "file": "sprites/cards_v3/deck_toggle.png",
+      "size": [
+        96,
+        96
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
     }
   }
 }

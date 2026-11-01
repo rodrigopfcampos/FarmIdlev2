@@ -2130,6 +2130,761 @@
       "native": true,
       "key": "orchard_adult",
       "dir": "trees"
+    },
+    {
+      "id": "v3card_ferradura",
+      "file": "v3/cards/ferradura.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_ferradura_common",
+              "card_full_ferradura_uncommon",
+              "card_full_ferradura_rare",
+              "card_full_ferradura_legendary",
+              "card_full_ferradura_mythic"
+            ]
+          ],
+          "rect": [
+            27,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_moeda",
+      "file": "v3/cards/moeda.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_moeda_common",
+              "card_full_moeda_uncommon",
+              "card_full_moeda_rare",
+              "card_full_moeda_legendary",
+              "card_full_moeda_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1517,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_ampulheta",
+      "file": "v3/cards/ampulheta.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_ampulheta_common",
+              "card_full_ampulheta_uncommon",
+              "card_full_ampulheta_rare",
+              "card_full_ampulheta_legendary",
+              "card_full_ampulheta_mythic"
+            ]
+          ],
+          "rect": [
+            28,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_rebanho",
+      "file": "v3/cards/rebanho.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_rebanho_common",
+              "card_full_rebanho_uncommon",
+              "card_full_rebanho_rare",
+              "card_full_rebanho_legendary",
+              "card_full_rebanho_mythic"
+            ]
+          ],
+          "rect": [
+            29,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_sol",
+      "file": "v3/cards/sol.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_sol_common",
+              "card_full_sol_uncommon",
+              "card_full_sol_rare",
+              "card_full_sol_legendary",
+              "card_full_sol_mythic"
+            ]
+          ],
+          "rect": [
+            29,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_tempestade",
+      "file": "v3/cards/tempestade.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_tempestade_common",
+              "card_full_tempestade_uncommon",
+              "card_full_tempestade_rare",
+              "card_full_tempestade_legendary",
+              "card_full_tempestade_mythic"
+            ]
+          ],
+          "rect": [
+            27,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_cesta",
+      "file": "v3/cards/cesta.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_cesta_common",
+              "card_full_cesta_uncommon",
+              "card_full_cesta_rare",
+              "card_full_cesta_legendary",
+              "card_full_cesta_mythic"
+            ]
+          ],
+          "rect": [
+            29,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_coruja",
+      "file": "v3/cards/coruja.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_coruja_common",
+              "card_full_coruja_uncommon",
+              "card_full_coruja_rare",
+              "card_full_coruja_legendary",
+              "card_full_coruja_mythic"
+            ]
+          ],
+          "rect": [
+            30,
+            0,
+            1513,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_engrenagem",
+      "file": "v3/cards/engrenagem.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_engrenagem_common",
+              "card_full_engrenagem_uncommon",
+              "card_full_engrenagem_rare",
+              "card_full_engrenagem_legendary",
+              "card_full_engrenagem_mythic"
+            ]
+          ],
+          "rect": [
+            29,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_pesca",
+      "file": "v3/cards/pesca.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_pesca_common",
+              "card_full_pesca_uncommon",
+              "card_full_pesca_rare",
+              "card_full_pesca_legendary",
+              "card_full_pesca_mythic"
+            ]
+          ],
+          "rect": [
+            24,
+            0,
+            1518,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_forcado",
+      "file": "v3/cards/forcado.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_forcado_common",
+              "card_full_forcado_uncommon",
+              "card_full_forcado_rare",
+              "card_full_forcado_legendary",
+              "card_full_forcado_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_enxada",
+      "file": "v3/cards/enxada.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_enxada_common",
+              "card_full_enxada_uncommon",
+              "card_full_enxada_rare",
+              "card_full_enxada_legendary",
+              "card_full_enxada_mythic"
+            ]
+          ],
+          "rect": [
+            25,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_prancheta",
+      "file": "v3/cards/prancheta.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_prancheta_common",
+              "card_full_prancheta_uncommon",
+              "card_full_prancheta_rare",
+              "card_full_prancheta_legendary",
+              "card_full_prancheta_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_martelo",
+      "file": "v3/cards/martelo.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_martelo_common",
+              "card_full_martelo_uncommon",
+              "card_full_martelo_rare",
+              "card_full_martelo_legendary",
+              "card_full_martelo_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_lupa",
+      "file": "v3/cards/lupa.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_lupa_common",
+              "card_full_lupa_uncommon",
+              "card_full_lupa_rare",
+              "card_full_lupa_legendary",
+              "card_full_lupa_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_balanca",
+      "file": "v3/cards/balanca.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_balanca_common",
+              "card_full_balanca_uncommon",
+              "card_full_balanca_rare",
+              "card_full_balanca_legendary",
+              "card_full_balanca_mythic"
+            ]
+          ],
+          "rect": [
+            26,
+            0,
+            1515,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_veiculo",
+      "file": "v3/cards/veiculo.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_veiculo_common",
+              "card_full_veiculo_uncommon",
+              "card_full_veiculo_rare",
+              "card_full_veiculo_legendary",
+              "card_full_veiculo_mythic"
+            ]
+          ],
+          "rect": [
+            25,
+            0,
+            1514,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_cafe",
+      "file": "v3/cards/cafe.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_cafe_common",
+              "card_full_cafe_uncommon",
+              "card_full_cafe_rare",
+              "card_full_cafe_legendary",
+              "card_full_cafe_mythic"
+            ]
+          ],
+          "rect": [
+            23,
+            0,
+            1518,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_cantil",
+      "file": "v3/cards/cantil.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_cantil_common",
+              "card_full_cantil_uncommon",
+              "card_full_cantil_rare",
+              "card_full_cantil_legendary",
+              "card_full_cantil_mythic"
+            ]
+          ],
+          "rect": [
+            24,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_luvas",
+      "file": "v3/cards/luvas.png",
+      "regions": [
+        {
+          "name": "cartas",
+          "rows": 1,
+          "cols": 5,
+          "size": [
+            140,
+            290
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_full_luvas_common",
+              "card_full_luvas_uncommon",
+              "card_full_luvas_rare",
+              "card_full_luvas_legendary",
+              "card_full_luvas_mythic"
+            ]
+          ],
+          "rect": [
+            24,
+            0,
+            1516,
+            1024
+          ],
+          "uniform_cols": true,
+          "drop_edge_fragments": true
+        }
+      ]
+    },
+    {
+      "id": "v3card_back",
+      "file": "v3/cards/_back.png",
+      "regions": [
+        {
+          "name": "verso, caixote e botão",
+          "sizes_by_col": [
+            [
+              140,
+              200
+            ],
+            [
+              200,
+              200
+            ],
+            [
+              96,
+              96
+            ]
+          ],
+          "kernel": "lanczos3",
+          "align": "bottom",
+          "dir": "cards_v3",
+          "names": [
+            [
+              "card_back_v3",
+              "deck_crate",
+              "deck_toggle"
+            ]
+          ],
+          "cells": [
+            [
+              [
+                30,
+                0,
+                490,
+                1024
+              ],
+              [
+                530,
+                0,
+                690,
+                1024
+              ],
+              [
+                1218,
+                0,
+                316,
+                1024
+              ]
+            ]
+          ]
+        }
+      ]
     }
   ],
   "default_kernel": "nearest",

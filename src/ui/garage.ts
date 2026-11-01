@@ -5,8 +5,9 @@ import {
   canReach, capacity, cargoValue, evalMinigame, insuranceCost, rarityMult, sellable, splitCargo, tripChance, tripHours, vehicleStatus,
 } from '../farm/expeditions';
 import { applyState, store } from '../farm/store';
+import { buffLines } from '../farm/cards';
 import {
-  buyVehicle, collectExpeditions, launchExpedition, setActiveVehicle, startMinigame,
+  collectExpeditions, launchExpedition, setActiveVehicle, startMinigame,
   type CollectedTrip, type FarmState, type MinigameStart, type VehicleState,
 } from '../net/farmApi';
 import { duration, formatGold } from './format';
@@ -68,11 +69,10 @@ function garageView(ctx: GarageCtx, s: FarmState): string {
   const cards = VEHICLES.map((d) => {
     const v = s.vehicles.find((x) => x.vehicle_id === d.id);
     if (!v) {
-      const why = d.unlock_level > s.level ? `nível ${d.unlock_level}` : s.gold < d.cost ? `falta ${formatGold(d.cost - s.gold)} de ouro` : '';
+      // v3: a Garagem não vende; o veículo libera sozinho no nível dele
       return `<li class="veh locked">${ctx.sprite(`vehicle_${d.id}_common`, 1, 'silhouette')}<span><strong>${ctx.esc(d.name_pt)}</strong>
         <small>${d.capacity} unid. · duração ×${nf1.format(d.duration_multiplier)} · +${d.safety_pts} pontos · até ${ctx.esc(ROUTE_BY_ID[d.max_route].name_pt)}</small>
-        <small>Nível ${d.unlock_level} · ${formatGold(d.cost)} ouro</small></span>
-        <span class="btns"><button type="button" class="secondary" data-buy-veh="${d.id}" ${why ? 'disabled' : ''}>${why ? ctx.esc(why) : `Comprar · ${formatGold(d.cost)}`}</button></span></li>`;
+        <small>Libera sozinho no nível ${d.unlock_level}</small></span></li>`;
     }
     const st = vehicleStatus(s, v, now);
     const r = RARITY_BY_ID[v.rarity];
@@ -93,7 +93,10 @@ function garageView(ctx: GarageCtx, s: FarmState): string {
   const idle = s.vehicles.filter((v) => vehicleStatus(s, v, now).status === 'idle');
   const streak = s.exp_fail_streak >= EXP.bad_luck_protection.after_failures
     ? `<p class="hint good">Garantia contra azar: a próxima expedição sai com +${EXP.bad_luck_protection.bonus_pts} pontos.</p>` : '';
-  return `${anyBack ? '<button type="button" class="primary" data-collect-all>Receber tudo</button>' : ''}
+  const vc = s.buffs.find((b) => b.card_id === 'veiculo');
+  const vcTxt = vc ? `<p class="status">Carta de Veículo ${ctx.esc(RARITY_BY_ID[vc.rarity]?.name_pt ?? '')} na mão: ${ctx.esc(buffLines('veiculo', vc.rarity).join(', '))} (vale para quem parte agora).</p>`
+    : '<p class="hint">Com a carta de Veículo na mão, as expedições levam mais carga e lucro (veja Cartas).</p>';
+  return `${vcTxt}${anyBack ? '<button type="button" class="primary" data-collect-all>Receber tudo</button>' : ''}
     <ul class="items">${cards}</ul>${streak}
     <button type="button" class="primary" data-new-exp ${idle.length ? '' : 'disabled'}>${idle.length ? 'Nova expedição' : 'Nenhum veículo livre'}</button>
     ${demandBox(ctx, s)}
@@ -179,7 +182,6 @@ function reportView(ctx: GarageCtx): string {
 
 function bind(ctx: GarageCtx, el: HTMLElement): void {
   const rerender = () => openGarage(ctx, view === 'form' ? 'form' : 'garage');
-  el.querySelectorAll<HTMLButtonElement>('[data-buy-veh]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void ctx.act(() => buyVehicle(b.dataset.buyVeh!), `${vehName(b.dataset.buyVeh!)} comprado!`); }));
   el.querySelectorAll<HTMLButtonElement>('[data-active-veh]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void ctx.act(() => setActiveVehicle(b.dataset.activeVeh!)); }));
   const collect = async (v: string | null) => {
     try {

@@ -1,40 +1,42 @@
 import { describe, expect, it } from 'vitest';
-import { armoryLines, armoryStatus, buffDuration, buffLines, CARD_LIST, cardFaceLines, missionProgress, missionText, pityLeft } from '../src/farm/cards';
+import { armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDuration, handSlots, lifeText, missionProgress, missionText, pityLeft, vehicleLook } from '../src/farm/cards';
+import manifest from '../public/assets/sprites/manifest.json';
 import { CARDS, MISSIONS } from '../src/data';
 
 describe('cartas no cliente', () => {
-  it('as 10 cartas têm buff em 5 raridades e bônus do Armory com texto', () => {
-    expect(CARD_LIST).toHaveLength(10);
+  it('as 20 cartas têm efeito em 5 raridades, bônus do álbum com texto e a arte de cada raridade', () => {
+    expect(CARD_LIST).toHaveLength(20);
+    const sprites = (manifest as { sprites: Record<string, unknown> }).sprites;
     for (const c of CARD_LIST) {
       for (const r of ['common', 'uncommon', 'rare', 'legendary', 'mythic']) {
         const lines = buffLines(c.id, r);
         expect(lines.length).toBeGreaterThan(0);
         for (const l of lines) expect(l).not.toMatch(/_pct|_pts/); // nenhum efeito sem texto
+        expect(sprites[cardArt(c.id, r)]).toBeTruthy();
       }
       for (const l of [...armoryLines(c.id, 'partial'), ...armoryLines(c.id, 'complete')]) expect(l).not.toMatch(/_pct|_pts/);
     }
   });
-  it('a carta mostra o efeito, não o nome', () => {
-    expect(cardFaceLines('cesta_dourada', 'common')).toEqual(['+10% chance de Colheita Dourada']);
-    expect(cardFaceLines('estrada_livre', 'common')).toEqual(['+3 de sucesso', '−10% de perda']); // efeito 0 não aparece
-    for (const c of CARD_LIST) for (const r of ['common', 'uncommon', 'rare', 'legendary', 'mythic']) {
-      const lines = cardFaceLines(c.id, r);
-      expect(lines.length).toBeGreaterThan(0);
-      for (const l of lines) { expect(l).not.toMatch(/_pct|_pts/); expect(l).not.toContain(c.name_pt); }
-    }
+  it('vida na mão por raridade e tempo em texto', () => {
+    expect(cardDuration('common')).toBe('2 dias');
+    expect(cardDuration('rare')).toBe('3 dias');
+    expect(cardDuration('mythic')).toBe('4 dias');
+    expect(lifeText(86400 + 4 * 3600)).toBe('1 d 4 h');
+    expect(lifeText(3 * 3600 + 20 * 60)).toBe('3 h 20');
+    expect(lifeText(12 * 60)).toBe('12 min');
   });
-  it('duração do buff por raridade', () => {
-    expect(buffDuration('common')).toBe('1 h');
-    expect(buffDuration('uncommon')).toBe('1 h 20');
-    expect(buffDuration('mythic')).toBe('2 h 30');
+  it('mão de 3, 4 no nível 15 e 5 no 30; veículo da carta por raridade', () => {
+    expect([handSlots(1), handSlots(14), handSlots(15), handSlots(29), handSlots(30), handSlots(50)]).toEqual([3, 3, 4, 4, 5, 5]);
+    expect(vehicleLook('common')).toBe('carroca');
+    expect(vehicleLook('mythic')).toBe('caminhao');
   });
   it('Armory: parcial com Comum+Incomum+Raro, completo com as 5', () => {
-    const a = [{ card_id: 'sol_de_verao', rarity: 'common' }, { card_id: 'sol_de_verao', rarity: 'uncommon' }];
-    expect(armoryStatus(a, 'sol_de_verao').level).toBe('none');
-    a.push({ card_id: 'sol_de_verao', rarity: 'rare' });
-    expect(armoryStatus(a, 'sol_de_verao').level).toBe('partial');
-    a.push({ card_id: 'sol_de_verao', rarity: 'legendary' }, { card_id: 'sol_de_verao', rarity: 'mythic' });
-    expect(armoryStatus(a, 'sol_de_verao').level).toBe('complete');
+    const a = [{ card_id: 'sol', rarity: 'common' }, { card_id: 'sol', rarity: 'uncommon' }];
+    expect(armoryStatus(a, 'sol').level).toBe('none');
+    a.push({ card_id: 'sol', rarity: 'rare' });
+    expect(armoryStatus(a, 'sol').level).toBe('partial');
+    a.push({ card_id: 'sol', rarity: 'legendary' }, { card_id: 'sol', rarity: 'mythic' });
+    expect(armoryStatus(a, 'sol').level).toBe('complete');
     expect(armoryStatus(a, 'ampulheta').level).toBe('none');
   });
   it('missões: texto com a meta e progresso', () => {

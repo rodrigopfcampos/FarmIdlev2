@@ -73,7 +73,7 @@ function show(label: string, c: number, r: number[]) {
   for (const p of ['casual', 'regular', 'dedicated']) {
     res[p] = runMany(p, c, r);
     const m = res[p];
-    console.log(`  ${SIM.profiles[p].name_pt.padEnd(9)} Armory parcial nas 10: semana ${medianWeek(p)} (mediana) ·`);
+    console.log(`  ${SIM.profiles[p].name_pt.padEnd(9)} Armory parcial nas ${CFG.cards.cards.length}: semana ${medianWeek(p)} (mediana) ·`);
     console.log(`  ${SIM.profiles[p].name_pt.padEnd(9)} nível 10 dia ${m.level10.toFixed(2)} · nível 30 dia ${m.level30.toFixed(1)} · nível 50 dia ${m.level50.toFixed(1)} · mapa completo dia ${m.map.toFixed(1)} · maior espera ${m.wait.toFixed(1)} d · salários ${(100 * m.salaries).toFixed(1)}% · consertos ${(100 * m.repairs).toFixed(1)}%`);
   }
   return res;

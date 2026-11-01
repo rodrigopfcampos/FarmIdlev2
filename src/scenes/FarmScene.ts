@@ -7,6 +7,7 @@ import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
 import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
 import { orchardLook } from '../farm/life';
+import { vehicleLook } from '../farm/cards';
 import { LifeLayer } from './lifeLayer';
 import { petSprite, stageSprite } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
@@ -190,11 +191,15 @@ export class FarmScene extends Phaser.Scene {
     const anyBack = s.expeditions.some((x) => x.status === 'back');
     const parked = st.status === 'idle' || st.status === 'back';
     const V = ANIM.vehicles;
-    const horse = v.vehicle_id === 'carroca' && v.rarity === 'common' && this.textures.exists(V.horse_sprite);
-    const key = horse ? V.horse_sprite : v.rarity === 'common' && this.anims.exists(`${v.vehicle_id}_idle`) ? `${v.vehicle_id}_idle` : `vehicle_${v.vehicle_id}_${v.rarity}`;
+    // carta de Veículo na mão: o veículo aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão)
+    const vc = s.buffs?.find((b) => b.card_id === 'veiculo');
+    const look = vc ? vehicleLook(vc.rarity) ?? v.vehicle_id : v.vehicle_id;
+    const rar = vc ? vc.rarity : v.rarity;
+    const horse = look === 'carroca' && rar === 'common' && this.textures.exists(V.horse_sprite);
+    const key = horse ? V.horse_sprite : rar === 'common' && this.anims.exists(`${look}_idle`) ? `${look}_idle` : `vehicle_${look}_${rar}`;
     if (key !== this.vehKey) {
       this.vehKey = key;
-      this.vehMotor = v.vehicle_id !== 'carroca';
+      this.vehMotor = look !== 'carroca';
       if (horse) this.veh.stop().setTexture(key, 0);
       else if (key.endsWith('_idle')) this.veh.play(key);
       else if (this.textures.exists(key)) this.veh.stop().setTexture(key);

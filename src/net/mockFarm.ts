@@ -87,16 +87,20 @@ const state: FarmState = {
   ],
   mission_week: { daily_packs: 2, weekly_rewards: 0 }, reroll_used: false, pack_today: false,
   cards: [
-    { serial: 101, card_id: 'sol_de_verao', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
-    { serial: 102, card_id: 'sol_de_verao', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
-    { serial: 103, card_id: 'ampulheta', rarity: 'rare', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_3' },
-    { serial: 104, card_id: 'moeda_da_sorte', rarity: 'legendary', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
-    { serial: 105, card_id: 'trevo_quatro_folhas', rarity: 'uncommon', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack' },
-    { serial: 106, card_id: 'tempestade', rarity: 'mythic', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_5' },
+    { serial: 101, card_id: 'sol', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 172800, full_s: 172800, repairs: 0 },
+    { serial: 102, card_id: 'cesta', rarity: 'common', state: 'worn', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 0, full_s: 172800, repairs: 1 },
+    { serial: 103, card_id: 'ampulheta', rarity: 'rare', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_3', life_s: 104400, full_s: 259200, repairs: 0 },
+    { serial: 104, card_id: 'moeda', rarity: 'legendary', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 345600, full_s: 345600, repairs: 0 },
+    { serial: 105, card_id: 'ferradura', rarity: 'uncommon', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 259200, full_s: 259200, repairs: 0 },
+    { serial: 106, card_id: 'tempestade', rarity: 'mythic', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_5', life_s: 345600, full_s: 345600, repairs: 0 },
   ],
-  new_cards: new URLSearchParams(location.search).get('ver') === 'pacote' ? [{ serial: 107, card_id: 'coruja_sabia', rarity: 'legendary', origin: 'daily_pack' }] : [],
-  buffs: [{ card_id: 'rebanho_feliz', rarity: 'rare', started_at: new Date(Date.now() - 20 * 60_000).toISOString(), ends_at: new Date(Date.now() + 80 * 60_000).toISOString(), coin_value: 0 }],
-  armory: [{ card_id: 'sol_de_verao', rarity: 'common' }, { card_id: 'sol_de_verao', rarity: 'uncommon' }, { card_id: 'sol_de_verao', rarity: 'rare' }, { card_id: 'folego', rarity: 'common' }],
+  new_cards: new URLSearchParams(location.search).get('ver') === 'pacote' ? [{ serial: 107, card_id: 'coruja', rarity: 'legendary', origin: 'daily_pack' }] : [],
+  buffs: [
+    { card_id: 'rebanho', rarity: 'rare', serial: 90, started_at: new Date(Date.now() - 20 * 3600_000).toISOString(), ends_at: new Date(Date.now() + 52 * 3600_000).toISOString(), locked_until: new Date(Date.now() + 4 * 3600_000).toISOString(), coin_value: 0, full_s: 259200 },
+    { card_id: 'veiculo', rarity: 'legendary', serial: 91, started_at: new Date(Date.now() - 30 * 3600_000).toISOString(), ends_at: new Date(Date.now() + 66 * 3600_000).toISOString(), locked_until: null, coin_value: 0, full_s: 345600 },
+  ],
+  hand_slots: 3, repair_cost: 4900,
+  armory: [{ card_id: 'sol', rarity: 'common' }, { card_id: 'sol', rarity: 'uncommon' }, { card_id: 'sol', rarity: 'rare' }, { card_id: 'cantil', rarity: 'common' }, { card_id: 'rebanho', rarity: 'rare' }, { card_id: 'veiculo', rarity: 'legendary' }],
   pity: { rare: 4, legendary: 21, mythic: 63 }, binder_slots: 60, prod_ref: { value_h: 4500, xp_h: 1400 },
   collector: { common: 200, uncommon: 400, rare: 800, legendary: 1300, mythic: 2300 }, binder_expand_cost: 50000,
   village: { title: 'Ajudante da Vila', stars: 0 },
@@ -257,14 +261,23 @@ export const mockFarm = {
     if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);
     if (fn === 'equip_snack') { const c = ch(args.p_class)!; c.snack_id = args.p_snack as string | null; c.snack_qty = args.p_snack ? 5 : 0; }
     if (fn === 'repair_tool') ch(args.p_class)!.durability = 100;
-    if (fn === 'use_card' || fn === 'armory_place' || fn === 'sell_card') {
+    if (fn === 'equip_card' || fn === 'sell_card' || fn === 'repair_card') {
       const c = state.cards.find((x) => x.serial === args.p_serial)!;
-      state.cards = state.cards.filter((x) => x !== c);
-      if (fn === 'use_card') state.buffs = [...state.buffs.filter((b) => b.card_id !== c.card_id), { card_id: c.card_id, rarity: c.rarity, started_at: new Date().toISOString(), ends_at: new Date(Date.now() + 3600_000).toISOString(), coin_value: 0 }];
-      if (fn === 'armory_place') state.armory.push({ card_id: c.card_id, rarity: c.rarity });
+      if (fn === 'repair_card') { c.life_s = c.full_s; c.state = 'binder'; state.gold -= state.repair_cost ?? 0; }
+      else state.cards = state.cards.filter((x) => x !== c);
+      if (fn === 'equip_card') {
+        const life = c.life_s ?? c.full_s ?? 86400;
+        state.buffs = [...state.buffs, { card_id: c.card_id, rarity: c.rarity, serial: c.serial, started_at: new Date().toISOString(), ends_at: new Date(Date.now() + life * 1000).toISOString(), locked_until: new Date(Date.now() + 86400_000).toISOString(), coin_value: 0, full_s: c.full_s }];
+        if (!state.armory.some((a) => a.card_id === c.card_id && a.rarity === c.rarity)) state.armory.push({ card_id: c.card_id, rarity: c.rarity });
+      }
       if (fn === 'sell_card') state.gold += state.collector[c.rarity];
     }
-    if (fn === 'cards_seen') { for (const n of state.new_cards) state.cards.push({ ...n, state: 'binder', inbox_until: null, seen: true }); state.new_cards = []; }
+    if (fn === 'unequip_card') {
+      const b = state.buffs.find((x) => x.card_id === args.p_card)!;
+      state.buffs = state.buffs.filter((x) => x !== b);
+      state.cards.push({ serial: b.serial ?? Date.now(), card_id: b.card_id, rarity: b.rarity, state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: (Date.parse(b.ends_at) - Date.now()) / 1000, full_s: b.full_s });
+    }
+    if (fn === 'cards_seen') { for (const n of state.new_cards) state.cards.push({ ...n, state: 'binder', inbox_until: null, seen: true, life_s: 4 * 86400, full_s: 4 * 86400 }); state.new_cards = []; }
     if (fn === 'reroll_mission') state.reroll_used = true;
     if (fn === 'binder_expand') state.binder_slots += 20;
     if (fn === 'set_auto_sell') state.auto_sell = args.p_on ? [...state.auto_sell, args.p_item as string] : state.auto_sell.filter((x) => x !== args.p_item);
@@ -308,7 +321,6 @@ export const mockFarm = {
       state.expeditions = state.expeditions.filter((e) => !got.some((g) => g.id === e.id));
       return structuredClone({ ...state, collected: got });
     }
-    if (fn === 'buy_vehicle') state.vehicles.push({ vehicle_id: args.p_vehicle as string, rarity: 'common', durability: 100, active: true, refurb_rarity: null, refurb_until: null });
     if (fn === 'repair_vehicle') state.vehicles.find((v) => v.vehicle_id === args.p_vehicle)!.durability = 100;
     if (fn === 'set_active_vehicle') for (const v of state.vehicles) v.active = v.vehicle_id === args.p_vehicle;
     void PETS;

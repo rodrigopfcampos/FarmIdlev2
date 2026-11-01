@@ -126,7 +126,8 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const has = (id: string) => chars.find((c) => c.id === id)!.hired;
 
   type Veh = { def: any; owned: boolean; rarity: number };
-  const vehicles: Veh[] = CFG.exp.vehicles.map((v: any) => ({ def: v, owned: v.cost === 0, rarity: 0 }));
+  // v3: a Garagem não vende; cada veículo libera de graça no nível dele (custo 0: entra assim que o nível chega)
+  const vehicles: Veh[] = CFG.exp.vehicles.map((v: any) => ({ def: v, owned: v.cost === 0 && v.unlock_level <= 1, rarity: 0 }));
   const kits: number[] = [0, 0, 0, 0, 0]; // por raridade (índice 1..4)
 
   // cartas

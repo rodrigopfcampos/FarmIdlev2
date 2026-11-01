@@ -151,12 +151,12 @@ check(s6ok, 'tabela de cultivos da seção 6 do GDD bate com config/crops.json')
 
 // ---------- cartas (seção 11) ----------
 const cards = read('config/cards.json');
-check(cards.cards.length === 10 && new Set(cards.cards.map((c: any) => c.illustration_slot)).size === 10, '10 cartas, cada uma com 1 ilustração');
+check(cards.cards.length === 20 && new Set(cards.cards.map((c: any) => c.art_key)).size === 20, '20 cartas, cada uma com a sua arte (v3)');
 const pct = (v: number) => `${v}%`;
 let cardsOk = true;
 for (const c of cards.cards) {
   // primeiro número de cada raridade na linha da carta no GDD (ex.: "| Sol de Verão | ... | +15% | +20% |")
-  const line = gdd.split('\n').find((l) => l.startsWith(`| ${c.name_pt} `) && l.split('|').length >= 9);
+  const line = gdd.slice(gdd.indexOf('### As 20 cartas')).split('\n').find((l) => l.startsWith(`| ${c.name_pt} `) && l.split('|').length >= 9);
   if (!line) { cardsOk = false; console.log('   carta sem linha no GDD:', c.name_pt); continue; }
   const cellsTxt = line.split('|').slice(3, 8).map((t) => t.trim());
   const rar = ['common', 'uncommon', 'rare', 'legendary', 'mythic'];
@@ -167,8 +167,10 @@ for (const c of cards.cards) {
     if (!(nums.includes(first) || (special && first === 100))) { cardsOk = false; console.log(`   ${c.name_pt} ${r}: config ${pct(first)} x GDD "${cellsTxt[k]}"`); }
   });
 }
-check(cardsOk, 'buffs de config/cards.json batem com a tabela da seção 11');
-check(cards.rarities.common.duration_minutes === 60 && cards.rarities.mythic.duration_minutes === 150, 'duração dos buffs: Comum 1 h, Mítico 2 h 30');
+check(cardsOk, 'efeitos de config/cards.json batem com a tabela da seção 11 (v3)');
+check(cards.rarities.common.duration_days === 2 && cards.rarities.uncommon.duration_days === 3 && cards.rarities.rare.duration_days === 3 && cards.rarities.legendary.duration_days === 4 && cards.rarities.mythic.duration_days === 4,
+  'vida das cartas na mão: Comum 2 dias, Incomum e Rara 3, Lendária e Mítica 4');
+check(JSON.stringify(cards.rules.hand.slots_by_level) === '[[1,3],[15,4],[30,5]]' && cards.rules.hand.min_lock_hours === 24, 'mão de 3 (nível 1), 4 (15) e 5 (30); presa 1 dia');
 
 // ---------- ferramentas e itens (seção 7) ----------
 const tools = read('config/tools_and_items.json');
@@ -192,7 +194,7 @@ check(gdd.includes(`×${avg.toFixed(2).replace('.', ',')}`), `média dos animais
 // ---------- artes: toda chave usada na config existe no manifest ----------
 const sprites = read('public/assets/sprites/manifest.json').sprites;
 const keys = [
-  ...cards.cards.flatMap((c: any) => [c.sprite_key, c.icon_key]), ...Object.values(cards.frames),
+  ...cards.cards.flatMap((c: any) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => `${c.art_key}_${r}`)), ...Object.values(cards.frames),
   ...tools.class_tool_cards.flatMap((t: any) => tools.tool_materials.map((m: any) => `${t.id}_${m.id}`)),
   ...['clothing_cards', 'amulet_cards', 'snack_cards'].flatMap((k) => tools[k].map((i: any) => i.id)),
   ...crops.flatMap((c: any) => [c.art.ready_sprite, c.art.seed_bag].filter(Boolean)),
@@ -218,7 +220,7 @@ check(P.regular.map_complete_day >= 65 && P.regular.map_complete_day <= 85, `sim
 check(P.regular.level50_day >= 95 && P.regular.level50_day <= 125, `simulador: regular no nível 50 no dia ${P.regular.level50_day} (95 a 125)`);
 check(P.casual.max_gold_wait_days <= 8, `simulador: casual espera no máximo ${P.casual.max_gold_wait_days} dias por um lote (até 8)`);
 check(P.regular.salaries_share >= 0.08 && P.regular.salaries_share <= 0.18, `simulador: salários do regular = ${(P.regular.salaries_share * 100).toFixed(1)}% da renda (8% a 18%)`);
-check(P.regular.armory_all_partial_week_median >= 25 && P.regular.armory_all_partial_week_median <= 40, `simulador: bônus parcial nas 10 cartas na semana ${P.regular.armory_all_partial_week_median} (25 a 40, sem mercado)`);
+check(P.regular.armory_all_partial_week_median >= 50 && P.regular.armory_all_partial_week_median <= 120, `simulador: bônus parcial nas 20 cartas na semana ${P.regular.armory_all_partial_week_median} (50 a 120, sem mercado; meta longa da coleção)`);
 // as metas publicadas (seção 14) com até 10% de diferença
 const near = (v: number, t: number) => Math.abs(v / t - 1) <= 0.1;
 check(near(P.regular.map_complete_day, 77) && near(P.casual.map_complete_day, 108) && near(P.dedicated.map_complete_day, 71) && near(P.regular.level30_day, 33) && near(P.regular.level50_day, 113),

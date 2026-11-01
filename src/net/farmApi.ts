@@ -59,6 +59,8 @@ export type FarmState = {
   cards: CardState[]; new_cards: { serial: number; card_id: string; rarity: string; origin: string }[];
   buffs: BuffState[]; armory: { card_id: string; rarity: string }[]; pity: { rare: number; legendary: number; mythic: number };
   binder_slots: number; prod_ref: { value_h: number; xp_h: number }; collector: Record<string, number>; binder_expand_cost: number;
+  // v3 (R2): mão de cartas e reparo da Comum
+  hand_slots?: number; repair_cost?: number;
   // fase 8a: pedidos e novidades (na própria fazenda) e ajudas valendo nos lotes (na visita)
   social?: { incoming: number; unseen: number; helps: LotHelp[]; likes: number };
   helps?: LotHelp[];
@@ -88,14 +90,17 @@ export type VisitView = {
   limits: { given: number; given_max: number; received: number; received_max: number; liked: boolean; noted: boolean; notes_today: number; help_xp: number };
 };
 export type MissionState = { kind: 'daily' | 'weekly'; slot: number; id: string; metric: string; target: number; progress: number; done: boolean; reward: { gold?: number; xp?: number } };
-export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox'; inbox_until: string | null; seen: boolean; origin: string };
-export type BuffState = { card_id: string; rarity: string; started_at: string; ends_at: string; coin_value: number };
+export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox' | 'worn'; inbox_until: string | null; seen: boolean; origin: string;
+  life_s?: number; full_s?: number; repairs?: number };
+export type BuffState = { card_id: string; rarity: string; serial?: number; started_at: string; ends_at: string; locked_until?: string | null; coin_value: number; full_s?: number };
 
 const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
   'carta não encontrada': 'Essa carta não está mais no seu fichário.',
   'raridade menor que a do buff ativo': 'Essa carta já está ativa com raridade maior. Use uma de raridade igual ou maior.',
-  'já tem 3 buffs ativos': 'Já tem 3 cartas ativas. Espere uma acabar.',
+  'a mão está cheia': 'A mão está cheia. Tire uma carta (depois de 1 dia) ou suba de nível.',
+  'a carta ainda está presa na mão': 'A carta fica pelo menos 1 dia na mão.',
+  'essa carta já está na mão': 'Essa carta já está na mão.',
   'essa raridade já está no Armory': 'Essa raridade dessa carta já está no Armory.',
   'fichário já está no máximo': 'O fichário já está no tamanho máximo (200).',
   'a troca grátis de hoje já foi usada': 'A troca grátis de hoje já foi usada.',
@@ -282,8 +287,9 @@ export const repairVehicle = (v: string) => rpc('repair_vehicle', { p_vehicle: v
 export const mergeItems = (item: string) => rpc('merge_items', { p_item: item });
 export const setTimezone = (tz: string) => rpc('set_timezone', { p_tz: tz });
 // cartas e missões
-export const useCard = (serial: number) => rpc('use_card', { p_serial: serial });
-export const armoryPlace = (serial: number) => rpc('armory_place', { p_serial: serial });
+export const equipCard = (serial: number) => rpc('equip_card', { p_serial: serial });
+export const unequipCard = (cardId: string) => rpc('unequip_card', { p_card: cardId });
+export const repairCard = (serial: number) => rpc('repair_card', { p_serial: serial });
 export const sellCard = (serial: number) => rpc('sell_card', { p_serial: serial });
 export const binderExpand = () => rpc('binder_expand');
 export const rerollMission = (slot: number) => rpc('reroll_mission', { p_slot: slot });

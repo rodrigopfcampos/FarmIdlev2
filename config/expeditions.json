@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "source": "GDD v2 seção 8 · fase 5: decisões do dono (24/10/2026): clicar para receber, repetição guarda o resultado, demanda igual para todos, comboio",
   "stall_price_ratio": 0.7,
   "crit": {
@@ -172,33 +172,36 @@
     },
     {
       "id": "carro",
-      "name_pt": "Carro",
+      "name_pt": "Compacto",
       "unlock_level": 6,
       "capacity": 120,
       "duration_multiplier": 0.8,
       "safety_pts": 3,
       "max_route": "capital",
-      "cost": 33000
+      "cost": 0,
+      "reference_cost": 33000
     },
     {
       "id": "picape",
-      "name_pt": "Caminhão pequeno (picape)",
+      "name_pt": "Off-Road",
       "unlock_level": 16,
       "capacity": 250,
       "duration_multiplier": 0.9,
       "safety_pts": 5,
       "max_route": "porto",
-      "cost": 620000
+      "cost": 0,
+      "reference_cost": 620000
     },
     {
       "id": "caminhao",
-      "name_pt": "Caminhão grande",
+      "name_pt": "Caminhão",
       "unlock_level": 30,
       "capacity": 500,
       "duration_multiplier": 1.0,
       "safety_pts": 8,
       "max_route": "exportacao",
-      "cost": 5600000
+      "cost": 0,
+      "reference_cost": 5600000
     }
   ],
   "refurbish": [
@@ -305,5 +308,6 @@
       "Ladrões de estrada levaram {lost} da carga antes de {route}."
     ],
     "recovered": "O cachorro farejou e trouxe de volta a carga perdida!"
-  }
+  },
+  "vehicle_source": "v3: a Garagem não vende; cada veículo libera de graça no nível dele (Carro 6, Picape 16, Caminhão 30); a carta de Veículo dá carga, lucro, tempo, roubo e jackpot e troca a aparência"
 }

@@ -1,6 +1,6 @@
 // Missões e cartas na interface (v3): botões Missões e Cartas no topo, a mão em leque no rodapé com o caixote
 // do baralho, painel de Cartas (Fichário, Álbum e chances) e o pacote que abre virando a carta.
-import { CARDS } from '../data';
+import { CARDS, MISSIONS } from '../data';
 import {
   armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDef, cardDuration, lifeText, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
 } from '../farm/cards';
@@ -75,12 +75,17 @@ function missionsBody(ctx: CardsCtx): string {
   const wd = weekly.filter((m) => m.done).length, maxPacks = CARDS.rules.weekly_mission_packs.max_daily_packs_per_week;
   return `<h3>Diárias <small class="muted">renovam à meia-noite do seu fuso</small></h3>
     <ul class="missions">${daily.map(row).join('')}</ul>
-    <p class="status">As 5 do dia: <strong>1 pacote com 1 carta</strong> ${s.pack_today ? '✓ recebido hoje' : ''} · ${s.mission_week.daily_packs} de ${maxPacks} pacotes nesta semana.
+    <p class="status">As 5 do dia: <strong>1 pacote com ${packCards(s.level)} carta${packCards(s.level) > 1 ? 's' : ''}</strong> ${s.pack_today ? '✓ recebido hoje' : ''} · ${s.mission_week.daily_packs} de ${maxPacks} pacotes nesta semana.
       ${s.reroll_used ? 'Troca grátis de hoje já usada.' : '1 troca grátis por dia.'}</p>
     <h3>Semanais <small class="muted">renovam na segunda à meia-noite</small></h3>
     <ul class="missions">${weekly.map(row).join('')}</ul>
     <p class="status">${wd >= 3 ? '✓' : '○'} 3 completas: 1 carta · ${wd >= 5 ? '✓' : '○'} as 5: +1 carta e 1 Escritura</p>
     <p class="hint">As metas são medidas na sua própria produção por hora (${formatGold(s.prod_ref.value_h)} em valor da Feira). O que a equipe faz sozinha também conta.</p>`;
+}
+
+/** cartas no pacote das diárias, pelo nível */
+function packCards(level: number): number {
+  return MISSIONS.daily.pack_cards_by_level.filter(([lv]) => lv <= level).reduce((n, [, c]) => c, 1);
 }
 
 // ---------- a mão (rodapé) ----------
@@ -238,7 +243,7 @@ function oddsBody(s: FarmState): string {
     <p>Dentro da raridade, as ${CARD_LIST.length} cartas têm a mesma chance.</p>
     <h3>Garantia</h3>
     <ul class="eff"><li>Rara ou melhor em até <strong>${p.rare}</strong> cartas</li><li>Lendária ou melhor em até <strong>${p.legendary}</strong></li><li>Mítica em até <strong>${p.mythic}</strong></li></ul>
-    <p class="hint">Cartas vêm das missões (até ${CARDS.rules.weekly_mission_packs.max_daily_packs_per_week} pacotes por semana das diárias e 2 cartas das semanais), da Encomenda da Vila e, depois do nível 50, das Estrelas. Nunca à venda por dinheiro.</p>`;
+    <p class="hint">Cartas vêm do presente de boas-vindas, dos níveis ${CARDS.rules.supply.level_up_cards.from_level} a ${CARDS.rules.supply.level_up_cards.to_level} (1 por nível), das missões (1 pacote por dia nas diárias, com 2 cartas do nível ${MISSIONS.daily.pack_cards_by_level[1][0]} em diante, e 2 cartas das semanais), da Encomenda da Vila e, depois do nível 50, das Estrelas. Nunca à venda por dinheiro.</p>`;
 }
 
 function bindCards(ctx: CardsCtx, el: HTMLElement): void {
@@ -266,7 +271,7 @@ export function maybeOpenPack(ctx: CardsCtx, s: FarmState): void {
   const ov = document.createElement('div');
   ov.className = 'pack-overlay';
   const still = calm();
-  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel', encomenda: 'Prêmio da Encomenda da Vila', estrelas: 'Pacote comprado com Estrelas' };
+  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel', starter: 'Presente de boas-vindas', level_up: 'Prêmio de nível', encomenda: 'Prêmio da Encomenda da Vila', estrelas: 'Pacote comprado com Estrelas' };
   const draw = () => {
     const c = cards[i];
     const r = rarityInfo(c.rarity)!;

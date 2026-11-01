@@ -490,6 +490,13 @@ export class FarmScene extends Phaser.Scene {
       if (this.owned.has(lot) && pointInPolygon(x, y, v.polygon)) return { kind: 'plot', id: v.id, poly: v.polygon };
     }
     for (const lot of LOTS) {
+      // pasto com prédio no mapa: só o prédio é clicável (o gramado não)
+      const r = lot.building_hit_rect;
+      if (r) {
+        if (x < r[0] || x > r[2] || y < r[1] || y > r[3]) continue;
+        if (!this.owned.has(lot.id)) return { kind: 'locked', id: lot.id, rect: r };
+        return { kind: 'pasture', id: lot.id, rect: r };
+      }
       if (!pointInPolygon(x, y, lot.polygon)) continue;
       if (!this.owned.has(lot.id)) return { kind: 'locked', id: lot.id, poly: lot.polygon };
       if (lot.type === 'pomar') return { kind: 'orchard', id: lot.id, poly: lot.polygon };

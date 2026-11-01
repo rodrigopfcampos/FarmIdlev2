@@ -233,27 +233,27 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 5 | C1 | Celeiro | 8 | 12.000 | Não | 2 h 00 | 1,5 |
 | 6 | A6 | Lavoura | 10 | 40.000 | Não | 2 h 12 | 1,8 |
 | 7 | P1 | Pomar | 11 | 56.000 | Não | 2 h 24 | 2,3 |
-| 8 | A7 | Lavoura | 13 | 120.000 | Não | 2 h 36 | 4,8 |
-| 9 | A8 | Lavoura | 14 | 210.000 | Não | 2 h 48 | 5,5 |
-| 10 | P2 | Pomar | 16 | 380.000 | Não | 3 h 00 | 6,8 |
-| 11 | A5 | Lavoura | 17 | 530.000 | Não | 3 h 12 | 9,3 |
-| 12 | A10 | Lavoura | 19 | 810.000 | Não | 3 h 24 | 10,9 |
+| 8 | A7 | Lavoura | 13 | 120.000 | Não | 2 h 36 | 4,9 |
+| 9 | A8 | Lavoura | 14 | 200.000 | Não | 2 h 48 | 5,5 |
+| 10 | P2 | Pomar | 16 | 390.000 | Não | 3 h 00 | 6,8 |
+| 11 | A5 | Lavoura | 17 | 530.000 | Não | 3 h 12 | 8,9 |
+| 12 | A10 | Lavoura | 19 | 820.000 | Não | 3 h 24 | 10,8 |
 | 13 | P3 | Pomar | 20 | 940.000 | Não | 3 h 36 | 13,3 |
 | 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 3 h 48 | 17,5 |
 | 15 | A12 | Lavoura | 23 | 1.900.000 | Não | 4 h 00 | 18,8 |
-| 16 | P4 | Pomar | 25 | 2.800.000 | Não | 4 h 12 | 20,8 |
-| 17 | A13 | Lavoura | 27 | 4.600.000 | Não | 4 h 24 | 25,3 |
-| 18 | A20 | Lavoura | 28 | 5.600.000 | Não | 4 h 36 | 27,8 |
-| 19 | L | Lago | 30 | 7.600.000 | Sim | 4 h 48 | 33,3 |
-| 20 | P5 | Pomar | 31 | 9.200.000 | Sim | 5 h 00 | 35,8 |
+| 16 | P4 | Pomar | 25 | 3.000.000 | Não | 4 h 12 | 20,8 |
+| 17 | A13 | Lavoura | 27 | 4.700.000 | Não | 4 h 24 | 25,3 |
+| 18 | A20 | Lavoura | 28 | 5.700.000 | Não | 4 h 36 | 27,8 |
+| 19 | L | Lago | 30 | 8.000.000 | Sim | 4 h 48 | 33,3 |
+| 20 | P5 | Pomar | 31 | 9.800.000 | Sim | 5 h 00 | 35,8 |
 | 21 | A14 | Lavoura | 33 | 14.000.000 | Sim | 5 h 12 | 41,3 |
-| 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 5 h 24 | 44,3 |
-| 23 | P6 | Pomar | 36 | 26.000.000 | Sim | 5 h 36 | 50,3 |
-| 24 | A16 | Lavoura | 37 | 30.000.000 | Sim | 5 h 48 | 53,5 |
-| 25 | A17 | Lavoura | 39 | 40.000.000 | Sim | 6 h 00 | 60,8 |
-| 26 | A18 | Lavoura | 40 | 51.000.000 | Sim | 6 h 12 | 64,5 |
-| 27 | A19 | Lavoura | 42 | 69.000.000 | Sim | 6 h 24 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 86.000.000 | Sim | 6 h 36 | 78,3 |
+| 22 | A15 | Lavoura | 34 | 18.000.000 | Sim | 5 h 24 | 44,3 |
+| 23 | P6 | Pomar | 36 | 27.000.000 | Sim | 5 h 36 | 50,3 |
+| 24 | A16 | Lavoura | 37 | 33.000.000 | Sim | 5 h 48 | 53,5 |
+| 25 | A17 | Lavoura | 39 | 46.000.000 | Sim | 6 h 00 | 60,8 |
+| 26 | A18 | Lavoura | 40 | 55.000.000 | Sim | 6 h 12 | 64,5 |
+| 27 | A19 | Lavoura | 42 | 77.000.000 | Sim | 6 h 24 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 95.000.000 | Sim | 6 h 36 | 78,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -364,7 +364,7 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Rancheira | Regador | Animais e pomar | 3 | 5.800 |
 | Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
 | Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 130.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 510.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 480.000 |
 | Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 180 | 1.700 | 8.800 | 20.000 | 44.000 | 86.000 | 160.000 | 280.000 | 440.000 | 520.000 |
+| Salário base/dia (ouro) | 180 | 1.700 | 8.800 | 20.000 | 46.000 | 90.000 | 170.000 | 300.000 | 480.000 | 580.000 |
 
 ### Nível do personagem
 
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 861.960 | 2.700.000 |
-| 2 | 50 | 2.400 | | 27 | 992.560 | 3.200.000 |
-| 3 | 65 | 3.900 | | 28 | 1.162.340 | 3.500.000 |
-| 4 | 90 | 5.800 | | 29 | 1.306.000 | 3.900.000 |
-| 5 | 870 | 8.800 | | 30 | 1.306.000 | 4.300.000 |
-| 6 | 1.280 | 13.000 | | 31 | 1.381.900 | 4.700.000 |
-| 7 | 2.040 | 20.000 | | 32 | 1.594.500 | 5.500.000 |
-| 8 | 3.150 | 29.000 | | 33 | 1.700.800 | 6.300.000 |
-| 9 | 5.310 | 55.000 | | 34 | 1.913.400 | 7.000.000 |
-| 10 | 19.590 | 87.000 | | 35 | 2.232.300 | 8.100.000 |
-| 11 | 32.650 | 110.000 | | 36 | 2.551.200 | 9.800.000 |
-| 12 | 47.020 | 140.000 | | 37 | 2.870.100 | 10.000.000 |
-| 13 | 67.910 | 210.000 | | 38 | 3.295.300 | 11.000.000 |
-| 14 | 86.200 | 340.000 | | 39 | 3.720.500 | 12.000.000 |
-| 15 | 111.010 | 440.000 | | 40 | 4.145.700 | 14.000.000 |
-| 16 | 143.660 | 550.000 | | 41 | 4.570.900 | 15.000.000 |
-| 17 | 169.780 | 690.000 | | 42 | 4.996.100 | 17.000.000 |
-| 18 | 208.960 | 840.000 | | 43 | 5.633.900 | 19.000.000 |
-| 19 | 261.200 | 950.000 | | 44 | 6.165.400 | 21.000.000 |
-| 20 | 313.440 | 1.000.000 | | 45 | 6.803.200 | 22.000.000 |
-| 21 | 365.680 | 1.200.000 | | 46 | 7.334.700 | 23.000.000 |
-| 22 | 430.980 | 1.400.000 | | 47 | 7.759.900 | 24.000.000 |
-| 23 | 522.400 | 1.600.000 | | 48 | 8.185.100 | 24.000.000 |
-| 24 | 626.880 | 1.900.000 | | 49 | 8.397.700 | 25.000.000 |
-| 25 | 744.420 | 2.200.000 | | 50 | — | 26.000.000 |
+| 1 | 40 | 1.900 | | 26 | 863.280 | 2.800.000 |
+| 2 | 50 | 2.400 | | 27 | 994.080 | 3.300.000 |
+| 3 | 65 | 3.900 | | 28 | 1.164.120 | 3.600.000 |
+| 4 | 90 | 5.800 | | 29 | 1.308.000 | 4.000.000 |
+| 5 | 870 | 8.800 | | 30 | 1.308.000 | 4.500.000 |
+| 6 | 1.280 | 13.000 | | 31 | 1.380.600 | 5.000.000 |
+| 7 | 2.040 | 20.000 | | 32 | 1.593.000 | 5.800.000 |
+| 8 | 3.150 | 29.000 | | 33 | 1.699.200 | 6.600.000 |
+| 9 | 5.310 | 55.000 | | 34 | 1.911.600 | 7.400.000 |
+| 10 | 19.620 | 87.000 | | 35 | 2.230.200 | 8.700.000 |
+| 11 | 32.700 | 110.000 | | 36 | 2.548.800 | 10.000.000 |
+| 12 | 47.090 | 140.000 | | 37 | 2.867.400 | 11.000.000 |
+| 13 | 68.020 | 210.000 | | 38 | 3.292.200 | 12.000.000 |
+| 14 | 86.330 | 320.000 | | 39 | 3.717.000 | 14.000.000 |
+| 15 | 111.180 | 440.000 | | 40 | 4.141.800 | 15.000.000 |
+| 16 | 143.880 | 570.000 | | 41 | 4.566.600 | 17.000.000 |
+| 17 | 170.040 | 690.000 | | 42 | 4.991.400 | 19.000.000 |
+| 18 | 209.280 | 840.000 | | 43 | 5.628.600 | 21.000.000 |
+| 19 | 261.600 | 960.000 | | 44 | 6.159.600 | 23.000.000 |
+| 20 | 313.920 | 1.000.000 | | 45 | 6.796.800 | 24.000.000 |
+| 21 | 366.240 | 1.200.000 | | 46 | 7.327.800 | 26.000.000 |
+| 22 | 431.640 | 1.400.000 | | 47 | 7.752.600 | 27.000.000 |
+| 23 | 523.200 | 1.600.000 | | 48 | 8.177.400 | 27.000.000 |
+| 24 | 627.840 | 1.900.000 | | 49 | 8.389.800 | 29.000.000 |
+| 25 | 745.560 | 2.300.000 | | 50 | — | 29.000.000 |
 
 ### Raridade global 🆕
 
@@ -740,7 +740,8 @@ São **10 cartas**, cada uma em 5 raridades (50 versões). Usar uma carta liga u
 
 - **5 diárias** (reset 00:00) e **5 semanais** (reset segunda 00:00), sorteadas de um banco conforme o nível. Só entram missões de sistemas já liberados.
 - As metas escalam com a produção do próprio jogador (ex.: "colha o equivalente a 2 h da sua produção"), então a dificuldade é igual para todos os níveis. 1 troca grátis de missão diária por dia.
-- Cada diária paga ouro (≈40% de 1 h de renda) e XP (≈30 min de XP de produção). Completar as 5 do dia dá 1 pacote com 1 carta, até 4 pacotes por semana (dá para falhar 3 dias).
+- Cada diária paga ouro (≈40% de 1 h de renda) e XP (≈30 min de XP de produção). Completar as 5 do dia dá 1 pacote todo dia (sem limite semanal): 1 carta até o nível 14 e 2 do nível 15 em diante.
+- 🆕 (01/11) **De onde vêm as cartas:** 3 Comuns (Sol, Cesta, Coruja) já na mão ao criar a conta; 1 carta por nível do 2 ao 10; pacote das diárias todo dia; semanais iguais. A mão de 3 gasta ~8 cartas por semana (duração média 2,6 dias): ~21 cartas na 1ª semana, ~9 por semana até o nível 14 e ~16 do 15 em diante.
 - Semanais: 3 completas = 1 carta; as 5 completas = +1 carta e 1 Escritura.
 - Banco de diárias (exemplos): colher X unidades; enviar 2 expedições; coletar X produtos animais; ajudar 2 vizinhos; vender na Barraca (ou no mercado, quando existir); plantar um cultivo do seu nível; manter 3 personagens em campo por 2 h; consertar um veículo.
 - Banco de semanais (exemplos): 10 expedições; 1 expedição Capital ou mais longe com sucesso; ganhar X de ouro; subir 1 nível de personagem; ajudar 10 vizinhos; estar com produção ativa em 3 eventos noturnos; vender 5 anúncios no mercado (só depois da fase 8 🆕).

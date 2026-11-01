@@ -263,6 +263,8 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   }
 
   let nowH = 0;
+  /** cartas no pacote das diárias pelo nível */
+  const packCards = (lv: number) => CFG.missions.daily.pack_cards_by_level.filter(([l]: number[]) => l <= lv).reduce((n: number, [, c]: number[]) => c, 1);
   function drawCard(): void {
     cardsDrawn++;
     let r: number;
@@ -288,7 +290,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const g = n * CFG.missions.daily.gold_hours_of_income * hourlyIncomeEMA;
     gold += g; income += g; incomeByLevel[level] += g; dayIncome += g;
     addXp(n * CFG.missions.daily.xp_hours_of_production * hourlyXpEMA, t);
-    if (done && weekMissions < CFG.missions.daily.max_packs_per_week) { weekMissions++; drawCard(); }
+    if (done && weekMissions < CFG.missions.daily.max_packs_per_week) { weekMissions++; for (let k = packCards(level); k > 0; k--) drawCard(); }
     if (day % 7 === 6) { // fim da semana
       if (rand() < prof.weekly_3_prob) drawCard();
       if (rand() < prof.weekly_5_prob) { drawCard(); deeds += CFG.missions.weekly.deed_at_5; }
@@ -301,6 +303,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     xp += amount;
     while (level < 50 && xp >= XP_NEXT[level]) {
       xp -= XP_NEXT[level]; level++; levelDay[level] = t / 24;
+      // cartas por nível (presente do 2 ao 10)
+      const lu = CFG.cards.rules.supply.level_up_cards;
+      if (level >= lu.from_level && level <= lu.to_level) for (let k = 0; k < lu.cards_per_level; k++) drawCard();
       if (level >= CFG.chars.pets.unlock_level && petSince < 0) petSince = t;
     }
   }
@@ -478,7 +483,7 @@ export function armoryPartialWeek(profileId: string, seed: number, maxWeeks = 15
   };
   for (let w = 1; w <= maxWeeks; w++) {
     let packs = 0;
-    for (let d = 0; d < 7; d++) if (rand() < prof.daily_missions_done_prob && packs < CFG.missions.daily.max_packs_per_week) { packs++; draw(); }
+    for (let d = 0; d < 7; d++) if (rand() < prof.daily_missions_done_prob && packs < CFG.missions.daily.max_packs_per_week) { packs++; draw(); }  // pacote de 1 carta (visão conservadora)
     if (rand() < prof.weekly_3_prob) draw();
     if (rand() < prof.weekly_5_prob) draw();
     if (armory.every((a) => a[0] && a[1] && a[2])) return w;

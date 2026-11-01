@@ -30,6 +30,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (01/11, ajuste da R2) Artes novas das 20 cartas com os números certos; carta de pesca = **Vara de Pescar** (grupo Trabalhadores); mão no canto direito sem o caixote (aba Fichário); plaquinhas de volta, desenhadas pixel a pixel (cadeado = à venda, árvore = pomar comprado); Celeiro e Galinheiro clicáveis só no prédio. Cartas: 3 Comuns na mão ao criar a conta, 1 por nível do 2 ao 10, pacote das diárias todo dia (2 cartas do nível 15), R recalibrado.
 - 🆕 (01/11, R2) Dono aprovou: lista de valores das cartas (gerar artes novas com os números da tabela da GDD seção 11), mão 3→5, só a Comum repara, Café só recupera, Engrenagem automação e frota. Veículos: primeiro "só pela carta"; o simulador mostrou que o mapa não fecharia (sem Escrituras e renda das rotas longas) e o dono escolheu **veículos liberam por nível** e a carta dá bônus e troca a aparência.
 - 🆕 (31/10) **Reformulação v3** (instrução "Especificação master v3.0"): fazenda com sistema de cartas. Feita em partes: R1 visual e mapa novo; R2 as 20 cartas novas (consumo em dias, mão, manutenção), simulador; R3 pesca e árvore de habilidades da conta (substitui as árvores dos personagens). O dono autorizou zerar as contas de teste. Decisões pendentes: lista de valores das cartas, mão de 3→5, manutenção só da Comum, carta de veículo (Garagem para de vender?).
 - 🆕 (29/10, fase 9) Alertas vão para um canal do Discord por webhook guardado no Vault do Supabase (segredo `discord_alerts_webhook`, nunca no repositório). Regras do mercado (venda abaixo do preço, mesmo IP etc.) ficam para quando o mercado (8c) entrar.
@@ -113,14 +114,14 @@
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
 ## G. Teste da parte R2 da v3 (dono, em produção)
-1. Rodapé: a mão com 3 vagas e o caixote no canto. A setinha recolhe e abre a mão.
-2. Painel do admin → sua conta → **Dar carta** (algumas, de raridades diferentes). No jogo, a carta abre virando.
-3. Clique no caixote (ou numa vaga +) → Fichário → escolha uma carta → **Colocar na mão**: ela entra com flash e partículas; passe o mouse para ver ela subir e brilhar.
-4. Clique na carta da mão: mostra quanto falta; **Tirar da mão** só depois de 1 dia.
-5. Dê uma 4ª carta: com a mão cheia (nível abaixo de 15) não entra.
-6. Garagem: sem botão de comprar; o Carro aparece sozinho no nível 6. Com a carta de Veículo na mão, a Garagem mostra o bônus e o veículo no mapa muda de cara.
-7. Fichário: carta Comum gasta aparece cinza com "gasta" e o botão **Reparar**.
-8. As artes ainda têm os números antigos: gere as novas com os números da tabela da GDD (seção 11, "As 20 cartas").
+1. Conta nova (ou **Zerar a fazenda** no painel): a mão já começa com Sol, Cesta e Coruja Comuns.
+2. Suba de nível: do 2 ao 10 cada nível dá 1 carta (abre virando).
+3. Rodapé, canto direito: a mão em leque com a aba **Fichário** e a setinha que recolhe e abre a mão.
+4. Fichário → escolha uma carta → **Colocar na mão** (flash e partículas). Clique na carta da mão: mostra quanto falta; **Tirar da mão** só depois de 1 dia (as do presente saem na hora).
+5. Missões: as 5 do dia dão 1 pacote todo dia (2 cartas do nível 15 em diante).
+6. Mapa: plaquinha com cadeado nos lotes à venda (lavoura e pomar) e plaquinha com árvore no pomar comprado. Celeiro e Galinheiro abrem clicando só no prédio (o gramado não abre).
+7. Garagem: sem botão de comprar; o Carro aparece sozinho no nível 6. Com a carta de Veículo na mão, a Garagem mostra o bônus e o veículo no mapa muda de cara.
+8. Fichário: carta Comum gasta aparece cinza com o botão **Reparar**. A carta de pesca agora se chama **Vara de Pescar** (Trabalhadores).
 
 ## H. Riscos e pontos em aberto
 - Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).

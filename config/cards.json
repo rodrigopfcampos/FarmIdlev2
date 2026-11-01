@@ -40,11 +40,19 @@
     },
     "weekly_mission_packs": {
       "daily_all_5_completed_pack": 1,
-      "max_daily_packs_per_week": 4,
+      "max_daily_packs_per_week": 7,
       "weekly_3_completed_cards": 1,
       "weekly_5_completed_bonus_cards": 1,
       "weekly_5_completed_deeds": 1,
-      "max_cards_per_week": 6
+      "max_cards_per_week": 16,
+      "note": "pacote das diárias: 1 carta até o nível 14 e 2 do nível 15 em diante (missions.json daily.pack_cards_by_level)"
+    },
+    "supply": {
+      "starter_cards": ["sol", "cesta", "coruja"],
+      "starter_rarity": "common",
+      "starter_to_hand": true,
+      "level_up_cards": { "from_level": 2, "to_level": 10, "cards_per_level": 1 },
+      "note": "aprovado pelo dono em 01/11: 3 Comuns na mão ao criar a conta e 1 carta por nível do 2 ao 10; a mão de 3 gasta ~8 cartas por semana (duração média 2,6 dias)"
     }
   },
   "binder": {

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "GDD v2 seção 11 · fase 7: banco montado dos exemplos, só com sistemas prontos · fase 8a: ajudar vizinhos (mercado na 8c)",
   "daily": {
     "count": 5,
@@ -7,7 +7,8 @@
     "xp_hours_of_production": 0.5,
     "free_rerolls": 1,
     "pack_when_all_done": 1,
-    "max_packs_per_week": 4,
+    "max_packs_per_week": 7,
+    "pack_cards_by_level": [[1, 1], [15, 2]],
     "reroll_note": "1 troca grátis por dia, só de missão ainda não completa"
   },
   "weekly": {

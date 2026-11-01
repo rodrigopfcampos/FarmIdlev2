@@ -17,6 +17,7 @@ begin
 
   -- 1. a conta nova recebe 5 diárias e 5 semanais, só de sistemas liberados (sem animais nem 3 personagens)
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  update public.farms set starter_cards_at = now(), level_cards_to = 50 where user_id = a;  -- sem presente inicial e cartas por nível (testados no v3_r2b)
   set local role authenticated;
   s := public.get_farm();
   reset role;
@@ -47,7 +48,7 @@ begin
   end loop;
   select count(*) into n from public.cards where user_id = a and origin = 'daily_pack';
   if n <> 1 then raise exception 'FALHA 7: % pacotes das diárias (esperado 1)', n; end if;
-  if exists (select 1 from public.cards where user_id = a and seen) then raise exception 'FALHA 8: carta nova já vista'; end if;
+  if exists (select 1 from public.cards where user_id = a and origin <> 'starter' and seen) then raise exception 'FALHA 8: carta nova já vista'; end if;
   if (select daily_packs from public.mission_weeks where user_id = a) <> 1 then raise exception 'FALHA 9: contador de pacotes'; end if;
 
   -- 4. semanais: 3 completas = 1 carta; 5 = +1 carta e 1 Escritura
@@ -91,11 +92,12 @@ begin
   begin perform public.equip_card(v_serial); raise exception 'FALHA 19: a mesma carta entrou duas vezes';
   exception when check_violation then null; end;
   reset role;
+  delete from public.cards where user_id = a and card_id in ('coruja', 'cantil', 'moeda') and state = 'binder';  -- tira as sorteadas antes (o teste usa estas)
   insert into public.cards (user_id, card_id, rarity, origin) values (a, 'coruja', 'common', 'admin'), (a, 'cantil', 'mythic', 'admin'), (a, 'moeda', 'common', 'admin');
   set local role authenticated;
-  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'coruja' and state = 'binder' limit 1));
-  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'cantil' and state = 'binder' limit 1));
-  begin perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' limit 1));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'coruja' and state = 'binder' order by serial desc limit 1));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'cantil' and state = 'binder' order by serial desc limit 1));
+  begin perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' order by serial desc limit 1));
     raise exception 'FALHA 20: 4ª carta numa mão de 3';
   exception when check_violation then null; end;
   reset role;
@@ -118,7 +120,7 @@ begin
 
   -- 7. Moeda: % do valor produzido com a carta na mão, pago quando sai; a Comum gasta vira "gasta" e repara com ouro
   set local role authenticated;
-  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' limit 1));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and state = 'binder' order by serial desc limit 1));
   reset role;
   update public.card_buffs set coin_value = 0 where user_id = a;
   perform public.produced(a, 'batata', 100, 0, 'crop');
@@ -140,7 +142,7 @@ begin
   perform public.buffs_expire(a, now());
   if (select state from public.cards where user_id = a and card_id = 'sol' and rarity = 'mythic') <> 'used' then raise exception 'FALHA 24d: Mítica gasta não sumiu'; end if;
   set local role authenticated;
-  begin perform public.repair_card((select serial from public.cards where user_id = a and card_id = 'sol' and rarity = 'rare')); raise exception 'FALHA 24e: reparou carta Rara';
+  begin perform public.repair_card((select serial from public.cards where user_id = a and card_id = 'sol' and rarity = 'rare' order by serial desc limit 1)); raise exception 'FALHA 24e: reparou carta Rara';
   exception when check_violation then null; end;
   reset role;
 

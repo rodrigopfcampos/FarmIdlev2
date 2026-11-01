@@ -5964,6 +5964,7 @@
         "C2"
       ],
       "building": "celeiro",
+      "building_hit_rect": [100, 312, 296, 512],
       "building_in_map": true,
       "wander": {
         "polygon": [
@@ -6037,6 +6038,7 @@
         "C1"
       ],
       "building": "galinheiro",
+      "building_hit_rect": [400, 596, 584, 758],
       "building_in_map": true,
       "wander": {
         "polygon": [

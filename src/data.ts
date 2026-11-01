@@ -56,7 +56,7 @@ export type Pt = [number, number];
 export type Plot = { id: string; polygon: Pt[]; center: Pt };
 export type Lot = {
   id: string; type: string; polygon: Pt[]; plots?: Plot[]; center: Pt; neighbors: string[];
-  sign_anchor?: Pt; debris_anchors?: Pt[]; tree_slots?: Pt[]; building?: string; building_anchor?: Pt;
+  sign_anchor?: Pt; debris_anchors?: Pt[]; tree_slots?: Pt[]; building?: string; building_anchor?: Pt; building_hit_rect?: [number, number, number, number];
 };
 export const LOTS = MAP.lots as unknown as Lot[];
 export const LOT_BY_ID: Record<string, Lot> = Object.fromEntries(LOTS.map((l) => [l.id, l]));

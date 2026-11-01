@@ -274,14 +274,18 @@ form.search input { width: 100%; font: inherit; padding: 6px; }
 .card-btn.worn img { filter: grayscale(0.85) brightness(0.6); }
 .card-detail { display: flex; gap: 12px; align-items: flex-start; }
 .card-detail .grow { flex: 1; min-width: 0; }
-.hand-dock { position: absolute; right: 12px; bottom: 0; width: 470px; max-width: calc(100% - 24px); height: 196px; pointer-events: none; z-index: 4; }
-.hand-fan { position: absolute; right: 34px; bottom: -18px; display: flex; justify-content: flex-end; pointer-events: none; }
+.hand-dock { position: absolute; right: clamp(16px, 10vw, 200px); bottom: clamp(40px, 12vh, 130px); width: 470px; max-width: calc(100% - 24px); height: 196px; pointer-events: none; z-index: 4; }
+.hand-fan { position: absolute; right: 34px; bottom: 0; display: flex; justify-content: flex-end; pointer-events: none; }
 .hand-card { position: relative; width: 84px; height: 174px; margin: 0 -10px; padding: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto;
   transform: translateY(var(--lift)) rotate(var(--rot)); transform-origin: 50% 120%;
   transition: transform 0.45s cubic-bezier(.68, -0.55, .27, 1.55), filter 0.2s, opacity 0.35s; transition-delay: calc(var(--i) * 30ms); }
 .hand-card img { display: block; border-radius: 4px; }
 .hand-card small { position: absolute; left: 50%; top: -2px; transform: translateX(-50%); background: #000c; color: #fff; font-size: 11px; padding: 1px 5px; white-space: nowrap; border-radius: 3px; }
 .hand-card:hover, .hand-card:focus-visible { transform: translateY(-34px) rotate(0deg) scale(1.08); z-index: 5; filter: drop-shadow(0 0 8px var(--rc)) drop-shadow(0 0 14px var(--rc)); }
+.hand-card.idle img { filter: saturate(0.55) brightness(0.8); }
+.hand-card.idle small { background: #f2c230; color: #3b2412; font-weight: 700; }
+.hand-card.idle:hover img, .hand-card.idle:focus-visible img { filter: none; }
+.hand-card.active img { box-shadow: 0 0 0 2px var(--rc), 0 0 12px var(--rc); }
 .hand-card.empty { width: 70px; height: 140px; margin: 0 -2px; border: 2px dashed #d8c49a99; border-radius: 6px; background: #0007; color: #f3e3c3; font-size: 28px; font-weight: 700; }
 .hand-card.empty:hover { filter: none; background: #000a; }
 .hand-tab { position: absolute; right: 8px; top: 0; display: flex; gap: 4px; align-items: center; pointer-events: auto; z-index: 6; }

@@ -5,7 +5,7 @@ import {
   armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDef, cardDuration, lifeText, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
 } from '../farm/cards';
 import { store } from '../farm/store';
-import { binderExpand, cardsSeen, equipCard, repairCard, rerollMission, sellCard, unequipCard, type CardState, type FarmState } from '../net/farmApi';
+import { binderExpand, cardsSeen, equipCard, handAdd, handRemove, repairCard, rerollMission, sellCard, unequipCard, type CardState, type FarmState } from '../net/farmApi';
 import { formatGold } from './format';
 
 export type CardsCtx = {
@@ -91,25 +91,34 @@ function packCards(level: number): number {
 // ---------- a mão (rodapé) ----------
 let handOpen = true;
 let lastHand: string[] = [];
-/** mão em leque no canto direito do rodapé, vagas vazias e uma aba com Fichário e recolher (animação elástica) */
+/** cartas da mão: as em uso (valendo, contando o tempo) e as paradas (guardadas, esperando "Usar") */
+type HandItem = { serial: number; card_id: string; rarity: string; active: boolean; left: number; full: number };
+function handItems(s: FarmState): HandItem[] {
+  const ms = store.clock.serverNow();
+  const on = s.buffs.map((b) => ({ serial: b.serial ?? 0, card_id: b.card_id, rarity: b.rarity, active: true, left: (Date.parse(b.ends_at) - ms) / 1000, full: b.full_s ?? 0 }));
+  const idle = s.cards.filter((c) => c.state === 'hand').map((c) => ({ serial: c.serial, card_id: c.card_id, rarity: c.rarity, active: false, left: c.life_s ?? c.full_s ?? 0, full: c.full_s ?? 0 }));
+  return [...on, ...idle];
+}
+
+/** mão em leque no canto direito: em uso brilha e conta o tempo; parada fica apagada com "Usar"; aba Fichário e recolher */
 export function renderHand(ctx: CardsCtx, s: FarmState): void {
   let dock = ctx.root.querySelector<HTMLElement>('.hand-dock');
   if (!dock) { dock = document.createElement('div'); dock.className = 'hand-dock'; ctx.root.appendChild(dock); }
   if (!s.missions || store.visit) { dock.hidden = true; return; }
   dock.hidden = false;
   const slots = s.hand_slots ?? 3;
-  const ms = store.clock.serverNow();
-  const n = Math.max(slots, s.buffs.length);
+  const hand = handItems(s);
+  const n = Math.max(slots, hand.length);
   const mid = (n - 1) / 2;
   const items = Array.from({ length: n }, (_, i) => {
-    const b = s.buffs[i];
+    const h = hand[i];
     const rot = (i - mid) * 7, lift = Math.abs(i - mid) * 6;
     const style = `--rot:${rot}deg;--lift:${lift}px;--i:${i}`;
-    if (!b) return `<button type="button" class="hand-card empty" style="${style}" data-open-binder title="Vaga livre: escolher carta">+</button>`;
-    const left = (Date.parse(b.ends_at) - ms) / 1000;
-    return `<button type="button" class="hand-card" style="${style};--rc:${rarityInfo(b.rarity)?.color_hex}" data-hand="${b.card_id}" data-serial="${b.serial ?? ''}"
-        title="${ctx.esc(`${cardDef(b.card_id)?.name_pt} ${rarityInfo(b.rarity)?.name_pt}: ${buffLines(b.card_id, b.rarity).join(', ')}`)}">
-      ${art(cardArt(b.card_id, b.rarity), 84)}<small>${lifeText(left)}</small></button>`;
+    if (!h) return `<button type="button" class="hand-card empty" style="${style}" data-open-binder title="Vaga livre: escolher carta">+</button>`;
+    const name = `${cardDef(h.card_id)?.name_pt} ${rarityInfo(h.rarity)?.name_pt}: ${buffLines(h.card_id, h.rarity).join(', ')}`;
+    return `<button type="button" class="hand-card ${h.active ? 'active' : 'idle'}" style="${style};--rc:${rarityInfo(h.rarity)?.color_hex}" data-hand="${h.serial}"
+        title="${ctx.esc(h.active ? `Em uso · ${name}` : `Parada (não gasta tempo) · clique para usar · ${name}`)}">
+      ${art(cardArt(h.card_id, h.rarity), 84)}<small>${h.active ? lifeText(h.left) : 'Usar'}</small></button>`;
   }).join('');
   dock.className = `hand-dock ${handOpen ? '' : 'closed'}`;
   dock.innerHTML = `<div class="hand-tab">
@@ -118,10 +127,10 @@ export function renderHand(ctx: CardsCtx, s: FarmState): void {
     </div><div class="hand-fan">${items}</div>`;
   dock.querySelector('[data-toggle-hand]')?.addEventListener('click', () => { handOpen = !handOpen; renderHand(ctx, store.state!); });
   dock.querySelectorAll('[data-open-binder]').forEach((b) => b.addEventListener('click', () => openCards(ctx)));
-  dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, b.dataset.hand!)));
-  // carta nova na mão: flash branco, partículas da cor da raridade e tremor na vaga
-  const now = s.buffs.map((b) => `${b.card_id}:${b.serial}`);
-  if (!calm()) now.forEach((k, i) => { if (lastHand.length && !lastHand.includes(k)) snapFx(dock!.querySelectorAll<HTMLElement>('.hand-card')[i], rarityInfo(s.buffs[i].rarity)?.color_hex ?? '#fff'); });
+  dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, Number(b.dataset.hand))));
+  // carta passou a valer: flash branco, partículas da cor da raridade e tremor na vaga
+  const now = hand.map((h) => `${h.serial}:${h.active}`);
+  if (!calm()) hand.forEach((h, i) => { if (h.active && lastHand.length && !lastHand.includes(`${h.serial}:true`)) snapFx(dock!.querySelectorAll<HTMLElement>('.hand-card')[i], rarityInfo(h.rarity)?.color_hex ?? '#fff'); });
   lastHand = now;
 }
 
@@ -139,25 +148,39 @@ function snapFx(slot: HTMLElement | undefined, color: string): void {
   }
 }
 
-/** carta da mão: o que faz, quanto falta, trava de 1 dia e Tirar */
-function openHandCard(ctx: CardsCtx, cardId: string): void {
+/** carta da mão: parada (Usar · Voltar ao fichário) ou em uso (quanto falta · Pausar depois de 1 dia) */
+function openHandCard(ctx: CardsCtx, serial: number): void {
   ctx.show('Carta na mão', () => {
-    const s = store.state!, b = s.buffs.find((x) => x.card_id === cardId);
-    if (!b) return '<p>Essa carta saiu da mão.</p>';
-    const ms = store.clock.serverNow(), r = rarityInfo(b.rarity)!, left = (Date.parse(b.ends_at) - ms) / 1000;
-    const locked = b.locked_until ? Date.parse(b.locked_until) > ms : false;
-    return `<div class="card-detail">${cardHtml(ctx, b.card_id, b.rarity, 150)}
-      <div class="grow"><h3 style="color:${r.color_hex}">${ctx.esc(cardDef(b.card_id)?.name_pt ?? b.card_id)} ${ctx.esc(r.name_pt)}</h3>
-        <ul class="eff">${buffLines(b.card_id, b.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
-        <p>Falta <strong>${lifeText(left)}</strong> ${lifeBar(left, b.full_s ?? left)}</p>
-        ${b.coin_value > 0 ? `<p>${formatGold(b.coin_value)} de ouro juntado (pago quando a carta sai da mão).</p>` : ''}
-        <button type="button" class="secondary" data-unequip ${locked ? 'disabled' : ''}>Tirar da mão</button>
-        <p class="hint">${locked ? `Presa na mão por mais ${lifeText((Date.parse(b.locked_until!) - ms) / 1000)}. ` : ''}Ao tirar, a carta volta ao fichário guardando o tempo que sobrou.${b.rarity === 'common' ? ' Quando acabar, a Comum fica gasta e pode ser reparada com ouro.' : ' Quando acabar, ela some (fica registrada no álbum).'}</p>
+    const s = store.state!, h = handItems(s).find((x) => x.serial === serial);
+    if (!h) return '<p>Essa carta saiu da mão.</p>';
+    const ms = store.clock.serverNow(), r = rarityInfo(h.rarity)!;
+    const b = s.buffs.find((x) => x.serial === serial);
+    const locked = b?.locked_until ? Date.parse(b.locked_until) > ms : false;
+    const head = `<div class="card-detail">${cardHtml(ctx, h.card_id, h.rarity, 150)}
+      <div class="grow"><h3 style="color:${r.color_hex}">${ctx.esc(cardDef(h.card_id)?.name_pt ?? h.card_id)} ${ctx.esc(r.name_pt)}</h3>
+        <ul class="eff">${buffLines(h.card_id, h.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>`;
+    if (!h.active) return `${head}
+        <p>Parada na mão: <strong>${lifeText(h.left)}</strong> guardados ${lifeBar(h.left, h.full || h.left)}</p>
+        <div class="row"><button type="button" class="primary" data-use>Usar</button>
+          <button type="button" class="secondary" data-back>Voltar ao fichário</button></div>
+        <p class="hint">Parada, a carta não vale e não gasta tempo. Ao usar, o bônus liga na hora e o tempo corre online ou offline; ela fica em uso pelo menos 1 dia.</p>
       </div></div>`;
-  }, (el) => el.querySelector('[data-unequip]')?.addEventListener('click', (e) => {
-    (e.currentTarget as HTMLButtonElement).disabled = true;
-    void ctx.act(() => unequipCard(cardId), 'Carta de volta ao fichário.');
-  }));
+    return `${head}
+        <p>Em uso · falta <strong>${lifeText(h.left)}</strong> ${lifeBar(h.left, h.full || h.left)}</p>
+        ${b && b.coin_value > 0 ? `<p>${formatGold(b.coin_value)} de ouro juntado (pago quando a carta para).</p>` : ''}
+        <button type="button" class="secondary" data-pause ${locked ? 'disabled' : ''}>Pausar</button>
+        <p class="hint">${locked ? `Em uso por pelo menos mais ${lifeText((Date.parse(b!.locked_until!) - ms) / 1000)}. ` : ''}Ao pausar, a carta fica parada na mão guardando o tempo que sobrou.${h.rarity === 'common' ? ' Quando acabar, a Comum fica gasta e pode ser reparada com ouro.' : ' Quando acabar, ela some (fica registrada no álbum).'}</p>
+      </div></div>`;
+  }, (el) => {
+    const s = store.state!, h = handItems(s).find((x) => x.serial === serial);
+    const go = (sel: string, fn: () => Promise<FarmState>, ok: string) => el.querySelector(sel)?.addEventListener('click', (e) => {
+      (e.currentTarget as HTMLButtonElement).disabled = true;
+      void ctx.act(fn, ok);
+    });
+    go('[data-use]', () => equipCard(serial), 'Carta em uso!');
+    go('[data-back]', () => handRemove(serial), 'Carta de volta ao fichário.');
+    if (h) go('[data-pause]', () => unequipCard(h.card_id), 'Carta pausada na mão.');
+  });
 }
 
 // ---------- painel de cartas ----------
@@ -184,9 +207,9 @@ function cardsBody(ctx: CardsCtx): string {
 }
 
 function binderBody(ctx: CardsCtx, s: FarmState): string {
-  const inBinder = s.cards.filter((c) => c.state !== 'inbox'), inbox = s.cards.filter((c) => c.state === 'inbox');
+  const inBinder = s.cards.filter((c) => c.state !== 'inbox' && c.state !== 'hand'), inbox = s.cards.filter((c) => c.state === 'inbox');
   const slots = s.hand_slots ?? 3;
-  const list = sorted(s.cards);
+  const list = sorted(s.cards.filter((c) => c.state !== 'hand'));
   const grid = list.length ? list.map((c) => {
     const full = c.full_s ?? 1, life = c.life_s ?? full;
     return `<button type="button" class="card-btn ${picked === c.serial ? 'on' : ''} ${c.state === 'worn' ? 'worn' : ''}" data-pick="${c.serial}">
@@ -198,8 +221,9 @@ function binderBody(ctx: CardsCtx, s: FarmState): string {
   if (c) {
     const d = cardDef(c.card_id)!, r = rarityInfo(c.rarity)!;
     const full = c.full_s ?? 1, life = c.life_s ?? full;
-    const inHand = s.buffs.some((b) => b.card_id === c.card_id);
-    const handFull = s.buffs.length >= slots;
+    const hand = handItems(s);
+    const inHand = hand.some((h) => h.card_id === c.card_id);
+    const handFull = hand.length >= slots;
     const worn = c.state === 'worn' || life <= 0;
     const why = worn ? 'Carta gasta.' : inHand ? 'Essa carta já está na mão.' : handFull ? `A mão está cheia (${slots} cartas).` : '';
     const repair = c.rarity === 'common' && life < full;
@@ -209,15 +233,16 @@ function binderBody(ctx: CardsCtx, s: FarmState): string {
         <ul class="eff">${buffLines(c.card_id, c.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
         <p>Vida: <strong>${lifeText(life)}</strong> de ${cardDuration(c.rarity)} ${lifeBar(life, full)}</p>
         <div class="row">
-          <button type="button" class="primary small" data-equip="${c.serial}" ${why ? 'disabled' : ''}>Colocar na mão</button>
+          <button type="button" class="primary small" data-hand-add="${c.serial}" ${why ? 'disabled' : ''}>Colocar na mão</button>
+          <button type="button" class="secondary" data-equip="${c.serial}" ${why ? 'disabled' : ''}>Usar agora</button>
           ${repair ? `<button type="button" class="secondary" data-repair="${c.serial}">Reparar (+${CARDS.rarities.common.repair.restores_days} dias · ${formatGold(s.repair_cost ?? 0)})</button>` : ''}
           <button type="button" class="secondary" data-sell="${c.serial}">Vender (${formatGold(s.collector[c.rarity] ?? 0)})</button>
         </div>
-        <p class="hint">${why ? `${why} ` : ''}Na mão a carta gasta os dias online ou offline e fica presa pelo menos 1 dia. ${c.rarity === 'common' ? 'A Comum gasta volta com reparo em ouro.' : 'Gasta, ela some (fica no álbum).'} Nº de série ${c.serial}${c.state === 'inbox' && c.inbox_until ? ` · na caixa de entrada até ${new Date(c.inbox_until).toLocaleDateString('pt-BR')}` : ''}.</p>
+        <p class="hint">${why ? `${why} ` : ''}Na mão a carta fica parada e não gasta tempo; ao usar, vale e gasta os dias online ou offline (pelo menos 1 dia). ${c.rarity === 'common' ? 'A Comum gasta volta com reparo em ouro.' : 'Gasta, ela some (fica no álbum).'} Nº de série ${c.serial}${c.state === 'inbox' && c.inbox_until ? ` · na caixa de entrada até ${new Date(c.inbox_until).toLocaleDateString('pt-BR')}` : ''}.</p>
       </div></div>`;
   }
   const canGrow = s.binder_slots + CARDS.binder.expansion_slots <= CARDS.binder.max_slots;
-  return `<p class="status">Mão: ${s.buffs.length} de ${slots} · fichário ${inBinder.length} de ${s.binder_slots}${inbox.length ? ` · <strong>${inbox.length} na caixa de entrada</strong> (o Colecionador compra sozinho depois de ${CARDS.binder.inbox_overflow_retention_days} dias)` : ''}
+  return `<p class="status">Mão: ${handItems(s).length} de ${slots} (${s.buffs.length} em uso) · fichário ${inBinder.length} de ${s.binder_slots}${inbox.length ? ` · <strong>${inbox.length} na caixa de entrada</strong> (o Colecionador compra sozinho depois de ${CARDS.binder.inbox_overflow_retention_days} dias)` : ''}
       ${canGrow ? ` · <button type="button" class="secondary small" data-expand>+${CARDS.binder.expansion_slots} espaços (${formatGold(s.binder_expand_cost)})</button>` : ''}</p>
     ${detail}<div class="card-grid">${grid}</div>`;
 }
@@ -233,7 +258,7 @@ function armoryBody(ctx: CardsCtx, s: FarmState): string {
   const done = CARD_LIST.filter((d) => armoryStatus(s.armory, d.id).level === 'complete').length;
   return `<p class="status">Bônus permanentes da coleção · ${done} de ${CARD_LIST.length} cartas completas</p>
     <ul class="armory">${rows}</ul>
-    <p class="hint">O álbum registra sozinho cada carta e raridade na primeira vez que ela entra na mão. As 5 raridades trocam o bônus parcial pelo completo.</p>`;
+    <p class="hint">O álbum registra sozinho cada carta e raridade na primeira vez que ela é usada. As 5 raridades trocam o bônus parcial pelo completo.</p>`;
 }
 
 function oddsBody(s: FarmState): string {
@@ -254,7 +279,8 @@ function bindCards(ctx: CardsCtx, el: HTMLElement): void {
     const b = e.currentTarget as HTMLButtonElement; b.disabled = true;
     void ctx.act(() => fn(Number(b.getAttribute(attr))), ok).then(() => { picked = null; });
   });
-  one('[data-equip]', 'data-equip', equipCard, 'Carta na mão!');
+  one('[data-hand-add]', 'data-hand-add', handAdd, 'Carta na mão!');
+  one('[data-equip]', 'data-equip', equipCard, 'Carta em uso!');
   one('[data-repair]', 'data-repair', repairCard, 'Carta reparada.');
   one('[data-sell]', 'data-sell', sellCard, 'Vendida ao Colecionador da Vila.');
   el.querySelector('[data-expand]')?.addEventListener('click', () => void ctx.act(binderExpand, 'Fichário ampliado.'));

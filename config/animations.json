@@ -211,7 +211,8 @@
     "dust_every_ms": 90,
     "dust_ms": 500,
     "dust_color": "#8a6a43",
-    "drive_ms": 2600,
+    "drive_ms": 3600,
+    "edge_fade_from": 0.7,
     "faces": "esquerda",
     "priority": "jogo",
     "reduced_motion": "sem fumaça e poeira; o veículo aparece direto"

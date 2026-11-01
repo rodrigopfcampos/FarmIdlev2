@@ -5,7 +5,7 @@
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
-import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, ZONES, type Lot, type Pt } from '../data';
+import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, MAP, ZONES, type Lot, type Pt } from '../data';
 import { orchardLook } from '../farm/life';
 import { vehicleLook } from '../farm/cards';
 import { LifeLayer } from './lifeLayer';
@@ -67,6 +67,7 @@ export class FarmScene extends Phaser.Scene {
 
   create(): void {
     this.add.image(0, 0, 'farm_base_map').setOrigin(0, 0);
+    this.addOccluders();
     this.hover = this.add.graphics().setDepth(5);
     this.label = this.text().setDepth(20).setVisible(false);
 
@@ -212,7 +213,30 @@ export class FarmScene extends Phaser.Scene {
     this.vehLabel.setText(text).setVisible(!!text);
   }
 
-  /** veículo saindo (vaga → fim da estrada) ou chegando (fim da estrada → vaga) */
+  /** prédios desenhados no mapa: recorta o contorno da arte e põe por cima do que passa atrás (veículo na estrada) */
+  private addOccluders(): void {
+    const src = this.textures.get('farm_base_map').getSourceImage() as HTMLImageElement;
+    for (const o of (MAP as unknown as { occluders?: { id: string; polygon: Pt[]; depth_y: number }[] }).occluders ?? []) {
+      const xs = o.polygon.map((p) => p[0]), ys = o.polygon.map((p) => p[1]);
+      const x0 = Math.min(...xs), y0 = Math.min(...ys), w = Math.max(...xs) - x0, h = Math.max(...ys) - y0;
+      const key = `occluder_${o.id}`;
+      if (!this.textures.exists(key)) {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const g = c.getContext('2d')!;
+        g.imageSmoothingEnabled = false;
+        g.beginPath();
+        o.polygon.forEach((p, i) => (i ? g.lineTo(p[0] - x0, p[1] - y0) : g.moveTo(p[0] - x0, p[1] - y0)));
+        g.closePath();
+        g.clip();
+        g.drawImage(src, x0, y0, w, h, 0, 0, w, h);
+        this.textures.addCanvas(key, c);
+      }
+      this.add.image(x0, y0, key).setOrigin(0, 0).setDepth(depthOf(o.depth_y));
+    }
+  }
+
+  /** veículo saindo (vaga → fim da estrada) ou chegando (fim da estrada → vaga); some aos poucos na beira da ilha */
   private drive(out: boolean): void {
     const z = ZONES.find((x) => x.id === 'garagem_expedicao') as (typeof ZONES)[number] & { exit_path?: Pt[] };
     if (!this.veh || !z?.exit_path) return;
@@ -229,12 +253,14 @@ export class FarmScene extends Phaser.Scene {
         while (k < lens.length - 1 && d > lens[k]) { d -= lens[k]; k++; }
         const a = path[k], b = path[k + 1], f = lens[k] ? Math.min(1, d / lens[k]) : 1;
         const x = Math.round(a[0] + (b[0] - a[0]) * f), y = Math.round(a[1] + (b[1] - a[1]) * f);
-        this.veh!.setPosition(x, y).setDepth(depthOf(y)).setFlipX(b[0] > a[0]); // a arte olha para a esquerda
+        // perto da beira some aos poucos (não entra na faixa escura fora da ilha)
+        const p = out ? obj.t : 1 - obj.t, f0 = ANIM.vehicles.edge_fade_from;
+        this.veh!.setPosition(x, y).setDepth(depthOf(y)).setFlipX(b[0] > a[0]).setAlpha(p <= f0 ? 1 : Math.max(0, 1 - (p - f0) / (1 - f0))); // a arte olha para a esquerda
       },
       onComplete: () => {
         this.vehDrive = null;
         const anchor = z.parked_vehicle_anchor!;
-        this.veh!.setFlipX(false).setPosition(anchor[0], anchor[1]).setDepth(depthOf(anchor[1])).setVisible(!out);
+        this.veh!.setFlipX(false).setAlpha(1).setPosition(anchor[0], anchor[1]).setDepth(depthOf(anchor[1])).setVisible(!out);
         if (this.vehKey === ANIM.vehicles.horse_sprite) this.veh!.stop().setFrame(0);
         else if (this.vehKey.endsWith('_idle')) this.veh!.play(this.vehKey);
       } });

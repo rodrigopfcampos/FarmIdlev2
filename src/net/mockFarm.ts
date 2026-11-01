@@ -87,7 +87,7 @@ const state: FarmState = {
   ],
   mission_week: { daily_packs: 2, weekly_rewards: 0 }, reroll_used: false, pack_today: false,
   cards: [
-    { serial: 101, card_id: 'sol', rarity: 'common', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 172800, full_s: 172800, repairs: 0 },
+    { serial: 101, card_id: 'sol', rarity: 'common', state: 'hand', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 172800, full_s: 172800, repairs: 0 },
     { serial: 102, card_id: 'cesta', rarity: 'common', state: 'worn', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 0, full_s: 172800, repairs: 1 },
     { serial: 103, card_id: 'ampulheta', rarity: 'rare', state: 'binder', inbox_until: null, seen: true, origin: 'weekly_3', life_s: 104400, full_s: 259200, repairs: 0 },
     { serial: 104, card_id: 'moeda', rarity: 'legendary', state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: 345600, full_s: 345600, repairs: 0 },
@@ -261,6 +261,7 @@ export const mockFarm = {
     if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);
     if (fn === 'equip_snack') { const c = ch(args.p_class)!; c.snack_id = args.p_snack as string | null; c.snack_qty = args.p_snack ? 5 : 0; }
     if (fn === 'repair_tool') ch(args.p_class)!.durability = 100;
+    if (fn === 'hand_add' || fn === 'hand_remove') { const c = state.cards.find((x) => x.serial === args.p_serial)!; c.state = fn === 'hand_add' ? 'hand' : 'binder'; }
     if (fn === 'equip_card' || fn === 'sell_card' || fn === 'repair_card') {
       const c = state.cards.find((x) => x.serial === args.p_serial)!;
       if (fn === 'repair_card') { c.life_s = c.full_s; c.state = 'binder'; state.gold -= state.repair_cost ?? 0; }
@@ -275,7 +276,7 @@ export const mockFarm = {
     if (fn === 'unequip_card') {
       const b = state.buffs.find((x) => x.card_id === args.p_card)!;
       state.buffs = state.buffs.filter((x) => x !== b);
-      state.cards.push({ serial: b.serial ?? Date.now(), card_id: b.card_id, rarity: b.rarity, state: 'binder', inbox_until: null, seen: true, origin: 'daily_pack', life_s: (Date.parse(b.ends_at) - Date.now()) / 1000, full_s: b.full_s });
+      state.cards.push({ serial: b.serial ?? Date.now(), card_id: b.card_id, rarity: b.rarity, state: 'hand', inbox_until: null, seen: true, origin: 'daily_pack', life_s: (Date.parse(b.ends_at) - Date.now()) / 1000, full_s: b.full_s });
     }
     if (fn === 'cards_seen') { for (const n of state.new_cards) state.cards.push({ ...n, state: 'binder', inbox_until: null, seen: true, life_s: 4 * 86400, full_s: 4 * 86400 }); state.new_cards = []; }
     if (fn === 'reroll_mission') state.reroll_used = true;

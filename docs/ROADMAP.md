@@ -30,6 +30,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (01/11, vídeo do dono) A mão só **guarda** as cartas (paradas, sem gastar tempo); **Usar** liga o bônus e começa a contar (pelo menos 1 dia); **Pausar** volta parada para a mão com o tempo que sobrou. Vagas da mão = paradas + em uso. O álbum registra no 1º uso. Presente inicial chega parado na mão. Mão mais para dentro e para cima; veículo sai pela estrada de terra, passa atrás do Celeiro e some aos poucos antes da beira da ilha.
 - 🆕 (01/11, ajuste da R2) Artes novas das 20 cartas com os números certos; carta de pesca = **Vara de Pescar** (grupo Trabalhadores); mão no canto direito sem o caixote (aba Fichário); plaquinhas de volta, desenhadas pixel a pixel (cadeado = à venda, árvore = pomar comprado); Celeiro e Galinheiro clicáveis só no prédio. Cartas: 3 Comuns na mão ao criar a conta, 1 por nível do 2 ao 10, pacote das diárias todo dia (2 cartas do nível 15), R recalibrado.
 - 🆕 (01/11, R2) Dono aprovou: lista de valores das cartas (gerar artes novas com os números da tabela da GDD seção 11), mão 3→5, só a Comum repara, Café só recupera, Engrenagem automação e frota. Veículos: primeiro "só pela carta"; o simulador mostrou que o mapa não fecharia (sem Escrituras e renda das rotas longas) e o dono escolheu **veículos liberam por nível** e a carta dá bônus e troca a aparência.
 - 🆕 (31/10) **Reformulação v3** (instrução "Especificação master v3.0"): fazenda com sistema de cartas. Feita em partes: R1 visual e mapa novo; R2 as 20 cartas novas (consumo em dias, mão, manutenção), simulador; R3 pesca e árvore de habilidades da conta (substitui as árvores dos personagens). O dono autorizou zerar as contas de teste. Decisões pendentes: lista de valores das cartas, mão de 3→5, manutenção só da Comum, carta de veículo (Garagem para de vender?).
@@ -114,14 +115,14 @@
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
 ## G. Teste da parte R2 da v3 (dono, em produção)
-1. Conta nova (ou **Zerar a fazenda** no painel): a mão já começa com Sol, Cesta e Coruja Comuns.
-2. Suba de nível: do 2 ao 10 cada nível dá 1 carta (abre virando).
-3. Rodapé, canto direito: a mão em leque com a aba **Fichário** e a setinha que recolhe e abre a mão.
-4. Fichário → escolha uma carta → **Colocar na mão** (flash e partículas). Clique na carta da mão: mostra quanto falta; **Tirar da mão** só depois de 1 dia (as do presente saem na hora).
-5. Missões: as 5 do dia dão 1 pacote todo dia (2 cartas do nível 15 em diante).
-6. Mapa: plaquinha com cadeado nos lotes à venda (lavoura e pomar) e plaquinha com árvore no pomar comprado. Celeiro e Galinheiro abrem clicando só no prédio (o gramado não abre).
-7. Garagem: sem botão de comprar; o Carro aparece sozinho no nível 6. Com a carta de Veículo na mão, a Garagem mostra o bônus e o veículo no mapa muda de cara.
-8. Fichário: carta Comum gasta aparece cinza com o botão **Reparar**. A carta de pesca agora se chama **Vara de Pescar** (Trabalhadores).
+1. Conta nova (ou **Zerar a fazenda** no painel): Sol, Cesta e Coruja Comuns chegam **paradas** na mão (selo "Usar", sem contar tempo).
+2. Clique numa carta parada → **Usar**: ela acende com flash e partículas e começa a contar. **Voltar ao fichário** devolve uma carta parada.
+3. Carta em uso → **Pausar** só depois de 1 dia; volta parada para a mão guardando o tempo.
+4. Fichário → **Colocar na mão** (parada) ou **Usar agora**. Mão cheia (paradas + em uso) não aceita mais.
+5. Suba de nível: do 2 ao 10 cada nível dá 1 carta. Missões: as 5 do dia dão 1 pacote todo dia (2 cartas do nível 15).
+6. Mão no canto direito, por cima da ilha (não na faixa escura). Plaquinhas: cadeado à venda, árvore no pomar. Celeiro e Galinheiro abrem só no prédio.
+7. Expedição: a carroça sai pela estrada de terra, passa atrás do Celeiro e some antes da beira; na volta, aparece e entra pelo mesmo caminho.
+8. Garagem sem botão de comprar; Carro no nível 6; carta de Veículo em uso muda a cara do veículo.
 
 ## H. Riscos e pontos em aberto
 - Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).

@@ -6184,6 +6184,9 @@
       ]
     }
   ],
+  "occluders": [
+    { "id": "celeiro", "polygon": [[183, 331], [196, 320], [212, 330], [212, 343], [262, 368], [290, 400], [290, 490], [195, 515], [110, 478], [104, 418], [150, 350], [183, 340]], "depth_y": 515, "note": "pedaço da arte do mapa redesenhado por cima do que passa atrás do prédio" }
+  ],
   "functional_zones": [
     {
       "id": "casa_principal",
@@ -6268,24 +6271,8 @@
         96,
         76
       ],
-      "exit_path": [
-        [
-          262,
-          322
-        ],
-        [
-          180,
-          345
-        ],
-        [
-          90,
-          390
-        ],
-        [
-          -60,
-          450
-        ]
-      ],
+      "exit_path": [[262, 322], [212, 332], [172, 343], [128, 368], [70, 395], [18, 421]],
+      "exit_note": "estrada de terra da Garagem passando atrás do Celeiro (occluders) até a beira da ilha; o veículo some aos poucos no fim",
       "parked_note": "veículo parado na frente da garagem (no chão de terra), não debaixo do telhado"
     }
   ]

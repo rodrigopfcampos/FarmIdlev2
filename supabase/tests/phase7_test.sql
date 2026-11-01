@@ -114,9 +114,14 @@ begin
   perform public.unequip_card('coruja');
   perform public.unequip_card('cantil');
   reset role;
-  if (select state from public.cards where user_id = a and card_id = 'coruja') <> 'binder'
+  if (select state from public.cards where user_id = a and card_id = 'coruja') <> 'hand'
      or abs((select life_seconds from public.cards where user_id = a and card_id = 'coruja') - 86400) > 60 then
     raise exception 'FALHA 22c: ao sair não guardou a vida (%, %)', (select state from public.cards where user_id = a and card_id = 'coruja'), (select life_seconds from public.cards where user_id = a and card_id = 'coruja'); end if;
+  -- paradas na mão ainda ocupam vaga: voltam ao fichário
+  set local role authenticated;
+  perform public.hand_remove((select serial from public.cards where user_id = a and card_id = 'coruja'));
+  perform public.hand_remove((select serial from public.cards where user_id = a and card_id = 'cantil'));
+  reset role;
 
   -- 7. Moeda: % do valor produzido com a carta na mão, pago quando sai; a Comum gasta vira "gasta" e repara com ouro
   set local role authenticated;
@@ -165,6 +170,7 @@ begin
     update public.card_buffs set locked_until = now() - interval '1 second' where user_id = a and card_id = 'rebanho';
     set local role authenticated;
     perform public.unequip_card('rebanho');
+    perform public.hand_remove(v_serial);
     reset role;
   end loop;
   set local role authenticated;

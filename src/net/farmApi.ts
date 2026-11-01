@@ -90,7 +90,7 @@ export type VisitView = {
   limits: { given: number; given_max: number; received: number; received_max: number; liked: boolean; noted: boolean; notes_today: number; help_xp: number };
 };
 export type MissionState = { kind: 'daily' | 'weekly'; slot: number; id: string; metric: string; target: number; progress: number; done: boolean; reward: { gold?: number; xp?: number } };
-export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox' | 'worn'; inbox_until: string | null; seen: boolean; origin: string;
+export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox' | 'worn' | 'hand'; inbox_until: string | null; seen: boolean; origin: string;
   life_s?: number; full_s?: number; repairs?: number };
 export type BuffState = { card_id: string; rarity: string; serial?: number; started_at: string; ends_at: string; locked_until?: string | null; coin_value: number; full_s?: number };
 
@@ -98,7 +98,9 @@ const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
   'carta não encontrada': 'Essa carta não está mais no seu fichário.',
   'raridade menor que a do buff ativo': 'Essa carta já está ativa com raridade maior. Use uma de raridade igual ou maior.',
-  'a mão está cheia': 'A mão está cheia. Tire uma carta (depois de 1 dia) ou suba de nível.',
+  'a mão está cheia': 'A mão está cheia. Volte uma carta parada ao fichário ou suba de nível.',
+  'essa carta não está parada na mão': 'Essa carta está em uso: pause antes (depois de 1 dia).',
+  'o fichário está cheio': 'O fichário está cheio. Venda ou amplie antes.',
   'a carta ainda está presa na mão': 'A carta fica pelo menos 1 dia na mão.',
   'essa carta já está na mão': 'Essa carta já está na mão.',
   'essa raridade já está no Armory': 'Essa raridade dessa carta já está no Armory.',
@@ -289,6 +291,8 @@ export const setTimezone = (tz: string) => rpc('set_timezone', { p_tz: tz });
 // cartas e missões
 export const equipCard = (serial: number) => rpc('equip_card', { p_serial: serial });
 export const unequipCard = (cardId: string) => rpc('unequip_card', { p_card: cardId });
+export const handAdd = (serial: number) => rpc('hand_add', { p_serial: serial });
+export const handRemove = (serial: number) => rpc('hand_remove', { p_serial: serial });
 export const repairCard = (serial: number) => rpc('repair_card', { p_serial: serial });
 export const sellCard = (serial: number) => rpc('sell_card', { p_serial: serial });
 export const binderExpand = () => rpc('binder_expand');

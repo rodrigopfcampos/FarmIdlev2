@@ -39,35 +39,44 @@ begin
   select count(*) into n from public.cards where user_id = a and origin = 'daily_pack';
   if n <> 2 then raise exception 'FALHA 11: 5º pacote da semana com % cartas', n; end if;
 
-  -- 4. a mão guarda; "Usar" ativa e conta o tempo; pausar volta parada para a mão; tirar volta ao fichário
+  -- 4. a mão guarda; "Usar" tira a carta da mão e vira buff (conta o tempo); pausar volta parada para a mão
   set local role authenticated;
   perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'sol' and origin = 'starter'));
   reset role;
   if (select count(*) from public.card_buffs where user_id = a and card_id = 'sol') <> 1 or (select state from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') <> 'equipped' then raise exception 'FALHA 13: usar'; end if;
+  if public.hand_count(a) <> 2 then raise exception 'FALHA 13b: usada continua na mão (%)', public.hand_count(a); end if;
   if not exists (select 1 from public.armory where user_id = a and card_id = 'sol') then raise exception 'FALHA 14: álbum ao usar'; end if;
   update public.farms set level = 12 where user_id = a;
-  -- mão cheia (3 de 3): outra carta não entra, nem direto em uso
-  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'lupa', 'rare', 'admin');
+  -- mão de 3 paradas: a 4ª não entra
+  insert into public.cards (user_id, card_id, rarity, origin) values (a, 'lupa', 'rare', 'admin'), (a, 'moeda', 'rare', 'admin'), (a, 'cantil', 'rare', 'admin'), (a, 'luvas', 'rare', 'admin');
   set local role authenticated;
-  begin perform public.hand_add((select serial from public.cards where user_id = a and card_id = 'lupa' and origin = 'admin')); raise exception 'FALHA 15: mão cheia aceitou';
+  perform public.hand_add((select serial from public.cards where user_id = a and card_id = 'lupa' and origin = 'admin'));
+  begin perform public.hand_add((select serial from public.cards where user_id = a and card_id = 'moeda' and origin = 'admin')); raise exception 'FALHA 15: mão cheia aceitou';
   exception when check_violation then null; end;
-  begin perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'lupa' and origin = 'admin')); raise exception 'FALHA 16: mão cheia aceitou em uso';
+  -- buffs: até 3 em uso; o 4º é recusado
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'moeda' and origin = 'admin'));
+  perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'cantil' and origin = 'admin'));
+  begin perform public.equip_card((select serial from public.cards where user_id = a and card_id = 'luvas' and origin = 'admin')); raise exception 'FALHA 16: 4º buff aceito';
   exception when check_violation then null; end;
   perform public.hand_remove((select serial from public.cards where user_id = a and card_id = 'coruja' and origin = 'starter'));
-  perform public.hand_add((select serial from public.cards where user_id = a and card_id = 'lupa' and origin = 'admin'));
   reset role;
-  if (select state from public.cards where user_id = a and card_id = 'coruja' and origin = 'starter') <> 'binder' or (select state from public.cards where user_id = a and card_id = 'lupa' and origin = 'admin') <> 'hand' then raise exception 'FALHA 17: trocar carta parada'; end if;
-  -- em uso não sai antes de 1 dia; depois pausa e volta parada para a mão com o tempo que sobrou
+  if (select state from public.cards where user_id = a and card_id = 'coruja' and origin = 'starter') <> 'binder' then raise exception 'FALHA 17: voltar ao fichário'; end if;
+  -- em uso não para antes de 1 dia; depois pausa e volta parada para a mão (com vaga) guardando o tempo
   set local role authenticated;
   begin perform public.unequip_card('sol'); raise exception 'FALHA 18: pausou antes de 1 dia';
   exception when check_violation then null; end;
   reset role;
-  update public.card_buffs set locked_until = now() - interval '1 second', ends_at = now() + interval '20 hours' where user_id = a and card_id = 'sol';
+  update public.card_buffs set locked_until = now() - interval '1 second', ends_at = now() + interval '20 hours' where user_id = a and card_id in ('sol', 'moeda');
   set local role authenticated;
   perform public.unequip_card('sol');
   reset role;
   if (select state from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') <> 'hand'
      or abs((select life_seconds from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') - 72000) > 60 then raise exception 'FALHA 19: pausar'; end if;
+  -- mão cheia: a pausada vai para o fichário
+  set local role authenticated;
+  perform public.unequip_card('moeda');
+  reset role;
+  if (select state from public.cards where user_id = a and card_id = 'moeda' and origin = 'admin') <> 'binder' then raise exception 'FALHA 20: pausada com mão cheia'; end if;
 
   -- 5. antitrapaça não conta o presente nem as cartas dos níveis
   if public.config_get('anticheat') -> 'rules' -> 'cards' -> 'ignore_origins' ? 'level_up' is not true then raise exception 'FALHA 12: antitrapaça'; end if;

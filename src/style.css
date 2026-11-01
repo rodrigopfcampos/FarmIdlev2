@@ -274,7 +274,7 @@ form.search input { width: 100%; font: inherit; padding: 6px; }
 .card-btn.worn img { filter: grayscale(0.85) brightness(0.6); }
 .card-detail { display: flex; gap: 12px; align-items: flex-start; }
 .card-detail .grow { flex: 1; min-width: 0; }
-.hand-dock { position: absolute; right: clamp(16px, 10vw, 200px); bottom: clamp(40px, 12vh, 130px); width: 470px; max-width: calc(100% - 24px); height: 196px; pointer-events: none; z-index: 4; }
+.hand-dock { position: absolute; right: calc(var(--map-r, 0px) + 12px); bottom: calc(var(--map-b, 0px) + 12px); width: 470px; max-width: calc(100% - 24px); height: 196px; pointer-events: none; z-index: 4; }
 .hand-fan { position: absolute; right: 34px; bottom: 0; display: flex; justify-content: flex-end; pointer-events: none; }
 .hand-card { position: relative; width: 84px; height: 174px; margin: 0 -10px; padding: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto;
   transform: translateY(var(--lift)) rotate(var(--rot)); transform-origin: 50% 120%;
@@ -282,10 +282,15 @@ form.search input { width: 100%; font: inherit; padding: 6px; }
 .hand-card img { display: block; border-radius: 4px; }
 .hand-card small { position: absolute; left: 50%; top: -2px; transform: translateX(-50%); background: #000c; color: #fff; font-size: 11px; padding: 1px 5px; white-space: nowrap; border-radius: 3px; }
 .hand-card:hover, .hand-card:focus-visible { transform: translateY(-34px) rotate(0deg) scale(1.08); z-index: 5; filter: drop-shadow(0 0 8px var(--rc)) drop-shadow(0 0 14px var(--rc)); }
-.hand-card.idle img { filter: saturate(0.55) brightness(0.8); }
-.hand-card.idle small { background: #f2c230; color: #3b2412; font-weight: 700; }
-.hand-card.idle:hover img, .hand-card.idle:focus-visible img { filter: none; }
-.hand-card.active img { box-shadow: 0 0 0 2px var(--rc), 0 0 12px var(--rc); }
+.hand-card small { background: #f2c230; color: #3b2412; font-weight: 700; }
+.buff-bar { position: absolute; left: calc(var(--map-l, 0px) + 12px); top: calc(var(--map-t, 0px) + 12px); display: flex; gap: 6px; align-items: flex-start; pointer-events: none; z-index: 4; }
+.buff-card { position: relative; width: 46px; padding: 0; border: 0; background: transparent; cursor: pointer; pointer-events: auto; filter: drop-shadow(0 0 3px var(--rc)); transition: transform 0.15s; }
+.buff-card img { display: block; }
+.buff-card:hover, .buff-card:focus-visible { transform: translateY(-2px) scale(1.06); filter: drop-shadow(0 0 6px var(--rc)) drop-shadow(0 0 10px var(--rc)); }
+.buff-card small { position: absolute; left: 50%; bottom: -14px; transform: translateX(-50%); background: #000c; color: #fff; font-size: 10px; padding: 0 4px; border-radius: 3px; white-space: nowrap; }
+.buff-count { align-self: center; color: #f3e3c3; font-size: 11px; background: #000a; padding: 1px 5px; border-radius: 3px; }
+.buff-card.snap::after { content: ''; position: absolute; inset: 0; background: #fff; border-radius: 4px; animation: snapflash 120ms linear forwards; }
+.buff-card.snap { animation: snapshake 0.4s steps(8); }
 .hand-card.empty { width: 70px; height: 140px; margin: 0 -2px; border: 2px dashed #d8c49a99; border-radius: 6px; background: #0007; color: #f3e3c3; font-size: 28px; font-weight: 700; }
 .hand-card.empty:hover { filter: none; background: #000a; }
 .hand-tab { position: absolute; right: 8px; top: 0; display: flex; gap: 4px; align-items: center; pointer-events: auto; z-index: 6; }

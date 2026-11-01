@@ -30,6 +30,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (01/11, 2º vídeo) Ao **Usar**, a carta sai da mão e vira buff no canto superior esquerdo do mapa (até 3–5 em uso pelo nível, à parte das vagas da mão). Mão e buffs ficam sempre dentro da arte do mapa (nunca na faixa de fora). Contorno das cartas sem retângulo (brilho segue o desenho). Animais andam só na grama, longe das cercas. Dono vai desenhar a animação dos outros 6 animais.
 - 🆕 (01/11, vídeo do dono) A mão só **guarda** as cartas (paradas, sem gastar tempo); **Usar** liga o bônus e começa a contar (pelo menos 1 dia); **Pausar** volta parada para a mão com o tempo que sobrou. Vagas da mão = paradas + em uso. O álbum registra no 1º uso. Presente inicial chega parado na mão. Mão mais para dentro e para cima; veículo sai pela estrada de terra, passa atrás do Celeiro e some aos poucos antes da beira da ilha.
 - 🆕 (01/11, ajuste da R2) Artes novas das 20 cartas com os números certos; carta de pesca = **Vara de Pescar** (grupo Trabalhadores); mão no canto direito sem o caixote (aba Fichário); plaquinhas de volta, desenhadas pixel a pixel (cadeado = à venda, árvore = pomar comprado); Celeiro e Galinheiro clicáveis só no prédio. Cartas: 3 Comuns na mão ao criar a conta, 1 por nível do 2 ao 10, pacote das diárias todo dia (2 cartas do nível 15), R recalibrado.
 - 🆕 (01/11, R2) Dono aprovou: lista de valores das cartas (gerar artes novas com os números da tabela da GDD seção 11), mão 3→5, só a Comum repara, Café só recupera, Engrenagem automação e frota. Veículos: primeiro "só pela carta"; o simulador mostrou que o mapa não fecharia (sem Escrituras e renda das rotas longas) e o dono escolheu **veículos liberam por nível** e a carta dá bônus e troca a aparência.
@@ -116,8 +117,8 @@
 
 ## G. Teste da parte R2 da v3 (dono, em produção)
 1. Conta nova (ou **Zerar a fazenda** no painel): Sol, Cesta e Coruja Comuns chegam **paradas** na mão (selo "Usar", sem contar tempo).
-2. Clique numa carta parada → **Usar**: ela acende com flash e partículas e começa a contar. **Voltar ao fichário** devolve uma carta parada.
-3. Carta em uso → **Pausar** só depois de 1 dia; volta parada para a mão guardando o tempo.
+2. Clique numa carta da mão → **Usar**: ela sai da mão e aparece pequena no canto superior esquerdo (com o tempo), com flash e partículas. **Voltar ao fichário** devolve uma carta parada.
+3. Clique no buff → **Pausar** só depois de 1 dia; volta parada para a mão (ou ao fichário, se a mão estiver cheia) guardando o tempo.
 4. Fichário → **Colocar na mão** (parada) ou **Usar agora**. Mão cheia (paradas + em uso) não aceita mais.
 5. Suba de nível: do 2 ao 10 cada nível dá 1 carta. Missões: as 5 do dia dão 1 pacote todo dia (2 cartas do nível 15).
 6. Mão no canto direito, por cima da ilha (não na faixa escura). Plaquinhas: cadeado à venda, árvore no pomar. Celeiro e Galinheiro abrem só no prédio.

@@ -355,6 +355,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
+    this.publishMapRect();
     const s = store.state;
     if (!s) return;
     this.life.update(time, delta);
@@ -470,6 +471,19 @@ export class FarmScene extends Phaser.Scene {
       }
       v.look = key;
     }
+  }
+
+  /** onde a arte do mapa está na tela (a mão e os buffs ficam dentro dela, nunca na faixa de fora) */
+  private mapRect = '';
+  private publishMapRect(): void {
+    const cam = this.cameras.main, { width, height } = this.scale.gameSize, v = cam.worldView, z = cam.zoom;
+    const l = Math.max(0, Math.round(-v.x * z)), t = Math.max(0, Math.round(-v.y * z));
+    const r = Math.max(0, Math.round(width - (MAP_W - v.x) * z)), b = Math.max(0, Math.round(height - (MAP_H - v.y) * z));
+    const k = `${l},${t},${r},${b}`;
+    if (k === this.mapRect) return;
+    this.mapRect = k;
+    const st = document.documentElement.style;
+    st.setProperty('--map-l', `${l}px`); st.setProperty('--map-t', `${t}px`); st.setProperty('--map-r', `${r}px`); st.setProperty('--map-b', `${b}px`);
   }
 
   // ---------- câmera: zoom inteiro, mapa centralizado e arrastar quando ele não cabe ----------

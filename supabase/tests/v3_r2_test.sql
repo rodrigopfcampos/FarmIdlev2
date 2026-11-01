@@ -49,9 +49,9 @@ begin
   if abs((fx ->> 'fishing')::numeric - 0.14) > 0.001 then raise exception 'FALHA 12: Pesca %', fx ->> 'fishing'; end if;
   delete from public.card_buffs where user_id = a;
 
-  -- 3. veículos liberam por nível (30: Carro, Picape e Caminhão); a carta de Veículo Mítica dá +35% de carga e lucro e +5 de jackpot
+  -- 3. veículos liberam por nível (30: Carro, Off-Road, 4x4 e Caminhão); a carta de Veículo Mítica dá +35% de carga e lucro e +5 de jackpot
   set local role authenticated; s := public.get_farm(); reset role;
-  if (select count(*) from public.vehicles where user_id = a) <> 4 then raise exception 'FALHA 13: veículos no nível 30 = %', (select count(*) from public.vehicles where user_id = a); end if;
+  if (select count(*) from public.vehicles where user_id = a) <> 5 then raise exception 'FALHA 13: veículos no nível 30 = %', (select count(*) from public.vehicles where user_id = a); end if;
   insert into public.cards (user_id, card_id, rarity, origin) values (a, 'veiculo', 'mythic', 'admin') returning serial into n;
   set local role authenticated;
   s := public.equip_card(n);
@@ -61,7 +61,7 @@ begin
   update public.card_buffs set ends_at = now() - interval '1 second' where user_id = a and card_id = 'veiculo';
   perform public.buffs_expire(a, now());
   if (select state from public.cards where serial = n) <> 'used' then raise exception 'FALHA 18: Veículo Mítico gasto não sumiu'; end if;
-  if (select count(*) from public.vehicles where user_id = a) <> 4 then raise exception 'FALHA 19: veículos sumiram com a carta'; end if;
+  if (select count(*) from public.vehicles where user_id = a) <> 5 then raise exception 'FALHA 19: veículos sumiram com a carta'; end if;
 
   raise exception 'TESTES_OK';
 end $$;

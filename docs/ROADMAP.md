@@ -124,8 +124,9 @@
 ## G. Teste da expedição nova (dono, em produção)
 1. Garagem → Nova expedição: mapa de pergaminho; passe o mouse nos destinos (tooltip) e clique para escolher. Destino trancado mostra o nível.
 2. Carga: − / + (segure para acelerar) e MÁX; a barra "Carga: x/y" enche, fica amarela cheia e vermelha se passar.
-3. "Iniciar Expedição": a tela some e o veículo sai sozinho da Garagem pela estrada do meio da fazenda e some na beira de baixo à direita.
-4. Quando voltar (com o jogo aberto), ele entra pelo mesmo caminho, estaciona e solta moedas; depois é só Receber.
+3. "Iniciar Expedição": a tela some e o veículo sai da frente da Garagem por um trecho curto (sem passar pelos canteiros) e some rápido.
+4. Quando voltar (com o jogo aberto), ele aparece na frente da Garagem, estaciona e solta moedas; depois é só Receber.
+6. Garagem: 5 veículos; o 4x4 libera no nível 23.
 5. Com a carta de Veículo na mão, a cara muda (Comum Carroça, Incomum Compacto, Rara Off-Road, Lendária 4x4, Mítica Caminhão).
 
 ## H. Riscos e pontos em aberto

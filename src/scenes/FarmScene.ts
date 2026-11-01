@@ -135,7 +135,7 @@ export class FarmScene extends Phaser.Scene {
       }
       const [x, y] = garage.parked_vehicle_anchor;
       const first = `${V.sprite_prefix}carroca`;
-      this.veh = this.add.sprite(x, y, this.textures.exists(first) ? first : '__DEFAULT', 0).setOrigin(0.5, 1).setDepth(depthOf(y));
+      this.veh = this.add.sprite(x, y, this.textures.exists(first) ? first : '__DEFAULT', 0).setOrigin(0.5, 1).setScale(V.scale).setDepth(depthOf(y));
       this.vehLook = 'carroca';
       this.vehLabel = this.text().setOrigin(0.5, 1).setPosition(x, y - 40).setDepth(19).setVisible(false);
     }

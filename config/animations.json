@@ -253,8 +253,8 @@
     "dust_every_ms": 90,
     "dust_ms": 500,
     "dust_color": "#8a6a43",
-    "drive_ms": 3000,
-    "edge_fade_from": 0.85,
+    "drive_ms": 1300,
+    "edge_fade_from": 0.25,
     "priority": "jogo",
     "reduced_motion": "sem fumaça e poeira; o veículo aparece direto",
     "sprite_prefix": "vehicle_anim_",
@@ -269,7 +269,8 @@
     "dust_color2": "#9a9a9a",
     "loot_coins": 8,
     "loot_ms": 900,
-    "note_v3": "01/11: pranchas novas 3×2 (5 quadros) por veículo; sai pela estrada do meio da fazenda (curva suave) até a beira de baixo à direita; volta pelo mesmo caminho e solta moedas ao estacionar"
+    "note_v3": "01/11: saída curta pela frente da Garagem (sem passar pelos canteiros), some rápido; na volta aparece ali e estaciona; moedas ao estacionar; veículos 18% menores",
+    "scale": 0.82
   },
   "orchard": {
     "sprites": {

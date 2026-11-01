@@ -236,24 +236,24 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 8 | A7 | Lavoura | 13 | 140.000 | Não | 0 h 52 | 4,5 |
 | 9 | A8 | Lavoura | 14 | 210.000 | Não | 0 h 56 | 5,3 |
 | 10 | P2 | Pomar | 16 | 410.000 | Não | 1 h 00 | 6,8 |
-| 11 | A5 | Lavoura | 17 | 560.000 | Não | 1 h 04 | 8,8 |
-| 12 | A10 | Lavoura | 19 | 790.000 | Não | 1 h 08 | 10,8 |
+| 11 | A5 | Lavoura | 17 | 570.000 | Não | 1 h 04 | 8,9 |
+| 12 | A10 | Lavoura | 19 | 770.000 | Não | 1 h 08 | 10,8 |
 | 13 | P3 | Pomar | 20 | 940.000 | Não | 1 h 12 | 12,3 |
 | 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 1 h 16 | 16,5 |
 | 15 | A12 | Lavoura | 23 | 1.900.000 | Não | 1 h 20 | 17,8 |
 | 16 | P4 | Pomar | 25 | 2.800.000 | Não | 1 h 24 | 20,5 |
-| 17 | A13 | Lavoura | 27 | 4.300.000 | Não | 1 h 28 | 25,3 |
+| 17 | A13 | Lavoura | 27 | 4.400.000 | Não | 1 h 28 | 25,3 |
 | 18 | A20 | Lavoura | 28 | 5.300.000 | Não | 1 h 32 | 27,8 |
-| 19 | L | Lago | 30 | 7.600.000 | Sim | 1 h 36 | 33,3 |
-| 20 | P5 | Pomar | 31 | 9.600.000 | Sim | 1 h 40 | 35,8 |
+| 19 | L | Lago | 30 | 7.800.000 | Sim | 1 h 36 | 33,3 |
+| 20 | P5 | Pomar | 31 | 9.800.000 | Sim | 1 h 40 | 35,8 |
 | 21 | A14 | Lavoura | 33 | 14.000.000 | Sim | 1 h 44 | 41,3 |
 | 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 1 h 48 | 44,3 |
 | 23 | P6 | Pomar | 36 | 27.000.000 | Sim | 1 h 52 | 50,3 |
 | 24 | A16 | Lavoura | 37 | 33.000.000 | Sim | 1 h 56 | 53,5 |
 | 25 | A17 | Lavoura | 39 | 46.000.000 | Sim | 2 h 00 | 60,8 |
 | 26 | A18 | Lavoura | 40 | 55.000.000 | Sim | 2 h 04 | 64,5 |
-| 27 | A19 | Lavoura | 42 | 77.000.000 | Sim | 2 h 08 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 95.000.000 | Sim | 2 h 12 | 77,3 |
+| 27 | A19 | Lavoura | 42 | 73.000.000 | Sim | 2 h 08 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 90.000.000 | Sim | 2 h 12 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 200 | 2.000 | 9.000 | 20.000 | 44.000 | 86.000 | 170.000 | 300.000 | 480.000 | 580.000 |
+| Salário base/dia (ouro) | 200 | 2.000 | 9.000 | 20.000 | 44.000 | 88.000 | 160.000 | 300.000 | 480.000 | 580.000 |
 
 ### Nível do personagem
 
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 881.100 | 2.600.000 |
-| 2 | 50 | 2.500 | | 27 | 1.014.600 | 3.000.000 |
-| 3 | 65 | 4.200 | | 28 | 1.188.150 | 3.300.000 |
-| 4 | 90 | 6.600 | | 29 | 1.335.000 | 3.700.000 |
-| 5 | 910 | 9.900 | | 30 | 1.335.000 | 4.300.000 |
-| 6 | 1.330 | 15.000 | | 31 | 1.381.900 | 4.900.000 |
+| 1 | 40 | 1.900 | | 26 | 881.760 | 2.700.000 |
+| 2 | 50 | 2.500 | | 27 | 1.015.360 | 3.100.000 |
+| 3 | 65 | 4.200 | | 28 | 1.189.040 | 3.300.000 |
+| 4 | 90 | 6.600 | | 29 | 1.336.000 | 3.800.000 |
+| 5 | 910 | 9.900 | | 30 | 1.336.000 | 4.400.000 |
+| 6 | 1.330 | 15.000 | | 31 | 1.381.900 | 5.000.000 |
 | 7 | 2.110 | 24.000 | | 32 | 1.594.500 | 5.700.000 |
-| 8 | 3.260 | 37.000 | | 33 | 1.700.800 | 6.600.000 |
-| 9 | 5.500 | 68.000 | | 34 | 1.913.400 | 7.200.000 |
-| 10 | 20.030 | 99.000 | | 35 | 2.232.300 | 8.400.000 |
-| 11 | 33.380 | 120.000 | | 36 | 2.551.200 | 10.000.000 |
-| 12 | 48.060 | 170.000 | | 37 | 2.870.100 | 11.000.000 |
-| 13 | 69.420 | 250.000 | | 38 | 3.295.300 | 12.000.000 |
-| 14 | 88.110 | 340.000 | | 39 | 3.720.500 | 14.000.000 |
-| 15 | 113.480 | 450.000 | | 40 | 4.145.700 | 15.000.000 |
-| 16 | 146.850 | 600.000 | | 41 | 4.570.900 | 17.000.000 |
-| 17 | 173.550 | 730.000 | | 42 | 4.996.100 | 19.000.000 |
-| 18 | 213.600 | 840.000 | | 43 | 5.633.900 | 21.000.000 |
-| 19 | 267.000 | 930.000 | | 44 | 6.165.400 | 22.000.000 |
-| 20 | 320.400 | 1.000.000 | | 45 | 6.803.200 | 24.000.000 |
-| 21 | 373.800 | 1.200.000 | | 46 | 7.334.700 | 25.000.000 |
-| 22 | 440.550 | 1.400.000 | | 47 | 7.759.900 | 26.000.000 |
-| 23 | 534.000 | 1.600.000 | | 48 | 8.185.100 | 27.000.000 |
-| 24 | 640.800 | 1.800.000 | | 49 | 8.397.700 | 29.000.000 |
-| 25 | 760.950 | 2.200.000 | | 50 | — | 29.000.000 |
+| 8 | 3.260 | 37.000 | | 33 | 1.700.800 | 6.400.000 |
+| 9 | 5.500 | 68.000 | | 34 | 1.913.400 | 7.000.000 |
+| 10 | 20.040 | 99.000 | | 35 | 2.232.300 | 8.200.000 |
+| 11 | 33.400 | 120.000 | | 36 | 2.551.200 | 10.000.000 |
+| 12 | 48.100 | 170.000 | | 37 | 2.870.100 | 11.000.000 |
+| 13 | 69.470 | 250.000 | | 38 | 3.295.300 | 12.000.000 |
+| 14 | 88.180 | 340.000 | | 39 | 3.720.500 | 14.000.000 |
+| 15 | 113.560 | 450.000 | | 40 | 4.145.700 | 15.000.000 |
+| 16 | 146.960 | 600.000 | | 41 | 4.570.900 | 16.000.000 |
+| 17 | 173.680 | 750.000 | | 42 | 4.996.100 | 18.000.000 |
+| 18 | 213.760 | 850.000 | | 43 | 5.633.900 | 20.000.000 |
+| 19 | 267.200 | 910.000 | | 44 | 6.165.400 | 22.000.000 |
+| 20 | 320.640 | 1.000.000 | | 45 | 6.803.200 | 24.000.000 |
+| 21 | 374.080 | 1.200.000 | | 46 | 7.334.700 | 25.000.000 |
+| 22 | 440.880 | 1.400.000 | | 47 | 7.759.900 | 26.000.000 |
+| 23 | 534.400 | 1.600.000 | | 48 | 8.185.100 | 27.000.000 |
+| 24 | 641.280 | 1.800.000 | | 49 | 8.397.700 | 29.000.000 |
+| 25 | 761.520 | 2.200.000 | | 50 | — | 29.000.000 |
 
 ### Raridade global 🆕
 
@@ -662,7 +662,8 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 ### Reformulação v3 🆕 (01/11/2026) — expedição sem minigame
 - **Fim do minigame de setas** (jogo idle): a expedição parte direto e vale como "Concluída" (0 pontos de sucesso). O servidor ainda aceita o minigame antigo de quem estiver com a tela aberta.
 - **Tela nova:** mapa de pergaminho com os destinos (Feira, Cidade, Capital, Porto, Exportação) ligados por uma estrada pontilhada; clique no ícone escolhe; o mouse mostra duração, preço, risco, achados e a demanda do dia. Veículos em cartões que ligam/desligam (comboio). Carga com − / + (segurar acelera) e MÁX, barra "Carga: x/y" em cima (verde, amarela cheia, vermelha passando). Resumo: valor no destino, chance, volta, seguro. Botão "Iniciar Expedição": a tela some devagar e o veículo sai sozinho.
-- **No mapa:** artes novas com 5 quadros (prancha 3×2) para Carroça, Compacto, Off-Road, 4x4 (carta de Veículo Lendária) e Caminhão. Saem da frente da Garagem pela estrada de terra do meio da fazenda (curva suave) até a beira de baixo à direita em 3 s, somem aos poucos no fim; motor balança 1 px e solta fumaça; poeira nas rodas de trás. Na volta fazem o caminho ao contrário e, ao estacionar, moedas saltam em arco.
+- **5 veículos** (5 artes de 5 quadros e as 5 raridades da carta de Veículo): Carroça (nível 1), Compacto (6), Off-Road (16), **4x4** (23; 350 de carga, até o Porto, +6 pontos, duração ×0,85) e Caminhão (30), todos liberam sozinhos no nível. R recalibrado.
+- **No mapa** (ajuste do dono): o veículo sai da frente da Garagem por um trecho curto de estrada de terra, sem passar pelos canteiros, e some rápido (1,3 s); na volta aparece ali e estaciona. Veículos 18% menores; motor balança 1 px e solta fumaça; poeira nas rodas de trás. Na volta fazem o caminho ao contrário e, ao estacionar, moedas saltam em arco.
 
 ### Reformulação v3 🆕 (01/11/2026) — Árvore de Passivas
 - Sai da Casa e ganha botão próprio no topo (📖 Grimório, com pontinho quando há pontos livres). Modal grande com fundo estrelado: nós em losango ligados por linhas a partir da Fazenda; só ícones, tooltip no mouse (nome, nível, efeito atual e o próximo). Bloqueado = cinza e linha pontilhada; disponível = pulsa e linha acesa; comprado = borda dourada (no máximo, com faíscas). Ao comprar: linha se enche de luz, o nó treme e toca um "pling" (som gerado pelo navegador, com botão de silenciar).

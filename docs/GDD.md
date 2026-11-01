@@ -765,7 +765,7 @@ Os valores são bem menores que os da v2 porque a carta fica dias na mão (e at�
 | Luvas | Trabalhadores: Trabalho por hora da equipe | +4% | +5% | +7% | +9% | +12% |
 | Cantil | Trabalhadores: Gasto de energia em campo | −6% | −8% | −10% | −13% | −18% |
 | Café | Trabalhadores: Recuperação de energia no banco | +8% | +10% | +13% | +17% | +25% |
-| Pesca | Trabalhadores: Lucro na pesca (vale na R3) | +6% | +8% | +10% | +14% | +20% |
+| Vara de Pescar | Trabalhadores: Lucro na pesca (vale na R3) | +6% | +8% | +10% | +14% | +20% |
 | Forcado | Ferramentas: Trabalho para coletar animais e colher o pomar (menos) | +4% | +5% | +7% | +9% | +12% |
 | Enxada | Ferramentas: Trabalho para plantar e colher a lavoura (menos) | +4% | +5% | +7% | +9% | +12% |
 | Martelo | Ferramentas: Limpeza de lote, desgaste das ferramentas e dos veículos | +8% | +10% | +13% | +17% | +25% |
@@ -777,7 +777,7 @@ Os valores são bem menores que os da v2 porque a carta fica dias na mão (e at�
 - **Veículo:** cada veículo libera de graça no nível dele (Carro 6, Picape 16, Caminhão 30; a Garagem não vende). A carta de Veículo dá os bônus da tabela às expedições que partem com ela na mão, e o veículo na Garagem aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão).
 - **Moeda** paga sobre o que foi produzido, não sobre o que foi vendido; o ouro sai quando a carta deixa a mão.
 - **Ferradura, Prancheta e Veículo** valem para expedições que **partem** com a carta na mão.
-- **Pesca** só passa a valer quando a pesca entrar (parte R3).
+- **Vara de Pescar** só passa a valer quando a pesca entrar (parte R3).
 - **Arte:** uma prancha por carta com as 5 raridades (moldura, ilustração e texto). Os números das artes seguem esta tabela; se o simulador mudar um número, o dono gera a arte nova.
 
 ### Armory (coleção permanente)

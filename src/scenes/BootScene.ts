@@ -3,6 +3,7 @@
 import Phaser from 'phaser';
 import { ANIM, CROP_LIST, FARM } from '../data';
 import { isFruitPixel, recolor } from '../farm/life';
+import { SIGN_SHADOW, SIGN_SHADOW_ALPHA, signPixels } from '../farm/signs';
 import type { Manifest } from '../farm/art';
 import { store } from '../farm/store';
 import { bus } from '../core/bus';
@@ -40,6 +41,14 @@ export class BootScene extends Phaser.Scene {
     const g = this.make.graphics({}, false);
     g.fillStyle(0x3a2416, 1).fillRect(0, 0, 2, 2).fillStyle(0xd8b07a, 1).fillRect(0, 0, 1, 1);
     g.generateTexture('dirt_grain', 2, 2);
+    // plaquinhas do mapa (cadeado = à venda; árvore = pomar)
+    const k = ANIM.map_marks.sign_pixel;
+    for (const icon of ['lock', 'tree'] as const) {
+      const px = signPixels(icon);
+      g.clear();
+      px.forEach((row, y) => row.forEach((c, x) => { if (c !== null) g.fillStyle(c, y >= 17 && c === SIGN_SHADOW ? SIGN_SHADOW_ALPHA : 1).fillRect(x * k, y * k, k, k); }));
+      g.generateTexture(`lot_sign_${icon}`, px[0].length * k, px.length * k);
+    }
     g.destroy();
   }
 

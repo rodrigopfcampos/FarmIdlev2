@@ -229,7 +229,8 @@
   },
   "map_marks": {
     "locked_shade": false,
-    "lot_signs": false,
+    "lot_signs": true,
+    "sign_pixel": 2,
     "hover_outline": false,
     "note": "o dono não quer marcação no terreno nem quadrado nas construções: só a mãozinha do mouse e o rótulo mostram que dá para clicar"
   }

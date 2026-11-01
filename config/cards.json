@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "source": "Reformulação v3 (Especificação master v3.0, bloco 4) · valores aprovados pelo dono em 31/10/2026 (ajustáveis pelo simulador)",
   "dimensions": {
     "card_full": [
@@ -531,7 +531,7 @@
     },
     {
       "id": "pesca",
-      "name_pt": "Pesca",
+      "name_pt": "Vara de Pescar",
       "group": "trabalhadores",
       "description_pt": "Mais lucro na pesca do Lago (vale quando a pesca entrar, parte R3).",
       "buff_effects": {

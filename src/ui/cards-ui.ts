@@ -86,7 +86,7 @@ function missionsBody(ctx: CardsCtx): string {
 // ---------- a mão (rodapé) ----------
 let handOpen = true;
 let lastHand: string[] = [];
-/** mão em leque no rodapé, vagas vazias e o caixote do baralho no canto (recolher/abrir com animação elástica) */
+/** mão em leque no canto direito do rodapé, vagas vazias e uma aba com Fichário e recolher (animação elástica) */
 export function renderHand(ctx: CardsCtx, s: FarmState): void {
   let dock = ctx.root.querySelector<HTMLElement>('.hand-dock');
   if (!dock) { dock = document.createElement('div'); dock.className = 'hand-dock'; ctx.root.appendChild(dock); }
@@ -107,9 +107,10 @@ export function renderHand(ctx: CardsCtx, s: FarmState): void {
       ${art(cardArt(b.card_id, b.rarity), 84)}<small>${lifeText(left)}</small></button>`;
   }).join('');
   dock.className = `hand-dock ${handOpen ? '' : 'closed'}`;
-  dock.innerHTML = `<div class="hand-fan">${items}</div>
-    <button type="button" class="deck" data-open-binder title="Baralho: suas cartas">${art('deck_crate', 88)}</button>
-    <button type="button" class="deck-toggle" data-toggle-hand title="${handOpen ? 'Recolher a mão' : 'Abrir a mão'}">${art('deck_toggle', 34)}</button>`;
+  dock.innerHTML = `<div class="hand-tab">
+      <button type="button" class="hand-binder" data-open-binder title="Fichário: todas as suas cartas">Fichário</button>
+      <button type="button" class="hand-toggle" data-toggle-hand title="${handOpen ? 'Recolher a mão' : 'Abrir a mão'}">${art('deck_toggle', 22)}</button>
+    </div><div class="hand-fan">${items}</div>`;
   dock.querySelector('[data-toggle-hand]')?.addEventListener('click', () => { handOpen = !handOpen; renderHand(ctx, store.state!); });
   dock.querySelectorAll('[data-open-binder]').forEach((b) => b.addEventListener('click', () => openCards(ctx)));
   dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, b.dataset.hand!)));

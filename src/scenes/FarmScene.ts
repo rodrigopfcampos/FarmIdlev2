@@ -91,7 +91,7 @@ export class FarmScene extends Phaser.Scene {
       const hasOverlay = lot.type === 'lavoura' && ANIM.map_marks.locked_shade;
       const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
       const overlay = hasOverlay ? this.lockedOverlay(lot) : undefined;
-      const sign = lot.sign_anchor && ANIM.map_marks.lot_signs ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
+      const sign = lot.sign_anchor && ANIM.map_marks.lot_signs ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign_lock').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
       const timer = this.text().setOrigin(0.5, 0.5).setPosition(lot.center[0], lot.center[1] - 26).setDepth(19).setVisible(false);
       // Celeiro e Galinheiro já estão desenhados no mapa v3 (building_in_map): só o aviso fica por cima
       const inMap = (lot as Lot & { building_in_map?: boolean }).building_in_map;
@@ -294,7 +294,11 @@ export class FarmScene extends Phaser.Scene {
       const mine = this.owned.has(d.lot.id);
       const end = this.cleaning.get(d.lot.id);
       const inCleanup = end !== undefined && end > now;
-      d.sign?.setVisible(!mine);
+      // à venda: placa com cadeado; pomar comprado: placa com árvore (sinaliza o pomar)
+      if (d.sign) {
+        const tree = mine && d.lot.type === 'pomar';
+        d.sign.setTexture(tree ? 'lot_sign_tree' : 'lot_sign_lock').setVisible(!mine || (tree && !inCleanup));
+      }
       if (d.overlay) {
         const on = !mine || inCleanup;
         if (on !== d.overlayOn) {

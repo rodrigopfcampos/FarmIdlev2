@@ -320,11 +320,8 @@ export class FarmScene extends Phaser.Scene {
       const mine = this.owned.has(d.lot.id);
       const end = this.cleaning.get(d.lot.id);
       const inCleanup = end !== undefined && end > now;
-      // à venda: placa com cadeado; pomar comprado: placa com árvore (sinaliza o pomar)
-      if (d.sign) {
-        const tree = mine && d.lot.type === 'pomar';
-        d.sign.setTexture(tree ? 'lot_sign_tree' : 'lot_sign_lock').setVisible(!mine || (tree && !inCleanup));
-      }
+      // placa com cadeado só no lote à venda (lavoura ou pomar); comprado, some
+      d.sign?.setVisible(!mine);
       if (d.overlay) {
         const on = !mine || inCleanup;
         if (on !== d.overlayOn) {

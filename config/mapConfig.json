@@ -5915,8 +5915,8 @@
         96,
         76
       ],
-      "exit_path": [[262, 322], [212, 332], [172, 343], [128, 368], [70, 395], [18, 421]],
-      "exit_note": "estrada de terra da Garagem passando atrás do Celeiro (occluders) até a beira da ilha; o veículo some aos poucos no fim",
+      "exit_path": [[262, 322], [300, 298], [345, 263], [600, 386], [900, 530], [1180, 664], [1310, 726]],
+      "exit_note": "v3 (01/11): da frente da Garagem pela estrada de terra do meio da fazenda até a beira de baixo à direita (curva suave); some aos poucos no fim",
       "parked_note": "veículo parado na frente da garagem (no chão de terra), não debaixo do telhado"
     }
   ]

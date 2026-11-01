@@ -308,7 +308,7 @@ export const mockFarm = {
       return { id: 'mg', arrows: mg.arrows, limit_ms: mg.limit } as unknown as FarmState;
     }
     if (fn === 'launch_expedition') {
-      const ev = evalMinigame(mg.arrows, args.p_keys as { k: string; t: number }[], mg.limit, mg.calm);
+      const ev = args.p_minigame ? evalMinigame(mg.arrows, args.p_keys as { k: string; t: number }[], mg.limit, mg.calm) : { result: 'done' as const, robot: false };
       const cargo = args.p_cargo as Record<string, number>;
       for (const [k, q] of Object.entries(cargo)) state.silo[k] -= q;
       for (const v of args.p_vehicles as string[]) {

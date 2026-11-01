@@ -2148,6 +2148,91 @@
       ]
     },
     {
+      "id": "v3_veh_carroca",
+      "file": "v3/veh_carroca.png",
+      "native": true,
+      "key": "vehicle_anim_carroca",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        96,
+        75
+      ],
+      "kernel": "lanczos3"
+    },
+    {
+      "id": "v3_veh_jipe",
+      "file": "v3/veh_jipe.png",
+      "native": true,
+      "key": "vehicle_anim_jipe",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        100,
+        88
+      ],
+      "kernel": "lanczos3"
+    },
+    {
+      "id": "v3_veh_carro",
+      "file": "v3/veh_carro.png",
+      "native": true,
+      "key": "vehicle_anim_carro",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        88,
+        63
+      ],
+      "kernel": "lanczos3"
+    },
+    {
+      "id": "v3_veh_caminhao",
+      "file": "v3/veh_caminhao.png",
+      "native": true,
+      "key": "vehicle_anim_caminhao",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        112,
+        111
+      ],
+      "kernel": "lanczos3"
+    },
+    {
+      "id": "v3_veh_picape",
+      "file": "v3/veh_picape.png",
+      "native": true,
+      "key": "vehicle_anim_picape",
+      "dir": "vehicles",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5,
+      "size": [
+        100,
+        79
+      ],
+      "kernel": "lanczos3"
+    },
+    {
       "id": "v3_fish1",
       "file": "v3/fish_1.png",
       "native": true,

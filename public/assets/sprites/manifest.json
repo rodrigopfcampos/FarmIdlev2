@@ -5390,6 +5390,86 @@
         76
       ]
     },
+    "vehicle_anim_carroca": {
+      "file": "sprites/vehicles/vehicle_anim_carroca.png",
+      "size": [
+        480,
+        75
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        96,
+        75
+      ]
+    },
+    "vehicle_anim_jipe": {
+      "file": "sprites/vehicles/vehicle_anim_jipe.png",
+      "size": [
+        500,
+        88
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        100,
+        88
+      ]
+    },
+    "vehicle_anim_carro": {
+      "file": "sprites/vehicles/vehicle_anim_carro.png",
+      "size": [
+        440,
+        63
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        88,
+        63
+      ]
+    },
+    "vehicle_anim_caminhao": {
+      "file": "sprites/vehicles/vehicle_anim_caminhao.png",
+      "size": [
+        560,
+        111
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        112,
+        111
+      ]
+    },
+    "vehicle_anim_picape": {
+      "file": "sprites/vehicles/vehicle_anim_picape.png",
+      "size": [
+        500,
+        79
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        100,
+        79
+      ]
+    },
     "fish_1": {
       "file": "sprites/fish/fish_1.png",
       "size": [

@@ -287,7 +287,7 @@ export async function startMinigame(route: string, vehicles: number, manager: bo
   if (error) throw new Error(friendly(error.message));
   return data as MinigameStart;
 }
-export const launchExpedition = (o: { minigame: string; keys: { k: string; t: number }[]; vehicles: string[]; route: string; cargo: Record<string, number>; insurance: boolean; manager: boolean; repeat: boolean }) =>
+export const launchExpedition = (o: { minigame: string | null; keys: { k: string; t: number }[]; vehicles: string[]; route: string; cargo: Record<string, number>; insurance: boolean; manager: boolean; repeat: boolean }) =>
   rpc('launch_expedition', { p_minigame: o.minigame, p_keys: o.keys, p_vehicles: o.vehicles, p_route: o.route, p_cargo: o.cargo, p_insurance: o.insurance, p_manager: o.manager, p_repeat: o.repeat });
 export const collectExpeditions = (vehicle: string | null) => rpc('collect_expeditions', { p_vehicle: vehicle });
 export const buyVehicle = (v: string) => rpc('buy_vehicle', { p_vehicle: v });

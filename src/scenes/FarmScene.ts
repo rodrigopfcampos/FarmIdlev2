@@ -61,7 +61,8 @@ export class FarmScene extends Phaser.Scene {
   private life!: LifeLayer; // animais nos pastos e peixes no lago
   private vehDrive: { tween: Phaser.Tweens.Tween; moving: boolean } | null = null; // veículo saindo ou chegando
   private vehWas = '';          // situação anterior do veículo (para animar só a mudança vista ao vivo)
-  private vehMotor = false;     // veículo a motor (balança, fumaça) ou carroça com cavalo
+  private vehMotor = false;
+  private vehLook = 'carroca';  // cara do veículo (Carroça, Compacto, Off-Road, 4x4, Caminhão)     // veículo a motor (balança, fumaça) ou carroça com cavalo
   private fxAt = 0;             // último fumacinha/poeira
   private dustAt = 0;
 
@@ -126,13 +127,16 @@ export class FarmScene extends Phaser.Scene {
     // Carroça parada na vaga da Garagem, com a animação de parado
     const garage = ZONES.find((z) => z.id === 'garagem_expedicao');
     if (garage?.parked_vehicle_anchor) {
-      for (const v of ['carroca', 'carro', 'picape', 'caminhao']) {
-        if (this.textures.exists(`vehicle_${v}_idle`)) this.anims.create({ key: `${v}_idle`, frames: this.anims.generateFrameNumbers(`vehicle_${v}_idle`, { start: 0, end: 3 }), frameRate: FARM.visual.vehicle_idle_fps, repeat: -1 });
-      }
+      // v3: cada cara de veículo tem 5 quadros (prancha 3×2 recortada em tira): andando = animação, parado = quadro 0
       const V = ANIM.vehicles;
-      if (this.textures.exists(V.horse_sprite)) this.anims.create({ key: 'horse_walk', frames: this.anims.generateFrameNumbers(V.horse_sprite, {}), frameRate: V.horse_fps, repeat: -1 });
+      for (const look of Object.keys(V.faces_by_look)) {
+        const tex = `${V.sprite_prefix}${look}`;
+        if (this.textures.exists(tex)) this.anims.create({ key: `${tex}_drive`, frames: this.anims.generateFrameNumbers(tex, {}), frameRate: V.anim_fps, repeat: -1 });
+      }
       const [x, y] = garage.parked_vehicle_anchor;
-      this.veh = this.add.sprite(x, y, this.textures.exists(V.horse_sprite) ? V.horse_sprite : 'vehicle_carroca_idle', 0).setOrigin(0.5, 1).setDepth(depthOf(y));
+      const first = `${V.sprite_prefix}carroca`;
+      this.veh = this.add.sprite(x, y, this.textures.exists(first) ? first : '__DEFAULT', 0).setOrigin(0.5, 1).setDepth(depthOf(y));
+      this.vehLook = 'carroca';
       this.vehLabel = this.text().setOrigin(0.5, 1).setPosition(x, y - 40).setDepth(19).setVisible(false);
     }
 
@@ -205,15 +209,11 @@ export class FarmScene extends Phaser.Scene {
     // carta de Veículo na mão: o veículo aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão)
     const vc = s.buffs?.find((b) => b.card_id === 'veiculo');
     const look = vc ? vehicleLook(vc.rarity) ?? v.vehicle_id : v.vehicle_id;
-    const rar = vc ? vc.rarity : v.rarity;
-    const horse = look === 'carroca' && rar === 'common' && this.textures.exists(V.horse_sprite);
-    const key = horse ? V.horse_sprite : rar === 'common' && this.anims.exists(`${look}_idle`) ? `${look}_idle` : `vehicle_${look}_${rar}`;
-    if (key !== this.vehKey) {
-      this.vehKey = key;
+    const key = `${V.sprite_prefix}${look}`;
+    if (key !== this.vehKey && this.textures.exists(key)) {
+      this.vehKey = key; this.vehLook = look;
       this.vehMotor = look !== 'carroca';
-      if (horse) this.veh.stop().setTexture(key, 0);
-      else if (key.endsWith('_idle')) this.veh.play(key);
-      else if (this.textures.exists(key)) this.veh.stop().setTexture(key);
+      if (!this.vehDrive) this.veh.stop().setTexture(key, 0).setFlipX(false);
     }
     const state = parked ? 'parked' : 'away';
     if (this.vehWas && this.vehWas !== state && !this.calm) this.drive(state === 'away');
@@ -246,35 +246,75 @@ export class FarmScene extends Phaser.Scene {
     }
   }
 
-  /** veículo saindo (vaga → fim da estrada) ou chegando (fim da estrada → vaga); some aos poucos na beira da ilha */
+  /** caminho suave (Catmull-Rom) pelos pontos da estrada: sai da frente da Garagem e cruza a fazenda até a beira */
+  private smoothPath(pts: Pt[], step = 6): Pt[] {
+    const out: Pt[] = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const n = Math.max(2, Math.ceil(Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step));
+      for (let k = 0; k < n; k++) {
+        const t = k / n, t2 = t * t, t3 = t2 * t;
+        const f = (a: number, b: number, c: number, d: number) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+        out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+
+  /** a arte olha para um lado (carroça para a esquerda, os motorizados para a direita); espelha conforme o movimento */
+  private faceFor(movingRight: boolean): boolean {
+    const faces = (ANIM.vehicles.faces_by_look as Record<string, string>)[this.vehLook] ?? 'right';
+    return movingRight !== (faces === 'right');
+  }
+
+  /** veículo saindo (vaga → fim da estrada) ou chegando (fim da estrada → vaga), com os 5 quadros andando;
+   *  some aos poucos perto da beira da ilha; ao estacionar na volta, moedas saltam do veículo */
   private drive(out: boolean): void {
     const z = ZONES.find((x) => x.id === 'garagem_expedicao') as (typeof ZONES)[number] & { exit_path?: Pt[] };
     if (!this.veh || !z?.exit_path) return;
-    const path = out ? z.exit_path : [...z.exit_path].reverse();
+    const V = ANIM.vehicles;
+    const base = this.smoothPath(z.exit_path);
+    const path = out ? base : [...base].reverse();
     const lens = path.slice(1).map((p, i) => Math.hypot(p[0] - path[i][0], p[1] - path[i][1]));
     const total = lens.reduce((a, b) => a + b, 0);
     this.vehDrive?.tween.stop();
     const obj = { t: 0 };
     this.veh.setVisible(true).setPosition(path[0][0], path[0][1]);
-    if (this.vehKey === ANIM.vehicles.horse_sprite) this.veh.play('horse_walk', true);
-    const tween = this.tweens.add({ targets: obj, t: 1, duration: ANIM.vehicles.drive_ms, ease: out ? 'Sine.In' : 'Sine.Out',
+    if (this.anims.exists(`${this.vehKey}_drive`)) this.veh.play(`${this.vehKey}_drive`, true);
+    const tween = this.tweens.add({ targets: obj, t: 1, duration: V.drive_ms, ease: out ? 'Sine.In' : 'Sine.Out',
       onUpdate: () => {
         let d = obj.t * total, k = 0;
         while (k < lens.length - 1 && d > lens[k]) { d -= lens[k]; k++; }
         const a = path[k], b = path[k + 1], f = lens[k] ? Math.min(1, d / lens[k]) : 1;
+        // motor: balança 1 px enquanto anda (peso)
+        const bob = this.vehMotor ? Math.floor(this.time.now / V.motor_bob_ms) % 2 : 0;
         const x = Math.round(a[0] + (b[0] - a[0]) * f), y = Math.round(a[1] + (b[1] - a[1]) * f);
-        // perto da beira some aos poucos (não entra na faixa escura fora da ilha)
-        const p = out ? obj.t : 1 - obj.t, f0 = ANIM.vehicles.edge_fade_from;
-        this.veh!.setPosition(x, y).setDepth(depthOf(y)).setFlipX(b[0] > a[0]).setAlpha(p <= f0 ? 1 : Math.max(0, 1 - (p - f0) / (1 - f0))); // a arte olha para a esquerda
+        const p = out ? obj.t : 1 - obj.t, f0 = V.edge_fade_from;
+        this.veh!.setPosition(x, y - bob).setDepth(depthOf(y)).setFlipX(this.faceFor(b[0] > a[0]))
+          .setAlpha(p <= f0 ? 1 : Math.max(0, 1 - (p - f0) / (1 - f0)));
       },
       onComplete: () => {
         this.vehDrive = null;
         const anchor = z.parked_vehicle_anchor!;
-        this.veh!.setFlipX(false).setAlpha(1).setPosition(anchor[0], anchor[1]).setDepth(depthOf(anchor[1])).setVisible(!out);
-        if (this.vehKey === ANIM.vehicles.horse_sprite) this.veh!.stop().setFrame(0);
-        else if (this.vehKey.endsWith('_idle')) this.veh!.play(this.vehKey);
+        this.veh!.stop().setFrame(0).setFlipX(false).setAlpha(1).setPosition(anchor[0], anchor[1]).setDepth(depthOf(anchor[1])).setVisible(!out);
+        if (!out && store.state?.expeditions.some((e) => e.status === 'back')) this.lootFx(anchor as Pt);
       } });
     this.vehDrive = { tween, moving: true };
+  }
+
+  /** "loot": moedas saltam do veículo em arco e somem (o lucro está esperando o Receber) */
+  private lootFx(at: Pt): void {
+    const V = ANIM.vehicles;
+    if (this.calm || !this.textures.exists('ui_coin')) return;
+    for (let k = 0; k < V.loot_coins; k++) {
+      const c = this.add.image(at[0], at[1] - 24, 'ui_coin').setDepth(21).setScale(0.8);
+      const dx = (k - (V.loot_coins - 1) / 2) * 9 + (Math.random() - 0.5) * 6, peak = 26 + Math.random() * 18;
+      const o = { t: 0 };
+      this.tweens.add({ targets: o, t: 1, duration: V.loot_ms, delay: k * 50, ease: 'Linear',
+        onUpdate: () => c.setPosition(Math.round(at[0] + dx * o.t), Math.round(at[1] - 24 - peak * 4 * o.t * (1 - o.t) + 18 * o.t)).setAlpha(o.t < 0.7 ? 1 : 1 - (o.t - 0.7) / 0.3),
+        onComplete: () => c.destroy() });
+    }
   }
 
   /** motor: balança 1 px e solta fumaça; andando: poeira nas rodas (pedacinhos de 2×2 que sobem e somem) */
@@ -287,13 +327,16 @@ export class FarmScene extends Phaser.Scene {
       if (!this.vehDrive) this.veh.setY(baseY - up);
       if (time - this.fxAt > V.exhaust_every_ms) {
         this.fxAt = time;
-        const back = this.veh.flipX ? -1 : 1; // escapamento atrás (a arte olha para a esquerda)
-        this.puff(this.veh.x + back * this.veh.displayWidth * 0.45, this.veh.y - 10, V.exhaust_color, V.exhaust_ms, -10);
+        // escapamento atrás: a arte dos motorizados olha para a direita (espelhada, olha para a esquerda)
+        const back = this.veh.flipX ? 1 : -1;
+        this.puff(this.veh.x + back * this.veh.displayWidth * 0.42, this.veh.y - 8, V.exhaust_color, V.exhaust_ms, -10);
       }
     }
     if (this.vehDrive && time - this.dustAt > V.dust_every_ms) {
       this.dustAt = time;
-      this.puff(this.veh.x + (Math.random() - 0.5) * this.veh.displayWidth * 0.6, this.veh.y - 1, V.dust_color, V.dust_ms, -5);
+      // poeira nas rodas de trás
+      const back = this.veh.flipX ? 1 : -1;
+      this.puff(this.veh.x + back * this.veh.displayWidth * (0.15 + Math.random() * 0.25), this.veh.y - 1, Math.random() < 0.6 ? V.dust_color : V.dust_color2, V.dust_ms, -5);
     }
   }
 

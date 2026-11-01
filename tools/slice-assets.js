@@ -294,7 +294,7 @@ async function renderNative(sheet) {
     for (let y = 0; y < ch; y++) data.copy(cell, y * cw * 4, ((cy + y) * info.width + cx) * 4, ((cy + y) * info.width + cx + cw) * 4);
     let px = cell;
     if (w !== cw || h !== ch) {
-      px = (await sharp(cell, { raw: { width: cw, height: ch, channels: 4 } }).resize(w, h, { fit: 'fill', kernel: 'nearest' }).raw().toBuffer());
+      px = (await sharp(cell, { raw: { width: cw, height: ch, channels: 4 } }).resize(w, h, { fit: 'fill', kernel: sheet.kernel ?? 'nearest' }).raw().toBuffer());
     }
     for (let i = 3; i < px.length; i += 4) px[i] = px[i] >= 110 ? 255 : 0;
     const canvas = Buffer.alloc(W * H * 4);

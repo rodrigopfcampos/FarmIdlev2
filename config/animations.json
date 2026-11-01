@@ -245,8 +245,6 @@
     "reduced_motion": "sombras paradas, sem ondulações"
   },
   "vehicles": {
-    "horse_sprite": "vehicle_horse_cart",
-    "horse_fps": 6,
     "motor_bob_px": 1,
     "motor_bob_ms": 120,
     "exhaust_every_ms": 260,
@@ -255,11 +253,23 @@
     "dust_every_ms": 90,
     "dust_ms": 500,
     "dust_color": "#8a6a43",
-    "drive_ms": 3600,
-    "edge_fade_from": 0.7,
-    "faces": "esquerda",
+    "drive_ms": 3000,
+    "edge_fade_from": 0.85,
     "priority": "jogo",
-    "reduced_motion": "sem fumaça e poeira; o veículo aparece direto"
+    "reduced_motion": "sem fumaça e poeira; o veículo aparece direto",
+    "sprite_prefix": "vehicle_anim_",
+    "anim_fps": 8,
+    "faces_by_look": {
+      "carroca": "left",
+      "carro": "right",
+      "picape": "right",
+      "jipe": "right",
+      "caminhao": "right"
+    },
+    "dust_color2": "#9a9a9a",
+    "loot_coins": 8,
+    "loot_ms": 900,
+    "note_v3": "01/11: pranchas novas 3×2 (5 quadros) por veículo; sai pela estrada do meio da fazenda (curva suave) até a beira de baixo à direita; volta pelo mesmo caminho e solta moedas ao estacionar"
   },
   "orchard": {
     "sprites": {

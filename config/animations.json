@@ -116,13 +116,30 @@
     "idle_fps": 4,
     "walk_fps": 6,
     "scale": 1,
-    "scale_by_sprite": { "cow": 1, "chicken": 0.55, "duck": 0.6, "rabbit": 0.55 },
+    "scale_by_sprite": {
+      "cow": 1,
+      "chicken": 0.55,
+      "duck": 0.6,
+      "rabbit": 0.55,
+      "sheep": 0.85,
+      "pig": 0.8,
+      "goat": 0.85,
+      "alpaca": 0.95,
+      "turkey": 0.65,
+      "goose": 0.65
+    },
     "edge_margin_px": 10,
     "speed_px_s": {
       "cow": 9,
       "chicken": 14,
       "duck": 11,
-      "rabbit": 18
+      "rabbit": 18,
+      "sheep": 9,
+      "pig": 8,
+      "goat": 12,
+      "alpaca": 10,
+      "turkey": 12,
+      "goose": 11
     },
     "idle_ms": [
       1500,
@@ -135,14 +152,14 @@
     ],
     "sprite_by_animal": {
       "vaca": "cow",
-      "ovelha": "cow",
-      "porco": "cow",
-      "cabra": "cow",
-      "alpaca": "cow",
+      "ovelha": "sheep",
+      "porco": "pig",
+      "cabra": "goat",
+      "alpaca": "alpaca",
       "galinha": "chicken",
-      "peru": "chicken",
+      "peru": "turkey",
       "pato": "duck",
-      "ganso": "duck",
+      "ganso": "goose",
       "coelho": "rabbit"
     },
     "faces": "esquerda (espelha ao andar para a direita)",
@@ -188,7 +205,10 @@
     "shadow_hex": "#0A1F35",
     "shadow_alpha": 0.34,
     "shadow_soft_alpha": 0.14,
-    "shadow_len_px": [18, 26],
+    "shadow_len_px": [
+      18,
+      26
+    ],
     "shadow_width_ratio": 0.42,
     "speed_px_s": [
       6,

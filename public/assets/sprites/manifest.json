@@ -5230,6 +5230,102 @@
         48
       ]
     },
+    "animal_walk_goose": {
+      "file": "sprites/animals/animal_walk_goose.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_turkey": {
+      "file": "sprites/animals/animal_walk_turkey.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_alpaca": {
+      "file": "sprites/animals/animal_walk_alpaca.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_goat": {
+      "file": "sprites/animals/animal_walk_goat.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_pig": {
+      "file": "sprites/animals/animal_walk_pig.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
+    "animal_walk_sheep": {
+      "file": "sprites/animals/animal_walk_sheep.png",
+      "size": [
+        240,
+        48
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        48,
+        48
+      ]
+    },
     "animal_walk_chicken": {
       "file": "sprites/animals/animal_walk_chicken.png",
       "size": [

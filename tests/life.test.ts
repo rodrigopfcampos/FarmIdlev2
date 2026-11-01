@@ -34,11 +34,12 @@ describe('mapa v3', () => {
     expect(fishCount(1)).toBe(ANIM.lake_fish.count_min);
     expect(fishCount(45)).toBe(ANIM.lake_fish.count_max);
   });
-  it('os 10 animais usam as 4 artes', () => {
+  it('os 10 animais têm cada um a sua arte andando', () => {
     expect(walkSpriteFor('vaca')).toBe('animal_walk_cow');
     expect(walkSpriteFor('pato')).toBe('animal_walk_duck');
-    expect(walkSpriteFor('coelho')).toBe('animal_walk_rabbit');
-    expect(walkSpriteFor('peru')).toBe('animal_walk_chicken');
+    expect(walkSpriteFor('peru')).toBe('animal_walk_turkey');
+    expect(walkSpriteFor('ovelha')).toBe('animal_walk_sheep');
+    expect(new Set(['galinha', 'coelho', 'vaca', 'pato', 'ovelha', 'porco', 'cabra', 'ganso', 'peru', 'alpaca'].map(walkSpriteFor)).size).toBe(10);
   });
   it('pomar: cova, broto, jovem, adulta e com fruta', () => {
     const t = (planted: number, ready: number) => ({ lot_id: 'P1', slot: 1, fruit_id: 'maca', planted_at: planted, ready_at: ready });

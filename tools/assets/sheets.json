@@ -2024,6 +2024,78 @@
       "count": 5
     },
     {
+      "id": "v3_goose",
+      "file": "v3/goose_walk.png",
+      "native": true,
+      "key": "animal_walk_goose",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_turkey",
+      "file": "v3/turkey_walk.png",
+      "native": true,
+      "key": "animal_walk_turkey",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_alpaca",
+      "file": "v3/alpaca_walk.png",
+      "native": true,
+      "key": "animal_walk_alpaca",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_goat",
+      "file": "v3/goat_walk.png",
+      "native": true,
+      "key": "animal_walk_goat",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_pig",
+      "file": "v3/pig_walk.png",
+      "native": true,
+      "key": "animal_walk_pig",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_sheep",
+      "file": "v3/sheep_walk.png",
+      "native": true,
+      "key": "animal_walk_sheep",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
       "id": "v3_chicken",
       "file": "v3/chicken_walk.png",
       "native": true,

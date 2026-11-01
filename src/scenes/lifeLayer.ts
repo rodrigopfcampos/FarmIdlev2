@@ -28,7 +28,7 @@ export class LifeLayer {
   private lake = LOTS.find((l) => l.type === 'pasto_lago') as (Lot & { water?: { polygon: Pt[]; margin_px: number; avoid: Rect[] } }) | undefined;
 
   constructor(private scene: Phaser.Scene, private calm: boolean) {
-    for (const k of ['cow', 'chicken', 'duck', 'rabbit']) {
+    for (const k of new Set(Object.values(W.sprite_by_animal))) {
       const tex = `animal_walk_${k}`;
       if (!scene.textures.exists(tex)) continue;
       scene.anims.create({ key: `${tex}_walk`, frames: scene.anims.generateFrameNumbers(tex, { frames: W.walk_frames }), frameRate: W.walk_fps, repeat: -1 });

@@ -50,6 +50,8 @@ export type FarmState = {
   auto_sell: string[]; characters: CharacterState[]; pets: PetState[]; pet: { id: string; level: number; factor: number; linked: string | null } | null;
   snack_prices: Record<string, number>; fx: TeamFx;
   animals: AnimalState[]; houses: Record<string, HouseState>; lake: boolean;
+  fishing?: { cycles: number; max: number; fish_t: number; cycle_s: number; species: string } | null;
+  account_tree?: { skills: Record<string, number>; points: number; spent: number; free_reset: boolean; reset_cost: number };
   vehicles: VehicleState[]; expeditions: ExpeditionState[]; exp_fail_streak: number; lead: LeadInfo | null;
   demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
   collected?: CollectedTrip[]; minigame?: MinigameEval;
@@ -98,6 +100,10 @@ const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
   'carta não encontrada': 'Essa carta não está mais no seu fichário.',
   'raridade menor que a do buff ativo': 'Essa carta já está ativa com raridade maior. Use uma de raridade igual ou maior.',
+  'a rede ainda está vazia': 'A rede ainda está vazia: cada ciclo leva 2 h.',
+  'compre o Lago para pescar': 'Compre o Lago para pescar.',
+  'sem pontos de habilidade': 'Sem pontos livres: ganhe 1 a cada nível.',
+  'habilidade no máximo': 'Esse nó já está no máximo (5).',
   'a mão está cheia': 'A mão está cheia. Volte uma carta parada ao fichário ou suba de nível.',
   'essa carta não está parada na mão': 'Essa carta está em uso: pause antes (depois de 1 dia).',
   'o fichário está cheio': 'O fichário está cheio. Venda ou amplie antes.',
@@ -130,10 +136,9 @@ const ERRORS: Record<string, string> = {
   'campo cheio': 'Os 3 Slots de Campo estão ocupados. Mande alguém para o banco antes.',
   'nenhum salário atrasado': 'Não há salário atrasado.',
   'sem lanche no inventário': 'Você não tem esse lanche. Compre na Barraca.',
-  'sem pontos de habilidade': 'Sem pontos livres: o personagem ganha 1 ponto por nível.',
-  'habilidade no máximo': 'Esse nó já está completo.',
   'complete os dois nós antes da Mestria': 'Complete os dois nós do ramo antes da Mestria.',
   'nada para resetar': 'Não há pontos gastos para resetar.',
+  'as habilidades agora são da conta': 'As habilidades agora são da fazenda (Casa → Habilidades).',
   'precisa da Mestria': 'Precisa da Mestria da Pesquisa.',
   'ferramenta já está inteira': 'A ferramenta já está inteira.',
   'pet já adotado': 'Esse pet já é seu.',
@@ -262,9 +267,9 @@ export const setSlot = (cls: string, slot: 'field' | 'bench') => rpc('set_slot',
 export const paySalaries = () => rpc('pay_salaries');
 export const buySnack = (snack: string, qty: number) => rpc('buy_snack', { p_snack: snack, p_qty: qty });
 export const equipSnack = (cls: string, snack: string | null) => rpc('equip_snack', { p_class: cls, p_snack: snack });
-export const skillAdd = (cls: string, node: string) => rpc('skill_add', { p_class: cls, p_node: node });
-export const skillReset = (cls: string) => rpc('skill_reset', { p_class: cls });
-export const skillChoose = (cls: string, crop: string) => rpc('skill_choose', { p_class: cls, p_crop: crop });
+export const accountSkillAdd = (node: string) => rpc('account_skill_add', { p_node: node });
+export const accountSkillReset = () => rpc('account_skill_reset');
+export const collectFish = () => rpc('collect_fish');
 export const adoptPet = (pet: string) => rpc('adopt_pet', { p_pet: pet });
 export const setActivePet = (pet: string) => rpc('set_active_pet', { p_pet: pet });
 export const linkPet = (cls: string) => rpc('link_pet', { p_class: cls });

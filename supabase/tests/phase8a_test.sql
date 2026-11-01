@@ -85,8 +85,7 @@ begin
   if abs(r0 + 180) > 2 then raise exception 'FALHA 16: lote ajudado adiantou % s (esperado 180)', -r0; end if;
   if abs(r1) > 0.5 then raise exception 'FALHA 17: lote sem ajuda mudou % s', r1; end if;
 
-  -- 6. Ajudar na limpeza: −10% do que falta; com o Ferreiro (Obras B 5) do dono, −15%
-  insert into public.characters (user_id, class_id, skills) values (b, 'ferreiro', '{"obras.b": 5}');
+  -- 6. Ajudar na limpeza: −10% do que falta (R3: sem a árvore do Ferreiro, sem o aumento)
   insert into public.owned_lots (user_id, lot_id, ready_at) values (b, 'A4', 0) on conflict do nothing;
   select farm_time into t from public.farms where user_id = b;
   update public.owned_lots set ready_at = t + 1000 where user_id = b and lot_id = 'A4';
@@ -94,9 +93,9 @@ begin
   v := public.help_lot(b, 'A4');
   reset role;
   select farm_time into t from public.farms where user_id = b;
-  if (select pct from public.lot_helps where owner = b and lot_id = 'A4') <> 15 then raise exception 'FALHA 18: Ferreiro não aumentou (%)', (select pct from public.lot_helps where owner = b and lot_id = 'A4'); end if;
-  if abs((select ready_at from public.owned_lots where user_id = b and lot_id = 'A4') - t - 850) > 3 then
-    raise exception 'FALHA 19: limpeza ficou em % s (esperado 850)', (select ready_at from public.owned_lots where user_id = b and lot_id = 'A4') - t; end if;
+  if (select pct from public.lot_helps where owner = b and lot_id = 'A4') <> 10 then raise exception 'FALHA 18: ajuda de limpeza (%)', (select pct from public.lot_helps where owner = b and lot_id = 'A4'); end if;
+  if abs((select ready_at from public.owned_lots where user_id = b and lot_id = 'A4') - t - 900) > 3 then
+    raise exception 'FALHA 19: limpeza ficou em % s (esperado 900)', (select ready_at from public.owned_lots where user_id = b and lot_id = 'A4') - t; end if;
   -- lote sem nada para ajudar
   update public.plots set state = 'empty', planted_crop_id = null, ready_at = null where user_id = b and plot_id like 'A3-%';
   set local role authenticated;

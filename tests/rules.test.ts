@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CROPS, LEVELS, PURCHASES, itemInfo } from '../src/data';
 import {
   animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
-  rareSeeds, skillNodeState, skillPoints, tendCount, treeLook, xpProgress,
+  rareSeeds, accountEffect, accountPoints, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
 } from '../src/farm/rules';
 
 describe('compra de lotes', () => {
@@ -115,16 +115,18 @@ describe('personagens (fase 3)', () => {
     expect(hoursToNext(1)).toBe(11.5);
     expect(hoursToNext(30)).toBeNull();
   });
-  it('1 ponto de habilidade por nível acima do 1º', () => {
-    expect(skillPoints(12, { 'cultivo.a': 5, 'cultivo.b': 3 })).toEqual({ total: 11, spent: 8, free: 3 });
+  it('árvore da conta: 1 ponto por nível do 2 em diante; 12 nós de até 5', () => {
+    expect(accountPoints(12, { eficiencia: 5, folego: 3 })).toEqual({ total: 11, spent: 8, free: 3 });
+    expect(accountPoints(50, {}).total).toBe(49);
+    expect(accountEffect({ salarios: 5 }, 'salary_pct')).toBe(-15);
+    expect(accountEffect({ aves: 5 }, 'bird_production_pct')).toBe(10);
   });
-  it('Mestria fica trancada até os dois nós cheios; ramos de fases futuras ficam marcados', () => {
-    expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 4 }).locked).toBe(true);
-    expect(skillNodeState('agricultor', 'cultivo', 'm', { 'cultivo.a': 5, 'cultivo.b': 5 }).locked).toBe(false);
-    expect(skillNodeState('gerente', 'rota', 'a', {}).future).toBeNull(); // fase 5 ligou as expedições
-    expect(skillNodeState('botanica', 'clima', 'a', {}).future).toBeNull(); // fase 6 ligou o ramo Clima
-    expect(skillNodeState('comerciante', 'mercado', 'a', {}).future).toBe(8);
-    expect(skillNodeState('agricultor', 'cultivo', 'a', {}).future).toBeNull();
+  it('pesca: espécie por nível e rede de até 4 ciclos de 2 h', () => {
+    expect(fishSpecies(15).id).toBe('fish_truta');
+    expect(fishSpecies(45).id).toBe('fish_esturjao');
+    expect(fishCycles(0, 3 * 7200 + 10)).toBe(3);
+    expect(fishCycles(0, 30 * 7200)).toBe(4);
+    expect(fishCycles(null, 99999)).toBe(0);
   });
   it('limpeza: sem Ferreiro o dobro; ramo Obras reduz', () => {
     expect(cleanupMinutes(1, true)).toBe(72);

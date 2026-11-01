@@ -128,7 +128,25 @@ for (const x of an.animals) {
   }
 }
 check(anOk, 'cada animal ≈ 3 canteiros, ração 13–17%, compra = 10 dias de ração');
-check(an.rules.lake_bonus.bird_production === 0.1 && an.rules.lake_bonus.extra_galinheiro_slots === 2, 'Lago: +10% nas aves e +2 vagas');
+check(an.rules.lake_bonus.bird_production === 0 && an.rules.lake_bonus.extra_galinheiro_slots === 2, 'Lago: +2 vagas de ave (o +10% virou o nó Aves da árvore da conta)');
+// R3: árvore da conta e pesca
+{
+  const at = JSON.parse(readFileSync(join(root, 'config', 'characters.json'), 'utf8')).account_tree;
+  const nodes = at.branches.flatMap((b: any) => b.nodes);
+  const aves = nodes.find((n: any) => n.id === 'aves');
+  check(at.branches.length === 3 && nodes.length === 12 && at.node_max === 5 && aves?.per_point * at.node_max === 10,
+    `árvore da conta: 3 ramos, 12 nós de até 5, Aves cheio = +10% (${nodes.length} nós)`);
+  const fi = JSON.parse(readFileSync(join(root, 'config', 'fishing.json'), 'utf8'));
+  const lv = JSON.parse(readFileSync(join(root, 'config', 'levels.json'), 'utf8')).levels;
+  // quantos peixes por ciclo da espécie mais alta liberada, do nível 11 (piso do Lago) ao 50: entre 1 e 40
+  let okQ = true;
+  for (const l of lv.filter((x: any) => x.level >= 11)) {
+    const sp = fi.species.filter((x: any) => x.unlock_level <= l.level).sort((a: any, b: any) => b.unlock_level - a.unlock_level)[0];
+    const q = (l.reference_income_per_day * fi.value_share_of_R) / fi.cycles_per_day_reference / sp.fair_price_per_unit;
+    if (q < 1 || q > 40) okQ = false;
+  }
+  check(fi.cycle_minutes === 120 && fi.max_cycles === 4 && fi.value_share_of_R === 0.08 && okQ, 'pesca: ciclo de 2 h, rede de 4 ciclos, 8% de R, 1 a 40 peixes por ciclo');
+}
 // pisos de nível dos pastos e pomar = primeiro animal/fruta da casa
 const firstLevel = (pred: (x: any) => boolean, list: any[]) => Math.min(...list.filter(pred).map((x) => x.unlock_level));
 const floors = rules.min_level.type_floor;

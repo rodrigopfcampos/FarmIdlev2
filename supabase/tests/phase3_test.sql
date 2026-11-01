@@ -155,26 +155,34 @@ begin
   if (select snack_qty from public.characters where user_id = a and class_id = 'agricultor') <> 2 then raise exception 'FALHA 29: não comeu o lanche'; end if;
   if (select energy from public.characters where user_id = a and class_id = 'agricultor') < 45 then raise exception 'FALHA 30: lanche não deu energia'; end if;
 
-  -- 9. habilidades: pontos = nível − 1; Mestria só com os dois nós cheios; reset grátis 1×/semana
-  update public.characters set level = 12 where user_id = a and class_id = 'agricultor';
+  -- 9. habilidades (R3: árvore da conta): pontos = nível − 1; nó até 5; reset grátis 1×/semana; árvore dos personagens fechada
+  reset role;
+  update public.farms set level = 12 where user_id = a;
   set local role authenticated;
-  for n in 1 .. 5 loop s := public.skill_add('agricultor', 'cultivo.a'); end loop;
-  begin perform public.skill_add('agricultor', 'cultivo.m'); raise exception 'FALHA 31: Mestria sem os nós cheios';
+  begin perform public.skill_add('agricultor', 'cultivo.a'); raise exception 'FALHA 31: árvore do personagem ainda aceita';
   exception when check_violation then null; end;
-  for n in 1 .. 5 loop s := public.skill_add('agricultor', 'cultivo.b'); end loop;
-  s := public.skill_add('agricultor', 'cultivo.m');
-  begin perform public.skill_add('agricultor', 'cultivo.m'); raise exception 'FALHA 32: gastou mais pontos que o nível dá';
+  for n in 1 .. 5 loop s := public.account_skill_add('eficiencia'); end loop;
+  begin perform public.account_skill_add('eficiencia'); raise exception 'FALHA 32: nó passou de 5';
   exception when check_violation then null; end;
-  select (x ->> 'rate')::double precision into v_r from jsonb_array_elements(s -> 'characters') x where x ->> 'class_id' = 'agricultor';
-  if abs(v_r - 2.67 * 1.30) > 0.01 then raise exception 'FALHA 33: +6%% × 5 de capacidade não apareceu (%)', v_r; end if;
+  for n in 1 .. 5 loop s := public.account_skill_add('folego'); end loop;
+  s := public.account_skill_add('energia');
+  begin perform public.account_skill_add('energia'); raise exception 'FALHA 32b: gastou mais pontos que o nível dá';
+  exception when check_violation then null; end;
+  reset role;
+  if abs((public.team_fx(a) ->> 'team_capacity')::numeric - 0.10) > 0.001 then raise exception 'FALHA 33: Eficiência 5 não deu +10%% (%)', public.team_fx(a) ->> 'team_capacity'; end if;
+  if (public.team_fx(a) ->> 'acct_energy_use')::numeric <> -15 or (public.team_fx(a) ->> 'acct_max_energy')::numeric <> 5 then raise exception 'FALHA 33b: Vigor'; end if;
+  set local role authenticated;
   select gold into v_gold from public.wallets where user_id = a;
-  s := public.skill_reset('agricultor');
+  s := public.account_skill_reset();
   if (s ->> 'gold')::numeric <> v_gold then raise exception 'FALHA 34: 1º reset da semana não foi grátis'; end if;
-  s := public.skill_add('agricultor', 'economia.a');
-  s := public.skill_reset('agricultor');
-  if (s ->> 'gold')::numeric <> v_gold - round(r10 * 0.5, 2) then raise exception 'FALHA 35: 2º reset não custou 50%% de R'; end if;
-  begin perform public.skill_add('agricultor', 'xyz.a'); raise exception 'FALHA 36: nó inexistente aceito';
+  s := public.account_skill_add('comercio');
+  s := public.account_skill_reset();
+  begin perform public.account_skill_add('xyz'); raise exception 'FALHA 36: nó inexistente aceito';
   exception when check_violation then null; end;
+  reset role;
+  if (s ->> 'gold')::numeric <> v_gold - round(public.ref_income(12) * 0.5, 2) then raise exception 'FALHA 35: 2º reset não custou 50%% de R'; end if;
+  update public.farms set level = 10 where user_id = a;
+  set local role authenticated;
 
   -- 10. ferramentas: consertar a Enxada e melhorar o Martelo do Ferreiro
   select gold into v_gold from public.wallets where user_id = a;

@@ -1,6 +1,6 @@
 // Regras da progressão como o cliente mostra (o servidor confere tudo de novo).
 // Tudo sai da config: preço e nível por nº da compra, piso de nível por tipo, vizinhança e limpeza.
-import { CHARS, CLASSES, CROP_LIST, CROPS, FARM, LEVELS, LOT_RULES, MAP_RULES, PETS, PURCHASES, SKILL_TREE, type Crop } from '../data';
+import { CHARS, CLASSES, CROP_LIST, CROPS, FARM, LEVELS, LOT_RULES, MAP_RULES, PETS, PURCHASES, ACCOUNT_TREE, FISHING, type Crop } from '../data';
 
 export type LotOffer = {
   lot: string; type: string; n: number; cost: number; needLevel: number; needsDeed: boolean;
@@ -125,22 +125,25 @@ export function hoursToNext(level: number): number | null {
   return level >= cl.max ? null : cl.base_hours + cl.per_level_hours * level;
 }
 
-/** pontos de habilidade: 1 por nível acima do 1º; quantos já foram gastos */
-export function skillPoints(level: number, skills: Record<string, number>): { total: number; spent: number; free: number } {
-  const total = (level - 1) * CHARS.character_level.skill_points_per_level;
+/** árvore da conta (R3): pontos pelo nível (1 por nível do 2 em diante) e quantos já foram gastos */
+export function accountPoints(level: number, skills: Record<string, number>): { total: number; spent: number; free: number } {
+  const total = Math.max(0, (level - (ACCOUNT_TREE.from_level - 1)) * ACCOUNT_TREE.points_per_level);
   const spent = Object.values(skills).reduce((a, b) => a + b, 0);
   return { total, spent, free: Math.max(0, total - spent) };
 }
 
-/** o que dá para fazer num nó: máximo, se a Mestria está trancada e se o efeito só liga numa fase futura */
-export function skillNodeState(classId: string, branchId: string, part: 'a' | 'b' | 'm', skills: Record<string, number>) {
-  const br = SKILL_TREE[classId].find((b) => b.id === branchId)!;
-  const node = part === 'm' ? br.mastery : br[part];
-  const max = part === 'm' ? CHARS.skills.mastery_points : CHARS.skills.node_max;
-  const pts = skills[`${branchId}.${part}`] ?? 0;
-  const locked = part === 'm' && ((skills[`${branchId}.a`] ?? 0) < CHARS.skills.node_max || (skills[`${branchId}.b`] ?? 0) < CHARS.skills.node_max);
-  const future = (node.phase ?? 0) > CHARS.active_phase ? node.phase! : null;
-  return { node, max, pts, locked, full: pts >= max, future };
+/** efeito somado de um nó na árvore da conta (pontos × valor por ponto) */
+export function accountEffect(skills: Record<string, number>, effect: string): number {
+  return ACCOUNT_TREE.branches.flatMap((b) => b.nodes).filter((n) => n.effect === effect).reduce((a, n) => a + (skills[n.id] ?? 0) * n.per_point, 0);
+}
+
+/** pesca (R3): espécie mais alta liberada no nível e ciclos prontos na rede */
+export function fishSpecies(level: number) {
+  return [...FISHING.species].filter((x) => x.unlock_level <= level).sort((a, b) => b.unlock_level - a.unlock_level)[0];
+}
+export function fishCycles(fishT: number | null | undefined, now: number): number {
+  if (fishT == null) return 0;
+  return Math.min(FISHING.max_cycles, Math.floor(Math.max(0, now - fishT) / (FISHING.cycle_minutes * 60)));
 }
 
 /** nível do pet pela afinidade acumulada (1 carinho por dia) e o fator do efeito (40% → 100%) */

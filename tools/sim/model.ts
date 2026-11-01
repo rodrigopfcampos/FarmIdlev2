@@ -12,7 +12,7 @@ const cfg = (name: string) => JSON.parse(readFileSync(join(root, 'config', `${na
 export const CFG = {
   levels: cfg('levels'), crops: cfg('crops'), animals: cfg('animals'), lots: cfg('lots'), chars: cfg('characters'),
   exp: cfg('expeditions'), missions: cfg('missions'), weather: cfg('weather'), cards: cfg('cards'),
-  tools: cfg('tools_and_items'), rarity: cfg('rarity'),
+  tools: cfg('tools_and_items'), rarity: cfg('rarity'), fishing: cfg('fishing'),
 };
 export const SIM = JSON.parse(readFileSync(join(root, 'tools', 'sim', 'profiles.json'), 'utf8'));
 
@@ -153,7 +153,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const weatherIncome = 1 + CFG.weather.average_bonus.income;
   const weatherXp = 1 + CFG.weather.average_bonus.xp;
   const armoryBonus = () => armory.reduce((s, a) => s + (a.every(Boolean) ? 0.05 : a[0] && a[1] && a[2] ? 0.02 : 0), 0);
-  const skillBonus = () => chars.filter((c) => c.hired).reduce((s, c) => s + ((c.lvl - 1) / CFG.chars.skills.points_per_branch / CFG.chars.skills.branches) * CFG.chars.skills.full_tree_income_estimate, 0);
+  // R3: árvore da conta — 1 ponto por nível; renda estimada proporcional aos pontos (config account_tree)
+  const AT = CFG.chars.account_tree;
+  const skillBonus = () => (Math.min(AT.income_estimate_points, Math.max(0, (level - (AT.from_level - 1)) * AT.points_per_level)) / AT.income_estimate_points) * AT.income_estimate_full;
   // pet: 1 carinho por dia desde a adoção; nível pela afinidade acumulada; efeito de 40% (nível 1) a 100% (nível 5)
   const petLevel = (t: number) => (petSince < 0 ? 0 : 1 + CFG.chars.pets.affinity_to_level.filter((a: number) => Math.floor((t - petSince) / 24) + 1 >= a).length);
   const petFactor = (t: number) => (petSince < 0 ? 0 : CFG.chars.pets.effect_at_level_1 + (CFG.chars.pets.effect_at_level_5 - CFG.chars.pets.effect_at_level_1) * (petLevel(t) - 1) / 4);
@@ -200,7 +202,23 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const nextSessionAfter = (t: number) => { for (const s of sessionList) if (s > t) return s; return t + 24; };
 
   // ----- decisões numa sessão -----
+  // R3: pesca — o Lago enche a rede (ciclos de 2 h, até 4); o clique recolhe; a rede cheia a equipe recolhe com 60%
+  let fishT = -1;
+  function fishing(t: number) {
+    if (!lake) return;
+    if (fishT < 0) { fishT = t; return; }
+    const F = CFG.fishing, cyc = F.cycle_minutes / 60, per = (R(level) * F.value_share_of_R) / F.cycles_per_day_reference;
+    // o jogo só anda até 8 h depois da última sessão (limite offline)
+    const total = (Math.min(t, lastSession + SIM.offline_cap_hours) - fishT) / cyc;
+    const player = Math.min(F.max_cycles, Math.floor(total));
+    const team = total > F.max_cycles ? Math.floor(total - F.max_cycles) * F.team.efficiency : 0;
+    const got = (player + team) * per * incomeMult(t);
+    gold += got; income += got; dayIncome += got; incomeByLevel[level] += got;
+    fishT = total > F.max_cycles ? t : fishT + player * cyc;
+  }
+
   function session(t: number) {
+    fishing(t);
     const day = Math.floor(t / 24);
     // consertar ferramentas abaixo de 50% (até a próxima sessão não cai abaixo de 30%)
     for (const c of chars) if (c.hired && c.dura < 50) {

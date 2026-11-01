@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
   "field_slots": 3,
   "bench_slots": 3,
@@ -170,388 +170,122 @@
       "seed_refund_chance": 0.1
     }
   },
-  "skill_tree": {
-    "agricultor": [
+  "skill_tree": {},
+  "active_phase": 7,
+  "active_phase_note": "efeitos de habilidade com \"phase\" maior que este número ficam guardados e ligam na fase deles",
+  "skill_tree_note": "R3 (01/11): as árvores dos personagens viraram a árvore da conta (account_tree); os personagens mantêm só o trabalho da classe",
+  "account_tree": {
+    "points_per_level": 1,
+    "from_level": 2,
+    "node_max": 5,
+    "free_resets_per_week": 1,
+    "extra_reset_cost_R_ratio": 0.5,
+    "income_estimate_full": 0.15,
+    "income_estimate_points": 49,
+    "note": "aprovada pelo dono em 01/11/2026: 1 ponto por nível da conta (49 no nível 50), 12 nós × 5 = 60, o jogador escolhe; o simulador estima a renda por pontos ÷ 49 × 15%",
+    "branches": [
       {
-        "id": "cultivo",
-        "name_pt": "Cultivo",
-        "a": {
-          "effect": "crop_growth_pct",
-          "per_point": 1,
-          "text_pt": "+1% crescimento da lavoura"
-        },
-        "b": {
-          "effect": "work_capacity_pct",
-          "per_point": 6,
-          "text_pt": "+6% capacidade de trabalho"
-        },
-        "mastery": {
-          "effect": "double_harvest_crop_pct",
-          "value": 5,
-          "text_pt": "+5% colheita dupla na lavoura"
-        }
+        "id": "gestao",
+        "name_pt": "Gestão",
+        "nodes": [
+          {
+            "id": "salarios",
+            "name_pt": "Salários",
+            "effect": "salary_pct",
+            "per_point": -3,
+            "text_pt": "−3% no salário dos personagens"
+          },
+          {
+            "id": "eficiencia",
+            "name_pt": "Eficiência",
+            "effect": "team_capacity_pct",
+            "per_point": 2,
+            "text_pt": "+2% de trabalho da equipe"
+          },
+          {
+            "id": "comercio",
+            "name_pt": "Comércio",
+            "effect": "sales_gold_pct",
+            "per_point": 1,
+            "text_pt": "+1% de ouro nas vendas"
+          },
+          {
+            "id": "aves",
+            "name_pt": "Aves",
+            "effect": "bird_production_pct",
+            "per_point": 2,
+            "text_pt": "+2% na produção das aves"
+          }
+        ]
       },
       {
-        "id": "resistencia",
-        "name_pt": "Resistência",
-        "a": {
-          "effect": "max_energy",
-          "per_point": 5,
-          "text_pt": "+5 energia máxima"
-        },
-        "b": {
-          "effect": "energy_use_pct",
-          "per_point": -4,
-          "text_pt": "−4% gasto de energia"
-        },
-        "mastery": {
-          "effect": "daily_revive_energy",
-          "value": 40,
-          "text_pt": "1×/dia, ao zerar recupera 40 de energia"
-        }
-      },
-      {
-        "id": "economia",
-        "name_pt": "Economia",
-        "a": {
-          "effect": "seed_cost_pct",
-          "per_point": -3,
-          "text_pt": "−3% custo de sementes"
-        },
-        "b": {
-          "effect": "golden_pct",
-          "per_point": 1,
-          "text_pt": "+1% Colheita Dourada"
-        },
-        "mastery": {
-          "effect": "harvest_xp_pct",
-          "value": 15,
-          "text_pt": "+15% XP de colheita"
-        }
-      }
-    ],
-    "rancheira": [
-      {
-        "id": "criacao",
-        "name_pt": "Criação",
-        "a": {
-          "effect": "animal_production_pct",
-          "per_point": 3,
-          "text_pt": "+3% produção animal",
-          "phase": 4
-        },
-        "b": {
-          "effect": "feed_cost_pct",
-          "per_point": -5,
-          "text_pt": "−5% custo de ração",
-          "phase": 4
-        },
-        "mastery": {
-          "effect": "animal_double_pct",
-          "value": 6,
-          "text_pt": "6% de produto duplo nos animais",
-          "phase": 4
-        }
-      },
-      {
-        "id": "pomar",
-        "name_pt": "Pomar",
-        "a": {
-          "effect": "orchard_speed_pct",
-          "per_point": 2,
-          "text_pt": "+2% velocidade do pomar"
-        },
-        "b": {
-          "effect": "work_capacity_pct",
-          "per_point": 6,
-          "text_pt": "+6% capacidade de trabalho"
-        },
-        "mastery": {
-          "effect": "orchard_extra_fruit_chance",
-          "value": 0.2,
-          "text_pt": "+1 fruta em 20% das colheitas do pomar"
-        }
-      },
-      {
-        "id": "resistencia",
-        "name_pt": "Resistência",
-        "a": {
-          "effect": "max_energy",
-          "per_point": 5,
-          "text_pt": "+5 energia máxima"
-        },
-        "b": {
-          "effect": "energy_use_pct",
-          "per_point": -4,
-          "text_pt": "−4% gasto de energia"
-        },
-        "mastery": {
-          "effect": "rest_speed_pct",
-          "value": 20,
-          "text_pt": "Descanso 20% mais rápido"
-        }
-      }
-    ],
-    "ferreiro": [
-      {
-        "id": "obras",
-        "name_pt": "Obras",
-        "a": {
-          "effect": "cleanup_time_pct",
-          "per_point": -6,
-          "text_pt": "−6% tempo de limpeza"
-        },
-        "b": {
-          "effect": "neighbor_help_pct",
-          "per_point": 10,
-          "text_pt": "+10% efeito da ajuda de vizinhos",
-          "phase": 7,
-          "phase_note": "ligado na fase 8a (visitas); o número da fase segue o active_phase, que vira 8 quando o mercado abrir"
-        },
-        "mastery": {
-          "effect": "expansion_cost_pct",
-          "value": -10,
-          "text_pt": "−10% custo de ampliações",
-          "phase": 4
-        }
-      },
-      {
-        "id": "forja",
-        "name_pt": "Forja",
-        "a": {
-          "effect": "tool_cost_pct",
-          "per_point": -4,
-          "text_pt": "−4% custo de ferramentas"
-        },
-        "b": {
-          "effect": "team_capacity_pct",
-          "per_point": 1,
-          "text_pt": "+1% capacidade de todos em campo"
-        },
-        "mastery": {
-          "effect": "tool_effect_pct",
-          "value": 5,
-          "text_pt": "Ferramentas +5% de efeito"
-        }
+        "id": "vigor",
+        "name_pt": "Vigor",
+        "nodes": [
+          {
+            "id": "energia",
+            "name_pt": "Energia",
+            "effect": "max_energy",
+            "per_point": 5,
+            "text_pt": "+5 de energia máxima"
+          },
+          {
+            "id": "folego",
+            "name_pt": "Fôlego",
+            "effect": "energy_use_pct",
+            "per_point": -3,
+            "text_pt": "−3% no gasto de energia"
+          },
+          {
+            "id": "descanso",
+            "name_pt": "Descanso",
+            "effect": "rest_speed_pct",
+            "per_point": 6,
+            "text_pt": "+6% na recuperação no banco"
+          },
+          {
+            "id": "lanches",
+            "name_pt": "Lanches",
+            "effect": "snack_effect_pct",
+            "per_point": 5,
+            "text_pt": "+5% de energia em cada lanche"
+          }
+        ]
       },
       {
         "id": "oficina",
         "name_pt": "Oficina",
-        "a": {
-          "effect": "vehicle_wear_pct",
-          "per_point": -6,
-          "text_pt": "−6% desgaste dos veículos",
-          "phase": 5
-        },
-        "b": {
-          "effect": "expedition_success_pts",
-          "per_point": 1,
-          "text_pt": "+1 ponto de sucesso nas expedições",
-          "phase": 5
-        },
-        "mastery": {
-          "effect": "expedition_duration_pct",
-          "value": -10,
-          "text_pt": "−10% duração das expedições",
-          "phase": 5
-        }
-      }
-    ],
-    "comerciante": [
-      {
-        "id": "barraca",
-        "name_pt": "Barraca",
-        "a": {
-          "effect": "stall_price_pts",
-          "per_point": 2,
-          "text_pt": "+2 pontos no preço da Barraca (70% → 80%)"
-        },
-        "b": {
-          "effect": "shop_discount_pct",
-          "per_point": -3,
-          "text_pt": "−3% em sementes, ração e lanches"
-        },
-        "mastery": {
-          "effect": "daily_boosted_sale",
-          "value": 1.5,
-          "text_pt": "1 venda por dia na Barraca paga 1,5×"
-        }
-      },
-      {
-        "id": "mercado",
-        "name_pt": "Mercado",
-        "a": {
-          "effect": "market_fee_pts",
-          "per_point": -0.6,
-          "text_pt": "−0,6 ponto na taxa (8% → 5%)",
-          "phase": 8
-        },
-        "b": {
-          "effect": "market_listings",
-          "per_point": 1,
-          "text_pt": "+1 anúncio",
-          "phase": 8
-        },
-        "mastery": {
-          "effect": "market_priority",
-          "value": 1,
-          "text_pt": "Seus anúncios aparecem primeiro",
-          "phase": 8
-        }
-      },
-      {
-        "id": "negocios",
-        "name_pt": "Negócios",
-        "a": {
-          "effect": "sales_gold_pct",
-          "per_point": 1,
-          "text_pt": "+1% ouro em vendas"
-        },
-        "b": {
-          "effect": "mission_gold_pct",
-          "per_point": 5,
-          "text_pt": "+5% ouro das missões",
-          "phase": 7
-        },
-        "mastery": {
-          "effect": "route_demand_preview",
-          "value": 1,
-          "text_pt": "Vê a demanda das rotas de amanhã",
-          "phase": 5
-        }
-      }
-    ],
-    "gerente": [
-      {
-        "id": "rota",
-        "name_pt": "Rota",
-        "a": {
-          "effect": "lead_success_pts",
-          "per_point": 1,
-          "text_pt": "+1 ponto de sucesso quando conduz",
-          "phase": 5
-        },
-        "b": {
-          "effect": "lead_duration_pct",
-          "per_point": -3,
-          "text_pt": "−3% duração quando conduz",
-          "phase": 5
-        },
-        "mastery": {
-          "effect": "lead_two_vehicles",
-          "value": 1,
-          "text_pt": "Conduz 2 veículos na mesma rota",
-          "phase": 5
-        }
-      },
-      {
-        "id": "carga",
-        "name_pt": "Carga",
-        "a": {
-          "effect": "failure_loss_pct",
-          "per_point": -5,
-          "text_pt": "−5% perda na falha",
-          "phase": 5
-        },
-        "b": {
-          "effect": "lead_capacity_pct",
-          "per_point": 5,
-          "text_pt": "+5% capacidade do veículo que conduz",
-          "phase": 5
-        },
-        "mastery": {
-          "effect": "insurance_cost_pct",
-          "value": -30,
-          "text_pt": "−30% no preço do seguro",
-          "phase": 5
-        }
-      },
-      {
-        "id": "faro",
-        "name_pt": "Faro",
-        "a": {
-          "effect": "item_chance_pct",
-          "per_point": 6,
-          "text_pt": "+6% chance de item",
-          "phase": 5
-        },
-        "b": {
-          "effect": "deed_chance_pct",
-          "per_point": 4,
-          "text_pt": "+4% chance de Escritura",
-          "phase": 5
-        },
-        "mastery": {
-          "effect": "crit_chance_pts",
-          "value": 5,
-          "text_pt": "+5 pontos de chance de crítico",
-          "phase": 5
-        }
-      }
-    ],
-    "botanica": [
-      {
-        "id": "pesquisa",
-        "name_pt": "Pesquisa",
-        "a": {
-          "effect": "growth_all_pct",
-          "per_point": 1,
-          "text_pt": "+1% crescimento de lavoura e pomar"
-        },
-        "b": {
-          "effect": "tree_initial_time_pct",
-          "per_point": -5,
-          "text_pt": "−5% tempo inicial das árvores"
-        },
-        "mastery": {
-          "effect": "early_unlock_levels",
-          "value": 3,
-          "text_pt": "Libera 1 cultivo escolhido 3 níveis antes"
-        }
-      },
-      {
-        "id": "qualidade",
-        "name_pt": "Qualidade",
-        "a": {
-          "effect": "golden_pct",
-          "per_point": 1,
-          "text_pt": "+1% Colheita Dourada"
-        },
-        "b": {
-          "effect": "recurring_production_pct",
-          "per_point": 2,
-          "text_pt": "+2% produção das recorrentes"
-        },
-        "mastery": {
-          "effect": "account_xp_pct",
-          "value": 10,
-          "text_pt": "+10% XP da conta"
-        }
-      },
-      {
-        "id": "clima",
-        "name_pt": "Clima",
-        "a": {
-          "effect": "weather_effect_pct",
-          "per_point": 8,
-          "text_pt": "+8% efeito do clima",
-          "phase": 6
-        },
-        "b": {
-          "effect": "weather_forecast_hours",
-          "per_point": 1,
-          "text_pt": "+1 h de previsão do clima (até 6 h)",
-          "phase": 6
-        },
-        "mastery": {
-          "effect": "night_event_pct",
-          "value": 15,
-          "text_pt": "Eventos noturnos +15% para você",
-          "phase": 6
-        }
+        "nodes": [
+          {
+            "id": "ferramentas",
+            "name_pt": "Ferramentas",
+            "effect": "tool_wear_pct",
+            "per_point": -4,
+            "text_pt": "−4% no desgaste das ferramentas"
+          },
+          {
+            "id": "veiculos",
+            "name_pt": "Veículos",
+            "effect": "vehicle_wear_pct",
+            "per_point": -4,
+            "text_pt": "−4% no desgaste dos veículos"
+          },
+          {
+            "id": "consertos",
+            "name_pt": "Consertos",
+            "effect": "repair_cost_pct",
+            "per_point": -5,
+            "text_pt": "−5% no custo dos consertos"
+          },
+          {
+            "id": "limpeza",
+            "name_pt": "Limpeza",
+            "effect": "cleanup_time_pct",
+            "per_point": -5,
+            "text_pt": "−5% no tempo de limpeza dos lotes"
+          }
+        ]
       }
     ]
-  },
-  "active_phase": 7,
-  "active_phase_note": "efeitos de habilidade com \"phase\" maior que este número ficam guardados e ligam na fase deles"
+  }
 }

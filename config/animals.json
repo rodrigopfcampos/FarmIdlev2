@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026) · fase 4: coleta e ração (decisões do dono, 24/10/2026)",
   "rules": {
     "collector_efficiency": {
@@ -8,7 +8,8 @@
     },
     "no_feed_gold": "para de produzir; nunca morre",
     "lake_bonus": {
-      "bird_production": 0.1,
+      "bird_production": 0,
+      "bird_production_note": "R3: o +10% das aves virou o nó Aves da árvore da conta (+2% por ponto)",
       "extra_galinheiro_slots": 2,
       "extra_slots_for": "birds"
     },

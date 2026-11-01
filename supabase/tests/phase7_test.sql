@@ -35,14 +35,12 @@ begin
      and exists (select 1 from public.missions where user_id = a and metric in ('stall_gold', 'gold_earned')) then raise exception 'FALHA 5: venda não contou'; end if;
 
   -- 3. completar uma diária paga o ouro e o XP fixados; as 5 do dia dão 1 pacote (carta nova, ainda não vista)
-  -- (com o Comerciante em campo e Negócios B cheio: +25% no ouro da missão)
-  insert into public.characters (user_id, class_id, skills) values (a, 'comerciante', '{"negocios.b": 5}');
+  -- (R3: sem a árvore do Comerciante, o prêmio é o fixado)
   select gold into v_gold from public.wallets where user_id = a;
   select * into m from public.missions where user_id = a and kind = 'daily' and done_at is null order by slot limit 1;
   perform public.mission_progress(a, m.metric, m.target);
-  if abs((select gold from public.wallets where user_id = a) - v_gold - round((m.reward ->> 'gold')::numeric * 1.25, 2)) > 0.02 then
-    raise exception 'FALHA 6: diária pagou % (prêmio % com +25%% do Negócios)', (select gold from public.wallets where user_id = a) - v_gold, m.reward ->> 'gold'; end if;
-  delete from public.characters where user_id = a and class_id = 'comerciante';
+  if abs((select gold from public.wallets where user_id = a) - v_gold - round((m.reward ->> 'gold')::numeric, 2)) > 0.02 then
+    raise exception 'FALHA 6: diária pagou % (prêmio %)', (select gold from public.wallets where user_id = a) - v_gold, m.reward ->> 'gold'; end if;
   for m in select metric, max(target) t from public.missions where user_id = a and kind = 'daily' and done_at is null group by metric loop
     perform public.mission_progress(a, m.metric, m.t);
   end loop;

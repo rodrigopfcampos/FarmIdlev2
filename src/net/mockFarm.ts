@@ -43,7 +43,7 @@ const state: FarmState = {
   game_day: new Date().toISOString().slice(0, 10), labor_nominal: 6.94, last_payday: null, boosted_sale_day: null, pet_swapped_at: null,
   auto_sell: ['batata'],
   characters: [
-    char('agricultor', { energy: 62.5, level: 4, work_hours: 6.2, skills: { 'cultivo.a': 2 }, snack_id: 'snack_coffee', snack_qty: 3, durability: 71 }),
+    char('agricultor', { energy: 62.5, level: 4, work_hours: 6.2, snack_id: 'snack_coffee', snack_qty: 3, durability: 71 }),
     char('rancheira', { energy: 38, level: 2, work_hours: 3 }),
     char('ferreiro', { energy: 12, parked: true, debt: 1950, unpaid_days: 1, rate: 0.8 }),
   ],
@@ -64,6 +64,8 @@ const state: FarmState = {
   ],
   houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' } },
   lake: true,
+  fishing: { cycles: 2, max: 4, fish_t: T - 2.4 * 7200, cycle_s: 7200, species: 'fish_truta' },
+  account_tree: { skills: { eficiencia: 3, energia: 2 }, points: 10, spent: 5, free_reset: true, reset_cost: 43500 },
   vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
     { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
   expeditions: [{ id: 'm1', convoy_id: 'c1', vehicle_id: 'carro', route_id: 'cidade', cargo: { batata: 80, alface: 40 }, insurance: 120, led: false, minigame: 'done',
@@ -258,6 +260,9 @@ export const mockFarm = {
     if (fn === 'pay_salaries') for (const c of state.characters) { state.gold -= c.debt; c.debt = 0; c.unpaid_days = 0; }
     if (fn === 'skill_add') { const c = ch(args.p_class)!; c.skills[args.p_node as string] = (c.skills[args.p_node as string] ?? 0) + 1; }
     if (fn === 'skill_reset') ch(args.p_class)!.skills = {};
+    if (fn === 'collect_fish' && state.fishing) { state.silo.fish_truta = (state.silo.fish_truta ?? 0) + 7; state.fishing.fish_t = t; }
+    if (fn === 'account_skill_add' && state.account_tree) { const k = args.p_node as string; state.account_tree.skills[k] = (state.account_tree.skills[k] ?? 0) + 1; state.account_tree.spent++; }
+    if (fn === 'account_skill_reset' && state.account_tree) { state.account_tree.skills = {}; state.account_tree.spent = 0; state.account_tree.free_reset = false; }
     if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);
     if (fn === 'equip_snack') { const c = ch(args.p_class)!; c.snack_id = args.p_snack as string | null; c.snack_qty = args.p_snack ? 5 : 0; }
     if (fn === 'repair_tool') ch(args.p_class)!.durability = 100;

@@ -14,6 +14,7 @@ import animationsCfg from '../config/animations.json';
 import weatherCfg from '../config/weather.json';
 import cardsCfg from '../config/cards.json';
 import missionsCfg from '../config/missions.json';
+import fishingCfg from '../config/fishing.json';
 import socialCfg from '../config/social.json';
 import villageCfg from '../config/village.json';
 import anticheatCfg from '../config/anticheat.json';
@@ -46,6 +47,13 @@ export const CHARS = charactersCfg;
 export type SkillNode = { effect: string; text_pt: string; phase?: number; per_point?: number; value?: number };
 export type SkillBranch = { id: string; name_pt: string; a: SkillNode; b: SkillNode; mastery: SkillNode };
 export const SKILL_TREE = charactersCfg.skill_tree as unknown as Record<string, SkillBranch[]>;
+// R3: árvore de habilidades da conta (substitui as dos personagens)
+export type AccountNode = { id: string; name_pt: string; effect: string; per_point: number; text_pt: string };
+export type AccountBranch = { id: string; name_pt: string; nodes: AccountNode[] };
+export const ACCOUNT_TREE = charactersCfg.account_tree as unknown as { points_per_level: number; from_level: number; node_max: number; free_resets_per_week: number; extra_reset_cost_R_ratio: number; branches: AccountBranch[] };
+// R3: pesca no Lago
+export const FISHING = fishingCfg as unknown as { cycle_minutes: number; max_cycles: number; value_share_of_R: number; cycles_per_day_reference: number; team: { efficiency: number };
+  species: { id: string; name_pt: string; unlock_level: number; fair_price_per_unit: number; sprite: string }[] };
 export const PETS = charactersCfg.pets;
 export const SNACKS = toolsCfg.snack_cards;
 export const CLASS_TOOLS = toolsCfg.class_tool_cards;
@@ -85,7 +93,9 @@ export function itemInfo(id: string): { name_pt: string; price: number; emoji: s
   const c = CROPS[id];
   if (c) return { name_pt: c.name_pt, price: c.fair_price_per_unit, emoji: null };
   const p = PRODUCTS[id];
-  return p ? { name_pt: p.name_pt, price: p.price, emoji: p.emoji } : { name_pt: id, price: 0, emoji: null };
+  if (p) return { name_pt: p.name_pt, price: p.price, emoji: p.emoji };
+  const f = FISHING.species.find((x) => x.id === id);
+  return f ? { name_pt: f.name_pt, price: f.fair_price_per_unit, emoji: '🐟' } : { name_pt: id, price: 0, emoji: null };
 }
 
 // ---------- expedições (fase 5) ----------

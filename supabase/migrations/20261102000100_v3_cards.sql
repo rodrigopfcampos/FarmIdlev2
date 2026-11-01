@@ -1,8 +1,8 @@
 -- Reformulação v3, parte R2: as 20 cartas novas (config/cards.json v4).
 -- A carta na mão vale por dias (online ou offline), fica presa pelo menos 1 dia e, ao sair, guarda o que sobrou.
 -- Comum gasta vira "gasta" e o jogador repara com ouro; as outras somem. O álbum (Armory) registra sozinho na
--- primeira vez que a carta entra na mão. Mão de 3 a 5 cartas pelo nível. A Garagem não vende mais: o veículo vem
--- da carta de Veículo enquanto ela está na mão (sem carta, a Carroça).
+-- primeira vez que a carta entra na mão. Mão de 3 a 5 cartas pelo nível. A Garagem não vende mais: cada veículo
+-- libera de graça no nível dele; a carta de Veículo dá bônus às expedições e troca a aparência.
 
 -- ---------- tabelas ----------
 alter table public.cards add column life_seconds double precision;   -- vida que sobra (nulo = cheia)

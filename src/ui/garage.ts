@@ -163,8 +163,14 @@ function formView(ctx: GarageCtx, s: FarmState): string {
   const p = plan(s);
   const r = ROUTE_BY_ID[form.route];
   // veículos: cartões que ligam/desligam (comboio quando há mais de um)
-  const vehs = p.owned.map((v) => `<button type="button" class="veh-chip ${form.vehicles.includes(v.vehicle_id) ? 'on' : ''}" data-veh="${v.vehicle_id}" aria-pressed="${form.vehicles.includes(v.vehicle_id)}">
-      ${vehSprite(ctx, v, 0.5)}<span>${ctx.esc(vehName(v.vehicle_id))}<small>${capacity(v, mult(v.rarity))} de carga</small></span></button>`).join('');
+  // veículos em viagem aparecem apagados com a volta, para o jogador ver que existem
+  const now = store.clock.farmNow();
+  const vehs = s.vehicles.map((v) => {
+    const st = vehicleStatus(s, v, now), free = st.status === 'idle', on = form.vehicles.includes(v.vehicle_id);
+    const why = st.status === 'travel' ? `volta em ${duration(st.until! - now)}` : st.status === 'back' ? 'voltou: receba na Garagem' : st.status === 'refurb' ? `reforma: ${duration(st.until! - now)}` : `${capacity(v, mult(v.rarity))} de carga`;
+    return `<button type="button" class="veh-chip ${on ? 'on' : ''} ${free ? '' : 'busy'}" ${free ? `data-veh="${v.vehicle_id}"` : 'disabled'} aria-pressed="${on}">
+      ${vehSprite(ctx, v, 0.5)}<span>${ctx.esc(vehName(v.vehicle_id))}<small>${ctx.esc(why)}</small></span></button>`;
+  }).join('');
   // mapa: estrada pontilhada da fazenda passando por todos os destinos; o escolhido brilha
   const order = ['fazenda', ...ROUTES.map((x) => x.id)];
   const road = order.map((id, i) => `${i ? 'L' : 'M'}${MAP_PINS[id].x} ${MAP_PINS[id].y * 0.6}`).join(' ');
@@ -193,7 +199,8 @@ function formView(ctx: GarageCtx, s: FarmState): string {
     <div class="route-map"><svg viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path d="${road}" class="map-road"/></svg>
       <span class="map-home" style="left:${home.x}%;top:${home.y}%">${home.icon}<small>Fazenda</small></span>${pins}<div class="map-tip" hidden></div></div>
     <h3>Carga</h3><div class="cargo-bar-box">${cargoBar(p)}</div>
-    ${items.length ? `<button type="button" class="secondary small" data-fill>Encher com o que vale mais</button><button type="button" class="secondary small" data-clear>Esvaziar</button><ul class="items cargo-list">${cargoRows}</ul>` : '<p class="empty">O Silo está vazio.</p>'}
+    ${items.length ? `<button type="button" class="secondary small" data-fill>Encher com o que vale mais</button><button type="button" class="secondary small" data-clear>Esvaziar</button><ul class="items cargo-list">${cargoRows}</ul>` : '<p class="empty">O Silo está vazio: colha a lavoura ou espere os produtos dos animais para mandar uma carga.</p>'}
+    ${items.length && p.owned.length < s.vehicles.length && items.reduce((a, [, q]) => a + q, 0) < p.totalCap / 4 ? `<p class="empty">Pouca coisa no Silo: o resto já está na estrada com os outros veículos.</p>` : ''}
     <div class="exp-opts">
       <label class="toggle"><input type="checkbox" data-opt="insurance" ${form.insurance ? 'checked' : ''} ${r.insurance_pct === null ? 'disabled' : ''}><span>Seguro <small>${r.insurance_pct === null ? 'não existe na Feira' : `${nf1.format(r.insurance_pct)}% da carga; devolve a perda acima de ${Math.round(EXP.insurance_deductible * 100)}%`}</small></span></label>
       ${leadOpt}
@@ -246,6 +253,7 @@ function bind(ctx: GarageCtx, el: HTMLElement): void {
   el.querySelector('[data-back]')?.addEventListener('click', () => { view = 'garage'; openGarage(ctx); });
   el.querySelectorAll<HTMLButtonElement>('[data-veh]').forEach((b) => b.addEventListener('click', () => {
     const id = b.dataset.veh!;
+    if (form.vehicles.includes(id) && form.vehicles.length === 1) return; // precisa de pelo menos 1
     form.vehicles = form.vehicles.includes(id) ? form.vehicles.filter((x) => x !== id) : [...form.vehicles, id];
     rerender();
   }));

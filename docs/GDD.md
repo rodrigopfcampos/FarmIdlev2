@@ -15,7 +15,7 @@ Versão 2 · 19/10/2026, atualizada em 20/10/2026 (seção 6 completa), 22/10/20
 | Vizinhança | "lote vizinho" | divide um lado, sem diagonal; **Galinheiro e Celeiro** podem ser comprados sem ser vizinhos |
 | Mapa | grade quadrada 3/4, 1920×1080 | **isométrico 2:1, 1672×940**, contornos medidos em `config/mapConfig.json` |
 | Zonas do mapa | — | **Casa** (com o Silo), **Forja**, **Barraca** e **Garagem** (à esquerda do A5) |
-| Garagem | — | mostra só o veículo ativo, parado e animado; o clique abre os 4 veículos, todos animados |
+| Garagem | — | mostra o veículo que está em casa (o ativo primeiro; se ele viajou, outro que ficou); o clique abre os 5 veículos |
 | Pomar | 1 árvore desenhada no fundo | fundo sem árvores; o jogo desenha as 4 árvores (muda → adulta) |
 | Mudas no mapa | 32×32 | **16×16** (cada canteiro mede ~73×37 px); 32×32 fica para ícones |
 | Plataforma | navegador (PWA) | confirmado: **navegador primeiro** |
@@ -481,7 +481,7 @@ Vender é mandar a produção numa expedição: quanto mais longe, maior o preç
 ### Garagem 🆕
 
 - Fica à esquerda do lote A5, na estradinha de terra (zona `garagem_expedicao` no mapConfig).
-- No mapa aparece **só o veículo ativo** (o último escolhido), parado na vaga, com a animação de parado (seção 4).
+- No mapa aparece **o veículo que está em casa**: o ativo; se ele estiver viajando, outro que ficou. Na tela de expedição os veículos em viagem aparecem apagados, com a hora da volta.
 - Clicar abre a **Garagem**: os 4 veículos lado a lado, todos com animação de parado, na raridade atual; os ainda não comprados aparecem em silhueta com nível e preço. Dali o jogador escolhe o veículo e abre a Expedição (rota, carga, seguro e minigame).
 - Com o veículo ativo em viagem, a vaga fica vazia com um contador até a volta.
 

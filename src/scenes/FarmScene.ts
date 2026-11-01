@@ -60,7 +60,9 @@ export class FarmScene extends Phaser.Scene {
   private hoverLot = ''; // lote com o mouse em cima (mostra o cultivo planejado dos canteiros vazios)
   private life!: LifeLayer; // animais nos pastos e peixes no lago
   private vehDrive: { tween: Phaser.Tweens.Tween; moving: boolean } | null = null; // veículo saindo ou chegando
-  private vehWas = '';          // situação anterior do veículo (para animar só a mudança vista ao vivo)
+  private vehWas = '';
+  private vehShown = '';                    // veículo que está na vaga
+  private vehHome: Set<string> | null = null; // veículos em casa no segundo anterior          // situação anterior do veículo (para animar só a mudança vista ao vivo)
   private vehMotor = false;
   private vehLook = 'carroca';  // cara do veículo (Carroça, Compacto, Off-Road, 4x4, Caminhão)     // veículo a motor (balança, fumaça) ou carroça com cavalo
   private fxAt = 0;             // último fumacinha/poeira
@@ -195,16 +197,32 @@ export class FarmScene extends Phaser.Scene {
     if (this.pointer) this.showHover(this.pointer.x, this.pointer.y); // o rótulo do lote muda depois da compra
   }
 
-  /** só o veículo ativo aparece na vaga; viajando, a vaga fica vazia com o contador até a volta.
-   *  Visto ao vivo: sai pela estrada (cavalo andando, ou motor com fumaça e poeira) e volta pelo mesmo caminho. */
+  /** na vaga aparece o veículo que está em casa (o ativo primeiro; se ele viajou, outro que ficou).
+   *  Visto ao vivo: o que sai anda pela estrada e some; o que volta aparece vindo da estrada. */
   private refreshGarage(s: FarmState): void {
     if (!this.veh || !this.vehLabel) return;
-    const v = s.vehicles.find((x) => x.active) ?? s.vehicles[0];
-    if (!v) { this.veh.setVisible(false); this.vehLabel.setVisible(false); return; }
+    const active = s.vehicles.find((x) => x.active) ?? s.vehicles[0];
+    if (!active) { this.veh.setVisible(false); this.vehLabel.setVisible(false); return; }
     const now = store.clock.farmNow();
-    const st = vehicleStatus(s, v, now);
+    const sts = new Map(s.vehicles.map((v) => [v.vehicle_id, vehicleStatus(s, v, now)]));
+    const home = s.vehicles.filter((v) => ['idle', 'back'].includes(sts.get(v.vehicle_id)!.status));
+    const homeIds = new Set(home.map((v) => v.vehicle_id));
     const anyBack = s.expeditions.some((x) => x.status === 'back');
-    const parked = st.status === 'idle' || st.status === 'back';
+    // rótulo: ninguém em casa → quando volta o primeiro; viagem terminada → Receber!
+    const away = s.vehicles.map((v) => sts.get(v.vehicle_id)!).filter((x) => x.until);
+    const soon = away.length ? away.reduce((a, b) => (a.until! <= b.until! ? a : b)) : null;
+    const text = anyBack ? 'Receber!' : !home.length && soon ? `${soon.status === 'refurb' ? 'Reforma' : 'Volta em'} ${duration(soon.until! - now)}` : '';
+    this.vehLabel.setText(text).setVisible(!!text);
+    const last = this.vehHome;
+    this.vehHome = homeIds;
+    // o que estava na vaga acabou de sair: anima a saída e só depois mostra outro
+    if (this.vehShown && this.vehWas === 'parked' && !homeIds.has(this.vehShown)) {
+      this.vehWas = 'away';
+      if (!this.calm) { this.drive(true); return; }
+    }
+    if (this.vehDrive) return;
+    const v = home.find((x) => x.active) ?? home[0] ?? active;
+    const parked = homeIds.has(v.vehicle_id);
     const V = ANIM.vehicles;
     // carta de Veículo na mão: o veículo aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão)
     const vc = s.buffs?.find((b) => b.card_id === 'veiculo');
@@ -213,14 +231,13 @@ export class FarmScene extends Phaser.Scene {
     if (key !== this.vehKey && this.textures.exists(key)) {
       this.vehKey = key; this.vehLook = look;
       this.vehMotor = look !== 'carroca';
-      if (!this.vehDrive) this.veh.stop().setTexture(key, 0).setFlipX(false);
+      this.veh.stop().setTexture(key, 0).setFlipX(false);
     }
-    const state = parked ? 'parked' : 'away';
-    if (this.vehWas && this.vehWas !== state && !this.calm) this.drive(state === 'away');
-    else if (!this.vehDrive) this.veh.setVisible(parked);
-    this.vehWas = state;
-    const text = st.status === 'travel' ? `Volta em ${duration(st.until! - now)}` : st.status === 'refurb' ? `Reforma: ${duration(st.until! - now)}` : anyBack ? 'Receber!' : '';
-    this.vehLabel.setText(text).setVisible(!!text);
+    // chegou agora (não estava em casa no segundo anterior): vem pela estrada
+    if (parked && last && !last.has(v.vehicle_id) && !this.calm) this.drive(false);
+    else this.veh.setVisible(parked);
+    this.vehShown = v.vehicle_id;
+    this.vehWas = parked ? 'parked' : 'away';
   }
 
   /** prédios desenhados no mapa: recorta o contorno da arte e põe por cima do que passa atrás (veículo na estrada) */

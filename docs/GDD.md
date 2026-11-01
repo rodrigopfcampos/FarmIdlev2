@@ -679,7 +679,7 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - 28 compras: nível ⌈1,53 n⌉, custo 0,27 × 1,11^(n−1) × R(nível); Escritura da 19ª compra em diante (10 no total). R e XP recalibrados pelo simulador (mapa completo do regular no dia ~79).
 - Lote bloqueado: 1 arte de mato e pedras no centro cobrindo 85% do lote; some com partículas quando a limpeza termina.
 - Animais andando nos pastos (só visual, até 6 por pasto): os 10 animais usam as 4 artes (vaca; galinha/peru; pato/ganso; coelho).
-- Lago: 6 a 12 peixes nadando em curva, 85% visíveis, anel na água ao virar; 1 espécie nova a cada 10 níveis (Tilápia 1, Truta 10, Bagre 20, Koi 30, Esturjão 40). A pesca (coleta no píer) entra na R3.
+- Lago (01/11, pedido do dono): **sem sprites de peixe**. 3 a 6 sombras escuras em gota (#0A1F35, 34%, halo suave) nadam embaixo da água com rumo que vira aos poucos; a cada 2–4 s cada uma solta uma ondulação (anel branco de 2 a 12 px em 600 ms, sumindo). Rede com peixe: a sombra mais próxima para, pisca e dá o "beliscão" (3 anéis rápidos) a cada 1,7 s. Ícone do peixe com "n/4" continua no píer.
 - Veículos: carroça com cavalo (5 quadros); veículos a motor balançam 1 px a cada 120 ms, soltam fumaça e poeira; saem e voltam pela estrada da Garagem.
 - Números visuais em `config/animations.json` (v2).
 

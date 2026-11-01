@@ -150,7 +150,7 @@
     "reduced_motion": "parados no 1º quadro"
   },
   "lake_fish": {
-    "trigger": "Lago da fazenda comprado",
+    "trigger": "Lago da fazenda comprado (pedido do dono em 01/11: sem sprites de peixe; sombras submersas e ondulações)",
     "species": [
       {
         "sprite": "fish_1",
@@ -183,24 +183,46 @@
         "faces": "right"
       }
     ],
-    "count_min": 6,
-    "count_max": 12,
-    "alpha": 0.85,
+    "count_min": 3,
+    "count_max": 6,
+    "shadow_hex": "#0A1F35",
+    "shadow_alpha": 0.34,
+    "shadow_soft_alpha": 0.14,
+    "shadow_len_px": [18, 26],
+    "shadow_width_ratio": 0.42,
     "speed_px_s": [
-      8,
-      16
+      6,
+      12
     ],
-    "wave_px": 3,
-    "wave_hz": 0.6,
-    "scale": 1,
-    "ripple_ms": 900,
+    "turn_rad_s": 1.6,
+    "wander_rad_s": 1.2,
+    "ripple_every_ms": [
+      2000,
+      4000
+    ],
+    "ripple_ms": 600,
     "ripple_radius_px": [
-      3,
-      10
+      2,
+      12
     ],
-    "faces": "por espécie (a arte de cada peixe olha para um lado)",
+    "ripple_hex": "#ffffff",
+    "ripple_alpha": 0.6,
+    "bite_rings": 3,
+    "bite_ring_ms": 360,
+    "bite_ring_gap_ms": 90,
+    "bite_ring_radius_px": [
+      2,
+      14
+    ],
+    "bite_every_ms": 1700,
+    "bite_blink_hz": 2,
+    "bite_alpha": [
+      0.18,
+      0.5
+    ],
+    "faces": "sombras sem direção fixa: giram pelo rumo",
     "priority": "fundo",
-    "reduced_motion": "parados"
+    "reduced_motion": "sombras paradas, sem ondulações"
   },
   "vehicles": {
     "horse_sprite": "vehicle_horse_cart",

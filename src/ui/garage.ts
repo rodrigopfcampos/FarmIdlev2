@@ -78,9 +78,12 @@ function garageView(ctx: GarageCtx, s: FarmState): string {
         <small>Libera sozinho no nível ${d.unlock_level}</small></span></li>`;
     }
     const st = vehicleStatus(s, v, now);
+    const homeNow = s.vehicles.filter((x) => ['idle', 'back'].includes(vehicleStatus(s, x, now).status));
+    const inSlot = homeNow.find((x) => x.active) ?? homeNow[0];
     const r = RARITY_BY_ID[v.rarity];
     const m = mult(v.rarity);
     const travel = st.trips.find((x) => x.status === 'travel');
+    const free = st.status === 'idle' || st.status === 'back';
     const backN = st.trips.filter((x) => x.status === 'back').length;
     const status = st.status === 'travel' ? `Viajando para ${ROUTE_BY_ID[travel!.route_id].name_pt} · volta em ${duration(st.until! - now)}${travel!.repeat_left ? ` · repete mais ${travel!.repeat_left}×` : ''}${backN ? ` · ${backN} viagem(ns) esperando Receber` : ''}`
       : st.status === 'back' ? `Voltou: ${backN} viagem(ns) para Receber`
@@ -91,7 +94,8 @@ function garageView(ctx: GarageCtx, s: FarmState): string {
       <span class="energy dura ${v.durability < EXP.low_wear_threshold_pct ? 'low' : ''}" title="Durabilidade ${nf1.format(v.durability)}"><span style="width:${Math.round(v.durability)}%"></span></span>
       <small>${ctx.esc(status)}${v.durability < EXP.low_wear_threshold_pct ? ' · <span class="bad">desgastado: −5 pontos (conserte na Forja)</span>' : ''}</small></span>
       <span class="btns">${backN ? `<button type="button" class="primary small" data-collect="${v.vehicle_id}">Receber</button>` : ''}
-      ${!v.active ? `<button type="button" class="secondary" data-active-veh="${v.vehicle_id}">Deixar na vaga</button>` : ''}</span></li>`;
+      ${!v.active ? `<button type="button" class="secondary" data-active-veh="${v.vehicle_id}">${free ? 'Deixar na vaga' : 'Na vaga quando voltar'}</button>`
+        : free ? '<small class="next">Na vaga</small>' : `<small class="next">Fica na vaga quando voltar${inSlot ? `; agora está lá: ${ctx.esc(vehName(inSlot.vehicle_id))}` : ''}</small>`}</span></li>`;
   }).join('');
   const idle = s.vehicles.filter((v) => vehicleStatus(s, v, now).status === 'idle');
   const streak = s.exp_fail_streak >= EXP.bad_luck_protection.after_failures

@@ -31,6 +31,7 @@
 | Testes | `balance:check` (config × GDD × simulador), vitest (jogo e artes), testes do banco | CI a cada push |
 
 ## B. Decisões tomadas
+- 🆕 (01/11) Dono aprovou a **Árvore de Passivas** (botão Grimório, 3 caminhos com Ultimates, ícones por código até a arte, som gerado no navegador).
 - 🆕 (01/11) v3 aprovada. Dono: as cartas de ferramenta substituem a raridade das ferramentas (ferramenta única por personagem, sobe sozinha com o nível, desgaste e conserto continuam); Vara de Pescar é a ferramenta do Lago (gasta e conserta); limpeza 3× mais rápida com o Ferreiro em campo (sem ele, como estava com ele). Próxima fase a escolher depois disso (8c mercado, ranking ou fase 10).
 - 🆕 (01/11, R3) R2 aprovada. Dono aprovou a proposta da R3: pesca (ciclo de 2 h, rede de 8 h, clique no píer, peixe no Silo, ~8% da renda) e árvore da conta (1 ponto por nível, 12 nós, substitui as árvores dos personagens).
 - 🆕 (01/11) Pomar: as 24 vagas (6 lotes × 4) remedidas na faixa de grama entre a estrada e a cerca, longe da cerca; a plaquinha só aparece no lote à venda (comprado, some). Não precisa de mapa novo.
@@ -119,12 +120,12 @@
 - Escritura, nível, limpeza de lote, salário e ouro para testes pelo painel do admin (guia Fazenda).
 - Correção: fora do jogo, quando faltava trabalho, a fila descontava a espera duas vezes (a fazenda andava mais devagar que o simulador). Corrigido na fase 3.
 
-## G. Teste do ajuste das ferramentas (dono, em produção)
-1. Casa → Equipamentos: cada personagem mostra a carta da ferramenta dele (Enxada, Forcado, Martelo, Balança, Prancheta, Lupa) com o nível e o "×" de trabalho; sem botão de melhorar.
-2. Suba de nível (8, 18, 30, 42): a ferramenta sobe sozinha.
-3. Forja: mostra os níveis da ferramenta (sem compra); conserto e veículos continuam.
-4. Lago (sem rede pronta): painel com a Vara de Pescar, durabilidade e **Consertar**. Ela gasta a cada rede recolhida; abaixo de 30 a pesca rende a metade.
-5. Compre um lote: com o Ferreiro em campo a limpeza fica 3× mais rápida (a 1ª compra: 24 min; sem ele, 1h12).
+## G. Teste da Árvore de Passivas (dono, em produção)
+1. No topo, o botão 📖 (pontinho vermelho = pontos livres). A aba Habilidades saiu da Casa.
+2. Abra: fundo estrelado, Fazenda no centro e 3 caminhos. Passe o mouse nos nós: tooltip com nome, nível e efeito.
+3. Clique num nó disponível (pulsando): a linha acende, o nó treme e toca o som (🔊/🔇 para silenciar).
+4. Caminho: só abre B e C depois de A; D precisa de B ou C com 3; a Ultimate precisa de D e 15 pontos no caminho e custa 5.
+5. Os pontos que você tinha na árvore antiga voltaram.
 
 ## H. Riscos e pontos em aberto
 - Clique sem limite: um robô que clica sem parar vira um jogador sempre online. A fase 9 detecta intervalo constante entre cliques; robô com intervalo aleatório ainda passa (avaliar no beta).

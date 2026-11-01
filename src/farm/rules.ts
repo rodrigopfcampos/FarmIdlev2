@@ -125,16 +125,38 @@ export function hoursToNext(level: number): number | null {
   return level >= cl.max ? null : cl.base_hours + cl.per_level_hours * level;
 }
 
-/** árvore da conta (R3): pontos pelo nível (1 por nível do 2 em diante) e quantos já foram gastos */
+const ALL_NODES = () => ACCOUNT_TREE.branches.flatMap((b) => b.nodes.map((n) => ({ ...n, branch: b.id })));
+
+/** Árvore de Passivas: pontos pelo nível (1 por nível do 2 em diante) e quantos já foram gastos (nível × custo do nó) */
 export function accountPoints(level: number, skills: Record<string, number>): { total: number; spent: number; free: number } {
   const total = Math.max(0, (level - (ACCOUNT_TREE.from_level - 1)) * ACCOUNT_TREE.points_per_level);
-  const spent = Object.values(skills).reduce((a, b) => a + b, 0);
+  const spent = branchSpent(skills);
   return { total, spent, free: Math.max(0, total - spent) };
 }
 
-/** efeito somado de um nó na árvore da conta (pontos × valor por ponto) */
+/** pontos gastos no total ou num ramo */
+export function branchSpent(skills: Record<string, number>, branch?: string): number {
+  return ALL_NODES().filter((n) => !branch || n.branch === branch).reduce((a, n) => a + (skills[n.id] ?? 0) * n.cost, 0);
+}
+
+/** efeito somado (pontos × valor por ponto) */
 export function accountEffect(skills: Record<string, number>, effect: string): number {
-  return ACCOUNT_TREE.branches.flatMap((b) => b.nodes).filter((n) => n.effect === effect).reduce((a, n) => a + (skills[n.id] ?? 0) * n.per_point, 0);
+  return ALL_NODES().reduce((a, n) => a + n.effects.filter((e) => e.effect === effect).reduce((x, e) => x + (skills[n.id] ?? 0) * e.per_point, 0), 0);
+}
+
+export type PassiveState = 'locked' | 'available' | 'bought' | 'maxed';
+/** estado do nó: bloqueado (caminho não liberado), disponível (dá para pôr ponto), comprado (tem ponto e cabe mais) ou no máximo */
+export function passiveState(id: string, skills: Record<string, number>, free: number): { state: PassiveState; open: boolean; why: string[] } {
+  const n = ALL_NODES().find((x) => x.id === id)!;
+  const name = (nid: string) => ALL_NODES().find((x) => x.id === nid)?.name_pt ?? nid;
+  const why: string[] = [];
+  for (const r of n.requires ?? []) if ((skills[r.node] ?? 0) < r.min) why.push(`${name(r.node)} ${r.min}`);
+  if (n.requires_any && !n.requires_any.some((r) => (skills[r.node] ?? 0) >= r.min)) why.push(n.requires_any.map((r) => `${name(r.node)} ${r.min}`).join(' ou '));
+  if (n.requires_branch_points && branchSpent(skills, n.branch) < n.requires_branch_points) why.push(`${n.requires_branch_points} pontos no caminho`);
+  const lv = skills[id] ?? 0, open = why.length === 0;
+  if (lv >= n.max) return { state: 'maxed', open, why };
+  if (open && free >= n.cost) return { state: lv ? 'bought' : 'available', open, why };
+  return { state: lv ? 'bought' : 'locked', open, why };
 }
 
 /** pesca (R3): espécie mais alta liberada no nível e ciclos prontos na rede */

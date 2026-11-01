@@ -48,9 +48,12 @@ export type SkillNode = { effect: string; text_pt: string; phase?: number; per_p
 export type SkillBranch = { id: string; name_pt: string; a: SkillNode; b: SkillNode; mastery: SkillNode };
 export const SKILL_TREE = charactersCfg.skill_tree as unknown as Record<string, SkillBranch[]>;
 // R3: árvore de habilidades da conta (substitui as dos personagens)
-export type AccountNode = { id: string; name_pt: string; effect: string; per_point: number; text_pt: string };
-export type AccountBranch = { id: string; name_pt: string; nodes: AccountNode[] };
-export const ACCOUNT_TREE = charactersCfg.account_tree as unknown as { points_per_level: number; from_level: number; node_max: number; free_resets_per_week: number; extra_reset_cost_R_ratio: number; branches: AccountBranch[] };
+export type AccountReq = { node: string; min: number };
+export type AccountNode = { id: string; name_pt: string; icon: string; text_pt: string; max: number; cost: number; effects: { effect: string; per_point: number }[];
+  pos: [number, number]; requires?: AccountReq[]; requires_any?: AccountReq[]; requires_branch_points?: number; ultimate?: boolean };
+export type AccountBranch = { id: string; name_pt: string; color_hex: string; nodes: AccountNode[] };
+export const ACCOUNT_TREE = charactersCfg.account_tree as unknown as { name_pt: string; points_per_level: number; from_level: number; free_resets_per_week: number;
+  extra_reset_cost_R_ratio: number; canvas: [number, number]; root: { id: string; name_pt: string; icon: string; pos: [number, number] }; branches: AccountBranch[] };
 // R3: pesca no Lago
 export const FISHING = fishingCfg as unknown as { cycle_minutes: number; max_cycles: number; value_share_of_R: number; cycles_per_day_reference: number; team: { efficiency: number }; rod: { wear_per_cycle: number; low_threshold: number; low_multiplier: number };
   species: { id: string; name_pt: string; unlock_level: number; fair_price_per_unit: number; sprite: string }[] };

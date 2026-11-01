@@ -69,18 +69,18 @@ begin
   perform public.advance_farm(a);
   if not exists (select 1 from public.audit_log where target_user_id = a and action = 'fish.collect' and (data ->> 'team')::boolean) then raise exception 'FALHA 15: equipe não recolheu a rede'; end if;
 
-  -- 7. árvore da conta: Salários, Consertos, Aves e Lanches; o Lago não dá mais +10% nas aves
-  update public.farms set account_skills = '{"salarios": 5, "consertos": 5, "aves": 5, "lanches": 4}' where user_id = a;
+  -- 7. Árvore de Passivas: Folha de Pagamento (salários), Manutenção (consertos), Mestre Pescador; o Lago não dá mais +10% nas aves
+  update public.farms set account_skills = '{"folha": 5, "manutencao": 5, "mestre_pescador": 5}' where user_id = a;
   select * into c from public.characters where user_id = a limit 1;
   c.class_id := 'rancheira';
   if abs(public.salary_of(a, c) - round(public.ref_income(15) * (public.config_get('characters') -> 'salary' ->> 'share_of_R')::numeric
        * (1 + (public.config_get('characters') -> 'salary' ->> 'per_character_level')::numeric * c.level) * 0.85, 2)) > 0.02 then raise exception 'FALHA 16: Salários −15%%'; end if;
   fx := public.team_fx(a);
-  if abs((fx ->> 'repair_cut')::numeric - 0.25) > 0.001 or abs((fx ->> 'bird_bonus')::numeric - 0.10) > 0.001 or abs((fx ->> 'snack_boost')::numeric - 0.20) > 0.001 then
-    raise exception 'FALHA 17: árvore da conta %', fx; end if;
+  if abs((fx ->> 'repair_cut')::numeric - 0.25) > 0.001 or abs((fx ->> 'legendary_fish')::numeric - 0.15) > 0.001 or abs((fx ->> 'tool_wear_cut')::numeric - 0.15) > 0.001 then
+    raise exception 'FALHA 17: passivas %', fx; end if;
   if (public.config_get('animals') -> 'rules' -> 'lake_bonus' ->> 'bird_production')::numeric <> 0 then raise exception 'FALHA 18: Lago ainda dá +10%% nas aves'; end if;
   if public.account_points(a) <> 14 then raise exception 'FALHA 19: pontos no nível 15 = %', public.account_points(a); end if;
-  if (public.farm_state(a) -> 'account_tree' ->> 'spent')::int <> 19 then raise exception 'FALHA 20: estado da árvore'; end if;
+  if (public.farm_state(a) -> 'account_tree' ->> 'spent')::int <> 15 then raise exception 'FALHA 20: estado da árvore'; end if;
 
   raise exception 'TESTES_OK';
 end $$;

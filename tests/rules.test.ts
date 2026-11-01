@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CROPS, LEVELS, PURCHASES, itemInfo } from '../src/data';
 import {
   animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
-  rareSeeds, accountEffect, accountPoints, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
+  rareSeeds, accountEffect, accountPoints, passiveState, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
 } from '../src/farm/rules';
 
 describe('compra de lotes', () => {
@@ -115,11 +115,21 @@ describe('personagens (fase 3)', () => {
     expect(hoursToNext(1)).toBe(11.5);
     expect(hoursToNext(30)).toBeNull();
   });
-  it('árvore da conta: 1 ponto por nível do 2 em diante; 12 nós de até 5', () => {
-    expect(accountPoints(12, { eficiencia: 5, folego: 3 })).toEqual({ total: 11, spent: 8, free: 3 });
+  it('passivas: 1 ponto por nível do 2 em diante; Ultimate custa 5', () => {
+    expect(accountPoints(12, { labia: 5, logistica: 3 })).toEqual({ total: 11, spent: 8, free: 3 });
+    expect(accountPoints(50, { contrabando: 1 }).spent).toBe(5); // Ultimate custa 5
     expect(accountPoints(50, {}).total).toBe(49);
-    expect(accountEffect({ salarios: 5 }, 'salary_pct')).toBe(-15);
-    expect(accountEffect({ aves: 5 }, 'bird_production_pct')).toBe(10);
+    expect(accountEffect({ folha: 5 }, 'salary_pct')).toBe(-15);
+    expect(accountEffect({ carinho_animal: 5 }, 'feed_cost_pct')).toBe(-20);
+  });
+  it('caminho: A abre B e C; B ou C com 3 abre D; Ultimate pede 15 no ramo', () => {
+    expect(passiveState('logistica', {}, 10).state).toBe('locked');
+    expect(passiveState('logistica', { labia: 1 }, 10).state).toBe('available');
+    expect(passiveState('rotas', { labia: 1, logistica: 2 }, 10).state).toBe('locked');
+    expect(passiveState('rotas', { labia: 1, manutencao: 3 }, 10).state).toBe('available');
+    expect(passiveState('contrabando', { labia: 5, logistica: 3, rotas: 1 }, 10).why).toContain('15 pontos no caminho');
+    expect(passiveState('contrabando', { labia: 5, logistica: 5, rotas: 5 }, 5).state).toBe('available');
+    expect(passiveState('contrabando', { labia: 5, logistica: 5, rotas: 5 }, 4).state).toBe('locked');
   });
   it('pesca: espécie por nível e rede de até 4 ciclos de 2 h', () => {
     expect(fishSpecies(15).id).toBe('fish_truta');

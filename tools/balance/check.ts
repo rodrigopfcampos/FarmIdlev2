@@ -133,9 +133,12 @@ check(an.rules.lake_bonus.bird_production === 0 && an.rules.lake_bonus.extra_gal
 {
   const at = JSON.parse(readFileSync(join(root, 'config', 'characters.json'), 'utf8')).account_tree;
   const nodes = at.branches.flatMap((b: any) => b.nodes);
-  const aves = nodes.find((n: any) => n.id === 'aves');
-  check(at.branches.length === 3 && nodes.length === 12 && at.node_max === 5 && aves?.per_point * at.node_max === 10,
-    `árvore da conta: 3 ramos, 12 nós de até 5, Aves cheio = +10% (${nodes.length} nós)`);
+  const ult = nodes.filter((n: any) => n.ultimate);
+  const perBranch = at.branches.map((b: any) => b.nodes.reduce((t: number, n: any) => t + n.max * n.cost, 0));
+  // Árvore de Passivas: 3 ramos de 4 nós (até 5) + 1 Ultimate de 5 pontos; 49 pontos no nível 50 não fecham os 3 ramos
+  check(at.branches.length === 3 && nodes.length === 15 && ult.length === 3 && ult.every((n: any) => n.cost === 5 && n.max === 1 && n.requires_branch_points === 15)
+    && perBranch.every((p: number) => p === 25) && 49 < perBranch.reduce((a: number, b: number) => a + b, 0),
+    `árvore de passivas: 3 ramos × (4 nós + Ultimate de 5), 25 pontos por ramo (${nodes.length} nós)`);
   const fi = JSON.parse(readFileSync(join(root, 'config', 'fishing.json'), 'utf8'));
   const lv = JSON.parse(readFileSync(join(root, 'config', 'levels.json'), 'utf8')).levels;
   // quantos peixes por ciclo da espécie mais alta liberada, do nível 11 (piso do Lago) ao 50: entre 1 e 40

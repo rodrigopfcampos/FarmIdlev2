@@ -3,18 +3,18 @@
 // Clique em canteiro maduro colhe e replanta na hora; em canteiro com cultivo escolhido, planta (grátis, jogo aberto).
 import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
-import { EQUIP_CARDS, EQUIP_RARITIES, EXP, RARITIES, VEHICLE_BY_ID, ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, ACCOUNT_TREE, FISHING, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
+import { EQUIP_CARDS, EQUIP_RARITIES, EXP, RARITIES, VEHICLE_BY_ID, ANIMALS, ANIMAL_BY_ID, ANIMAL_EMOJI, ANIMAL_RULES, HOUSES, HOUSE_NAMES, itemInfo, CHARS, CLASSES, CLASS_TOOLS, CROPS, CROP_LIST, FARM, LEVELS, STALL_RATIO, LOT_BY_ID, LOT_TYPE_NAMES, MAX_LEVEL, PETS, RARITY_BY_ID, FISHING, SNACKS, TOOL_MATERIALS, VEHICLES, WORK, type Crop } from '../data';
 import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
 import { RARITY_ORDER, rarityMult, refurbCost, refurbNext, repairCost, vehicleStatus } from '../farm/expeditions';
 import { dropColor, dropName, openGarage } from './garage';
 import {
   animalLook, classDef, collectUnits, feedPerCycle, hireCost, hoursToNext, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook, rareSeeds,
-  accountPoints, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
+  fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
 } from '../farm/rules';
 import { applyState, store } from '../farm/store';
 import {
   adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
-  sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, accountSkillAdd, accountSkillReset, collectFish, tendFarm, repairRod,
+  sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, collectFish, tendFarm, repairRod,
   equipItem, mergeItems, refurbishVehicle, repairVehicle, setTimezone, clientPing, warningSeen,
   type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
@@ -22,6 +22,7 @@ import { supabase } from '../net/supabase';
 import { duration, formatGold } from './format';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
 import { hudCards, maybeOpenPack, openCards, openMissions, renderHand, type CardsCtx } from './cards-ui';
+import { hudPassives, openPassives } from './passives-ui';
 import { deviceTz } from '../farm/weather';
 import { bindVisitHud, hudSocial, openHelp, openSocial, visitHud, type SocialCtx } from './social-ui';
 import { hudVillage, openVillage } from './village-ui';
@@ -214,12 +215,13 @@ function refreshCards(): void {
   const slot = hud?.querySelector<HTMLElement>('.cards-slot');
   if (!s || !slot) return;
   renderHandThrottled(s);
-  const html = hudCards(cardsCtx(), s);
+  const html = hudCards(cardsCtx(), s) + hudPassives(s);
   if (html === cardsKey) return;
   cardsKey = html;
   slot.innerHTML = html;
   slot.querySelector('[data-missions]')?.addEventListener('click', () => openMissions(cardsCtx()));
   slot.querySelectorAll('[data-cards]').forEach((b) => b.addEventListener('click', () => openCards(cardsCtx())));
+  slot.querySelector('[data-passives]')?.addEventListener('click', () => openPassives({ show, act, esc }));
 }
 
 let handKey = '';
@@ -831,22 +833,6 @@ function equipSlot(s: FarmState, c: CharacterState, slot: 'cloth' | 'amulet'): s
       ${cur ? `<button type="button" class="secondary" data-equip-item="" data-equip-slot="${slot}">Tirar</button>` : ''}</span></div></div>`;
 }
 
-/** árvore de habilidades da conta (R3): 12 nós em 3 ramos, 1 ponto por nível */
-function skillsTab(s: FarmState): string {
-  const at = s.account_tree ?? { skills: {}, points: 0, spent: 0, free_reset: true, reset_cost: 0 };
-  const pts = accountPoints(s.level, at.skills);
-  const branches = ACCOUNT_TREE.branches.map((br) => `<h3>${esc(br.name_pt)}</h3><ul class="items skills">${br.nodes.map((n) => {
-    const p = at.skills[n.id] ?? 0, full = p >= ACCOUNT_TREE.node_max;
-    return `<li><span class="node-name">${esc(n.name_pt)}</span>
-      <span><strong>${esc(n.text_pt)}</strong> por ponto<small>${p}/${ACCOUNT_TREE.node_max}${p ? ` · agora ${n.per_point > 0 ? '+' : '−'}${Math.abs(n.per_point * p)}${n.effect === 'max_energy' ? '' : '%'}` : ''}</small></span>
-      <span class="btns"><button type="button" class="secondary small-btn" data-askill="${n.id}" ${pts.free > 0 && !full ? '' : 'disabled'} aria-label="Pôr 1 ponto">+</button></span></li>`;
-  }).join('')}</ul>`).join('');
-  return `<p class="status"><strong>Habilidades da fazenda</strong> · pontos livres: <strong>${pts.free}</strong> de ${pts.total} (1 por nível da conta). Valem para toda a equipe.</p>
-    ${branches}
-    <div class="row"><button type="button" class="secondary" data-areset ${pts.spent ? '' : 'disabled'}>${at.free_reset ? 'Resetar (grátis esta semana)' : `Resetar · ${formatGold(at.reset_cost)}`}</button></div>
-    <p class="hint">12 nós de até ${ACCOUNT_TREE.node_max} pontos. No nível 50 são ${accountPoints(50, {}).total} pontos: não dá para completar tudo, escolha bem.</p>`;
-}
-
 function petsTab(s: FarmState): string {
   if (s.level < PETS.unlock_level) return `<p class="empty">Os pets chegam no nível ${PETS.unlock_level}. O primeiro é grátis.</p>`;
   const wait = petSwapWaitDays(s.pet_swapped_at, new Date(s.server_now));
@@ -892,14 +878,7 @@ function bindTeam(el: HTMLElement, pick: (cls: string) => void): void {
     b.disabled = true;
     void act(() => equipItem(cls, b.dataset.equipSlot as 'cloth' | 'amulet', b.dataset.equipItem || null), b.dataset.equipItem ? 'Item equipado.' : 'Item guardado.');
   }));
-  el.querySelectorAll<HTMLButtonElement>('[data-askill]').forEach((b) => b.addEventListener('click', () => {
-    b.disabled = true;
-    void act(() => accountSkillAdd(b.dataset.askill!));
-  }));
-  el.querySelector<HTMLButtonElement>('[data-areset]')?.addEventListener('click', (e) => {
-    (e.currentTarget as HTMLButtonElement).disabled = true;
-    void act(() => accountSkillReset(), 'Pontos devolvidos.');
-  });
+
   el.querySelectorAll<HTMLButtonElement>('[data-equip]').forEach((b) => b.addEventListener('click', () => {
     const cls = el.querySelector<HTMLButtonElement>('[data-pick-char][aria-selected="true"]')?.dataset.pickChar ?? 'agricultor';
     b.disabled = true;
@@ -960,13 +939,12 @@ function openZone(id: string, tab = 'silo'): void {
     show('Casa', () => {
       const s = store.state!;
       if (!s.characters.some((c) => c.class_id === picked)) picked = s.characters[0]?.class_id ?? 'agricultor';
-      const tabs = [['silo', 'Silo'], ['operadores', 'Operadores'], ['equipamentos', 'Equipamentos'], ['habilidades', 'Habilidades'], ['pets', 'Pets']]
+      const tabs = [['silo', 'Silo'], ['operadores', 'Operadores'], ['equipamentos', 'Equipamentos'], ['pets', 'Pets']]
         .map(([k, n]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${active === k}">${n}</button>`).join('');
       let body = '';
       if (active === 'silo') body = siloItems(false) + `<h3>Itens</h3>${itemsList(s)}<p class="hint">Para vender, use a Barraca (na hora, sem risco) ou a Garagem (expedição, preço maior com risco).</p>`;
       if (active === 'operadores') body = operatorsTab(s);
       if (active === 'equipamentos') body = equipmentTab(s, picked);
-      if (active === 'habilidades') body = skillsTab(s);
       if (active === 'pets') body = petsTab(s);
       return `<div class="tabs wrap" role="tablist">${tabs}</div>${body}`;
     }, (el) => {

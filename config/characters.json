@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
   "field_slots": 3,
   "bench_slots": 3,
@@ -175,114 +175,414 @@
   "active_phase_note": "efeitos de habilidade com \"phase\" maior que este número ficam guardados e ligam na fase deles",
   "skill_tree_note": "R3 (01/11): as árvores dos personagens viraram a árvore da conta (account_tree); os personagens mantêm só o trabalho da classe",
   "account_tree": {
+    "name_pt": "Árvore de Passivas",
     "points_per_level": 1,
     "from_level": 2,
-    "node_max": 5,
     "free_resets_per_week": 1,
     "extra_reset_cost_R_ratio": 0.5,
     "income_estimate_full": 0.15,
     "income_estimate_points": 49,
-    "note": "aprovada pelo dono em 01/11/2026: 1 ponto por nível da conta (49 no nível 50), 12 nós × 5 = 60, o jogador escolhe; o simulador estima a renda por pontos ÷ 49 × 15%",
+    "canvas": [
+      1000,
+      640
+    ],
+    "root": {
+      "id": "raiz",
+      "name_pt": "Fazenda",
+      "icon": "🏡",
+      "pos": [
+        500,
+        575
+      ]
+    },
+    "note": "aprovada pelo dono em 01/11/2026: 3 ramos × (4 nós de até 5 pontos + Ultimate de 5 pontos); A abre B e C (1 ponto), B ou C com 3 abre D, Ultimate pede 15 pontos no ramo; 49 pontos no nível 50",
     "branches": [
       {
-        "id": "gestao",
-        "name_pt": "Gestão",
+        "id": "natureza",
+        "name_pt": "Caminho da Natureza",
+        "color_hex": "#5fbf4a",
         "nodes": [
           {
-            "id": "salarios",
-            "name_pt": "Salários",
-            "effect": "salary_pct",
-            "per_point": -3,
-            "text_pt": "−3% no salário dos personagens"
+            "id": "mao_verde",
+            "name_pt": "Mão Verde",
+            "icon": "🌱",
+            "text_pt": "chance de a semente nascer pronta",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "instant_growth_chance_pct",
+                "per_point": 1
+              }
+            ],
+            "pos": [
+              310,
+              470
+            ]
           },
           {
-            "id": "eficiencia",
-            "name_pt": "Eficiência",
-            "effect": "team_capacity_pct",
-            "per_point": 2,
-            "text_pt": "+2% de trabalho da equipe"
+            "id": "carinho_animal",
+            "name_pt": "Carinho Animal",
+            "icon": "🐄",
+            "text_pt": "produção dos animais e ração mais barata",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "animal_production_pct",
+                "per_point": 2
+              },
+              {
+                "effect": "feed_cost_pct",
+                "per_point": -4
+              }
+            ],
+            "pos": [
+              170,
+              350
+            ],
+            "requires": [
+              {
+                "node": "mao_verde",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "comercio",
-            "name_pt": "Comércio",
-            "effect": "sales_gold_pct",
-            "per_point": 1,
-            "text_pt": "+1% de ouro nas vendas"
+            "id": "mestre_pescador",
+            "name_pt": "Mestre Pescador",
+            "icon": "🎣",
+            "text_pt": "chance de peixe Lendário (vale o dobro)",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "legendary_fish_pct",
+                "per_point": 3
+              }
+            ],
+            "pos": [
+              330,
+              330
+            ],
+            "requires": [
+              {
+                "node": "mao_verde",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "aves",
-            "name_pt": "Aves",
-            "effect": "bird_production_pct",
-            "per_point": 2,
-            "text_pt": "+2% na produção das aves"
+            "id": "terra_fertil",
+            "name_pt": "Terra Fértil",
+            "icon": "🌾",
+            "text_pt": "crescimento da lavoura e do pomar",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "growth_all_pct",
+                "per_point": 2
+              }
+            ],
+            "pos": [
+              240,
+              210
+            ],
+            "requires_any": [
+              {
+                "node": "carinho_animal",
+                "min": 3
+              },
+              {
+                "node": "mestre_pescador",
+                "min": 3
+              }
+            ]
+          },
+          {
+            "id": "mutacao",
+            "name_pt": "Mutação Genética",
+            "icon": "🧬",
+            "text_pt": "10% das colheitas (lavoura, pomar e animais) rendem em dobro",
+            "max": 1,
+            "cost": 5,
+            "effects": [
+              {
+                "effect": "double_all_pct",
+                "per_point": 10
+              }
+            ],
+            "pos": [
+              240,
+              80
+            ],
+            "requires": [
+              {
+                "node": "terra_fertil",
+                "min": 1
+              }
+            ],
+            "requires_branch_points": 15,
+            "ultimate": true
           }
         ]
       },
       {
-        "id": "vigor",
-        "name_pt": "Vigor",
+        "id": "comercio",
+        "name_pt": "Caminho do Comércio",
+        "color_hex": "#f2c230",
         "nodes": [
           {
-            "id": "energia",
-            "name_pt": "Energia",
-            "effect": "max_energy",
-            "per_point": 5,
-            "text_pt": "+5 de energia máxima"
+            "id": "labia",
+            "name_pt": "Lábia de Mercador",
+            "icon": "💬",
+            "text_pt": "preço da Barraca (e do mercado, quando existir)",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "stall_price_pts",
+                "per_point": 1
+              }
+            ],
+            "pos": [
+              500,
+              450
+            ]
           },
           {
-            "id": "folego",
-            "name_pt": "Fôlego",
-            "effect": "energy_use_pct",
-            "per_point": -3,
-            "text_pt": "−3% no gasto de energia"
+            "id": "logistica",
+            "name_pt": "Logística Leve",
+            "icon": "🚚",
+            "text_pt": "menos desgaste dos veículos",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "vehicle_wear_pct",
+                "per_point": -5
+              }
+            ],
+            "pos": [
+              415,
+              330
+            ],
+            "requires": [
+              {
+                "node": "labia",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "descanso",
-            "name_pt": "Descanso",
-            "effect": "rest_speed_pct",
-            "per_point": 6,
-            "text_pt": "+6% na recuperação no banco"
+            "id": "manutencao",
+            "name_pt": "Manutenção Eficiente",
+            "icon": "🔧",
+            "text_pt": "consertos mais baratos e ferramentas gastam menos",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "repair_cost_pct",
+                "per_point": -5
+              },
+              {
+                "effect": "tool_wear_pct",
+                "per_point": -3
+              }
+            ],
+            "pos": [
+              585,
+              330
+            ],
+            "requires": [
+              {
+                "node": "labia",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "lanches",
-            "name_pt": "Lanches",
-            "effect": "snack_effect_pct",
-            "per_point": 5,
-            "text_pt": "+5% de energia em cada lanche"
+            "id": "rotas",
+            "name_pt": "Rotas Seguras",
+            "icon": "🛡️",
+            "text_pt": "sucesso nas expedições",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "expedition_success_pts",
+                "per_point": 1
+              }
+            ],
+            "pos": [
+              500,
+              210
+            ],
+            "requires_any": [
+              {
+                "node": "logistica",
+                "min": 3
+              },
+              {
+                "node": "manutencao",
+                "min": 3
+              }
+            ]
+          },
+          {
+            "id": "contrabando",
+            "name_pt": "Contrabando",
+            "icon": "📦",
+            "text_pt": "+25% de carga em todos os veículos",
+            "max": 1,
+            "cost": 5,
+            "effects": [
+              {
+                "effect": "cargo_capacity_pct",
+                "per_point": 25
+              }
+            ],
+            "pos": [
+              500,
+              80
+            ],
+            "requires": [
+              {
+                "node": "rotas",
+                "min": 1
+              }
+            ],
+            "requires_branch_points": 15,
+            "ultimate": true
           }
         ]
       },
       {
-        "id": "oficina",
-        "name_pt": "Oficina",
+        "id": "resistencia",
+        "name_pt": "Caminho da Resistência",
+        "color_hex": "#e5383b",
         "nodes": [
           {
-            "id": "ferramentas",
-            "name_pt": "Ferramentas",
-            "effect": "tool_wear_pct",
-            "per_point": -4,
-            "text_pt": "−4% no desgaste das ferramentas"
+            "id": "cafe_forte",
+            "name_pt": "Café Forte",
+            "icon": "☕",
+            "text_pt": "o 1º lanche do dia de cada personagem recupera mais",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "first_snack_pct",
+                "per_point": 10
+              }
+            ],
+            "pos": [
+              690,
+              470
+            ]
           },
           {
-            "id": "veiculos",
-            "name_pt": "Veículos",
-            "effect": "vehicle_wear_pct",
-            "per_point": -4,
-            "text_pt": "−4% no desgaste dos veículos"
+            "id": "sinergia",
+            "name_pt": "Sinergia de Equipe",
+            "icon": "🤝",
+            "text_pt": "com os 3 Slots de Campo ocupados, todos gastam menos energia",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "synergy_energy_pct",
+                "per_point": -3
+              }
+            ],
+            "pos": [
+              670,
+              330
+            ],
+            "requires": [
+              {
+                "node": "cafe_forte",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "consertos",
-            "name_pt": "Consertos",
-            "effect": "repair_cost_pct",
-            "per_point": -5,
-            "text_pt": "−5% no custo dos consertos"
+            "id": "folego_ferro",
+            "name_pt": "Fôlego de Ferro",
+            "icon": "🫁",
+            "text_pt": "abaixo de 30% de energia, gasta menos",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "low_energy_use_pct",
+                "per_point": -6
+              }
+            ],
+            "pos": [
+              830,
+              350
+            ],
+            "requires": [
+              {
+                "node": "cafe_forte",
+                "min": 1
+              }
+            ]
           },
           {
-            "id": "limpeza",
-            "name_pt": "Limpeza",
-            "effect": "cleanup_time_pct",
-            "per_point": -5,
-            "text_pt": "−5% no tempo de limpeza dos lotes"
+            "id": "folha",
+            "name_pt": "Folha de Pagamento",
+            "icon": "💰",
+            "text_pt": "salários mais baratos",
+            "max": 5,
+            "cost": 1,
+            "effects": [
+              {
+                "effect": "salary_pct",
+                "per_point": -3
+              }
+            ],
+            "pos": [
+              760,
+              210
+            ],
+            "requires_any": [
+              {
+                "node": "sinergia",
+                "min": 3
+              },
+              {
+                "node": "folego_ferro",
+                "min": 3
+              }
+            ]
+          },
+          {
+            "id": "segundo_folego",
+            "name_pt": "Segundo Fôlego",
+            "icon": "💫",
+            "text_pt": "1×/dia, ao zerar a energia, o personagem volta com 30% sem ir ao banco",
+            "max": 1,
+            "cost": 5,
+            "effects": [
+              {
+                "effect": "daily_revive_pct",
+                "per_point": 30
+              }
+            ],
+            "pos": [
+              760,
+              80
+            ],
+            "requires": [
+              {
+                "node": "folha",
+                "min": 1
+              }
+            ],
+            "requires_branch_points": 15,
+            "ultimate": true
           }
         ]
       }

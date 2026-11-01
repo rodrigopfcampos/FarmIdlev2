@@ -71,7 +71,7 @@ const state: FarmState = {
   houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' } },
   lake: true,
   fishing: { cycles: 2, max: 4, fish_t: T - 2.4 * 7200, cycle_s: 7200, species: 'fish_truta', rod: 24, rod_repair: 990 },
-  account_tree: { skills: { eficiencia: 3, energia: 2 }, points: 10, spent: 5, free_reset: true, reset_cost: 43500 },
+  account_tree: { skills: { labia: 4, logistica: 3, manutencao: 1, mao_verde: 1 }, points: 10, spent: 9, free_reset: true, reset_cost: 43500 },
   vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
     { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
   expeditions: [{ id: 'm1', convoy_id: 'c1', vehicle_id: 'carro', route_id: 'cidade', cargo: { batata: 80, alface: 40 }, insurance: 120, led: false, minigame: 'done',

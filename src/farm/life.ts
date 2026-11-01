@@ -27,6 +27,8 @@ export function randomFreePoint(poly: Pt[], avoid: Rect[], rnd: () => number, ma
     const x = Math.round(x0 + rnd() * (x1 - x0)), y = Math.round(y0 + rnd() * (y1 - y0));
     if (isFree(x, y, poly, avoid, margin)) return [x, y];
   }
+  // sem achar com margem, tenta sem ela (nunca dentro de prédio); por fim, o centro
+  if (margin > 0) return randomFreePoint(poly, avoid, rnd, 0);
   return [Math.round(xs.reduce((a, b) => a + b) / xs.length), Math.round(ys.reduce((a, b) => a + b) / ys.length)];
 }
 

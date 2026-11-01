@@ -116,6 +116,8 @@
     "idle_fps": 4,
     "walk_fps": 6,
     "scale": 1,
+    "scale_by_sprite": { "cow": 1, "chicken": 0.55, "duck": 0.6, "rabbit": 0.55 },
+    "edge_margin_px": 10,
     "speed_px_s": {
       "cow": 9,
       "chicken": 14,

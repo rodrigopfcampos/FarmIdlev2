@@ -49,9 +49,11 @@ export class LifeLayer {
   }
 
   private makeWalker(key: string, area: Area): Walker {
-    const at = randomFreePoint(area.poly, area.avoid, rnd);
-    const spr = this.scene.add.sprite(at[0], at[1], key, 0).setOrigin(0.5, 1).setScale(W.scale).setDepth(depthOf(at[1]));
+    const at = randomFreePoint(area.poly, area.avoid, rnd, W.edge_margin_px);
     const kind = key.replace('animal_walk_', '') as keyof typeof W.speed_px_s;
+    // tamanho de cada bicho em relação à vaca (galinha, pato e coelho bem menores)
+    const size = W.scale * ((W.scale_by_sprite as Record<string, number>)[kind] ?? 1);
+    const spr = this.scene.add.sprite(at[0], at[1], key, 0).setOrigin(0.5, 1).setScale(size).setDepth(depthOf(at[1]));
     if (!this.calm) spr.play({ key: `${key}_idle`, startFrame: Math.floor(rnd() * W.idle_frames.length) });
     return { spr, key, area, at, to: null, speed: W.speed_px_s[kind] ?? 12, until: performance.now() + between(W.idle_ms), frame0: 0 };
   }
@@ -109,7 +111,7 @@ export class LifeLayer {
       for (let k = 0; k < 12 && !w.to; k++) {
         const ang = rnd() * Math.PI * 2, len = between(W.step_px);
         const p: Pt = [Math.round(w.at[0] + Math.cos(ang) * len), Math.round(w.at[1] + Math.sin(ang) * len * 0.5)];
-        if (clearPath(w.at, p, w.area.poly, w.area.avoid)) w.to = p;
+        if (clearPath(w.at, p, w.area.poly, w.area.avoid, W.edge_margin_px)) w.to = p;
       }
       if (!w.to) { w.until = now + between(W.idle_ms); return; }
       w.spr.setFlipX(w.to[0] > w.at[0]); // a arte olha para a esquerda

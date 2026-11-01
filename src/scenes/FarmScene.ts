@@ -87,10 +87,10 @@ export class FarmScene extends Phaser.Scene {
         this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '' });
       });
       // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
-      const hasOverlay = lot.type === 'lavoura';
+      const hasOverlay = lot.type === 'lavoura' && ANIM.map_marks.locked_shade;
       const polyW = Math.max(...lot.polygon.map((p) => p[0])) - Math.min(...lot.polygon.map((p) => p[0]));
       const overlay = hasOverlay ? this.lockedOverlay(lot) : undefined;
-      const sign = lot.sign_anchor ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
+      const sign = lot.sign_anchor && ANIM.map_marks.lot_signs ? this.add.image(lot.sign_anchor[0], lot.sign_anchor[1], 'lot_sign').setOrigin(0.5, 1).setDepth(depthOf(lot.sign_anchor[1])).setVisible(false) : undefined;
       const timer = this.text().setOrigin(0.5, 0.5).setPosition(lot.center[0], lot.center[1] - 26).setDepth(19).setVisible(false);
       // Celeiro e Galinheiro já estão desenhados no mapa v3 (building_in_map): só o aviso fica por cima
       const inMap = (lot as Lot & { building_in_map?: boolean }).building_in_map;
@@ -553,6 +553,7 @@ export class FarmScene extends Phaser.Scene {
     this.hover.clear();
     this.input.setDefaultCursor(hit ? 'pointer' : 'default');
     if (!hit || !store.state) { this.label.setVisible(false); return; }
+    if (!ANIM.map_marks.hover_outline) { this.label.setText(this.hoverText(hit)).setPosition(Math.round(x + 10), Math.round(y - 22)).setVisible(true); return; }
     this.hover.lineStyle(1, hit.kind === 'locked' ? 0x9e9e9e : 0xf2c230, 1);
     if (hit.poly) this.hover.strokePoints(hit.poly.map(([px, py]) => new Phaser.Math.Vector2(px, py)), true, true);
     if (hit.rect) this.hover.strokeRect(hit.rect[0], hit.rect[1], hit.rect[2] - hit.rect[0], hit.rect[3] - hit.rect[1]);

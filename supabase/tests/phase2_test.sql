@@ -137,15 +137,12 @@ begin
   select count(*) into n from public.ledger where user_id = b and reason = 'seeds';
   if (select sum(amount) from public.ledger where user_id = b and reason = 'seeds') > -100 then raise exception 'FALHA 23: semente do morango não cobrada'; end if;
 
-  -- 9. ferramenta: Cobre só no nível 8; aumenta o trabalho em 40%
+  -- 9. ferramenta (v3): sobe sozinha para o Cobre no nível 8 e aumenta o trabalho em 40%
   perform set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
-  set local role authenticated;
-  begin perform public.upgrade_tool('agricultor'); raise exception 'FALHA 24: Cobre no nível 4';
-  exception when check_violation then null; end;
-  reset role;
+  update public.tools set material = 'wood' where user_id = b;  -- volta à Madeira (no nível 4 ela não sobe)
   update public.farms set level = 8 where user_id = b;
   set local role authenticated;
-  s := public.upgrade_tool('agricultor');
+  s := public.get_farm();
   if (s -> 'tools' ->> 'agricultor') <> 'copper' or abs((s ->> 'labor_per_hour')::numeric - 2.67 * 1.4) > 0.001 then
     raise exception 'FALHA 25: ferramenta % trabalho %', s -> 'tools' ->> 'agricultor', s ->> 'labor_per_hour';
   end if;

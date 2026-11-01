@@ -38,8 +38,8 @@ describe('compra de lotes', () => {
     expect(lotOffer('P5', owned, 50, 1, 1e12)!.problems).toEqual([]);
   });
   it('limpeza: 1 h + 12 min × n, em dobro sem Ferreiro', () => {
-    expect(cleanupMinutes(1, true)).toBe(72);
-    expect(cleanupMinutes(1)).toBe(144);
+    expect(cleanupMinutes(1, true)).toBe(24); // com o Ferreiro em campo, 3× mais rápido
+    expect(cleanupMinutes(1)).toBe(72);
   });
   it('lote seu não aparece à venda', () => {
     expect(lotOffer('A1', start, 50, 0, 1e9)).toBeNull();
@@ -128,10 +128,11 @@ describe('personagens (fase 3)', () => {
     expect(fishCycles(0, 30 * 7200)).toBe(4);
     expect(fishCycles(null, 99999)).toBe(0);
   });
-  it('limpeza: sem Ferreiro o dobro; ramo Obras reduz', () => {
-    expect(cleanupMinutes(1, true)).toBe(72);
-    expect(cleanupMinutes(1, false)).toBe(144);
-    expect(cleanupMinutes(1, true, -0.3)).toBeCloseTo(50.4);
+  it('limpeza: com o Ferreiro em campo 3× mais rápida; nó Limpeza reduz', () => {
+    expect(cleanupMinutes(1, true)).toBe(24);
+    expect(cleanupMinutes(1, false)).toBe(72);
+    expect(cleanupMinutes(28, false)).toBe(396);
+    expect(cleanupMinutes(1, true, -0.25)).toBeCloseTo(18);
   });
 });
 

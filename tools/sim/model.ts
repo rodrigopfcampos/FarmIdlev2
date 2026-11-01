@@ -215,6 +215,10 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const got = (player + team) * per * incomeMult(t);
     gold += got; income += got; dayIncome += got; incomeByLevel[level] += got;
     fishT = total > F.max_cycles ? t : fishT + player * cyc;
+    // Vara de Pescar: gasta por ciclo e o jogador conserta (preço da ferramenta do nível)
+    const tier = [...mats].reverse().find((m: any) => m.unlock_level <= level) ?? mats[0];
+    const rodCost = (player + (total > F.max_cycles ? Math.floor(total - F.max_cycles) : 0)) * F.rod.wear_per_cycle / 100 * tier.repair_cost_gold;
+    gold -= rodCost; toolRepairs += rodCost;
   }
 
   function session(t: number) {
@@ -400,10 +404,8 @@ export function simulate(profileId: string, p: SimParams): SimResult {
         if (rf.min_level <= level && kits[v.rarity + 1] >= 1 && secondaryOk(cost)) { gold -= cost; spend.refurbish += cost; kits[v.rarity + 1] -= 1; v.rarity++; did = true; }
       }
       if (did) continue;
-      // 6. ferramentas: melhorar o material de quem trabalha mais na fazenda
-      const cand = chars.filter((c) => c.hired && c.mat < 4 && mats[c.mat + 1].unlock_level <= level)
-        .sort((a, b) => a.mat - b.mat || (a.role === 'crops' || a.role === 'animals_orchard' ? -1 : 1));
-      if (cand.length && secondaryOk(mats[cand[0].mat + 1].upgrade_cost_gold)) { gold -= mats[cand[0].mat + 1].upgrade_cost_gold; spend.tools += mats[cand[0].mat + 1].upgrade_cost_gold; cand[0].mat++; cand[0].dura = 100; continue; }
+      // 6. ferramentas (v3): melhoram sozinhas com o nível da conta, de graça
+      for (const c of chars) while (c.mat < 4 && mats[c.mat + 1].unlock_level <= level) c.mat++;
       break;
     }
   }

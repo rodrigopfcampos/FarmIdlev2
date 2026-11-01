@@ -50,7 +50,7 @@ export type FarmState = {
   auto_sell: string[]; characters: CharacterState[]; pets: PetState[]; pet: { id: string; level: number; factor: number; linked: string | null } | null;
   snack_prices: Record<string, number>; fx: TeamFx;
   animals: AnimalState[]; houses: Record<string, HouseState>; lake: boolean;
-  fishing?: { cycles: number; max: number; fish_t: number; cycle_s: number; species: string } | null;
+  fishing?: { cycles: number; max: number; fish_t: number; cycle_s: number; species: string; rod: number; rod_repair: number } | null;
   account_tree?: { skills: Record<string, number>; points: number; spent: number; free_reset: boolean; reset_cost: number };
   vehicles: VehicleState[]; expeditions: ExpeditionState[]; exp_fail_streak: number; lead: LeadInfo | null;
   demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
@@ -100,6 +100,8 @@ const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',
   'carta não encontrada': 'Essa carta não está mais no seu fichário.',
   'raridade menor que a do buff ativo': 'Essa carta já está ativa com raridade maior. Use uma de raridade igual ou maior.',
+  'a vara já está inteira': 'A Vara de Pescar já está inteira.',
+  'a ferramenta melhora sozinha com o nível': 'A ferramenta melhora sozinha quando a fazenda sobe de nível.',
   'a rede ainda está vazia': 'A rede ainda está vazia: cada ciclo leva 2 h.',
   'compre o Lago para pescar': 'Compre o Lago para pescar.',
   'sem pontos de habilidade': 'Sem pontos livres: ganhe 1 a cada nível.',
@@ -270,6 +272,7 @@ export const equipSnack = (cls: string, snack: string | null) => rpc('equip_snac
 export const accountSkillAdd = (node: string) => rpc('account_skill_add', { p_node: node });
 export const accountSkillReset = () => rpc('account_skill_reset');
 export const collectFish = () => rpc('collect_fish');
+export const repairRod = () => rpc('repair_rod');
 export const adoptPet = (pet: string) => rpc('adopt_pet', { p_pet: pet });
 export const setActivePet = (pet: string) => rpc('set_active_pet', { p_pet: pet });
 export const linkPet = (cls: string) => rpc('link_pet', { p_class: cls });

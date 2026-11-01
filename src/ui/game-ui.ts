@@ -14,7 +14,7 @@ import {
 import { applyState, store } from '../farm/store';
 import {
   adoptPet, buyAnimal, buyLot, removeAnimal, upgradeHouse, buySnack, carePet, chopTree, equipSnack, hire, linkPet, paySalaries, plantRareSeed, plantRareTree, plantTree, repairTool,
-  sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, accountSkillAdd, accountSkillReset, collectFish, tendFarm, upgradeTool,
+  sellAtStall, setActivePet, setAutoSell, setCrop, setSlot, accountSkillAdd, accountSkillReset, collectFish, tendFarm, repairRod,
   equipItem, mergeItems, refurbishVehicle, repairVehicle, setTimezone, clientPing, warningSeen,
   type AnimalState, type CharacterState, type FarmState, type PlotState,
 } from '../net/farmApi';
@@ -71,6 +71,10 @@ function charPortrait(cls: string): string {
 const className = (id: string) => classDef(id)?.name_pt ?? id;
 const toolCard = (cls: string) => CLASS_TOOLS.find((t) => t.class_id === cls)!;
 const matDef = (id: string) => TOOL_MATERIALS.find((m) => m.id === id) ?? TOOL_MATERIALS[0];
+/** v3: a ferramenta é a carta dela (Comum) e o "nível da ferramenta" sobe sozinho com a fazenda */
+const toolArt = (cls: string, scale = 0.36) => sprite(`card_full_${(toolCard(cls) as { card_id?: string }).card_id ?? 'enxada'}_common`, scale);
+const toolLevel = (id: string) => TOOL_MATERIALS.findIndex((m) => m.id === id) + 1;
+const nextToolTier = (level: number) => TOOL_MATERIALS.find((m) => m.unlock_level > level);
 /** preço da Barraca agora (Comerciante em campo e habilidades sobem) e o bônus de ouro em vendas */
 const stallRatio = () => store.state?.fx?.stall_ratio ?? STALL_RATIO;
 const salesMult = () => 1 + (store.state?.fx?.sales_gold ?? 0);
@@ -598,16 +602,27 @@ function onPastureClick(lot: string): void {
   else openHouse(house);
 }
 
-/** Lago: rede pronta recolhe na hora; senão mostra quanto falta */
+/** Lago: rede pronta recolhe na hora; senão mostra a rede e a Vara de Pescar (desgaste e conserto) */
 function openLake(): void {
-  const s = store.state!;
-  const f = s.fishing;
-  const lb = ANIMAL_RULES.lake_bonus;
-  if (f && fishCycles(f.fish_t, store.clock.farmNow()) > 0) { void act(() => collectFish(), 'Rede recolhida: peixe no Silo!'); return; }
-  const sp = fishSpecies(s.level);
-  const next = f ? f.fish_t + FISHING.cycle_minutes * 60 - store.clock.farmNow() : 0;
-  openInfo('Lago', `${f ? `A rede enche sozinha: 1 ciclo a cada ${FISHING.cycle_minutes / 60} h, até ${FISHING.max_cycles} ciclos (${FISHING.cycle_minutes * FISHING.max_cycles / 60} h). Próximo ciclo em ${duration(Math.max(0, next))}. Espécie: ${sp.name_pt}. ` : ''}`
-    + `O peixe vai para o Silo (venda na Barraca ou leve na expedição). Fora do jogo a equipe recolhe a rede cheia. O Lago também dá +${lb.extra_galinheiro_slots} vagas no Galinheiro, só para aves.`);
+  const s0 = store.state!;
+  const f0 = s0.fishing;
+  if (f0 && fishCycles(f0.fish_t, store.clock.farmNow()) > 0) { void act(() => collectFish(), 'Rede recolhida: peixe no Silo!'); return; }
+  show('Lago', () => {
+    const s = store.state!, f = s.fishing, lb = ANIMAL_RULES.lake_bonus;
+    if (!f) return `<p>Compre o Lago para pescar. Ele também dá +${lb.extra_galinheiro_slots} vagas de ave no Galinheiro.</p>`;
+    const sp = fishSpecies(s.level), now = store.clock.farmNow(), cyc = fishCycles(f.fish_t, now);
+    const next = f.fish_t + FISHING.cycle_minutes * 60 * (cyc + 1) - now;
+    const low = f.rod < FISHING.rod.low_threshold;
+    return `<p>Rede: <strong>${cyc}/${FISHING.max_cycles}</strong> ciclos de ${esc(sp.name_pt)}${cyc < FISHING.max_cycles ? ` · próximo em ${duration(Math.max(0, next))}` : ' · cheia'}.</p>
+      <div class="char-card">${sprite('card_full_pesca_common', 0.36)}<div class="grow"><strong>Vara de Pescar</strong>
+        <span class="energy dura ${low ? 'low' : ''}"><span style="width:${Math.round(f.rod)}%"></span></span>
+        <small>Durabilidade ${nf1.format(f.rod)} de 100 · gasta ${nf1.format(FISHING.rod.wear_per_cycle)} por ciclo recolhido${low ? ` · <span class="bad">abaixo de ${FISHING.rod.low_threshold}: a pesca rende a metade</span>` : ''}</small>
+        <span class="btns"><button type="button" class="secondary" data-rod ${f.rod >= 100 || s.gold < f.rod_repair ? 'disabled' : ''}>Consertar · ${formatGold(f.rod_repair)}</button></span></div></div>
+      <p class="hint">A rede enche sozinha: 1 ciclo a cada ${FISHING.cycle_minutes / 60} h, até ${FISHING.max_cycles}. Clique no Lago para recolher; fora do jogo a equipe recolhe a rede cheia. O peixe vai para o Silo. O Lago também dá +${lb.extra_galinheiro_slots} vagas de ave no Galinheiro.</p>`;
+  }, (el) => el.querySelector<HTMLButtonElement>('[data-rod]')?.addEventListener('click', (e) => {
+    (e.currentTarget as HTMLButtonElement).disabled = true;
+    void act(() => repairRod(), 'Vara de Pescar consertada.');
+  }));
 }
 
 function animalStatus(a: AnimalState): string {
@@ -791,11 +806,12 @@ function equipmentTab(s: FarmState, sel: string): string {
   const owned = SNACKS.filter((x) => (s.inventory[x.id] ?? 0) > 0);
   const linked = s.pet?.linked === c.class_id ? `<p class="hint">${PET_EMOJI[s.pet.id]} Vinculado ao pet ativo: +${PETS.per_level_work_pct * s.pet.level}% de trabalho e −${PETS.per_level_energy_use_pct * s.pet.level}% de energia.</p>` : '';
   return `${charChips(s, c.class_id)}
-    <div class="char-card">${sprite(`${tc.id}_${m.id}`, 2)}<div class="grow"><strong>${esc(tc.name_pt)} de ${esc(m.name_pt)}</strong>
+    <div class="char-card">${toolArt(c.class_id)}<div class="grow"><strong>${esc(tc.name_pt)} · nível ${toolLevel(m.id)} (×${nf1.format(m.work_capacity_multiplier)} de trabalho)</strong>
       <span class="energy dura ${low ? 'low' : ''}" title="Durabilidade ${nf1.format(c.durability)}"><span style="width:${Math.round(c.durability)}%"></span></span>
       <small>Durabilidade ${nf1.format(c.durability)} de 100 · perde 2,5 por hora de trabalho${low ? ' · <span class="bad">abaixo de 30: trabalha a 50%</span>' : ''}</small>
       <span class="btns"><button type="button" class="secondary" data-repair="${c.class_id}" ${c.durability >= 100 || s.gold < repair ? 'disabled' : ''}>Consertar · ${formatGold(repair)}</button>
-      <button type="button" class="secondary" data-forge>Melhorar na Forja</button></span></div></div>
+</span>
+      <small>${nextToolTier(s.level) ? `Melhora sozinha no nível ${nextToolTier(s.level)!.unlock_level} da fazenda.` : 'Ferramenta no nível máximo.'}</small></div></div>
     <div class="char-card">${snack ? sprite(snack.id, 1) : '<span class="px empty-box"></span>'}<div class="grow"><strong>Lanche</strong>
       <small>${snack ? `${esc(snack.name_pt)} × ${c.snack_qty} · +${snack.energy_restore} de energia, comido sozinho abaixo de ${snack.auto_trigger_below_energy_pct}%` : 'Vazio. Compre lanches na Barraca.'}</small>
       <span class="btns">${owned.map((x) => `<button type="button" class="secondary" data-equip="${x.id}">${esc(x.name_pt)} (${s.inventory[x.id]})</button>`).join('')}
@@ -983,17 +999,10 @@ function openZone(id: string, tab = 'silo'): void {
       const tc = toolCard(c.class_id);
       const i = TOOL_MATERIALS.findIndex((m) => m.id === c.material);
       const cur = TOOL_MATERIALS[i], next = TOOL_MATERIALS[i + 1] as (typeof TOOL_MATERIALS)[number] | undefined;
-      const row = TOOL_MATERIALS.map((m) => `<span class="tool ${m.id === cur.id ? 'current' : ''} ${m.unlock_level > s.level ? 'locked' : ''}" title="${esc(m.name_pt)} · nível ${m.unlock_level} · ×${nf1.format(m.work_capacity_multiplier)}">${sprite(`${tc.id}_${m.id}`, 2)}<small>${esc(m.name_pt)}</small></span>`).join('');
-      let action = `<p>${esc(tc.name_pt)} já está no material mais alto.</p>`;
-      if (next) {
-        const cost = Math.round(next.upgrade_cost_gold * (1 + s.fx.tool_cost) * 100) / 100;
-        const why = next.unlock_level > s.level ? `Precisa do nível ${next.unlock_level}.` : s.gold < cost ? `Falta ${formatGold(cost - s.gold)} de ouro.` : '';
-        action = `<p>Próxima: <strong>${esc(tc.name_pt)} de ${esc(next.name_pt)}</strong> · ×${nf1.format(next.work_capacity_multiplier)} de trabalho (${nf1.format(c.rate / cur.work_capacity_multiplier * next.work_capacity_multiplier)} por hora) · nível ${next.unlock_level}</p>
-          ${why ? `<ul class="problems"><li>${why}</li></ul>` : ''}
-          <button type="button" class="primary" data-upgrade ${why ? 'disabled' : ''}>Melhorar por ${formatGold(cost)} ouro</button>`;
-      }
+      const row = TOOL_MATERIALS.map((m, k) => `<span class="tool ${m.id === cur.id ? 'current' : ''} ${m.unlock_level > s.level ? 'locked' : ''}" title="nível ${k + 1} · fazenda nível ${m.unlock_level} · ×${nf1.format(m.work_capacity_multiplier)}"><small>Nv ${k + 1}</small><small>×${nf1.format(m.work_capacity_multiplier)}</small><small>fazenda ${m.unlock_level}</small></span>`).join('');
+      const action = next ? `<p>Próximo nível da ${esc(tc.name_pt)}: ×${nf1.format(next.work_capacity_multiplier)} de trabalho quando a fazenda chegar ao nível ${next.unlock_level} (sozinho, de graça).</p>` : `<p>${esc(tc.name_pt)} no nível máximo.</p>`;
       const repair = Math.round(cur.repair_cost_gold * (1 + s.fx.tool_cost) * 100) / 100;
-      return `${charChips(s, c.class_id)}<div class="char-card">${sprite(`${tc.id}_${cur.id}`, 2)}<div class="grow"><strong>${esc(tc.name_pt)} de ${esc(cur.name_pt)}</strong>
+      return `${charChips(s, c.class_id)}<div class="char-card">${toolArt(c.class_id)}<div class="grow"><strong>${esc(tc.name_pt)} · nível ${i + 1}</strong>
           <span class="energy dura ${c.durability < 30 ? 'low' : ''}"><span style="width:${Math.round(c.durability)}%"></span></span>
           <small>${esc(className(c.class_id))} · ${nf1.format(c.rate)} de trabalho por hora · durabilidade ${nf1.format(c.durability)}</small>
           <span class="btns"><button type="button" class="secondary" data-repair="${c.class_id}" ${c.durability >= 100 || s.gold < repair ? 'disabled' : ''}>Consertar · ${formatGold(repair)}</button></span></div></div>
@@ -1006,10 +1015,6 @@ function openZone(id: string, tab = 'silo'): void {
       el.querySelectorAll<HTMLButtonElement>('[data-veh-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => repairVehicle(b.dataset.vehRepair!), 'Veículo consertado.'); }));
       el.querySelectorAll<HTMLButtonElement>('[data-veh-refurb]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => refurbishVehicle(b.dataset.vehRefurb!), 'Reforma começou!'); }));
       bindItems(el);
-      el.querySelector<HTMLButtonElement>('[data-upgrade]')?.addEventListener('click', (e) => {
-        (e.currentTarget as HTMLButtonElement).disabled = true;
-        void act(() => upgradeTool(picked), 'Ferramenta melhorada!');
-      });
     });
   }
   if (id === 'garagem_expedicao') openGarage(garageCtx());

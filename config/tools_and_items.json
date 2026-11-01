@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "source": "GDD v2 seção 7 (ferramentas, roupas, amuletos, lanches) · desgaste reduzido pela metade (decisão do dono)",
   "tool_durability_rules": {
     "max_durability": 100,
@@ -63,42 +63,48 @@
       "name_pt": "Enxada",
       "class_id": "agricultor",
       "class_name_pt": "Agricultor",
-      "primary_role_pt": "Plantar e colher a lavoura (100% eficiência)"
+      "primary_role_pt": "Plantar e colher a lavoura (100% eficiência)",
+      "card_id": "enxada"
     },
     {
       "id": "tool_watering_can",
-      "name_pt": "Regador",
+      "name_pt": "Forcado",
       "class_id": "rancheira",
       "class_name_pt": "Rancheira",
-      "primary_role_pt": "Animais e pomar (100% eficiência)"
+      "primary_role_pt": "Animais e pomar (100% eficiência)",
+      "card_id": "forcado"
     },
     {
       "id": "tool_hammer",
       "name_pt": "Martelo",
       "class_id": "ferreiro",
       "class_name_pt": "Ferreiro",
-      "primary_role_pt": "Limpar lotes, ferramentas e consertar veículos"
+      "primary_role_pt": "Limpar lotes, ferramentas e consertar veículos",
+      "card_id": "martelo"
     },
     {
       "id": "tool_scale",
       "name_pt": "Balança",
       "class_id": "comerciante",
       "class_name_pt": "Comerciante",
-      "primary_role_pt": "Barraca e vendas (mercado, quando existir)"
+      "primary_role_pt": "Barraca e vendas (mercado, quando existir)",
+      "card_id": "balanca"
     },
     {
       "id": "tool_clipboard",
       "name_pt": "Prancheta",
       "class_id": "gerente",
       "class_name_pt": "Gerente",
-      "primary_role_pt": "Conduz expedições (+8 pts sucesso, -10% duração)"
+      "primary_role_pt": "Conduz expedições (+8 pts sucesso, -10% duração)",
+      "card_id": "prancheta"
     },
     {
       "id": "tool_magnifying_glass",
       "name_pt": "Lupa",
       "class_id": "botanica",
       "class_name_pt": "Botânica",
-      "primary_role_pt": "Pesquisa e bônus de crescimento"
+      "primary_role_pt": "Pesquisa e bônus de crescimento",
+      "card_id": "lupa"
     }
   ],
   "equipment_rarities": {
@@ -211,5 +217,6 @@
     "tool": "tool_{tool}_{material}",
     "note": "ex.: tool_hoe_wood; roupas, amuletos e lanches usam o próprio id"
   },
-  "snack_price_note": "preço na Barraca = fração da Renda de Referência do nível da conta (aprovado pelo dono, 23/10)"
+  "snack_price_note": "preço na Barraca = fração da Renda de Referência do nível da conta (aprovado pelo dono, 23/10)",
+  "tool_tier_note": "01/11 (v3): a ferramenta melhora sozinha com o nível da conta (unlock_level de cada material); não há mais compra na Forja. O visual é a carta da ferramenta (card_id)."
 }

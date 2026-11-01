@@ -104,8 +104,8 @@ begin
   set local role authenticated;
   s := public.hire('ferreiro');
   s := public.buy_lot('A3');
-  if abs(((select ready_at from public.owned_lots where user_id = a and lot_id = 'A3') - (s ->> 'farm_time')::double precision) - (60 + 12 * 1) * 60) > 1
-    then raise exception 'FALHA 20: limpeza com Ferreiro fora da tabela'; end if;
+  if abs(((select ready_at from public.owned_lots where user_id = a and lot_id = 'A3') - (s ->> 'farm_time')::double precision) - (60 + 12 * 1) * 60 / 3.0) > 1
+    then raise exception 'FALHA 20: limpeza com Ferreiro fora da tabela (3× mais rápida)'; end if;
   reset role;
 
   -- 6. rodízio com 4: quem chega a 10 sai do campo e entra quem tem 60 ou mais
@@ -126,7 +126,10 @@ begin
   exception when check_violation then null; end;
 
   -- 7. Comerciante em campo: Barraca a 71% (Madeira) e venda automática dos itens marcados
-  if abs((s -> 'fx' ->> 'stall_ratio')::numeric - 0.71) > 1e-9 then raise exception 'FALHA 24: Barraca a % com o Comerciante', s -> 'fx' ->> 'stall_ratio'; end if;
+  -- (v3: a Balança sobe sozinha com o nível; +1 ponto por nível da ferramenta)
+  reset role;
+  if abs((s -> 'fx' ->> 'stall_ratio')::numeric - (0.70 + 0.01 * (public.material_idx((select material from public.tools where user_id = a and class_id = 'comerciante')) + 1))) > 1e-9 then raise exception 'FALHA 24: Barraca a % com o Comerciante', s -> 'fx' ->> 'stall_ratio'; end if;
+  set local role authenticated;
   reset role;
   insert into public.silo (user_id, item_id, qty) values (a, 'batata', 10) on conflict (user_id, item_id) do update set qty = 10;
   set local role authenticated;
@@ -184,12 +187,11 @@ begin
   update public.farms set level = 10 where user_id = a;
   set local role authenticated;
 
-  -- 10. ferramentas: consertar a Enxada e melhorar o Martelo do Ferreiro
+  -- 10. ferramentas (v3): no nível 10 já são de Cobre (sobem sozinhas); conserto pelo preço do nível
   select gold into v_gold from public.wallets where user_id = a;
   s := public.repair_tool('agricultor');
-  if (s ->> 'gold')::numeric <> v_gold - 100 then raise exception 'FALHA 37: conserto da Madeira não custou 100'; end if;
-  s := public.upgrade_tool('ferreiro');
-  if (s -> 'tools' ->> 'ferreiro') <> 'copper' then raise exception 'FALHA 38: Martelo não melhorou'; end if;
+  if (s -> 'tools' ->> 'ferreiro') <> 'copper' then raise exception 'FALHA 38: Martelo não subiu com o nível'; end if;
+  if (s ->> 'gold')::numeric <> v_gold - 1300 then raise exception 'FALHA 37: conserto do Cobre não custou 1.300'; end if;
   reset role;
 
   -- 11. Semente Rara: Mítica rende ×3 (Alface 3 → 9) e não cobra semente
@@ -246,7 +248,10 @@ begin
   set local role authenticated;
   s := public.get_farm();
   if (select debt from public.characters where user_id = a and class_id = 'rancheira') <> 0 then raise exception 'FALHA 48: Gerente não pagou a dívida'; end if;
-  if abs((s -> 'fx' ->> 'gerente_cut')::numeric - 0.05) > 1e-9 then raise exception 'FALHA 49: Gerente de Madeira não corta 5%% da energia'; end if;
+  reset role;
+  -- (v3: a Prancheta sobe sozinha com o nível: 5% + 2,5% por nível acima do 1º)
+  if abs((s -> 'fx' ->> 'gerente_cut')::numeric - (0.05 + 0.025 * public.material_idx((select material from public.tools where user_id = a and class_id = 'gerente')))) > 1e-9 then raise exception 'FALHA 49: corte de energia do Gerente %', s -> 'fx' ->> 'gerente_cut'; end if;
+  set local role authenticated;
 
   -- 14. segurança: B não vê personagens nem pets de A; ninguém escreve direto; funções internas fechadas
   reset role;

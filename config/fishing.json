@@ -1,19 +1,60 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "Reformulação v3, parte R3 · aprovada pelo dono em 01/11/2026 (ciclo de 2 h, rede de até 8 h, clique no píer, peixe no Silo, ~8% da renda)",
   "lot_type": "pasto_lago",
   "cycle_minutes": 120,
   "max_cycles": 4,
   "value_share_of_R": 0.08,
   "cycles_per_day_reference": 12,
-  "team": { "collects_when_full": true, "efficiency": 0.6, "note": "fora do jogo a equipe recolhe a rede cheia (como os animais), com 60% do que o clique rende" },
+  "team": {
+    "collects_when_full": true,
+    "efficiency": 0.6,
+    "note": "fora do jogo a equipe recolhe a rede cheia (como os animais), com 60% do que o clique rende"
+  },
   "xp_per_cycle_ratio_of_level": 0.003,
   "species": [
-    { "id": "fish_tilapia", "name_pt": "Tilápia", "unlock_level": 1, "fair_price_per_unit": 17, "sprite": "fish_1" },
-    { "id": "fish_truta", "name_pt": "Truta Arco-Íris", "unlock_level": 10, "fair_price_per_unit": 390, "sprite": "fish_2" },
-    { "id": "fish_bagre", "name_pt": "Bagre do Rio", "unlock_level": 20, "fair_price_per_unit": 2700, "sprite": "fish_3" },
-    { "id": "fish_koi", "name_pt": "Carpa Koi", "unlock_level": 30, "fair_price_per_unit": 11000, "sprite": "fish_4" },
-    { "id": "fish_esturjao", "name_pt": "Esturjão", "unlock_level": 40, "fair_price_per_unit": 28000, "sprite": "fish_5" }
+    {
+      "id": "fish_tilapia",
+      "name_pt": "Tilápia",
+      "unlock_level": 1,
+      "fair_price_per_unit": 17,
+      "sprite": "fish_1"
+    },
+    {
+      "id": "fish_truta",
+      "name_pt": "Truta Arco-Íris",
+      "unlock_level": 10,
+      "fair_price_per_unit": 390,
+      "sprite": "fish_2"
+    },
+    {
+      "id": "fish_bagre",
+      "name_pt": "Bagre do Rio",
+      "unlock_level": 20,
+      "fair_price_per_unit": 2700,
+      "sprite": "fish_3"
+    },
+    {
+      "id": "fish_koi",
+      "name_pt": "Carpa Koi",
+      "unlock_level": 30,
+      "fair_price_per_unit": 11000,
+      "sprite": "fish_4"
+    },
+    {
+      "id": "fish_esturjao",
+      "name_pt": "Esturjão",
+      "unlock_level": 40,
+      "fair_price_per_unit": 28000,
+      "sprite": "fish_5"
+    }
   ],
-  "price_note": "preço ≈ 8% de R ÷ 12 ciclos ÷ 5 peixes na média geométrica da faixa de 10 níveis; a quantidade por ciclo sai do valor (8% de R do nível ÷ 12) ÷ preço da espécie mais alta liberada"
+  "price_note": "preço ≈ 8% de R ÷ 12 ciclos ÷ 5 peixes na média geométrica da faixa de 10 níveis; a quantidade por ciclo sai do valor (8% de R do nível ÷ 12) ÷ preço da espécie mais alta liberada",
+  "rod": {
+    "wear_per_cycle": 2.5,
+    "low_threshold": 30,
+    "low_multiplier": 0.5,
+    "card_id": "pesca",
+    "note": "Vara de Pescar (ferramenta do Lago): gasta 2,5 por ciclo recolhido (rede cheia = 10); conserto com ouro no preço da ferramenta do nível; abaixo de 30 a pesca rende a metade"
+  }
 }

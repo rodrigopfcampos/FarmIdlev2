@@ -70,7 +70,7 @@ const state: FarmState = {
   ],
   houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' } },
   lake: true,
-  fishing: { cycles: 2, max: 4, fish_t: T - 2.4 * 7200, cycle_s: 7200, species: 'fish_truta' },
+  fishing: { cycles: 2, max: 4, fish_t: T - 2.4 * 7200, cycle_s: 7200, species: 'fish_truta', rod: 24, rod_repair: 990 },
   account_tree: { skills: { eficiencia: 3, energia: 2 }, points: 10, spent: 5, free_reset: true, reset_cost: 43500 },
   vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
     { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
@@ -266,6 +266,7 @@ export const mockFarm = {
     if (fn === 'pay_salaries') for (const c of state.characters) { state.gold -= c.debt; c.debt = 0; c.unpaid_days = 0; }
     if (fn === 'skill_add') { const c = ch(args.p_class)!; c.skills[args.p_node as string] = (c.skills[args.p_node as string] ?? 0) + 1; }
     if (fn === 'skill_reset') ch(args.p_class)!.skills = {};
+    if (fn === 'repair_rod' && state.fishing) { state.gold -= state.fishing.rod_repair; state.fishing.rod = 100; state.fishing.rod_repair = 0; }
     if (fn === 'collect_fish' && state.fishing) { state.silo.fish_truta = (state.silo.fish_truta ?? 0) + 7; state.fishing.fish_t = t; }
     if (fn === 'account_skill_add' && state.account_tree) { const k = args.p_node as string; state.account_tree.skills[k] = (state.account_tree.skills[k] ?? 0) + 1; state.account_tree.spent++; }
     if (fn === 'account_skill_reset' && state.account_tree) { state.account_tree.skills = {}; state.account_tree.spent = 0; state.account_tree.free_reset = false; }

@@ -52,7 +52,7 @@ export type AccountNode = { id: string; name_pt: string; effect: string; per_poi
 export type AccountBranch = { id: string; name_pt: string; nodes: AccountNode[] };
 export const ACCOUNT_TREE = charactersCfg.account_tree as unknown as { points_per_level: number; from_level: number; node_max: number; free_resets_per_week: number; extra_reset_cost_R_ratio: number; branches: AccountBranch[] };
 // R3: pesca no Lago
-export const FISHING = fishingCfg as unknown as { cycle_minutes: number; max_cycles: number; value_share_of_R: number; cycles_per_day_reference: number; team: { efficiency: number };
+export const FISHING = fishingCfg as unknown as { cycle_minutes: number; max_cycles: number; value_share_of_R: number; cycles_per_day_reference: number; team: { efficiency: number }; rod: { wear_per_cycle: number; low_threshold: number; low_multiplier: number };
   species: { id: string; name_pt: string; unlock_level: number; fair_price_per_unit: number; sprite: string }[] };
 export const PETS = charactersCfg.pets;
 export const SNACKS = toolsCfg.snack_cards;

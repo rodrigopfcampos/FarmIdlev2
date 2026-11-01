@@ -90,7 +90,7 @@
 | 7 Missões e cartas | Missões, pacotes, 10 cartas, Armory, fichário, Colecionador | **feito e aprovado** (29/10) |
 | 8 Multiplayer | 8a amigos e visitas · 8b ranking, Encomendas e Estrelas da Vila · 8c mercado (produtos e cartas) | 8a e 8b aprovadas (29/10) · ranking e mercado (8c) **pendentes** |
 | 9 Painel e antitrapaça | Todas as guias, regras da seção 12, alertas | **feito e aprovado** (31/10) · Discord pendente (webhook no Vault) |
-| v3 Reformulação | R1 mapa e visual · R2 cartas novas e mão · R3 pesca e árvore da conta | R1 e R2 aprovadas · R3 **feita** (01/11), aguardando teste do dono |
+| v3 Reformulação | R1 mapa e visual · R2 cartas novas e mão · R3 pesca e árvore da conta | R1, R2 e R3 **aprovadas** (01/11) |
 | 10 Beta fechado | 20–50 jogadores, carga 500, segurança, adequação legal | — |
 | 11 Lançamento | Página, termos, privacidade, monitoramento, rollback | — |
 

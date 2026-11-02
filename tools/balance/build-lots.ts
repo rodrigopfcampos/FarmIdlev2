@@ -10,7 +10,7 @@ const map = JSON.parse(readFileSync(join(root, 'config', 'mapConfig.json'), 'utf
 
 // Parâmetros escolhidos pela busca (npm run balance:search): metas da seção 14 com 28 compras (mapa v3, 29 lotes)
 const PARAMS = { k: 1.53, growth: 1.11, base: 0.27, purchases: 28 };
-const DEED_FROM = 19; // Escritura da 19ª compra em diante: continuam 10 Escrituras no total
+const DEED_FROM = Infinity; // v3 (01/11): as Escrituras acabaram
 const TYPE_FLOOR: Record<string, number> = { pasto_galinheiro: 3, pasto_celeiro: 8, pomar: 10, pasto_lago: 11 };
 const CLEANUP = { base_minutes: 20, per_purchase_minutes: 4, other_class_multiplier: 3, neighbor_help_reduction: 0.1, max_neighbor_helps_per_day: 5 };
 

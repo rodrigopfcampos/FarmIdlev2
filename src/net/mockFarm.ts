@@ -38,7 +38,7 @@ const state: FarmState = {
     { lot_id: 'P1', slot: 4, fruit_id: null, planted_at: null, ready_at: null },
   ],
   silo: { batata: 6, cenoura: 3, alface: 9, maca: 4, ovo: 3, trufa: 1, la_de_alpaca: 2, leite_de_cabra: 1 },
-  inventory: { deed: 1 },
+  inventory: {},
   tools: { agricultor: 'wood', rancheira: 'wood', ferreiro: 'wood' },
   game_day: new Date().toISOString().slice(0, 10), labor_nominal: 6.94, last_payday: null, boosted_sale_day: null, pet_swapped_at: null,
   auto_sell: ['batata'],
@@ -47,8 +47,9 @@ const state: FarmState = {
     char('rancheira', { energy: 38, level: 2, work_hours: 3 }),
     char('ferreiro', { energy: 12, parked: true, debt: 1950, unpaid_days: 1, rate: 0.8 }),
   ],
-  pets: [{ pet_id: 'gato', affinity: 5, last_care: null, active: true, linked_class: 'agricultor' }],
-  pet: { id: 'gato', level: 2, factor: 0.55, linked: 'agricultor' },
+  pets: [{ pet_id: 'cachorro', affinity: 12, last_care: null, level: 3, find_t: T - 7 * 3600 },
+    { pet_id: 'gato', affinity: 5, last_care: null, level: 2, find_t: T - 1800 }],
+  pet: { level: 3, count: 2 },
   snack_prices: Object.fromEntries(SNACKS.map((x) => [x.id, Math.round(96000 * x.price_R_ratio)])),
   fx: { stall_ratio: 0.7, seed_discount: 0, sales_gold: 0, shop_discount: 0, auto_sell: false, auto_pay: false, rare_seed: 0, seed_refund: 0,
     gerente_cut: 0, early_unlock: null, daily_boost: 0, growth_crop: 0.02, growth_orchard: 0, tree_initial: 0, cleanup: 0, tool_cost: 0, harvest_xp: 0, golden: 0,
@@ -179,9 +180,6 @@ function mockWeather(): FarmState['weather'] {
 const mg: { arrows: string[]; limit: number; calm: boolean } = { arrows: [], limit: 0, calm: false };
 state.inventory['seed:alface:rare'] = 1;
 state.inventory.snack_cheese_bread = 4;
-state.inventory['kit:uncommon'] = 3;
-state.inventory['cloth_boots:rare'] = 1;
-state.inventory['amulet_horseshoe:common'] = 2;
 
 export const mockFarm = {
   async rpc(fn: string, args: Record<string, unknown>): Promise<FarmState> {
@@ -241,7 +239,7 @@ export const mockFarm = {
     if (fn === 'sell_at_stall') { state.silo[args.p_item as string] -= args.p_qty as number; state.gold += 10; }
     if (fn === 'buy_lot') {
       const lot = args.p_lot as string;
-      const offer = lotOffer(lot, new Set(state.lots.map((l) => l.lot_id)), state.level, state.inventory.deed ?? 0, state.gold);
+      const offer = lotOffer(lot, new Set(state.lots.map((l) => l.lot_id)), state.level, state.gold);
       if (!offer || offer.problems.length) throw new Error('Não dá para comprar esse lote.');
       state.gold -= offer.cost;
       const ready = t + cleanupMinutes(offer.n) * 60;
@@ -294,9 +292,12 @@ export const mockFarm = {
     if (fn === 'reroll_mission') state.reroll_used = true;
     if (fn === 'binder_expand') state.binder_slots += 20;
     if (fn === 'set_auto_sell') state.auto_sell = args.p_on ? [...state.auto_sell, args.p_item as string] : state.auto_sell.filter((x) => x !== args.p_item);
-    if (fn === 'adopt_pet') state.pets.push({ pet_id: args.p_pet as string, affinity: 0, last_care: null, active: false, linked_class: null });
     if (fn === 'care_pet') { const p = state.pets.find((x) => x.pet_id === args.p_pet)!; p.affinity++; p.last_care = state.game_day; }
-    if (fn === 'link_pet') { state.pets.find((x) => x.active)!.linked_class = args.p_class as string; state.pet!.linked = args.p_class as string; }
+    if (fn === 'collect_pet') {
+      const p = state.pets.find((x) => x.pet_id === args.p_pet)!;
+      p.find_t = state.farm_time; state.gold += 120;
+      return structuredClone({ ...state, pet_find: { pet: p.pet_id, gold: 120, energy: 0, card: p.pet_id === 'cachorro' ? { serial: 99, card_id: 'sol', rarity: 'rare' } : null } }) as FarmState;
+    }
     if (fn === 'buy_animal') state.animals.push({ house_id: args.p_house as string, slot: args.p_slot as number, animal_id: args.p_animal as string, rarity: 'uncommon', state: 'growing', cycle_start: t, ready_at: t + 7200 });
     if (fn === 'remove_animal') state.animals = state.animals.filter((a) => !(a.house_id === args.p_house && a.slot === args.p_slot));
     if (fn === 'upgrade_house') { const h = state.houses[args.p_house as string]; h.tier++; h.slots += 4; }
@@ -328,7 +329,7 @@ export const mockFarm = {
         state.gold += gold;
         got.push({ id: x.id, vehicle_id: x.vehicle_id, route_id: x.route_id, seq: x.seq, outcome: fail ? 'fail' : 'success', gold, refund: fail ? 50 : 0, cargo: x.cargo,
           cargo_back: fail ? Object.fromEntries(Object.entries(x.cargo).map(([k, q]) => [k, Math.round(q * 0.7)])) : {}, loss_frac: fail ? 0.3 : null,
-          drops: fail ? [] : ['kit:uncommon', 'amulet_clover:rare'], report: fail ? 'Um eixo quebrou e 30% da carga se perdeu.' : `Viagem tranquila até ${ROUTE_BY_ID[x.route_id].name_pt}. Carga vendida.`,
+          drops: fail ? [] : ['card'], cards: fail ? [] : [{ serial: 98, card_id: 'coruja', rarity: 'uncommon' }], report: fail ? 'Um eixo quebrou e 30% da carga se perdeu.' : `Viagem tranquila até ${ROUTE_BY_ID[x.route_id].name_pt}. Carga vendida.`,
           insurance: x.insurance, minigame: x.minigame, chance: 0.9 });
       }
       state.expeditions = state.expeditions.filter((e) => !got.some((g) => g.id === e.id));

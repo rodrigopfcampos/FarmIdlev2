@@ -73,24 +73,14 @@ begin
   if not exists (select 1 from public.owned_lots where user_id = a and lot_id = 'C2') then raise exception 'FALHA 12: Galinheiro não comprado de longe'; end if;
   reset role;
 
-  -- 6. da 19ª compra em diante precisa de Escritura (mapa v3: 28 compras) (dada pelo painel do admin)
+  -- 6. v3: as Escrituras acabaram; a 19ª compra pede só nível e ouro
   insert into public.owned_lots (user_id, lot_id, purchase_n)
     select a, x ->> 'id', 100 from jsonb_array_elements(public.config_get('map_rules') -> 'lots') x
     where x ->> 'id' in ('A4','A2','A5','A6','A7','A8','A10','A11','A12','A13','A14','A15','A16','A17','P2','P3'); -- 19 lotes: a próxima é a 19ª compra
   update public.farms set level = 30 where user_id = a;
   perform public.ledger_post(a, 20000000, 'test_grant');
   set local role authenticated;
-  begin perform public.buy_lot('P5'); raise exception 'FALHA 13: 19ª compra sem Escritura';
-  exception when check_violation then if sqlerrm <> 'precisa de Escritura' then raise exception 'FALHA 13b: %', sqlerrm; end if; end;
-  reset role;
-  perform set_config('request.jwt.claims', json_build_object('sub', adm, 'role', 'authenticated', 'aal', 'aal2')::text, true);
-  set local role authenticated;
-  perform public.admin_grant_item(a, 'deed', 1, 'teste da fase 2');
-  reset role;
-  perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
-  set local role authenticated;
   s := public.buy_lot('P5');
-  if (s -> 'inventory' ->> 'deed') is not null then raise exception 'FALHA 14: Escritura não foi gasta'; end if;
   if (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5') <> 19 then raise exception 'FALHA 15: nº da compra %', (select purchase_n from public.owned_lots where user_id = a and lot_id = 'P5'); end if;
   reset role;
 

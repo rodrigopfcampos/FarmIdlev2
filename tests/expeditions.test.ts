@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { RARITIES } from '../src/data';
 import {
-  canReach, capacity, cargoValue, evalMinigame, insuranceCost, rarityMult, refurbCost, refurbNext, repairCost, splitCargo, tripChance, tripHours, vehicleStatus,
+  canReach, capacity, cargoValue, evalMinigame, insuranceCost, rarityMult, repairCost, splitCargo, tripChance, tripHours, vehicleStatus,
 } from '../src/farm/expeditions';
 import type { FarmState, LeadInfo, VehicleState } from '../src/net/farmApi';
 
@@ -45,11 +45,8 @@ describe('carga, seguro e conserto', () => {
     expect(splitCargo({ batata: 150 }, [120, 60])).toEqual([{ batata: 120 }, { batata: 30 }]);
     expect(splitCargo({ alface: 50, batata: 50 }, [60, 60])).toEqual([{ alface: 50, batata: 10 }, { batata: 40 }]);
   });
-  it('conserto proporcional e reforma pela tabela', () => {
+  it('conserto proporcional (v3: sem reforma)', () => {
     expect(repairCost('carroca', 50)).toBe(1650);
-    expect(refurbNext('common')?.rarity).toBe('uncommon');
-    expect(refurbNext('mythic')).toBeNull();
-    expect(refurbCost('caminhao', 'common')).toBe(1_680_000);
   });
 });
 

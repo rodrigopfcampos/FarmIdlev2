@@ -17,7 +17,7 @@ export function weatherChip(s: FarmState, ms: number): string {
   const ev = eventStatus(w, ms);
   const icon = part === 'night' && cond === 'sunny' ? 'night' : cond;
   const label = part === 'night' && cond === 'sunny' ? 'Noite limpa' : condName(cond);
-  return `<button type="button" class="wx-chip" data-weather title="Clima: ${esc(label)} · ${hhmm(w.tz, ms)} no seu fuso">${weatherIcon(icon, 2, label)}<span>${esc(label)}</span>${ev?.kind === 'active' ? weatherIcon(ev.ev.id, 1, ev.ev.name_pt) : ''}</button>`;
+  return `<button type="button" class="wx-chip icon-btn" data-weather aria-label="Clima: ${esc(label)}" title="Clima: ${esc(label)} · ${hhmm(w.tz, ms)} no seu fuso">${weatherIcon(icon, 2, label)}${ev?.kind === 'active' ? weatherIcon(ev.ev.id, 1, ev.ev.name_pt) : ''}</button>`;
 }
 
 /** selo do evento no canto superior esquerdo: curto (nome e tempo); com o mouse em cima (ou toque) mostra o efeito e o horário */

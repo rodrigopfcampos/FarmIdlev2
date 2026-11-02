@@ -1,5 +1,6 @@
 // Vila na interface: botão Vila no topo e painel com a Encomenda da semana (doar produção e ouro, meta coletiva,
 // prêmios e títulos) e as Estrelas da Vila (depois do nível 50: pacote e sementes raras).
+import { hudIcon } from './hud-icons';
 import { CROP_LIST, RARITY_BY_ID, VILLAGE, itemInfo } from '../data';
 import { refresh, store } from '../farm/store';
 import { getVillage, starBuy, villageDonate, type VillageState } from '../net/farmApi';
@@ -25,7 +26,7 @@ const E = VILLAGE.encomenda, S = VILLAGE.stars;
 
 /** botão Vila; quem tem título mostra ao lado do nome (no HUD) */
 export function hudVillage(): string {
-  return '<button type="button" class="hud-btn ghost" data-village title="Encomenda da Vila e Estrelas">Vila</button>';
+  return `<button type="button" class="icon-btn" data-village title="Vila: Encomenda e Estrelas" aria-label="Vila">${hudIcon('village')}</button>`;
 }
 
 let tab: 'order' | 'stars' = 'order';

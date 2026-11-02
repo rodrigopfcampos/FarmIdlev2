@@ -3,9 +3,9 @@
 import { CHARS, CLASSES, CROP_LIST, CROPS, FARM, LEVELS, LOT_RULES, MAP_RULES, PETS, PURCHASES, ACCOUNT_TREE, FISHING, type Crop } from '../data';
 
 export type LotOffer = {
-  lot: string; type: string; n: number; cost: number; needLevel: number; needsDeed: boolean;
+  lot: string; type: string; n: number; cost: number; needLevel: number;
   neighbor: boolean; cleanupMinutes: number; daysOfIncome: number;
-  problems: ('vizinho' | 'nivel' | 'escritura' | 'ouro' | 'fim')[];
+  problems: ('vizinho' | 'nivel' | 'ouro' | 'fim')[];
 };
 
 /** minutos de limpeza da nª compra: sem Ferreiro contratado, o dobro; o ramo Obras reduz (cleanupFx negativo) */
@@ -26,22 +26,21 @@ export function lotNeedLevel(type: string, purchaseMinLevel: number): number {
 }
 
 /** o que custa comprar o lote agora: o lote inicial conta, então com k lotes a próxima é a kª compra */
-export function lotOffer(lot: string, owned: Set<string>, level: number, deeds: number, gold: number, hasBlacksmith = false, cleanupFx = 0): LotOffer | null {
+export function lotOffer(lot: string, owned: Set<string>, level: number, gold: number, hasBlacksmith = false, cleanupFx = 0): LotOffer | null {
   const def = MAP_RULES.lots.find((l) => l.id === lot);
   if (!def || owned.has(lot)) return null;
   const n = owned.size;
   const row = PURCHASES[n - 1];
-  if (!row) return { lot, type: def.type, n, cost: 0, needLevel: 0, needsDeed: false, neighbor: false, cleanupMinutes: 0, daysOfIncome: 0, problems: ['fim'] };
+  if (!row) return { lot, type: def.type, n, cost: 0, needLevel: 0, neighbor: false, cleanupMinutes: 0, daysOfIncome: 0, problems: ['fim'] };
   const needLevel = lotNeedLevel(def.type, row.min_level);
   const neighbor = isNeighbor(lot, owned);
   const problems: LotOffer['problems'] = [];
   if (!neighbor) problems.push('vizinho');
   if (level < needLevel) problems.push('nivel');
-  if (row.requires_deed && deeds < 1) problems.push('escritura');
   if (gold < row.cost) problems.push('ouro');
   const income = LEVELS[Math.min(level, LEVELS.length) - 1].reference_income_per_day;
   return {
-    lot, type: def.type, n, cost: row.cost, needLevel, needsDeed: row.requires_deed, neighbor,
+    lot, type: def.type, n, cost: row.cost, needLevel, neighbor,
     cleanupMinutes: cleanupMinutes(n, hasBlacksmith, cleanupFx), daysOfIncome: row.cost / income, problems,
   };
 }
@@ -181,11 +180,11 @@ export function petNextIn(affinity: number): number | null {
   return next === undefined ? null : next - affinity;
 }
 
-/** dias de espera que faltam para trocar o pet ativo */
-export function petSwapWaitDays(swappedAt: string | null, now: Date): number {
-  if (!swappedAt) return 0;
-  const left = new Date(swappedAt).getTime() + PETS.swap_wait_days * 86_400_000 - now.getTime();
-  return left > 0 ? Math.ceil(left / 86_400_000) : 0;
+/** pets v3: segundos (relógio da fazenda) até o achado ficar pronto; 0 = pronto para recolher */
+export function petFindLeft(pet: string, findT: number | null, farmNow: number): number {
+  const d = PETS.list.find((x) => x.id === pet);
+  if (!d || findT === null) return Infinity;
+  return Math.max(0, findT + d.find_hours * 3600 - farmNow);
 }
 
 /** sementes raras no inventário: chave seed:<cultivo>:<raridade> */

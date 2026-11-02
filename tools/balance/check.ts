@@ -47,7 +47,7 @@ purchases.forEach((p: any, i: number) => {
 check(formulaOk, 'cada custo e nível batem com a fórmula');
 check(increasing, 'custo sobe a cada compra');
 check(purchases[27].min_level <= 50, `última compra pede nível ${purchases[27].min_level} (máximo 50)`);
-check(purchases.filter((p: any) => p.requires_deed).length === 10, '10 Escrituras no total');
+check(purchases.filter((p: any) => p.requires_deed).length === 0, 'sem Escrituras (v3: acabaram)');
 check(Math.max(...purchases.map((p: any) => p.cleanup_minutes_blacksmith)) <= 480, 'nenhuma limpeza passa de 8 h');
 
 // ordem simulada: vizinhança, pisos e todos os lotes

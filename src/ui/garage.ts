@@ -1,13 +1,13 @@
 // Garagem (fase 5; v3): veículos, nova expedição num mapa de pergaminho (destino clicando no mapa, carga com − / + / MÁX
 // e barra de carga), partida direta (sem minigame: o veículo sai sozinho pela estrada), viagens em andamento e o botão Receber com o relatório narrado. O servidor confere e sorteia tudo.
-import { EQUIP_CARDS, EQUIP_RARITIES, EXP, RARITIES, RARITY_BY_ID, ROUTES, ROUTE_BY_ID, VEHICLES, VEHICLE_BY_ID, itemInfo } from '../data';
+import { EXP, RARITIES, RARITY_BY_ID, ROUTES, ROUTE_BY_ID, VEHICLES, VEHICLE_BY_ID, itemInfo } from '../data';
 import {
-  canReach, capacity, cargoValue, insuranceCost, rarityMult, sellable, splitCargo, tripChance, tripHours, vehicleStatus,
+  canReach, capacity, cargoValue, insuranceCost, rarityMult, repairCost, sellable, splitCargo, tripChance, tripHours, vehicleStatus,
 } from '../farm/expeditions';
 import { applyState, store } from '../farm/store';
-import { buffLines } from '../farm/cards';
+import { buffLines, cardDef } from '../farm/cards';
 import {
-  collectExpeditions, launchExpedition, setActiveVehicle,
+  collectExpeditions, launchExpedition, repairVehicle, setActiveVehicle,
   type CollectedTrip, type FarmState, type VehicleState,
 } from '../net/farmApi';
 import { duration, formatGold } from './format';
@@ -34,16 +34,8 @@ const OUTCOME: Record<string, { text: string; icon: string }> = {
   crit: { text: 'Crítico! +25%', icon: 'result_jackpot' }, success: { text: 'Sucesso', icon: 'result_coins' }, fail: { text: 'Falha parcial', icon: 'result_cargo_burned' },
 };
 
-/** nome de item com raridade: Kit de Reforma, vestimenta e amuleto */
-export function dropName(id: string): string {
-  if (id === 'deed') return 'Escritura';
-  const [base, rar] = id.split(':');
-  const r = RARITY_BY_ID[rar]?.name_pt ?? '';
-  if (base === 'kit') return `Kit de Reforma ${r}`;
-  const card = EQUIP_CARDS.find((c) => c.id === base);
-  return card ? `${card.name_pt} ${r}` : id;
-}
-export const dropColor = (id: string) => EQUIP_RARITIES[id.split(':')[1]]?.color_hex ?? RARITY_BY_ID[id.split(':')[1]]?.color_hex ?? 'inherit';
+/** carta achada na viagem: nome e cor da raridade */
+const cardFound = (c: { card_id: string; rarity: string }) => `${cardDef(c.card_id)?.name_pt ?? c.card_id} ${RARITY_BY_ID[c.rarity]?.name_pt ?? ''}`;
 const vehName = (id: string) => VEHICLE_BY_ID[id].name_pt;
 // v3: a cara do veículo é a animação nova (1º quadro); a raridade aparece no selo
 const vehSprite = (ctx: GarageCtx, v: { vehicle_id: string; rarity?: string }, scale = 1, cls = '') => ctx.sprite(`vehicle_anim_${v.vehicle_id}`, scale, cls);
@@ -80,20 +72,20 @@ function garageView(ctx: GarageCtx, s: FarmState): string {
     const st = vehicleStatus(s, v, now);
     const homeNow = s.vehicles.filter((x) => ['idle', 'back'].includes(vehicleStatus(s, x, now).status));
     const inSlot = homeNow.find((x) => x.active) ?? homeNow[0];
-    const r = RARITY_BY_ID[v.rarity];
     const m = mult(v.rarity);
+    const rep = repairCost(v.vehicle_id, v.durability);
     const travel = st.trips.find((x) => x.status === 'travel');
     const free = st.status === 'idle' || st.status === 'back';
     const backN = st.trips.filter((x) => x.status === 'back').length;
     const status = st.status === 'travel' ? `Viajando para ${ROUTE_BY_ID[travel!.route_id].name_pt} · volta em ${duration(st.until! - now)}${travel!.repeat_left ? ` · repete mais ${travel!.repeat_left}×` : ''}${backN ? ` · ${backN} viagem(ns) esperando Receber` : ''}`
       : st.status === 'back' ? `Voltou: ${backN} viagem(ns) para Receber`
-      : st.status === 'refurb' ? `Na reforma (vira ${RARITY_BY_ID[v.refurb_rarity!].name_pt}) · pronto em ${duration(st.until! - now)}`
       : 'Livre na Garagem';
-    return `<li class="veh ${v.active ? 'active-pet' : ''}">${vehSprite(ctx, v, 0.7)}<span><strong>${ctx.esc(d.name_pt)} <span class="shield" style="--c:${r.color_hex}">${ctx.esc(r.name_pt)}</span></strong>
+    return `<li class="veh ${v.active ? 'active-pet' : ''}">${vehSprite(ctx, v, 0.7)}<span><strong>${ctx.esc(d.name_pt)}</strong>
       <small>${capacity(v, m)} unid. · duração ×${nf1.format(d.duration_multiplier / m)} · +${nf1.format(d.safety_pts * m)} pontos · até ${ctx.esc(ROUTE_BY_ID[d.max_route].name_pt)}</small>
       <span class="energy dura ${v.durability < EXP.low_wear_threshold_pct ? 'low' : ''}" title="Durabilidade ${nf1.format(v.durability)}"><span style="width:${Math.round(v.durability)}%"></span></span>
-      <small>${ctx.esc(status)}${v.durability < EXP.low_wear_threshold_pct ? ' · <span class="bad">desgastado: −5 pontos (conserte na Forja)</span>' : ''}</small></span>
-      <span class="btns">${backN ? `<button type="button" class="primary small" data-collect="${v.vehicle_id}">Receber</button>` : ''}
+      <small>${ctx.esc(status)}${v.durability < EXP.low_wear_threshold_pct ? ' · <span class="bad">desgastado: −5 pontos</span>' : ''}</small></span>
+      <span class="btns">${v.durability < 100 ? `<button type="button" class="secondary" data-veh-repair="${v.vehicle_id}" ${s.gold < rep || st.status === 'travel' ? 'disabled' : ''} title="${st.status === 'travel' ? 'Conserta quando voltar' : 'Durabilidade ' + nf1.format(v.durability)}">Consertar · ${formatGold(rep)}</button>` : ''}
+      ${backN ? `<button type="button" class="primary small" data-collect="${v.vehicle_id}">Receber</button>` : ''}
       ${!v.active ? `<button type="button" class="secondary" data-active-veh="${v.vehicle_id}">${free ? 'Deixar na vaga' : 'Na vaga quando voltar'}</button>`
         : free ? '<small class="next">Na vaga</small>' : `<small class="next">Fica na vaga quando voltar${inSlot ? `; agora está lá: ${ctx.esc(vehName(inSlot.vehicle_id))}` : ''}</small>`}</span></li>`;
   }).join('');
@@ -221,7 +213,7 @@ function routeTip(ctx: GarageCtx, s: FarmState, id: string): string {
   return `<strong>${ctx.esc(r.name_pt)}</strong><small>${r.unlock_level > s.level ? `Libera no nível ${r.unlock_level}` : `Volta em ${duration(h * 3600)}`}</small>
     <p>Preço ×${nf1.format(r.price_multiplier)} · chance base ${pct(r.success)}</p>
     <p class="bad">Se falhar: perde ${pct(r.loss[0])} a ${pct(r.loss[1])} da carga</p>
-    <p class="next">Achados: item ${pct(r.item_chance)} · Kit ${pct(r.kit_chance)}${r.deed_chance ? ` · Escritura ${pct(r.deed_chance)}` : ''}</p>
+    <p class="next">Achado: carta ${pct(r.card_chance)} por viagem</p>
     ${dem ? `<p>Demanda do dia (+${Math.round(EXP.daily_demand.bonus * 100)}%): ${ctx.esc(dem)}</p>` : ''}`;
 }
 
@@ -232,7 +224,7 @@ function reportView(ctx: GarageCtx): string {
     return `<li>${ctx.sprite(o.icon, 1)}<span><strong>${ctx.esc(vehName(t.vehicle_id))} · ${ctx.esc(ROUTE_BY_ID[t.route_id].name_pt)}${t.seq ? ` (repetição ${t.seq})` : ''} · ${o.text}</strong>
       <small>${ctx.esc(t.report)}</small>
       <small>${t.gold ? `+${formatGold(t.gold)} ouro` : 'sem venda'}${t.refund ? ` · seguro devolveu ${formatGold(t.refund)}` : ''}${back ? ` · voltou ao Silo: ${ctx.esc(back)}` : ''} · chance ${pct(t.chance)}</small>
-      ${t.drops.length ? `<small>Achados: ${t.drops.map((d) => `<span style="color:${dropColor(d)}">${ctx.esc(dropName(d))}</span>`).join(', ')}</small>` : ''}</span></li>`;
+      ${t.cards?.length ? `<small>Achou: ${t.cards.map((c) => `<span style="color:${RARITY_BY_ID[c.rarity]?.color_hex ?? 'inherit'}">carta ${ctx.esc(cardFound(c))}</span>`).join(', ')}</small>` : ''}</span></li>`;
   }).join('');
   const total = lastReport.reduce((a, t) => a + t.gold + t.refund, 0);
   return `<p>Total recebido: <strong>${formatGold(total)} ouro</strong></p><ul class="items">${rows}</ul><button type="button" class="primary" data-back>← Garagem</button>`;
@@ -241,6 +233,7 @@ function reportView(ctx: GarageCtx): string {
 function bind(ctx: GarageCtx, el: HTMLElement): void {
   el.querySelector('.game-panel')?.classList.toggle('exp-panel', view === 'form');
   const rerender = () => openGarage(ctx, view === 'form' ? 'form' : 'garage');
+  el.querySelectorAll<HTMLButtonElement>('[data-veh-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void ctx.act(() => repairVehicle(b.dataset.vehRepair!), 'Veículo consertado.'); }));
   el.querySelectorAll<HTMLButtonElement>('[data-active-veh]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void ctx.act(() => setActiveVehicle(b.dataset.activeVeh!)); }));
   const collect = async (v: string | null) => {
     try {

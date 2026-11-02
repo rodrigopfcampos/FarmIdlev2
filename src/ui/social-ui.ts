@@ -1,5 +1,6 @@
 // Amigos e visitas na interface: botão Amigos no topo, painel (amigos, novidades, busca, bloqueados),
 // e o modo visita (topo da visita, Ajudar num lote, Curtir, recado de emojis e voltar).
+import { hudIcon } from './hud-icons';
 import { LOTS, SOCIAL } from '../data';
 import { applyVisit, leaveVisit, store } from '../farm/store';
 import {
@@ -32,7 +33,7 @@ const left = (iso: string) => {
 export function hudSocial(): string {
   const s = store.state?.social;
   const n = (s?.incoming ?? 0) + (s?.unseen ?? 0);
-  return `<button type="button" class="hud-btn ghost" data-social title="Amigos e visitas">Amigos${n ? `<span class="dot" title="${n} novidade${n > 1 ? 's' : ''}"></span>` : ''}</button>`;
+  return `<button type="button" class="icon-btn" data-social title="Amigos e visitas" aria-label="Amigos e visitas">${hudIcon('friends')}${n ? `<span class="dot" title="${n} novidade${n > 1 ? 's' : ''}"></span>` : ''}</button>`;
 }
 
 // ---------- painel Amigos ----------

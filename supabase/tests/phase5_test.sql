@@ -1,5 +1,5 @@
 -- Testes da fase 5: Garagem, minigame, lançamento, comboio, volta com clique, falha parcial, seguro, garantia contra
--- azar, repetição, Gerente conduzindo, reforma com Kit, juntar 3 iguais, equipar item, conserto, demanda e segurança.
+-- azar, repetição, Gerente conduzindo, conserto, achado de carta (v3), demanda e segurança.
 -- Esperado: erro "TESTES_OK" (tudo é desfeito).
 -- fase 6: clima desligado (este teste não depende da hora do dia)
 select set_config('vif.weather', 'off', false);
@@ -17,6 +17,8 @@ begin
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at) values
     (a, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'f5-a-' || a || '@exemplo.test', '{"nickname":"Fase5 A","birth_date":"1990-01-01"}', now(), now()),
     (b, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'f5-b-' || b || '@exemplo.test', '{"nickname":"Fase5 B","birth_date":"1990-01-01"}', now(), now());
+  -- v3: pets desligados neste teste (o Cachorro mudaria as chances; ver v3_pets_test)
+  update public.game_config set data = jsonb_set(data, '{pets,list}', '[]') where name = 'characters';
   perform public.ledger_post(a, 1000000, 'test_grant');
   insert into public.silo (user_id, item_id, qty) values (a, 'batata', 500), (a, 'alface', 500);
 
@@ -176,38 +178,31 @@ begin
   update public.expeditions set returns_at = 0 where user_id = a and status = 'travel';
   set local role authenticated; s := public.get_farm(); s := public.collect_expeditions(null); reset role;
 
-  -- 11. reforma: 3 Kits Incomuns viram 1 Raro; Incomum pede 1 kit + 30% do preço de referência; capacidade ×1,2
-  -- (a viagem pode ter trazido um Kit sorteado: soma em vez de duplicar)
-  delete from public.inventory where user_id = a and item_id like 'kit:%';
-  insert into public.inventory (user_id, item_id, qty) values (a, 'kit:uncommon', 4);
+  -- 11. (v3) reforma, Kits e itens de funcionário acabaram; o achado da viagem é carta
   set local role authenticated;
-  s := public.merge_items('kit:uncommon');
-  if (s -> 'inventory' ->> 'kit:uncommon')::int <> 1 or (s -> 'inventory' ->> 'kit:rare')::int <> 1 then raise exception 'FALHA 45: juntar kits'; end if;
-  select gold into v_gold from public.wallets where user_id = a;
-  s := public.refurbish_vehicle('carroca');
-  if (s ->> 'gold')::numeric <> v_gold - 9900 or (s -> 'inventory' ->> 'kit:uncommon') is not null then raise exception 'FALHA 46: preço ou kit da reforma'; end if;
+  begin perform public.refurbish_vehicle('carroca'); raise exception 'FALHA 45: reforma ainda existe';
+  exception when check_violation then null; end;
+  begin perform public.equip_item('agricultor', 'cloth', 'cloth_hat:rare'); raise exception 'FALHA 46: item de funcionário ainda existe';
+  exception when check_violation then null; end;
   mg := public.start_minigame('feira', 1, false, false);
-  begin perform public.launch_expedition((mg ->> 'id')::uuid, '[]', array['carroca'], 'feira', '{"batata":10}', false, false, false);
-    raise exception 'FALHA 47: veículo saiu durante a reforma'; exception when check_violation then null; end;
+  s := public.launch_expedition((mg ->> 'id')::uuid, '[]', array['carroca'], 'feira', '{"batata":10}', false, false, false);
   reset role;
-  update public.vehicles set refurb_until = 0 where user_id = a and vehicle_id = 'carroca';
+  select * into x from public.expeditions where user_id = a and status = 'travel' and vehicle_id = 'carroca';
+  update public.expeditions set returns_at = 0, chance = 1, repeat_left = 0 where id = x.id;
   set local role authenticated; s := public.get_farm(); reset role;
-  if (select rarity from public.vehicles where user_id = a and vehicle_id = 'carroca') <> 'uncommon'
-     or public.exp_capacity((select v from public.vehicles v where user_id = a and vehicle_id = 'carroca'), null) <> 72 then raise exception 'FALHA 48: reforma não terminou'; end if;
+  update public.expeditions set drops = '["card"]' where id = x.id;  -- força o achado
+  select count(*) into n from public.cards where user_id = a and origin = 'expedition';
+  set local role authenticated; s := public.collect_expeditions('carroca'); reset role;
+  if (select count(*) from public.cards where user_id = a and origin = 'expedition') <> n + 1 or jsonb_array_length(s -> 'collected' -> 0 -> 'cards') <> 1 then
+    raise exception 'FALHA 47: achado de carta não virou carta (%)', s -> 'collected' -> 0; end if;
+  if exists (select 1 from jsonb_array_elements(s -> 'collected' -> 0 -> 'drops') d where d #>> '{}' like 'kit:%' or d #>> '{}' = 'deed') then raise exception 'FALHA 48: veio Kit ou Escritura'; end if;
 
-  -- 12. conserto proporcional; vestimenta equipada (Chapéu Raro: +15 × 1,6 de energia máxima)
+  -- 12. conserto proporcional
   update public.vehicles set durability = 50 where user_id = a and vehicle_id = 'carroca';
-  delete from public.inventory where user_id = a and item_id = 'cloth_hat:rare';
-  insert into public.inventory (user_id, item_id, qty) values (a, 'cloth_hat:rare', 1);
   set local role authenticated;
   select gold into v_gold from public.wallets where user_id = a;
   s := public.repair_vehicle('carroca');
   if (s ->> 'gold')::numeric <> v_gold - 33000 * 0.1 * 0.5 then raise exception 'FALHA 49: preço do conserto'; end if;
-  s := public.equip_item('agricultor', 'cloth', 'cloth_hat:rare');
-  if (select (c ->> 'energy_max')::numeric from jsonb_array_elements(s -> 'characters') c where c ->> 'class_id' = 'agricultor') <> 124 then raise exception 'FALHA 50: chapéu não deu energia'; end if;
-  begin perform public.equip_item('agricultor', 'amulet', 'cloth_hat:rare'); raise exception 'FALHA 51: chapéu no espaço do amuleto'; exception when check_violation then null; end;
-  s := public.equip_item('agricultor', 'cloth', null);
-  if (s -> 'inventory' ->> 'cloth_hat:rare')::int <> 1 then raise exception 'FALHA 52: tirar o item não devolveu'; end if;
   reset role;
 
   -- 13. demanda: produto da demanda vale +20% na rota

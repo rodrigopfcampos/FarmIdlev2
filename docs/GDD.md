@@ -227,33 +227,33 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | Compra n | Lote (ordem simulada) | Tipo | Nível mínimo | Custo (ouro) | Escritura | Limpeza (Ferreiro) | Dia (regular) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | A3 | Lavoura | 2 | 680 | Não | 0 h 24 | 0,3 |
-| 2 | C2 | Galinheiro | 4 | 2.000 | Não | 0 h 28 | 0,5 |
-| 3 | A4 | Lavoura | 5 | 3.300 | Não | 0 h 32 | 0,5 |
-| 4 | A2 | Lavoura | 7 | 8.900 | Não | 0 h 36 | 0,9 |
-| 5 | C1 | Celeiro | 8 | 15.000 | Não | 0 h 40 | 1,5 |
-| 6 | A6 | Lavoura | 10 | 45.000 | Não | 0 h 44 | 2,3 |
-| 7 | P1 | Pomar | 11 | 61.000 | Não | 0 h 48 | 2,5 |
-| 8 | A7 | Lavoura | 13 | 140.000 | Não | 0 h 52 | 4,5 |
-| 9 | A8 | Lavoura | 14 | 210.000 | Não | 0 h 56 | 5,3 |
-| 10 | P2 | Pomar | 16 | 410.000 | Não | 1 h 00 | 6,8 |
-| 11 | A5 | Lavoura | 17 | 570.000 | Não | 1 h 04 | 8,9 |
-| 12 | A10 | Lavoura | 19 | 770.000 | Não | 1 h 08 | 10,8 |
-| 13 | P3 | Pomar | 20 | 940.000 | Não | 1 h 12 | 12,3 |
-| 14 | A11 | Lavoura | 22 | 1.500.000 | Não | 1 h 16 | 16,5 |
-| 15 | A12 | Lavoura | 23 | 1.900.000 | Não | 1 h 20 | 17,8 |
+| 2 | C2 | Galinheiro | 4 | 1.800 | Não | 0 h 28 | 0,5 |
+| 3 | A4 | Lavoura | 5 | 3.000 | Não | 0 h 32 | 0,5 |
+| 4 | A2 | Lavoura | 7 | 7.400 | Não | 0 h 36 | 0,9 |
+| 5 | C1 | Celeiro | 8 | 12.000 | Não | 0 h 40 | 1,3 |
+| 6 | A6 | Lavoura | 10 | 45.000 | Não | 0 h 44 | 1,8 |
+| 7 | P1 | Pomar | 11 | 61.000 | Não | 0 h 48 | 2,3 |
+| 8 | A7 | Lavoura | 13 | 120.000 | Não | 0 h 52 | 4,5 |
+| 9 | A8 | Lavoura | 14 | 190.000 | Não | 0 h 56 | 5,5 |
+| 10 | P2 | Pomar | 16 | 400.000 | Não | 1 h 00 | 7,8 |
+| 11 | A5 | Lavoura | 17 | 550.000 | Não | 1 h 04 | 8,8 |
+| 12 | A10 | Lavoura | 19 | 790.000 | Não | 1 h 08 | 10,8 |
+| 13 | P3 | Pomar | 20 | 940.000 | Não | 1 h 12 | 11,8 |
+| 14 | A11 | Lavoura | 22 | 1.600.000 | Não | 1 h 16 | 16,3 |
+| 15 | A12 | Lavoura | 23 | 2.000.000 | Não | 1 h 20 | 17,5 |
 | 16 | P4 | Pomar | 25 | 2.800.000 | Não | 1 h 24 | 20,5 |
-| 17 | A13 | Lavoura | 27 | 4.400.000 | Não | 1 h 28 | 25,3 |
-| 18 | A20 | Lavoura | 28 | 5.300.000 | Não | 1 h 32 | 27,8 |
-| 19 | L | Lago | 30 | 7.800.000 | Sim | 1 h 36 | 33,3 |
-| 20 | P5 | Pomar | 31 | 9.800.000 | Sim | 1 h 40 | 35,8 |
-| 21 | A14 | Lavoura | 33 | 14.000.000 | Sim | 1 h 44 | 41,3 |
-| 22 | A15 | Lavoura | 34 | 17.000.000 | Sim | 1 h 48 | 44,3 |
-| 23 | P6 | Pomar | 36 | 27.000.000 | Sim | 1 h 52 | 50,3 |
-| 24 | A16 | Lavoura | 37 | 33.000.000 | Sim | 1 h 56 | 53,5 |
-| 25 | A17 | Lavoura | 39 | 46.000.000 | Sim | 2 h 00 | 60,8 |
-| 26 | A18 | Lavoura | 40 | 55.000.000 | Sim | 2 h 04 | 64,5 |
-| 27 | A19 | Lavoura | 42 | 73.000.000 | Sim | 2 h 08 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 90.000.000 | Sim | 2 h 12 | 77,3 |
+| 17 | A13 | Lavoura | 27 | 4.600.000 | Não | 1 h 28 | 25,3 |
+| 18 | A20 | Lavoura | 28 | 5.400.000 | Não | 1 h 32 | 27,5 |
+| 19 | L | Lago | 30 | 8.000.000 | Não | 1 h 36 | 33,3 |
+| 20 | P5 | Pomar | 31 | 10.000.000 | Não | 1 h 40 | 35,8 |
+| 21 | A14 | Lavoura | 33 | 15.000.000 | Não | 1 h 44 | 41,3 |
+| 22 | A15 | Lavoura | 34 | 18.000.000 | Não | 1 h 48 | 44,3 |
+| 23 | P6 | Pomar | 36 | 27.000.000 | Não | 1 h 52 | 50,3 |
+| 24 | A16 | Lavoura | 37 | 33.000.000 | Não | 1 h 56 | 53,3 |
+| 25 | A17 | Lavoura | 39 | 46.000.000 | Não | 2 h 00 | 60,5 |
+| 26 | A18 | Lavoura | 40 | 55.000.000 | Não | 2 h 04 | 64,3 |
+| 27 | A19 | Lavoura | 42 | 69.000.000 | Não | 2 h 08 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 90.000.000 | Não | 2 h 12 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -361,10 +361,10 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Classe | Ferramenta | Função (100% de eficiência) | Libera no nível | Contratação (ouro) |
 | --- | --- | --- | --- | --- |
 | Agricultor | Enxada | Plantar e colher a lavoura | 1 (inicial) | grátis |
-| Rancheira | Regador | Animais e pomar | 3 | 6.300 |
-| Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 22.000 |
+| Rancheira | Regador | Animais e pomar | 3 | 6.000 |
+| Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
 | Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 150.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 510.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 460.000 |
 | Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 200 | 2.000 | 9.000 | 20.000 | 44.000 | 88.000 | 160.000 | 300.000 | 480.000 | 580.000 |
+| Salário base/dia (ouro) | 180 | 2.000 | 8.600 | 20.000 | 44.000 | 90.000 | 170.000 | 300.000 | 460.000 | 560.000 |
 
 ### Nível do personagem
 
@@ -451,7 +451,7 @@ Cada classe tem uma árvore única com 3 ramos. Cada ramo = 2 nós de 5 pontos +
 
 ### Pets
 
-No nível 5 o jogador adota 1 dos 3 pets de graça; os outros podem ser adotados depois. 🆕 O 2º e o 3º custam 1 dia de Renda de Referência cada. **Carinho diário (fase 3):** 1 por dia em cada pet adotado (vira à meia-noite de Brasília), +1 de afinidade, sem perda se faltar um dia; níveis 2, 3, 4 e 5 com 4, 10, 18 e 30 de afinidade. O pet ativo fica vinculado a 1 personagem: +2% de trabalho e −2% de energia por nível do pet, +5 de energia a cada carinho, e no nível 5 +1 ponto na chance de Semente Rara. Os efeitos da tabela abaixo continuam e crescem de 40% (nível 1) a 100% (nível 5). Só 1 fica ativo, no ponto do pet na frente da Casa 🆕, e trocar o ativo tem espera de 7 dias. O pet sobe do nível 1 ao 5 com carinho diário (≈30 dias) e o efeito cresce de 40% para 100%.
+🆕 **Pets v3 (decisão do dono, 01/11):** os 3 pets **chegam sozinhos** (Cachorro no nível 5, Gato no 12, Papagaio no 20), sem adoção, sem custo e sem vínculo com personagem, e **todos valem ao mesmo tempo**. Eles andam no pátio de pedra na frente da Casa. **Achado:** de tempos em tempos cada pet traz algo (um balão aparece em cima dele); o clique no pet (ou "Pegar achado" na guia Pets) recolhe e a contagem recomeça. Só 1 achado espera por pet (a equipe não recolhe). Cachorro: baú a cada 6 h com 0,8% da renda de referência do dia (R) e 5% de chance de carta (+2 pontos por nível do pet). Gato: soneca a cada 4 h, +15 de energia para toda a equipe. Papagaio: moedas a cada 3 h com 0,4% de R. **Carinho:** 1 por dia em cada pet, +1 de afinidade; níveis 2, 3, 4 e 5 com 4, 10, 18 e 30. O efeito fixo e o achado crescem de 40% (nível 1) a 100% (nível 5); no nível 5, +1 ponto na chance de Semente Rara. Números em `config/characters.json` → pets.
 
 | Pet | Efeito no nível 5 |
 | --- | --- |
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 881.760 | 2.700.000 |
-| 2 | 50 | 2.500 | | 27 | 1.015.360 | 3.100.000 |
-| 3 | 65 | 4.200 | | 28 | 1.189.040 | 3.300.000 |
-| 4 | 90 | 6.600 | | 29 | 1.336.000 | 3.800.000 |
-| 5 | 910 | 9.900 | | 30 | 1.336.000 | 4.400.000 |
-| 6 | 1.330 | 15.000 | | 31 | 1.381.900 | 5.000.000 |
-| 7 | 2.110 | 24.000 | | 32 | 1.594.500 | 5.700.000 |
-| 8 | 3.260 | 37.000 | | 33 | 1.700.800 | 6.400.000 |
-| 9 | 5.500 | 68.000 | | 34 | 1.913.400 | 7.000.000 |
-| 10 | 20.040 | 99.000 | | 35 | 2.232.300 | 8.200.000 |
-| 11 | 33.400 | 120.000 | | 36 | 2.551.200 | 10.000.000 |
-| 12 | 48.100 | 170.000 | | 37 | 2.870.100 | 11.000.000 |
-| 13 | 69.470 | 250.000 | | 38 | 3.295.300 | 12.000.000 |
-| 14 | 88.180 | 340.000 | | 39 | 3.720.500 | 14.000.000 |
-| 15 | 113.560 | 450.000 | | 40 | 4.145.700 | 15.000.000 |
-| 16 | 146.960 | 600.000 | | 41 | 4.570.900 | 16.000.000 |
-| 17 | 173.680 | 750.000 | | 42 | 4.996.100 | 18.000.000 |
-| 18 | 213.760 | 850.000 | | 43 | 5.633.900 | 20.000.000 |
-| 19 | 267.200 | 910.000 | | 44 | 6.165.400 | 22.000.000 |
-| 20 | 320.640 | 1.000.000 | | 45 | 6.803.200 | 24.000.000 |
-| 21 | 374.080 | 1.200.000 | | 46 | 7.334.700 | 25.000.000 |
-| 22 | 440.880 | 1.400.000 | | 47 | 7.759.900 | 26.000.000 |
-| 23 | 534.400 | 1.600.000 | | 48 | 8.185.100 | 27.000.000 |
-| 24 | 641.280 | 1.800.000 | | 49 | 8.397.700 | 29.000.000 |
-| 25 | 761.520 | 2.200.000 | | 50 | — | 29.000.000 |
+| 1 | 40 | 1.900 | | 26 | 877.140 | 2.700.000 |
+| 2 | 50 | 2.500 | | 27 | 1.010.040 | 3.200.000 |
+| 3 | 65 | 4.000 | | 28 | 1.182.810 | 3.400.000 |
+| 4 | 90 | 6.000 | | 29 | 1.329.000 | 3.800.000 |
+| 5 | 900 | 8.900 | | 30 | 1.329.000 | 4.500.000 |
+| 6 | 1.320 | 13.000 | | 31 | 1.383.200 | 5.200.000 |
+| 7 | 2.110 | 20.000 | | 32 | 1.596.000 | 6.100.000 |
+| 8 | 3.250 | 30.000 | | 33 | 1.702.400 | 7.000.000 |
+| 9 | 5.480 | 60.000 | | 34 | 1.915.200 | 7.600.000 |
+| 10 | 19.940 | 99.000 | | 35 | 2.234.400 | 8.600.000 |
+| 11 | 33.230 | 120.000 | | 36 | 2.553.600 | 10.000.000 |
+| 12 | 47.840 | 140.000 | | 37 | 2.872.800 | 11.000.000 |
+| 13 | 69.110 | 210.000 | | 38 | 3.298.400 | 12.000.000 |
+| 14 | 87.710 | 310.000 | | 39 | 3.724.000 | 14.000.000 |
+| 15 | 112.970 | 430.000 | | 40 | 4.149.600 | 15.000.000 |
+| 16 | 146.190 | 580.000 | | 41 | 4.575.200 | 16.000.000 |
+| 17 | 172.770 | 720.000 | | 42 | 5.000.800 | 17.000.000 |
+| 18 | 212.640 | 830.000 | | 43 | 5.639.200 | 20.000.000 |
+| 19 | 265.800 | 930.000 | | 44 | 6.171.200 | 22.000.000 |
+| 20 | 318.960 | 1.000.000 | | 45 | 6.809.600 | 23.000.000 |
+| 21 | 372.120 | 1.200.000 | | 46 | 7.341.600 | 25.000.000 |
+| 22 | 438.570 | 1.500.000 | | 47 | 7.767.200 | 26.000.000 |
+| 23 | 531.600 | 1.700.000 | | 48 | 8.192.800 | 26.000.000 |
+| 24 | 637.920 | 1.900.000 | | 49 | 8.405.600 | 28.000.000 |
+| 25 | 757.530 | 2.200.000 | | 50 | — | 28.000.000 |
 
 ### Raridade global 🆕
 
@@ -943,7 +943,7 @@ São 12 fases. Cada uma termina com deploy, testes automáticos verdes e o check
 2. **Progressão.** XP e níveis 1–50, os 50 cultivos, compra e limpeza dos 29 lotes 🆕, Escritura da 20ª compra em diante (por enquanto dada pelo painel), ferramentas, árvores do pomar com troca grátis 🆕. *Teste:* comprar lote vizinho; lote não vizinho e lote sem nível são recusados; Galinheiro e Celeiro podem ser comprados de longe; derrubar uma árvore de graça e plantar outra fruta.
 3. **Personagens.** 6 classes, energia e rodízio nos slots, contratação e salário, Desmotivado, inventário, árvores de habilidade, reset, pets. *Teste:* ficar sem ouro para salário e ver o personagem Desmotivado; pagar e ver voltar ao normal.
 4. **Animais.** Galinheiro e Celeiro (prédios no mapa 🆕), Lago (+10% e +2 vagas para aves 🆕), ampliações, 10 animais, ração. *Teste:* sem ouro para ração, o animal para de produzir e volta quando há ouro; comprar o Lago e ver 2 vagas a mais no Galinheiro, que só aceitam aves.
-5. **Expedições.** Garagem com os 4 veículos animados 🆕, 5 rotas, raridade e reforma, Kits de Reforma, minigame de partida, sorteio, crítico, falha parcial, seguro, garantia contra azar, repetição, desgaste e conserto, itens, Escrituras, demanda do dia, relatório narrado. *Teste:* 2 falhas seguidas e a 3ª com +25 pontos visível; seguro devolvendo a perda; deixar o tempo do minigame acabar e ver a chance reduzida; reformar a Carroça e ver o sprite da nova raridade e a capacidade maior; com o veículo em viagem, a vaga da garagem mostra o contador.
+5. **Expedições.** Garagem com os 5 veículos animados 🆕, 5 rotas, (v3: sem raridade, reforma e Kits), minigame de partida, sorteio, crítico, falha parcial, seguro, garantia contra azar, repetição, desgaste e conserto, itens, Escrituras, demanda do dia, relatório narrado. *Teste:* 2 falhas seguidas e a 3ª com +25 pontos visível; seguro devolvendo a perda; deixar o tempo do minigame acabar e ver a chance reduzida; reformar a Carroça e ver o sprite da nova raridade e a capacidade maior; com o veículo em viagem, a vaga da garagem mostra o contador.
 6. **Clima e evento noturno.** Agenda diária por fuso horário, bônus, filtros visuais, aviso do evento, troca de fuso com espera de 30 dias. *Teste:* com 2 contas em fusos diferentes, cada uma vê o evento entre 19:00 e 21:00 do seu horário, sem repetir o da noite anterior; forçar um evento pelo painel.
 7. **Missões e cartas.** Bancos de missões, troca diária, pacotes, garantia, 10 cartas em 5 raridades, buffs temporários, Armory, fichário, venda ao Colecionador, tetos de bônus. *Teste:* abrir pacotes e conferir a garantia; colocar Comum, Incomum e Raro da mesma carta no Armory e ver o bônus parcial; ativar 3 buffs juntos e ver o teto respeitado; vender uma carta ao Colecionador e conferir o valor.
 8. **Multiplayer.** Amigos, visitas com ajuda e emojis, ranking semanal, drenos de fim de jogo e o mercado com o conteúdo que o dono decidir antes desta fase 🆕. *Teste:* duas contas no mesmo celular não conseguem negociar entre si.
@@ -1027,3 +1027,9 @@ Os pacotes de cartas são permitidos porque são grátis; **nunca podem ser vend
 - **Passe de batalha:** trilha grátis + trilha paga, com recompensas **fixas e conhecidas** (nada sorteado), principalmente cosméticas.
 - **Ouro nunca é vendido por dinheiro:** protege o mercado entre jogadores e evita venda de contas.
 - Já deixe pronto: tabela `entitlements` e loja cosmética desligada por feature flag.
+
+
+## v3 · Achados, Forja e interface (pedido do dono em 01/11/2026) 🆕
+- **Expedição traz só carta:** cada viagem tem chance de carta (Feira 1%, Cidade 2%, Capital 4%, Porto 6%, Exportação 8%; o crítico rola 2 vezes; Gerente e Ferradura aumentam). A carta é sorteada ao Receber, com as chances e a garantia normais. Acabaram os itens de funcionário (Vestimenta e Amuleto), os Kits de Reforma e as Escrituras: os lotes pedem só nível e ouro.
+- **Veículos sem raridade e sem reforma:** a cara do veículo vem da carta Veículo. O conserto fica na Garagem (botão em cada veículo). A Forja cuida só das ferramentas e da Vara de Pescar.
+- **Interface 16-bit:** fonte pixel (Press Start 2P, licença OFL, salva no projeto) nos títulos e números; bordas em degrau; botões de madeira que afundam no clique e brilham no hover; HUD com nível/XP e ouro à esquerda e botões quadrados só com ícone (desenhados no código); clima só com o ícone; Pets, Pomar e casas dos animais em grade de cards; Forja com a ferramenta no centro e setas dos lados; explicações longas no [?] do cabeçalho; nenhum `<select>` do navegador (seletor de madeira com setas).

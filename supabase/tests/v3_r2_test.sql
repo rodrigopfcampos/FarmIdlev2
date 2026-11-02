@@ -9,6 +9,7 @@ begin
   insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at) values
     (a, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'r2-a-' || a || '@exemplo.test', '{"nickname":"R2a","birth_date":"1990-01-01"}', now(), now());
   perform set_config('request.jwt.claims', json_build_object('sub', a, 'role', 'authenticated')::text, true);
+  update public.game_config set data = jsonb_set(data, '{pets,list}', '[]') where name = 'characters'; -- pets fora das contas
 
   -- 1. a config tem as 20 cartas e a mão cresce com o nível (3, 4 no 15, 5 no 30)
   if jsonb_array_length(public.config_get('cards') -> 'cards') <> 20 then raise exception 'FALHA 1: % cartas', jsonb_array_length(public.config_get('cards') -> 'cards'); end if;

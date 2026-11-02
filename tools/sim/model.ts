@@ -1,7 +1,7 @@
 // Simulador de economia (fase 0): 160 dias, hora a hora, para os perfis casual, regular e dedicado.
 // Lê só config/*.json e tools/sim/profiles.json. O que é modelado em detalhe: lotes e limpeza, escolha de
 // cultivo pela mão de obra, pomar, animais (com raridade), personagens (energia, salário, nível, ferramenta e
-// desgaste), venda por expedição ou Barraca (rotas, veículos, raridade, Gerente, Escrituras, kits), missões,
+// desgaste), venda por expedição ou Barraca (rotas, veículos, Gerente, achado de carta), missões,
 // cartas (sorteio com garantia, buff ou Armory) e pet. Clima e evento noturno entram pela média da seção 10.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -128,7 +128,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   type Veh = { def: any; owned: boolean; rarity: number };
   // v3: a Garagem não vende; cada veículo libera de graça no nível dele (custo 0: entra assim que o nível chega)
   const vehicles: Veh[] = CFG.exp.vehicles.map((v: any) => ({ def: v, owned: v.cost === 0 && v.unlock_level <= 1, rarity: 0 }));
-  const kits: number[] = [0, 0, 0, 0, 0]; // por raridade (índice 1..4)
+  let expCards = 0; // v3: achado de carta nas viagens (fração acumulada)
 
   // cartas
   const armory: boolean[][] = CFG.cards.cards.map(() => [false, false, false, false, false]);
@@ -146,7 +146,8 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   let lastSession = -999;
   let freePerHour = 0; // trabalho grátis do jogador (cliques na sessão), espalhado até a próxima sessão
   let hourlyIncomeEMA = 300, hourlyXpEMA = 50;
-  let petSince = -1;
+  const PETS = CFG.chars.pets.list as any[];
+  const petSince: Record<string, number> = {}, petFind: Record<string, number> = {};
   let dayIncome = 0, dayXp = 0;
   let weekMissions = 0;
 
@@ -156,10 +157,10 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   // R3: árvore da conta — 1 ponto por nível; renda estimada proporcional aos pontos (config account_tree)
   const AT = CFG.chars.account_tree;
   const skillBonus = () => (Math.min(AT.income_estimate_points, Math.max(0, (level - (AT.from_level - 1)) * AT.points_per_level)) / AT.income_estimate_points) * AT.income_estimate_full;
-  // pet: 1 carinho por dia desde a adoção; nível pela afinidade acumulada; efeito de 40% (nível 1) a 100% (nível 5)
-  const petLevel = (t: number) => (petSince < 0 ? 0 : 1 + CFG.chars.pets.affinity_to_level.filter((a: number) => Math.floor((t - petSince) / 24) + 1 >= a).length);
-  const petFactor = (t: number) => (petSince < 0 ? 0 : CFG.chars.pets.effect_at_level_1 + (CFG.chars.pets.effect_at_level_5 - CFG.chars.pets.effect_at_level_1) * (petLevel(t) - 1) / 4);
-  const salesBonus = (t: number) => 1 + (CFG.chars.pets.list.find((x: any) => x.id === 'papagaio').sales_gold_pct / 100) * petFactor(t); // Papagaio
+  // pets v3: chegam no nível de cada um; 1 carinho por dia; nível pela afinidade; efeito de 40% (nível 1) a 100% (nível 5)
+  const petLevel = (id: string, t: number) => (petSince[id] === undefined ? 0 : 1 + CFG.chars.pets.affinity_to_level.filter((a: number) => Math.floor((t - petSince[id]) / 24) + 1 >= a).length);
+  const petFactor = (id: string, t: number) => (petSince[id] === undefined ? 0 : CFG.chars.pets.effect_at_level_1 + (CFG.chars.pets.effect_at_level_5 - CFG.chars.pets.effect_at_level_1) * (petLevel(id, t) - 1) / 4);
+  const salesBonus = (t: number) => 1 + (PETS.find((x: any) => x.id === 'papagaio').sales_gold_pct / 100) * petFactor('papagaio', t); // Papagaio
   const incomeMult = (t: number) => weatherIncome * (1 + armoryBonus() + skillBonus()) * salesBonus(t);
 
   const upkeepPerDay = () => {
@@ -170,7 +171,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   };
   const reserve = () => upkeepPerDay() * SIM.reserve_days_of_upkeep;
 
-  // fase 3: funções de apoio em campo (Comerciante, Gerente, Botânica) e bônus do pet vinculado ao Agricultor
+  // fase 3: funções de apoio em campo (Comerciante, Gerente, Botânica)
   const FE = CFG.chars.field_effects;
   const charMat = (id: string) => chars.find((c) => c.id === id)!.mat;
   const gerenteCut = () => (has('gerente') ? (FE.gerente.team_energy_use_pct_base + FE.gerente.team_energy_use_pct_per_material * charMat('gerente')) / 100 : 0);
@@ -184,9 +185,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   // o Gerente e o pet reduzem o gasto de energia, então quem trabalha fica mais tempo em campo. No máximo 3 em campo.
   const workCapacity = (t = 0) => {
     const hired = chars.filter((c) => c.hired);
-    const E = CFG.chars.energy, pl = petLevel(t);
+    const E = CFG.chars.energy;
     const duty = hired.map((c) => {
-      const use = E.use_per_work_hour * (1 - gerenteCut()) * (c.id === 'agricultor' ? 1 - (CFG.chars.pets.per_level_energy_use_pct * pl) / 100 : 1);
+      const use = E.use_per_work_hour * (1 - gerenteCut());
       const work = (E.enter_field_at - E.leave_field_at) / use, rest = (E.enter_field_at - E.leave_field_at) / E.recover_per_rest_hour;
       return work / (work + rest);
     });
@@ -194,8 +195,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const scale = Math.min(1, CFG.chars.field_slots / sum);
     const caps = hired.map((c) => p.workPerHour * mats[c.mat].work_capacity_multiplier
       * (c.role === 'crops' || c.role === 'animals_orchard' ? 1 : CFG.chars.off_role_efficiency)
-      * (c.dura < dur.low_durability_threshold ? dur.low_durability_capacity_penalty_multiplier : 1)
-      * (c.id === 'agricultor' ? 1 + (CFG.chars.pets.per_level_work_pct * pl) / 100 : 1));
+      * (c.dura < dur.low_durability_threshold ? dur.low_durability_capacity_penalty_multiplier : 1));
     return { total: caps.reduce((a, c, i) => a + c * duty[i] * scale, 0), fracs: duty.map((d) => d * scale), hired };
   };
 
@@ -221,8 +221,20 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     gold -= rodCost; toolRepairs += rodCost;
   }
 
+  // pets v3: na sessão o jogador recolhe o achado pronto de cada pet (só 1 espera; a contagem recomeça no clique)
+  function petFinds(t: number) {
+    for (const pt of PETS) {
+      if (petSince[pt.id] === undefined || t - petFind[pt.id] < pt.find_hours) continue;
+      petFind[pt.id] = t;
+      const f = petFactor(pt.id, t);
+      if (pt.find.gold_share_of_R) { const g = R(level) * pt.find.gold_share_of_R * f; gold += g; income += g; dayIncome += g; incomeByLevel[level] += g; }
+      if (pt.find.card_chance && rand() < pt.find.card_chance + pt.find.card_chance_per_level * (petLevel(pt.id, t) - 1)) drawCard();
+    }
+  }
+
   function session(t: number) {
     fishing(t);
+    petFinds(t);
     const day = Math.floor(t / 24);
     // consertar ferramentas abaixo de 50% (até a próxima sessão não cai abaixo de 30%)
     for (const c of chars) if (c.hired && c.dura < 50) {
@@ -259,7 +271,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
         if (k > maxIdx || r.unlock_level > level) return;
         const useMgr = manager && i === 0;
         const pts = v.def.safety_pts * mult + (useMgr ? CFG.exp.manager.success_pts : 0) + prof.minigame_pts + SIM.weather_success_pts_avg
-          + (petSince >= 0 ? 0 : 0);
+          + PETS.find((x: any) => x.id === 'cachorro').expedition_success_pts * petFactor('cachorro', nowH);
         const ps = Math.min(CFG.exp.success_cap, r.success + pts / 100);
         const pc = CFG.exp.crit.chance;
         const loss = (r.loss[0] + r.loss[1]) / 2;
@@ -275,9 +287,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       revenue += bestRoute.units * perUnit * bestRoute.ev;
       remainingUnits -= bestRoute.units;
       const tr = bestRoute.trips;
-      deeds += tr * bestRoute.r.deed_chance;
-      for (const [rar, share] of Object.entries(bestRoute.r.kit_rarity)) kits[RAR.indexOf(rar)] += tr * bestRoute.r.kit_chance * (share as number);
+      expCards += tr * bestRoute.r.card_chance;
     });
+    for (; expCards >= 1; expCards--) drawCard();
     revenue += remainingUnits * perUnit * stallRatio();
     const got = revenue * incomeMult(t);
     gold += got; income += got; dayIncome += got; incomeByLevel[level] += got;
@@ -315,7 +327,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     if (done && weekMissions < CFG.missions.daily.max_packs_per_week) { weekMissions++; for (let k = packCards(level); k > 0; k--) drawCard(); }
     if (day % 7 === 6) { // fim da semana
       if (rand() < prof.weekly_3_prob) drawCard();
-      if (rand() < prof.weekly_5_prob) { drawCard(); deeds += CFG.missions.weekly.deed_at_5; }
+      if (rand() < prof.weekly_5_prob) drawCard();
       weekMissions = 0;
     }
     if (pendingBuffGold > 0) { gold += pendingBuffGold; income += pendingBuffGold; incomeByLevel[level] += pendingBuffGold; pendingBuffGold = 0; }
@@ -328,7 +340,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       // cartas por nível (presente do 2 ao 10)
       const lu = CFG.cards.rules.supply.level_up_cards;
       if (level >= lu.from_level && level <= lu.to_level) for (let k = 0; k < lu.cards_per_level; k++) drawCard();
-      if (level >= CFG.chars.pets.unlock_level && petSince < 0) petSince = t;
+      for (const pt of PETS) if (level >= pt.unlock_level && petSince[pt.id] === undefined) { petSince[pt.id] = t; petFind[pt.id] = t; }
     }
   }
 
@@ -346,7 +358,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       let lotBlockedByLevel = true;
       if (nextLot < order.length) {
         const o = order[nextLot];
-        const needDeed = o.n >= lotsRules.deed.required_from_purchase;
+        const needDeed = !!o.requires_deed; // v3: as Escrituras acabaram (sempre falso)
         if (lotLevel(o) <= level && (!needDeed || deeds >= 1) && deedReadyT < 0) deedReadyT = t;
         if (lotLevel(o) <= level && (!needDeed || deeds >= 1)) {
           lotBlockedByLevel = false;
@@ -392,17 +404,9 @@ export function simulate(profileId: string, p: SimParams): SimResult {
         }
       }
       if (did) continue;
-      // 5. veículos e reforma
+      // 5. veículos (v3: sem reforma)
       const nextVeh = vehicles.find((v) => !v.owned && v.def.unlock_level <= level);
       if (nextVeh && secondaryOk(nextVeh.def.cost)) { gold -= nextVeh.def.cost; spend.vehicles += nextVeh.def.cost; nextVeh.owned = true; continue; }
-      for (const v of vehicles) {
-        if (!v.owned || v.rarity >= 4) continue;
-        const rf = CFG.exp.refurbish[v.rarity];
-        // kits iguais viram 1 da raridade acima
-        for (let k = 1; k < 4; k++) while (kits[k] >= CFG.exp.kit_merge) { kits[k] -= CFG.exp.kit_merge; kits[k + 1] += 1; }
-        const cost = rf.cost_ratio * (v.def.cost || v.def.reference_cost);
-        if (rf.min_level <= level && kits[v.rarity + 1] >= 1 && secondaryOk(cost)) { gold -= cost; spend.refurbish += cost; kits[v.rarity + 1] -= 1; v.rarity++; did = true; }
-      }
       if (did) continue;
       // 6. ferramentas (v3): melhoram sozinhas com o nível da conta, de graça
       for (const c of chars) while (c.mat < 4 && mats[c.mat + 1].unlock_level <= level) c.mat++;

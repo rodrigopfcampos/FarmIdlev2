@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "source": "Reformulação v3 (Especificação master v3.0, bloco 4) · valores aprovados pelo dono em 31/10/2026 (ajustáveis pelo simulador)",
   "dimensions": {
     "card_full": [
@@ -43,15 +43,22 @@
       "max_daily_packs_per_week": 7,
       "weekly_3_completed_cards": 1,
       "weekly_5_completed_bonus_cards": 1,
-      "weekly_5_completed_deeds": 1,
       "max_cards_per_week": 16,
       "note": "pacote das diárias: 1 carta até o nível 14 e 2 do nível 15 em diante (missions.json daily.pack_cards_by_level)"
     },
     "supply": {
-      "starter_cards": ["sol", "cesta", "coruja"],
+      "starter_cards": [
+        "sol",
+        "cesta",
+        "coruja"
+      ],
       "starter_rarity": "common",
       "starter_to_hand": true,
-      "level_up_cards": { "from_level": 2, "to_level": 10, "cards_per_level": 1 },
+      "level_up_cards": {
+        "from_level": 2,
+        "to_level": 10,
+        "cards_per_level": 1
+      },
       "note": "aprovado pelo dono em 01/11: 3 Comuns na mão ao criar a conta e 1 carta por nível do 2 ao 10; a mão de 3 gasta ~8 cartas por semana (duração média 2,6 dias)"
     }
   },
@@ -365,7 +372,7 @@
       "id": "ferradura",
       "name_pt": "Ferradura",
       "group": "fazenda",
-      "description_pt": "Expedições que partem com a carta: mais chance de crítico, crítico vale mais e mais itens e Kits.",
+      "description_pt": "Expedições que partem com a carta: mais chance de crítico, crítico vale mais e mais chance de trazer carta.",
       "buff_effects": {
         "common": {
           "expedition_crit_pts": 2,

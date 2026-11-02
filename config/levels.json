@@ -1,5 +1,5 @@
 {
-  "version": 13,
+  "version": 14,
   "max_level": 50,
   "starting_gold": 2000,
   "source": "GDD v2 seção 9 · R e curva de XP calibrados pelo simulador (tools/sim), com plantio e colheita por clique",
@@ -17,7 +17,7 @@
           5,
           9
         ],
-        "scale": 0.604,
+        "scale": 0.602,
         "target": "level10_day"
       },
       {
@@ -25,7 +25,7 @@
           10,
           29
         ],
-        "scale": 1.336,
+        "scale": 1.329,
         "target": "level30_day"
       },
       {
@@ -33,7 +33,7 @@
           30,
           49
         ],
-        "scale": 1.063,
+        "scale": 1.064,
         "target": "level50_day"
       }
     ]
@@ -54,289 +54,289 @@
     {
       "level": 3,
       "xp_to_next": 65,
-      "reference_income_per_day": 4200,
+      "reference_income_per_day": 4000,
       "xp_base": 650
     },
     {
       "level": 4,
       "xp_to_next": 90,
-      "reference_income_per_day": 6600,
+      "reference_income_per_day": 6000,
       "xp_base": 980
     },
     {
       "level": 5,
-      "xp_to_next": 910,
-      "reference_income_per_day": 9900,
+      "xp_to_next": 900,
+      "reference_income_per_day": 8900,
       "xp_base": 1500
     },
     {
       "level": 6,
-      "xp_to_next": 1330,
-      "reference_income_per_day": 15000,
+      "xp_to_next": 1320,
+      "reference_income_per_day": 13000,
       "xp_base": 2200
     },
     {
       "level": 7,
       "xp_to_next": 2110,
-      "reference_income_per_day": 24000,
+      "reference_income_per_day": 20000,
       "xp_base": 3500
     },
     {
       "level": 8,
-      "xp_to_next": 3260,
-      "reference_income_per_day": 37000,
+      "xp_to_next": 3250,
+      "reference_income_per_day": 30000,
       "xp_base": 5400
     },
     {
       "level": 9,
-      "xp_to_next": 5500,
-      "reference_income_per_day": 68000,
+      "xp_to_next": 5480,
+      "reference_income_per_day": 60000,
       "xp_base": 9100
     },
     {
       "level": 10,
-      "xp_to_next": 20040,
+      "xp_to_next": 19940,
       "reference_income_per_day": 99000,
       "xp_base": 15000
     },
     {
       "level": 11,
-      "xp_to_next": 33400,
+      "xp_to_next": 33230,
       "reference_income_per_day": 120000,
       "xp_base": 25000
     },
     {
       "level": 12,
-      "xp_to_next": 48100,
-      "reference_income_per_day": 170000,
+      "xp_to_next": 47840,
+      "reference_income_per_day": 140000,
       "xp_base": 36000
     },
     {
       "level": 13,
-      "xp_to_next": 69470,
-      "reference_income_per_day": 250000,
+      "xp_to_next": 69110,
+      "reference_income_per_day": 210000,
       "xp_base": 52000
     },
     {
       "level": 14,
-      "xp_to_next": 88180,
-      "reference_income_per_day": 340000,
+      "xp_to_next": 87710,
+      "reference_income_per_day": 310000,
       "xp_base": 66000
     },
     {
       "level": 15,
-      "xp_to_next": 113560,
-      "reference_income_per_day": 450000,
+      "xp_to_next": 112970,
+      "reference_income_per_day": 430000,
       "xp_base": 85000
     },
     {
       "level": 16,
-      "xp_to_next": 146960,
-      "reference_income_per_day": 600000,
+      "xp_to_next": 146190,
+      "reference_income_per_day": 580000,
       "xp_base": 110000
     },
     {
       "level": 17,
-      "xp_to_next": 173680,
-      "reference_income_per_day": 750000,
+      "xp_to_next": 172770,
+      "reference_income_per_day": 720000,
       "xp_base": 130000
     },
     {
       "level": 18,
-      "xp_to_next": 213760,
-      "reference_income_per_day": 850000,
+      "xp_to_next": 212640,
+      "reference_income_per_day": 830000,
       "xp_base": 160000
     },
     {
       "level": 19,
-      "xp_to_next": 267200,
-      "reference_income_per_day": 910000,
+      "xp_to_next": 265800,
+      "reference_income_per_day": 930000,
       "xp_base": 200000
     },
     {
       "level": 20,
-      "xp_to_next": 320640,
+      "xp_to_next": 318960,
       "reference_income_per_day": 1000000,
       "xp_base": 240000
     },
     {
       "level": 21,
-      "xp_to_next": 374080,
+      "xp_to_next": 372120,
       "reference_income_per_day": 1200000,
       "xp_base": 280000
     },
     {
       "level": 22,
-      "xp_to_next": 440880,
-      "reference_income_per_day": 1400000,
+      "xp_to_next": 438570,
+      "reference_income_per_day": 1500000,
       "xp_base": 330000
     },
     {
       "level": 23,
-      "xp_to_next": 534400,
-      "reference_income_per_day": 1600000,
+      "xp_to_next": 531600,
+      "reference_income_per_day": 1700000,
       "xp_base": 400000
     },
     {
       "level": 24,
-      "xp_to_next": 641280,
-      "reference_income_per_day": 1800000,
+      "xp_to_next": 637920,
+      "reference_income_per_day": 1900000,
       "xp_base": 480000
     },
     {
       "level": 25,
-      "xp_to_next": 761520,
+      "xp_to_next": 757530,
       "reference_income_per_day": 2200000,
       "xp_base": 570000
     },
     {
       "level": 26,
-      "xp_to_next": 881760,
+      "xp_to_next": 877140,
       "reference_income_per_day": 2700000,
       "xp_base": 660000
     },
     {
       "level": 27,
-      "xp_to_next": 1015360,
-      "reference_income_per_day": 3100000,
+      "xp_to_next": 1010040,
+      "reference_income_per_day": 3200000,
       "xp_base": 760000
     },
     {
       "level": 28,
-      "xp_to_next": 1189040,
-      "reference_income_per_day": 3300000,
+      "xp_to_next": 1182810,
+      "reference_income_per_day": 3400000,
       "xp_base": 890000
     },
     {
       "level": 29,
-      "xp_to_next": 1336000,
+      "xp_to_next": 1329000,
       "reference_income_per_day": 3800000,
       "xp_base": 1000000
     },
     {
       "level": 30,
-      "xp_to_next": 1336000,
-      "reference_income_per_day": 4400000,
+      "xp_to_next": 1329000,
+      "reference_income_per_day": 4500000,
       "xp_base": 1100000
     },
     {
       "level": 31,
-      "xp_to_next": 1381900,
-      "reference_income_per_day": 5000000,
+      "xp_to_next": 1383200,
+      "reference_income_per_day": 5200000,
       "xp_base": 1300000
     },
     {
       "level": 32,
-      "xp_to_next": 1594500,
-      "reference_income_per_day": 5700000,
+      "xp_to_next": 1596000,
+      "reference_income_per_day": 6100000,
       "xp_base": 1500000
     },
     {
       "level": 33,
-      "xp_to_next": 1700800,
-      "reference_income_per_day": 6400000,
+      "xp_to_next": 1702400,
+      "reference_income_per_day": 7000000,
       "xp_base": 1600000
     },
     {
       "level": 34,
-      "xp_to_next": 1913400,
-      "reference_income_per_day": 7000000,
+      "xp_to_next": 1915200,
+      "reference_income_per_day": 7600000,
       "xp_base": 1800000
     },
     {
       "level": 35,
-      "xp_to_next": 2232300,
-      "reference_income_per_day": 8200000,
+      "xp_to_next": 2234400,
+      "reference_income_per_day": 8600000,
       "xp_base": 2100000
     },
     {
       "level": 36,
-      "xp_to_next": 2551200,
+      "xp_to_next": 2553600,
       "reference_income_per_day": 10000000,
       "xp_base": 2400000
     },
     {
       "level": 37,
-      "xp_to_next": 2870100,
+      "xp_to_next": 2872800,
       "reference_income_per_day": 11000000,
       "xp_base": 2700000
     },
     {
       "level": 38,
-      "xp_to_next": 3295300,
+      "xp_to_next": 3298400,
       "reference_income_per_day": 12000000,
       "xp_base": 3100000
     },
     {
       "level": 39,
-      "xp_to_next": 3720500,
+      "xp_to_next": 3724000,
       "reference_income_per_day": 14000000,
       "xp_base": 3500000
     },
     {
       "level": 40,
-      "xp_to_next": 4145700,
+      "xp_to_next": 4149600,
       "reference_income_per_day": 15000000,
       "xp_base": 3900000
     },
     {
       "level": 41,
-      "xp_to_next": 4570900,
+      "xp_to_next": 4575200,
       "reference_income_per_day": 16000000,
       "xp_base": 4300000
     },
     {
       "level": 42,
-      "xp_to_next": 4996100,
-      "reference_income_per_day": 18000000,
+      "xp_to_next": 5000800,
+      "reference_income_per_day": 17000000,
       "xp_base": 4700000
     },
     {
       "level": 43,
-      "xp_to_next": 5633900,
+      "xp_to_next": 5639200,
       "reference_income_per_day": 20000000,
       "xp_base": 5300000
     },
     {
       "level": 44,
-      "xp_to_next": 6165400,
+      "xp_to_next": 6171200,
       "reference_income_per_day": 22000000,
       "xp_base": 5800000
     },
     {
       "level": 45,
-      "xp_to_next": 6803200,
-      "reference_income_per_day": 24000000,
+      "xp_to_next": 6809600,
+      "reference_income_per_day": 23000000,
       "xp_base": 6400000
     },
     {
       "level": 46,
-      "xp_to_next": 7334700,
+      "xp_to_next": 7341600,
       "reference_income_per_day": 25000000,
       "xp_base": 6900000
     },
     {
       "level": 47,
-      "xp_to_next": 7759900,
+      "xp_to_next": 7767200,
       "reference_income_per_day": 26000000,
       "xp_base": 7300000
     },
     {
       "level": 48,
-      "xp_to_next": 8185100,
-      "reference_income_per_day": 27000000,
+      "xp_to_next": 8192800,
+      "reference_income_per_day": 26000000,
       "xp_base": 7700000
     },
     {
       "level": 49,
-      "xp_to_next": 8397700,
-      "reference_income_per_day": 29000000,
+      "xp_to_next": 8405600,
+      "reference_income_per_day": 28000000,
       "xp_base": 7900000
     },
     {
       "level": 50,
       "xp_to_next": null,
-      "reference_income_per_day": 29000000,
+      "reference_income_per_day": 28000000,
       "xp_base": null
     }
   ]

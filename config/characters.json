@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
   "field_slots": 3,
   "bench_slots": 3,
@@ -92,30 +92,45 @@
     }
   ],
   "pets": {
-    "unlock_level": 5,
-    "days_to_max": 30,
-    "effect_at_level_1": 0.4,
+    "note": "v3 (pedido do dono em 01/11): os 3 pets vivem na fazenda ao mesmo tempo, chegam sozinhos no nível de cada um (sem adoção nem vínculo) e trazem um achado de tempos em tempos para o jogador clicar. Achado não recolhido espera (só 1 por pet). O carinho (1 por dia por pet) sobe o nível, que aumenta o efeito e o achado.",
     "list": [
       {
         "id": "cachorro",
         "name_pt": "Cachorro",
+        "unlock_level": 5,
+        "find_hours": 6,
+        "find": {
+          "kind": "chest",
+          "gold_share_of_R": 0.008,
+          "card_chance": 0.05,
+          "card_chance_per_level": 0.02
+        },
         "expedition_success_pts": 4,
-        "lost_cargo_recovery_chance": 0.1,
-        "phase_note": "efeitos nas expedições (fase 5)"
+        "lost_cargo_recovery_chance": 0.1
       },
       {
         "id": "gato",
         "name_pt": "Gato",
+        "unlock_level": 12,
+        "find_hours": 4,
+        "find": {
+          "kind": "energy",
+          "team_energy": 15
+        },
         "energy_recovery_pct": 40,
-        "animal_production_pct": 10,
-        "phase_note": "produção animal na fase 4"
+        "animal_production_pct": 10
       },
       {
         "id": "papagaio",
         "name_pt": "Papagaio",
+        "unlock_level": 20,
+        "find_hours": 3,
+        "find": {
+          "kind": "coins",
+          "gold_share_of_R": 0.004
+        },
         "sales_gold_pct": 4,
-        "night_event_warning_minutes": 30,
-        "phase_note": "aviso do evento na fase 6"
+        "night_event_warning_minutes": 30
       }
     ],
     "affinity_to_level": [
@@ -125,14 +140,10 @@
       30
     ],
     "affinity_note": "pontos acumulados para chegar aos níveis 2, 3, 4 e 5 (1 carinho por dia por pet, sem perda)",
-    "care_energy": 5,
-    "per_level_work_pct": 2,
-    "per_level_energy_use_pct": 2,
-    "level5_rare_seed_pts": 1,
-    "extra_adoption_cost_R": 1,
-    "swap_wait_days": 7,
+    "effect_at_level_1": 0.4,
     "effect_at_level_5": 1.0,
-    "linked_note": "o pet ativo fica vinculado a 1 personagem: os bônus por nível e a energia do carinho valem para ele"
+    "level5_rare_seed_pts": 1,
+    "find_note": "achado × fator do nível (40% no nível 1 a 100% no 5): ouro = parte da renda de referência do dia (R) do nível da fazenda; carta pelo sorteio normal (com garantia); energia do Gato vai para toda a equipe"
   },
   "payday_timezone": "America/Sao_Paulo",
   "payday_timezone_note": "desde a fase 6 o salário vira à meia-noite do fuso de cada conta; este valor só sobra como padrão",

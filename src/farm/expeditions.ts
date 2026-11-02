@@ -65,18 +65,6 @@ export function repairCost(vehicle: string, durability: number): number {
   return Math.round(price * EXP.vehicle_repair.cost_ratio_of_price * (100 - durability) / 100 * 100) / 100;
 }
 
-export function refurbNext(rarity: string): (typeof EXP.refurbish)[number] | null {
-  const next = RARITY_ORDER[RARITY_ORDER.indexOf(rarity as (typeof RARITY_ORDER)[number]) + 1];
-  return EXP.refurbish.find((r) => r.rarity === next) ?? null;
-}
-
-export function refurbCost(vehicle: string, rarity: string): number {
-  const d = VEHICLE_BY_ID[vehicle];
-  const price = d.cost > 0 ? d.cost : (d as { reference_cost?: number }).reference_cost ?? 0;
-  const nx = refurbNext(rarity);
-  return nx ? Math.round(price * nx.cost_ratio * 100) / 100 : 0;
-}
-
 export type VehicleStatus = 'idle' | 'travel' | 'back' | 'refurb';
 export function vehicleStatus(s: FarmState, v: VehicleState, now: number): { status: VehicleStatus; until: number | null; trips: ExpeditionState[] } {
   const trips = s.expeditions.filter((x) => x.vehicle_id === v.vehicle_id);

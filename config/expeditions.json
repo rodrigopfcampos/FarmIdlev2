@@ -1,11 +1,11 @@
 {
-  "version": 4,
-  "source": "GDD v2 seção 8 · fase 5: decisões do dono (24/10/2026): clicar para receber, repetição guarda o resultado, demanda igual para todos, comboio",
+  "version": 5,
+  "source": "GDD v2 seção 8 · fase 5: decisões do dono (24/10/2026): clicar para receber, repetição guarda o resultado, demanda igual para todos, comboio · v5 (01/11): achados viram só cartas (sem itens, Kits e Escrituras); sem reforma nem raridade de veículo",
   "stall_price_ratio": 0.7,
   "crit": {
     "chance": 0.05,
     "bonus_value": 0.25,
-    "item_rolls": 2
+    "card_rolls": 2
   },
   "success_cap": 0.95,
   "bad_luck_protection": {
@@ -40,16 +40,8 @@
         0.1,
         0.25
       ],
-      "item_chance": 0.04,
       "insurance_pct": null,
-      "deed_chance": 0,
-      "kit_chance": 0.02,
-      "kit_rarity": {
-        "uncommon": 1.0
-      },
-      "item_rarity": {
-        "uncommon": 1.0
-      }
+      "card_chance": 0.01
     },
     {
       "id": "cidade",
@@ -62,18 +54,8 @@
         0.15,
         0.35
       ],
-      "item_chance": 0.08,
       "insurance_pct": 2.4,
-      "deed_chance": 0,
-      "kit_chance": 0.04,
-      "kit_rarity": {
-        "uncommon": 0.8,
-        "rare": 0.2
-      },
-      "item_rarity": {
-        "uncommon": 0.8,
-        "rare": 0.2
-      }
+      "card_chance": 0.02
     },
     {
       "id": "capital",
@@ -86,20 +68,8 @@
         0.2,
         0.45
       ],
-      "item_chance": 0.14,
       "insurance_pct": 6.9,
-      "deed_chance": 0.03,
-      "kit_chance": 0.06,
-      "kit_rarity": {
-        "uncommon": 0.55,
-        "rare": 0.35,
-        "legendary": 0.1
-      },
-      "item_rarity": {
-        "uncommon": 0.55,
-        "rare": 0.35,
-        "legendary": 0.1
-      }
+      "card_chance": 0.04
     },
     {
       "id": "porto",
@@ -112,22 +82,8 @@
         0.25,
         0.55
       ],
-      "item_chance": 0.22,
       "insurance_pct": 16.9,
-      "deed_chance": 0.05,
-      "kit_chance": 0.08,
-      "kit_rarity": {
-        "uncommon": 0.4,
-        "rare": 0.38,
-        "legendary": 0.18,
-        "mythic": 0.04
-      },
-      "item_rarity": {
-        "uncommon": 0.4,
-        "rare": 0.38,
-        "legendary": 0.18,
-        "mythic": 0.04
-      }
+      "card_chance": 0.06
     },
     {
       "id": "exportacao",
@@ -140,22 +96,8 @@
         0.3,
         0.6
       ],
-      "item_chance": 0.32,
       "insurance_pct": 33,
-      "deed_chance": 0.08,
-      "kit_chance": 0.1,
-      "kit_rarity": {
-        "uncommon": 0.3,
-        "rare": 0.37,
-        "legendary": 0.25,
-        "mythic": 0.08
-      },
-      "item_rarity": {
-        "uncommon": 0.3,
-        "rare": 0.37,
-        "legendary": 0.25,
-        "mythic": 0.08
-      }
+      "card_chance": 0.08
     }
   ],
   "vehicles": [
@@ -215,33 +157,6 @@
       "reference_cost": 5600000
     }
   ],
-  "refurbish": [
-    {
-      "rarity": "uncommon",
-      "min_level": 8,
-      "cost_ratio": 0.3,
-      "hours": 2
-    },
-    {
-      "rarity": "rare",
-      "min_level": 16,
-      "cost_ratio": 0.6,
-      "hours": 4
-    },
-    {
-      "rarity": "legendary",
-      "min_level": 26,
-      "cost_ratio": 1.2,
-      "hours": 8
-    },
-    {
-      "rarity": "mythic",
-      "min_level": 36,
-      "cost_ratio": 2.4,
-      "hours": 12
-    }
-  ],
-  "kit_merge": 3,
   "minigame": {
     "arrows": {
       "feira": 4,
@@ -299,7 +214,7 @@
   },
   "insurance_deductible": 0.1,
   "insurance_note": "se falhar, devolve em ouro a perda acima de 10% da carga, a preço da rota; o seguro custa insurance_pct da carga a preço da rota, pago na saída",
-  "item_note": "itens (vestimenta e amuleto) sorteados entre os 7 da tools_and_items; raridade pela tabela item_rarity da rota (igual à dos kits)",
+  "item_note": "achado: carta pelo sorteio normal (raridade e garantia do sorteio); card_chance por viagem; crítico rola card_rolls vezes; a Lupa aumenta a chance",
   "vehicle_repair": {
     "cost_ratio_of_price": 0.1,
     "note": "consertar de 0 a 100% custa 10% do preço do veículo (a Carroça usa reference_cost); proporcional ao que falta"

@@ -214,25 +214,10 @@ begin
   if (s -> 'silo' ->> 'alface')::int <> 9 then raise exception 'FALHA 41: Alface Mítica rendeu %', s -> 'silo' ->> 'alface'; end if;
   reset role;
 
-  -- 12. pets: o 1º é grátis no nível 5, o 2º custa 1 dia de renda; 1 carinho por dia; troca com espera
+  -- 12. pets (v3): a adoção acabou (os pets chegam sozinhos; ver v3_pets_test)
   set local role authenticated;
-  select gold into v_gold from public.wallets where user_id = a;
-  s := public.adopt_pet('gato');
-  if (s ->> 'gold')::numeric <> v_gold or not (s -> 'pets' -> 0 ->> 'active')::boolean then raise exception 'FALHA 42: 1º pet não foi grátis e ativo'; end if;
-  s := public.adopt_pet('papagaio');
-  if (s ->> 'gold')::numeric <> v_gold - r10 then raise exception 'FALHA 43: 2º pet não custou 1 dia de renda'; end if;
-  s := public.care_pet('gato');
-  begin perform public.care_pet('gato'); raise exception 'FALHA 44: 2 carinhos no mesmo dia';
+  begin perform public.adopt_pet('gato'); raise exception 'FALHA 42: ainda dá para adotar';
   exception when check_violation then null; end;
-  if (select energy from public.characters where user_id = a and class_id = 'agricultor') <> 5 then raise exception 'FALHA 45: carinho não deu +5 de energia ao vinculado'; end if;
-  s := public.set_active_pet('papagaio');
-  begin perform public.set_active_pet('gato'); raise exception 'FALHA 46: trocou o pet sem esperar 7 dias';
-  exception when check_violation then null; end;
-  reset role;
-  update public.pets set affinity = 30 where user_id = a and pet_id = 'papagaio';
-  set local role authenticated;
-  s := public.get_farm();
-  if (s -> 'pet' ->> 'level')::int <> 5 or abs((s -> 'fx' ->> 'sales_gold')::numeric - 0.04) > 1e-9 then raise exception 'FALHA 47: Papagaio nível 5 não dá +4%% nas vendas'; end if;
   reset role;
 
   -- 13. Gerente em campo: paga a dívida sozinho e reduz o gasto de energia da equipe

@@ -2,6 +2,7 @@
 // linhas a partir da Fazenda (centro). Só ícones na tela; o tooltip mostra nome, nível e o próximo efeito.
 // Estados: bloqueado (cinza, linha pontilhada), disponível (pulsa, linha acesa), comprado/máximo (borda dourada, faíscas).
 // Ao comprar: a linha se enche de luz, o nó treme e toca um "pling" gerado pelo navegador (sem arquivo; dá para silenciar).
+import { hudIcon } from './hud-icons';
 import { ACCOUNT_TREE, LEVELS, type AccountBranch, type AccountNode } from '../data';
 import { accountPoints, passiveState } from '../farm/rules';
 import { store } from '../farm/store';
@@ -64,7 +65,7 @@ export function hudPassives(s: FarmState): string {
   const at = s.account_tree;
   if (!at) return '';
   const free = accountPoints(s.level, at.skills).free;
-  return `<button type="button" class="hud-btn ghost grimoire" data-passives title="Árvore de Passivas${free ? ` · ${free} ponto${free > 1 ? 's' : ''} livre${free > 1 ? 's' : ''}` : ''}">📖${free ? '<span class="dot"></span>' : ''}</button>`;
+  return `<button type="button" class="icon-btn" data-passives title="Árvore de Passivas${free ? ` · ${free} ponto${free > 1 ? 's' : ''} livre${free > 1 ? 's' : ''}` : ''}" aria-label="Árvore de Passivas">${hudIcon('passives')}${free ? '<span class="dot"></span>' : ''}</button>`;
 }
 
 // linhas: Fazenda → A de cada ramo; A → B e C; B e C → D; D → Ultimate

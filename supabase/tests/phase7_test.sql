@@ -55,7 +55,6 @@ begin
     perform public.mission_progress(a, m.metric, m.t);
   end loop;
   if (select count(*) from public.cards where user_id = a and origin in ('weekly_3', 'weekly_5')) <> 2 then raise exception 'FALHA 10: cartas das semanais'; end if;
-  if coalesce((select qty from public.inventory where user_id = a and item_id = 'deed'), 0) < 1 then raise exception 'FALHA 11: sem Escritura das 5 semanais'; end if;
 
   -- 5. garantia: 9 cartas sem Raro → a 10ª é Raro ou melhor; 119 sem Mítico → a 120ª é Mítica
   update public.farms set pity_rare = 9 where user_id = a;

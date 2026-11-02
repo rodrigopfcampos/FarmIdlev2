@@ -289,5 +289,53 @@
     "sign_pixel": 2,
     "hover_outline": false,
     "note": "o dono não quer marcação no terreno nem quadrado nas construções: só a mãozinha do mouse e o rótulo mostram que dá para clicar"
+  },
+  "pets_map": {
+    "trigger": "pets v3: os 3 pets andam no pátio de pedra na frente da Casa; achado pronto = balão em cima",
+    "area": [
+      [
+        300,
+        258
+      ],
+      [
+        338,
+        248
+      ],
+      [
+        398,
+        268
+      ],
+      [
+        396,
+        290
+      ],
+      [
+        352,
+        294
+      ],
+      [
+        302,
+        276
+      ]
+    ],
+    "speed_px_s": [
+      10,
+      16
+    ],
+    "idle_ms": [
+      1500,
+      4000
+    ],
+    "frame_ms": 320,
+    "hop_px": 1,
+    "bubble_bob_px": 2,
+    "bubble_bob_ms": 600,
+    "hit_half_w": 10,
+    "hit_h": 22,
+    "find_icon": {
+      "cachorro": "result_chest",
+      "gato": "energy",
+      "papagaio": "ui_coin"
+    }
   }
 }

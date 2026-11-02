@@ -2,14 +2,14 @@
 import { describe, expect, it } from 'vitest';
 import { CROPS, LEVELS, PURCHASES, itemInfo } from '../src/data';
 import {
-  animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petSwapWaitDays, plotCrops, plotLook,
+  animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petFindLeft, plotCrops, plotLook,
   rareSeeds, accountEffect, accountPoints, passiveState, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
 } from '../src/farm/rules';
 
 describe('compra de lotes', () => {
   const start = new Set(['A1']);
   it('1ª compra: lote vizinho do A1 no nível 2 pelo preço da tabela', () => {
-    const o = lotOffer('A3', start, 2, 0, 1_000_000)!;
+    const o = lotOffer('A3', start, 2, 1_000_000)!;
     expect(o.n).toBe(1);
     expect(o.cost).toBe(PURCHASES[0].cost);
     expect(o.needLevel).toBe(2);
@@ -17,7 +17,7 @@ describe('compra de lotes', () => {
   });
   it('lote que não divide lado com um lote seu é recusado', () => {
     expect(isNeighbor('A2', start)).toBe(false);
-    expect(lotOffer('A2', start, 50, 0, 1e9)!.problems).toContain('vizinho');
+    expect(lotOffer('A2', start, 50, 1e9)!.problems).toContain('vizinho');
   });
   it('Galinheiro e Celeiro podem ser comprados de longe, Lago não', () => {
     expect(isNeighbor('C1', start)).toBe(true);
@@ -25,24 +25,22 @@ describe('compra de lotes', () => {
     expect(isNeighbor('L', start)).toBe(false);
   });
   it('nível: o maior entre o da compra e o piso do tipo (pomar 10)', () => {
-    const o = lotOffer('P1', start, 2, 0, 1e9)!;
+    const o = lotOffer('P1', start, 2, 1e9)!;
     expect(o.needLevel).toBe(10);
     expect(o.problems).toEqual(['nivel']);
   });
-  it('da 19ª compra em diante precisa de Escritura (mapa v3, 28 compras)', () => {
+  it('v3: a 19ª compra pede só nível e ouro (sem Escritura)', () => {
     const owned = new Set(['A1', 'A3', 'A4', 'A2', 'A5', 'A6', 'A7', 'A8', 'A10', 'A11', 'A12', 'A13', 'A14', 'A15', 'A16', 'A17', 'P2', 'P3', 'P1']);
-    const o = lotOffer('P5', owned, 50, 0, 1e12)!;
+    const o = lotOffer('P5', owned, 50, 1e12)!;
     expect(o.n).toBe(19);
-    expect(o.needsDeed).toBe(true);
-    expect(o.problems).toEqual(['escritura']);
-    expect(lotOffer('P5', owned, 50, 1, 1e12)!.problems).toEqual([]);
+    expect(o.problems).toEqual([]);
   });
   it('limpeza: 1 h + 12 min × n, em dobro sem Ferreiro', () => {
     expect(cleanupMinutes(1, true)).toBe(24); // com o Ferreiro em campo, 3× mais rápido
     expect(cleanupMinutes(1)).toBe(72);
   });
   it('lote seu não aparece à venda', () => {
-    expect(lotOffer('A1', start, 50, 0, 1e9)).toBeNull();
+    expect(lotOffer('A1', start, 50, 1e9)).toBeNull();
   });
 });
 
@@ -157,12 +155,12 @@ describe('pets (fase 3)', () => {
     expect(petFactor(3)).toBeCloseTo(0.7);
     expect(petFactor(5)).toBeCloseTo(1);
   });
-  it('troca do pet ativo espera 7 dias', () => {
-    const now = new Date('2026-10-24T12:00:00Z');
-    expect(petSwapWaitDays(null, now)).toBe(0);
-    expect(petSwapWaitDays('2026-10-22T12:00:00Z', now)).toBe(5);
-    expect(petSwapWaitDays('2026-10-10T12:00:00Z', now)).toBe(0);
+  it('pets v3: achado pronto depois das horas de cada pet', () => {
+    expect(petFindLeft('papagaio', 0, 3 * 3600)).toBe(0);
+    expect(petFindLeft('cachorro', 0, 3600)).toBe(5 * 3600);
+    expect(petFindLeft('gato', null, 99999)).toBe(Infinity);
   });
+
 });
 
 describe('sementes raras e pomar (fase 3)', () => {

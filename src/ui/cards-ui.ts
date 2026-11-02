@@ -1,5 +1,6 @@
 // Missões e cartas na interface (v3): botões Missões e Cartas no topo, a mão em leque no rodapé com o caixote
 // do baralho, painel de Cartas (Fichário, Álbum e chances) e o pacote que abre virando a carta.
+import { hudIcon } from './hud-icons';
 import { CARDS, MISSIONS } from '../data';
 import {
   armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDef, cardDuration, lifeText, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
@@ -45,8 +46,8 @@ export function hudCards(ctx: CardsCtx, s: FarmState): string {
   const daily = s.missions.filter((m) => m.kind === 'daily');
   const done = daily.filter((m) => m.done).length;
   const fresh = s.new_cards.length ? '<span class="dot" title="Carta nova"></span>' : '';
-  return `<button type="button" class="hud-btn ghost" data-missions title="Missões">Missões <small>${done}/${daily.length}</small></button>
-    <button type="button" class="hud-btn ghost" data-cards title="Cartas">Cartas${fresh}</button>`;
+  return `<button type="button" class="icon-btn" data-missions title="Missões (${done}/${daily.length})" aria-label="Missões">${hudIcon('missions')}<span class="badge ${done === daily.length ? 'ok' : ''}">${done}/${daily.length}</span></button>
+    <button type="button" class="icon-btn" data-cards title="Cartas" aria-label="Cartas">${hudIcon('cards')}${fresh}</button>`;
 }
 
 // ---------- missões ----------
@@ -79,7 +80,7 @@ function missionsBody(ctx: CardsCtx): string {
       ${s.reroll_used ? 'Troca grátis de hoje já usada.' : '1 troca grátis por dia.'}</p>
     <h3>Semanais <small class="muted">renovam na segunda à meia-noite</small></h3>
     <ul class="missions">${weekly.map(row).join('')}</ul>
-    <p class="status">${wd >= 3 ? '✓' : '○'} 3 completas: 1 carta · ${wd >= 5 ? '✓' : '○'} as 5: +1 carta e 1 Escritura</p>
+    <p class="status">${wd >= 3 ? '✓' : '○'} 3 completas: 1 carta · ${wd >= 5 ? '✓' : '○'} as 5: +1 carta</p>
     <p class="hint">As metas são medidas na sua própria produção por hora (${formatGold(s.prod_ref.value_h)} em valor da Feira). O que a equipe faz sozinha também conta.</p>`;
 }
 

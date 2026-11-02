@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
   "field_slots": 3,
   "bench_slots": 3,
@@ -11,7 +11,9 @@
     "leave_field_at": 10,
     "enter_field_at": 60,
     "parked_until": 60,
-    "parked_note": "com 3 ou menos personagens, quem chega a 0 fica parado no slot descansando até 60"
+    "parked_note": "com 3 ou menos personagens, quem chega a 0 fica parado no slot descansando até 60",
+    "low_energy_fraction": 0.3,
+    "low_energy_note": "abaixo dessa fração da energia máxima vale o nó de passiva \"Fôlego Final\" (gasto menor)"
   },
   "off_role_efficiency": 0.6,
   "hire_cost": {

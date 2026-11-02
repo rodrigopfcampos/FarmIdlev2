@@ -163,7 +163,7 @@ begin
   update public.farms set level = 12 where user_id = a;
   set local role authenticated;
   begin perform public.skill_add('agricultor', 'cultivo.a'); raise exception 'FALHA 31: árvore do personagem ainda aceita';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   for n in 1 .. 5 loop s := public.account_skill_add('cafe_forte'); end loop;
   begin perform public.account_skill_add('cafe_forte'); raise exception 'FALHA 32: nó passou de 5';
   exception when check_violation then null; end;
@@ -217,7 +217,7 @@ begin
   -- 12. pets (v3): a adoção acabou (os pets chegam sozinhos; ver v3_pets_test)
   set local role authenticated;
   begin perform public.adopt_pet('gato'); raise exception 'FALHA 42: ainda dá para adotar';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
 
   -- 13. Gerente em campo: paga a dívida sozinho e reduz o gasto de energia da equipe

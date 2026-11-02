@@ -15,7 +15,10 @@
     "balance:search": "tsx tools/balance/lots-search.ts",
     "balance:lots": "tsx tools/balance/build-lots.ts",
     "balance:check": "tsx tools/balance/check.ts",
-    "sim": "tsx tools/sim/run.ts"
+    "sim": "tsx tools/sim/run.ts",
+    "db:functions": "tsx tools/db/functions.ts write",
+    "db:migration": "tsx tools/db/functions.ts migration",
+    "db:check": "tsx tools/db/functions.ts check"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",

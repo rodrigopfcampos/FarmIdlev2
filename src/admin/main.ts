@@ -2,16 +2,10 @@
 // O servidor só responde para admin com 2FA; aqui é só a tela.
 import { supabase, configMissing } from '../net/supabase';
 import { formatGold } from '../ui/format';
-import { CARDS, EQUIP_CARDS, RARITY_BY_ID, WEATHER } from '../data';
+import { CARDS, WEATHER } from '../data';
 import { condName } from '../farm/weather';
 import { ANTICHEAT } from '../data';
 import { GUIDES, renderGuide, type Guide } from './guides';
-
-// itens que o admin pode dar: Kits de Reforma e vestimentas/amuletos em cada raridade
-const ITEM_OPTIONS = [
-  ...['uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="kit:${r}">Kit de Reforma ${RARITY_BY_ID[r].name_pt}</option>`),
-  ...EQUIP_CARDS.flatMap((c) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => `<option value="${c.id}:${r}">${c.name_pt} ${RARITY_BY_ID[r].name_pt}</option>`)),
-].join('');
 
 // cartas que o admin pode dar: as 10 em cada raridade
 const CARD_OPTIONS = CARDS.cards.flatMap((c) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) =>
@@ -221,10 +215,6 @@ async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
       <p>Lotes: ${f.lots.map((l: any) => `${esc(l.lot_id)}${l.purchase_n ? ` (${l.purchase_n}ª${l.ready_at > f.farm_time ? ', em limpeza' : ''})` : ''}`).join(', ')}</p>
       <p>Silo: <code>${esc(JSON.stringify(f.silo))}</code> · Itens: <code>${esc(JSON.stringify(f.inventory))}</code> · Ferramentas: <code>${esc(JSON.stringify(f.tools))}</code></p>
       <div class="grants"><p class="hint">Ferramentas de teste: tudo fica na auditoria com a justificativa (e o ouro, no ledger).</p>
-      <form class="row grant" data-kind="deed"><strong>Dar Escritura</strong>
-        <label>Quantidade<input name="value" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
-        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: teste da fase 2"></label>
-        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="level"><strong>Mudar nível</strong>
         <label>Nível<input name="value" type="number" min="1" max="50" value="${f.level}" required style="width:90px"></label>
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o pomar"></label>
@@ -245,11 +235,6 @@ async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
         <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar o Receber"></label>
         <input name="value" type="hidden" value="1">
         <button class="primary small" type="submit">Trazer</button><span class="msg" role="status"></span></form>
-      <form class="row grant" data-kind="item"><strong>Dar item</strong>
-        <label>Item<select name="item">${ITEM_OPTIONS}</select></label>
-        <label>Quantidade<input name="value" type="number" min="-10" max="10" value="1" required style="width:90px"></label>
-        <label style="flex:1">Justificativa<input name="reason" minlength="5" required placeholder="ex.: testar a reforma"></label>
-        <button class="primary small" type="submit">Dar</button><span class="msg" role="status"></span></form>
       <form class="row grant" data-kind="card"><strong>Dar carta</strong>
         <label>Carta<select name="item">${CARD_OPTIONS}</select></label>
         <input name="value" type="hidden" value="1">
@@ -319,11 +304,9 @@ async function detail(id: string, tab: Tab, msg = ''): Promise<void> {
       : form.dataset.kind === 'stars' ? supabase!.rpc('admin_grant_stars', { p_user: id, p_amount: value, p_reason: reason })
       : form.dataset.kind === 'village' ? supabase!.rpc('admin_close_village', { p_reason: reason })
       : form.dataset.kind === 'missions' ? supabase!.rpc('admin_complete_missions', { p_user: id, p_kind: String(d.get('item')), p_reason: reason })
-      : form.dataset.kind === 'item' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: String(d.get('item')), p_qty: value, p_reason: reason })
       : form.dataset.kind === 'animals' ? supabase!.rpc('admin_finish_animals', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'payday' ? supabase!.rpc('admin_force_payday', { p_user: id, p_reason: reason })
       : form.dataset.kind === 'cleanup' ? supabase!.rpc('admin_finish_cleanup', { p_user: id, p_lot: raw === '*' ? null : raw, p_reason: reason })
-      : form.dataset.kind === 'deed' ? supabase!.rpc('admin_grant_item', { p_user: id, p_item: 'deed', p_qty: value, p_reason: reason })
       : form.dataset.kind === 'level' ? supabase!.rpc('admin_set_level', { p_user: id, p_level: value, p_reason: reason })
       : supabase!.rpc('admin_grant_gold', { p_user: id, p_amount: value, p_reason: reason });
     const { error } = await call;

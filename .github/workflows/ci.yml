@@ -12,5 +12,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run balance:check
+      - run: npm run db:check
       - run: npm test
       - run: npm run build

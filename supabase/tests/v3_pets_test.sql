@@ -68,9 +68,9 @@ begin
   -- 7. adoção, troca e vínculo acabaram; o ledger bate
   set local role authenticated;
   begin perform public.set_active_pet('gato'); raise exception 'FALHA 15: troca de pet ainda existe';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   begin perform public.link_pet('rancheira'); raise exception 'FALHA 16: vínculo ainda existe';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
   if (select sum(amount) from public.ledger where user_id = a) <> (select gold from public.wallets where user_id = a) then raise exception 'FALHA 17: ledger × carteira'; end if;
 

@@ -1,6 +1,6 @@
 // Estado falso da fazenda, só para desenvolvimento e screenshots (nunca entra no build de produção).
 import { WEATHER, ANIMAL_BY_ID, CHARS, CROPS, EXP, MAP_RULES, PETS, ROUTE_BY_ID, SNACKS, TOOL_MATERIALS, VEHICLE_BY_ID } from '../data';
-import { cargoValue, evalMinigame } from '../farm/expeditions';
+import { cargoValue } from '../farm/expeditions';
 import { localMinutes } from '../farm/weather';
 import { cleanupMinutes, lotOffer } from '../farm/rules';
 import type { CharacterState, CollectedTrip, FarmState, PlayerCard, PlotState, SocialState, VillageState, VisitView } from './farmApi';
@@ -16,7 +16,7 @@ const growing = (id: string, crop: string, startAgo: number): PlotState => {
 
 const char = (id: string, extra: Partial<CharacterState> = {}): CharacterState => ({
   class_id: id, slot: 'field', energy: 100, parked: false, level: 1, work_hours: 0, skills: {}, skill_choice: null, reset_week: null,
-  debt: 0, unpaid_days: 0, snack_id: null, snack_qty: 0, cloth_id: null, amulet_id: null, material: 'wood', durability: 100,
+  debt: 0, unpaid_days: 0, snack_id: null, snack_qty: 0, material: 'wood', durability: 100,
   rate: id === 'agricultor' || id === 'rancheira' ? 2.67 : 1.6, energy_max: 100, energy_use: 12.5, energy_rest: 25, active: true, salary: id === 'agricultor' ? 0 : 1950, ...extra,
 });
 
@@ -177,7 +177,6 @@ function mockWeather(): FarmState['weather'] {
   };
 }
 
-const mg: { arrows: string[]; limit: number; calm: boolean } = { arrows: [], limit: 0, calm: false };
 state.inventory['seed:alface:rare'] = 1;
 state.inventory.snack_cheese_bread = 4;
 
@@ -253,17 +252,10 @@ export const mockFarm = {
       if (fn === 'chop_tree') Object.assign(tr, { fruit_id: null, planted_at: null, ready_at: null });
       else { const c = CROPS[args.p_fruit as string]; state.gold -= c.sapling_cost ?? 0; Object.assign(tr, { fruit_id: c.id, planted_at: t, ready_at: t + c.grow_minutes * 60 }); }
     }
-    if (fn === 'upgrade_tool') {
-      const i = TOOL_MATERIALS.findIndex((m) => m.id === state.tools.agricultor);
-      const next = TOOL_MATERIALS[i + 1];
-      state.gold -= next.upgrade_cost_gold; state.tools.agricultor = next.id; state.labor_per_hour = 2.67 * next.work_capacity_multiplier;
-    }
     const ch = (id: unknown) => state.characters.find((c) => c.class_id === id);
     if (fn === 'hire') { state.characters.push(char(args.p_class as string, { slot: state.characters.filter((c) => c.slot === 'field').length < CHARS.field_slots ? 'field' : 'bench' })); state.tools[args.p_class as string] = 'wood'; }
     if (fn === 'set_slot') ch(args.p_class)!.slot = args.p_slot as 'field' | 'bench';
     if (fn === 'pay_salaries') for (const c of state.characters) { state.gold -= c.debt; c.debt = 0; c.unpaid_days = 0; }
-    if (fn === 'skill_add') { const c = ch(args.p_class)!; c.skills[args.p_node as string] = (c.skills[args.p_node as string] ?? 0) + 1; }
-    if (fn === 'skill_reset') ch(args.p_class)!.skills = {};
     if (fn === 'repair_rod' && state.fishing) { state.gold -= state.fishing.rod_repair; state.fishing.rod = 100; state.fishing.rod_repair = 0; }
     if (fn === 'collect_fish' && state.fishing) { state.silo.fish_truta = (state.silo.fish_truta ?? 0) + 7; state.fishing.fish_t = t; }
     if (fn === 'account_skill_add' && state.account_tree) { const k = args.p_node as string; state.account_tree.skills[k] = (state.account_tree.skills[k] ?? 0) + 1; state.account_tree.spent++; }
@@ -301,15 +293,8 @@ export const mockFarm = {
     if (fn === 'buy_animal') state.animals.push({ house_id: args.p_house as string, slot: args.p_slot as number, animal_id: args.p_animal as string, rarity: 'uncommon', state: 'growing', cycle_start: t, ready_at: t + 7200 });
     if (fn === 'remove_animal') state.animals = state.animals.filter((a) => !(a.house_id === args.p_house && a.slot === args.p_slot));
     if (fn === 'upgrade_house') { const h = state.houses[args.p_house as string]; h.tier++; h.slots += 4; }
-    if (fn === 'start_minigame') {
-      const r = args.p_route as string, n = args.p_vehicles as number;
-      mg.arrows = Array.from({ length: EXP.minigame.arrows[r as keyof typeof EXP.minigame.arrows] + EXP.minigame.convoy_extra_arrows * (n - 1) }, () => ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)]);
-      mg.limit = (EXP.minigame.seconds[r as keyof typeof EXP.minigame.seconds] + EXP.minigame.convoy_extra_seconds * (n - 1) + (args.p_manager ? 1 : 0)) * 1000 * (args.p_calm ? 1.5 : 1);
-      mg.calm = !!args.p_calm;
-      return { id: 'mg', arrows: mg.arrows, limit_ms: mg.limit } as unknown as FarmState;
-    }
     if (fn === 'launch_expedition') {
-      const ev = args.p_minigame ? evalMinigame(mg.arrows, args.p_keys as { k: string; t: number }[], mg.limit, mg.calm) : { result: 'done' as const, robot: false };
+      const ev = { result: 'done' as const, robot: false }; // v3: sem minigame
       const cargo = args.p_cargo as Record<string, number>;
       for (const [k, q] of Object.entries(cargo)) state.silo[k] -= q;
       for (const v of args.p_vehicles as string[]) {

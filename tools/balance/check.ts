@@ -217,7 +217,7 @@ const sprites = read('public/assets/sprites/manifest.json').sprites;
 const keys = [
   ...cards.cards.flatMap((c: any) => ['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => `${c.art_key}_${r}`)), ...Object.values(cards.frames),
   ...tools.class_tool_cards.flatMap((t: any) => tools.tool_materials.map((m: any) => `${t.id}_${m.id}`)),
-  ...['clothing_cards', 'amulet_cards', 'snack_cards'].flatMap((k) => tools[k].map((i: any) => i.id)),
+  ...['snack_cards'].flatMap((k) => tools[k].map((i: any) => i.id)),
   ...crops.flatMap((c: any) => [c.art.ready_sprite, c.art.seed_bag].filter(Boolean)),
   ...['carroca', 'carro', 'picape', 'jipe', 'caminhao'].map((v) => `vehicle_anim_${v}`),
   'building_celeiro', 'building_galinheiro', 'tree_leafy_sapling', 'tree_leafy_adult', 'tree_palm_sapling', 'tree_palm_adult',

@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "source": "GDD v2 seção 8 · fase 5: decisões do dono (24/10/2026): clicar para receber, repetição guarda o resultado, demanda igual para todos, comboio · v5 (01/11): achados viram só cartas (sem itens, Kits e Escrituras); sem reforma nem raridade de veículo",
   "stall_price_ratio": 0.7,
   "crit": {
@@ -236,5 +236,40 @@
     "recovered": "O cachorro farejou e trouxe de volta a carga perdida!"
   },
   "vehicle_source": "v3: a Garagem não vende; cada veículo libera de graça no nível dele (Carro 6, Picape 16, Caminhão 30); a carta de Veículo dá carga, lucro, tempo, roubo e jackpot e troca a aparência",
-  "vehicle_note_v3": "01/11: 5 veículos (5 artes e 5 raridades da carta): Carroça 1, Compacto 6, Off-Road 16, 4x4 23, Caminhão 30; liberam sozinhos no nível"
+  "vehicle_note_v3": "01/11: 5 veículos (5 artes e 5 raridades da carta): Carroça 1, Compacto 6, Off-Road 16, 4x4 23, Caminhão 30; liberam sozinhos no nível",
+  "route_map": {
+    "note": "mapa de pergaminho da expedição: posição de cada destino em % da largura e da altura do mapa",
+    "pins": {
+      "fazenda": {
+        "x": 7,
+        "y": 78,
+        "icon": "🏡"
+      },
+      "feira": {
+        "x": 24,
+        "y": 52,
+        "icon": "🎪"
+      },
+      "cidade": {
+        "x": 42,
+        "y": 74,
+        "icon": "🏘️"
+      },
+      "capital": {
+        "x": 60,
+        "y": 38,
+        "icon": "🏛️"
+      },
+      "porto": {
+        "x": 77,
+        "y": 68,
+        "icon": "⚓"
+      },
+      "exportacao": {
+        "x": 93,
+        "y": 30,
+        "icon": "🚢"
+      }
+    }
+  }
 }

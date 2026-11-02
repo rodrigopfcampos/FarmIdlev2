@@ -173,7 +173,7 @@ begin
   set local role authenticated;
   begin perform public.armory_place((select serial from public.cards where user_id = a and card_id = 'rebanho' and rarity = 'rare' and state = 'binder' limit 1));
     raise exception 'FALHA 26b: colocou no álbum à mão';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
   if public.jnum(public.card_fx(a, now()) -> 'armory', 'animal_production_pct') <> 1.2 then raise exception 'FALHA 27: bônus parcial %', public.card_fx(a, now()); end if;
 

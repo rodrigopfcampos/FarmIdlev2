@@ -75,20 +75,6 @@ export function vehicleStatus(s: FarmState, v: VehicleState, now: number): { sta
   return { status: 'idle', until: null, trips };
 }
 
-/** avaliação local do minigame (a mesma regra do servidor, para mostrar o resultado na hora) */
-export function evalMinigame(arrows: string[], keys: { k: string; t: number }[], limitMs: number, calm: boolean): { result: 'perfect' | 'done' | 'incomplete' | 'failed'; pos: number; errors: number } {
-  const m = EXP.minigame;
-  let pos = 0, errors = 0, last = 0;
-  for (const k of keys) {
-    if (pos >= arrows.length) break;
-    if (k.k === arrows[pos]) { pos++; last = k.t; } else errors++;
-  }
-  if (pos === arrows.length) {
-    const fin = last + errors * m.wrong_key_penalty_s * 1000;
-    if (fin <= limitMs) return { result: errors === 0 && !calm && fin <= limitMs * (1 - m.perfect_time_left) ? 'perfect' : 'done', pos, errors };
-  }
-  return { result: pos >= arrows.length * m.incomplete_min_fraction ? 'incomplete' : 'failed', pos, errors };
-}
 
 /** produtos do Silo que podem ir na expedição (têm preço) */
 export function sellable(silo: Record<string, number>): [string, number][] {

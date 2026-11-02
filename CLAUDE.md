@@ -16,6 +16,7 @@ O dono não programa: decide o design, gera as artes com IA, faz deploy e testa.
 
 ## Infra
 - Supabase (plano grátis, São Paulo): teste `vfuomlgnhvhfeygeegqm`, produção `saijxytudvsyvhfnwnpb`. Migrações em `supabase/migrations` (aplicar no teste, rodar `supabase/tests`, depois na produção).
+- Funções do banco: a versão atual de cada uma fica em `supabase/functions/<nome>.sql`. Para mudar, edite o arquivo e rode `npm run db:migration -- nome_curto` (gera a migração só com o que mudou; arquivo apagado vira `drop function`). Nunca copie função de migração antiga. `npm run db:check` roda no CI.
 - Cloudflare Workers Builds (`wrangler.jsonc`): `npm run build` → `dist/`. Variáveis de build `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`.
 - Artes: pranchas em `assets/raw`, grade em `tools/assets/sheets.json`, `npm run assets`.
 - Repositório antigo (v1, só referência): rodrigopfcampos/Villageidlefarm.

@@ -26,12 +26,9 @@ const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const pct = (x: number) => `${nf1.format(x * 100)}%`;
 const mult = (r: string) => rarityMult(r, RARITIES);
 // mapa de pergaminho: posição (%) e ícone de cada destino; a fazenda é o ponto de partida
-const MAP_PINS: Record<string, { x: number; y: number; icon: string }> = {
-  fazenda: { x: 7, y: 78, icon: '🏡' }, feira: { x: 24, y: 52, icon: '🎪' }, cidade: { x: 42, y: 74, icon: '🏘️' },
-  capital: { x: 60, y: 38, icon: '🏛️' }, porto: { x: 77, y: 68, icon: '⚓' }, exportacao: { x: 93, y: 30, icon: '🚢' },
-};
+const MAP_PINS = (EXP as unknown as { route_map: { pins: Record<string, { x: number; y: number; icon: string }> } }).route_map.pins; // posições no config
 const OUTCOME: Record<string, { text: string; icon: string }> = {
-  crit: { text: 'Crítico! +25%', icon: 'result_jackpot' }, success: { text: 'Sucesso', icon: 'result_coins' }, fail: { text: 'Falha parcial', icon: 'result_cargo_burned' },
+  crit: { text: `Crítico! +${Math.round(EXP.crit.bonus_value * 100)}%`, icon: 'result_jackpot' }, success: { text: 'Sucesso', icon: 'result_coins' }, fail: { text: 'Falha parcial', icon: 'result_cargo_burned' },
 };
 
 /** carta achada na viagem: nome e cor da raridade */

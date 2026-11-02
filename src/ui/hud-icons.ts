@@ -254,4 +254,3 @@ export function hudIcon(name: keyof typeof ICONS | string, size = 24, label = ''
   return svg;
 }
 
-export const HUD_ICON_NAMES = Object.keys(ICONS);

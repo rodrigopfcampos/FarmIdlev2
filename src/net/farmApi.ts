@@ -10,7 +10,7 @@ export type PlotState = {
 export type CharacterState = {
   class_id: string; slot: 'field' | 'bench'; energy: number; parked: boolean; level: number; work_hours: number;
   skills: Record<string, number>; skill_choice: string | null; reset_week: string | null; debt: number; unpaid_days: number;
-  snack_id: string | null; snack_qty: number; cloth_id: string | null; amulet_id: string | null; material: string; durability: number;
+  snack_id: string | null; snack_qty: number; material: string; durability: number;
   rate: number; energy_max: number; energy_use: number; energy_rest: number; active: boolean; salary: number; leading?: boolean;
 };
 export type VehicleState = { vehicle_id: string; rarity: string; durability: number; active: boolean; refurb_rarity: string | null; refurb_until: number | null };
@@ -255,7 +255,6 @@ export const buyLot = (lot: string) => rpc('buy_lot', { p_lot: lot });
 export const tendFarm = (target: string | null) => rpc('tend_farm', { p_target: target });
 export const plantTree = (lot: string, slot: number, fruit: string) => rpc('plant_tree', { p_lot: lot, p_slot: slot, p_fruit: fruit });
 export const chopTree = (lot: string, slot: number) => rpc('chop_tree', { p_lot: lot, p_slot: slot });
-export const upgradeTool = (cls: string) => rpc('upgrade_tool', { p_class: cls });
 export const repairTool = (cls: string) => rpc('repair_tool', { p_class: cls });
 export const plantRareTree = (lot: string, slot: number, fruit: string, rarity: string) => rpc('plant_tree', { p_lot: lot, p_slot: slot, p_fruit: fruit, p_rarity: rarity });
 export const plantRareSeed = (plot: string, crop: string, rarity: string) => rpc('plant_rare_seed', { p_plot: plot, p_crop: crop, p_rarity: rarity });
@@ -276,16 +275,9 @@ export const carePet = (pet: string) => rpc('care_pet', { p_pet: pet });
 export type PetFind = { pet: string; gold: number; energy: number; card: { serial: number; card_id: string; rarity: string } | null };
 export const collectPet = (pet: string) => rpc('collect_pet', { p_pet: pet }) as Promise<FarmState & { pet_find?: PetFind }>;
 // expedições
-export async function startMinigame(route: string, vehicles: number, manager: boolean, calm: boolean): Promise<MinigameStart> {
-  if (mock) return (await mock.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm })) as unknown as MinigameStart;
-  const { data, error } = await supabase!.rpc('start_minigame', { p_route: route, p_vehicles: vehicles, p_manager: manager, p_calm: calm });
-  if (error) throw new Error(friendly(error.message));
-  return data as MinigameStart;
-}
 export const launchExpedition = (o: { minigame: string | null; keys: { k: string; t: number }[]; vehicles: string[]; route: string; cargo: Record<string, number>; insurance: boolean; manager: boolean; repeat: boolean }) =>
   rpc('launch_expedition', { p_minigame: o.minigame, p_keys: o.keys, p_vehicles: o.vehicles, p_route: o.route, p_cargo: o.cargo, p_insurance: o.insurance, p_manager: o.manager, p_repeat: o.repeat });
 export const collectExpeditions = (vehicle: string | null) => rpc('collect_expeditions', { p_vehicle: vehicle });
-export const buyVehicle = (v: string) => rpc('buy_vehicle', { p_vehicle: v });
 export const setActiveVehicle = (v: string) => rpc('set_active_vehicle', { p_vehicle: v });
 export const repairVehicle = (v: string) => rpc('repair_vehicle', { p_vehicle: v });
 export const setTimezone = (tz: string) => rpc('set_timezone', { p_tz: tz });

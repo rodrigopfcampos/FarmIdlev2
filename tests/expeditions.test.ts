@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { RARITIES } from '../src/data';
 import {
-  canReach, capacity, cargoValue, evalMinigame, insuranceCost, rarityMult, repairCost, splitCargo, tripChance, tripHours, vehicleStatus,
+  canReach, capacity, cargoValue, insuranceCost, rarityMult, repairCost, splitCargo, tripChance, tripHours, vehicleStatus,
 } from '../src/farm/expeditions';
 import type { FarmState, LeadInfo, VehicleState } from '../src/net/farmApi';
 
@@ -50,23 +50,6 @@ describe('carga, seguro e conserto', () => {
   });
 });
 
-describe('minigame', () => {
-  const arrows = ['up', 'left', 'down', 'right'];
-  const keys = (ts: number[], seq = arrows) => seq.slice(0, ts.length).map((k, i) => ({ k, t: ts[i] }));
-  it('sem erro e com 30% do tempo sobrando = Perfeita (não no Modo calmo)', () => {
-    expect(evalMinigame(arrows, keys([300, 700, 1100, 1500]), 6000, false).result).toBe('perfect');
-    expect(evalMinigame(arrows, keys([300, 700, 1100, 1500]), 6000, true).result).toBe('done');
-  });
-  it('erro custa 0,5 s e não volta ao início', () => {
-    const k = [{ k: 'up', t: 300 }, { k: 'up', t: 500 }, { k: 'left', t: 800 }, { k: 'down', t: 1100 }, { k: 'right', t: 5600 }];
-    expect(evalMinigame(arrows, k, 6000, false).result).toBe('incomplete');
-    expect(evalMinigame(arrows, k.map((x, i) => (i === 4 ? { ...x, t: 4000 } : x)), 6000, false).result).toBe('done');
-  });
-  it('tempo acabou: metade feita = Incompleta; menos = Falhou', () => {
-    expect(evalMinigame(arrows, keys([300, 700]), 6000, false).result).toBe('incomplete');
-    expect(evalMinigame(arrows, keys([300]), 6000, false).result).toBe('failed');
-  });
-});
 
 describe('estado do veículo', () => {
   const s = { expeditions: [{ vehicle_id: 'carro', status: 'travel', returns_at: 500 }, { vehicle_id: 'carroca', status: 'back', returns_at: 10 }] } as unknown as FarmState;

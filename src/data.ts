@@ -40,13 +40,11 @@ export const PURCHASES = lotsCfg.purchases;
 export const LEVELS = levelsCfg.levels;
 export const MAX_LEVEL = levelsCfg.max_level;
 export const TOOL_MATERIALS = toolsCfg.tool_materials;
+export const TOOLS_CFG = toolsCfg;
 export const STALL_RATIO = expeditionsCfg.stall_price_ratio;
 export const VEHICLES = expeditionsCfg.vehicles;
 export const CLASSES = charactersCfg.classes;
 export const CHARS = charactersCfg;
-export type SkillNode = { effect: string; text_pt: string; phase?: number; per_point?: number; value?: number };
-export type SkillBranch = { id: string; name_pt: string; a: SkillNode; b: SkillNode; mastery: SkillNode };
-export const SKILL_TREE = charactersCfg.skill_tree as unknown as Record<string, SkillBranch[]>;
 // R3: árvore de habilidades da conta (substitui as dos personagens)
 export type AccountReq = { node: string; min: number };
 export type AccountNode = { id: string; name_pt: string; icon: string; text_pt: string; max: number; cost: number; effects: { effect: string; per_point: number }[];
@@ -61,6 +59,7 @@ export const PETS = charactersCfg.pets;
 export const SNACKS = toolsCfg.snack_cards;
 export const CLASS_TOOLS = toolsCfg.class_tool_cards;
 export const RARITIES = rarityCfg.tiers;
+export const ANIMAL_ODDS = rarityCfg.animals.purchase_odds as Record<string, number>;
 export const RARITY_BY_ID: Record<string, (typeof rarityCfg.tiers)[number]> = Object.fromEntries(rarityCfg.tiers.map((t) => [t.id, t]));
 
 export type Pt = [number, number];
@@ -108,5 +107,3 @@ export type VehicleDef = (typeof expeditionsCfg.vehicles)[number];
 export const ROUTES = expeditionsCfg.routes as Route[];
 export const ROUTE_BY_ID: Record<string, Route> = Object.fromEntries(ROUTES.map((r) => [r.id, r]));
 export const VEHICLE_BY_ID: Record<string, VehicleDef> = Object.fromEntries(VEHICLES.map((v) => [v.id, v]));
-export const EQUIP_CARDS = [...toolsCfg.clothing_cards, ...toolsCfg.amulet_cards] as unknown as { id: string; name_pt: string; base_effect: Record<string, number> }[];
-export const EQUIP_RARITIES = toolsCfg.equipment_rarities as Record<string, { multiplier: number; color_hex: string; merge_count_to_upgrade: number | null }>;

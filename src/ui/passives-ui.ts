@@ -3,7 +3,7 @@
 // Estados: bloqueado (cinza, linha pontilhada), disponível (pulsa, linha acesa), comprado/máximo (borda dourada, faíscas).
 // Ao comprar: a linha se enche de luz, o nó treme e toca um "pling" gerado pelo navegador (sem arquivo; dá para silenciar).
 import { hudIcon } from './hud-icons';
-import { ACCOUNT_TREE, LEVELS, type AccountBranch, type AccountNode } from '../data';
+import { ACCOUNT_TREE, CHARS, LEVELS, type AccountBranch, type AccountNode } from '../data';
 import { accountPoints, passiveState } from '../farm/rules';
 import { store } from '../farm/store';
 import { accountSkillAdd, accountSkillReset, type FarmState } from '../net/farmApi';
@@ -31,7 +31,7 @@ const EFFECT_LABEL: Record<string, string> = {
   cargo_capacity_pct: '% de carga em todos os veículos',
   first_snack_pct: '% de energia no 1º lanche do dia',
   synergy_energy_pct: '% de gasto de energia com o campo cheio',
-  low_energy_use_pct: '% de gasto de energia abaixo de 30%',
+  low_energy_use_pct: `% de gasto de energia abaixo de ${Math.round(CHARS.energy.low_energy_fraction * 100)}%`,
   salary_pct: '% nos salários',
   daily_revive_pct: '% de energia ao zerar, 1× por dia',
 };

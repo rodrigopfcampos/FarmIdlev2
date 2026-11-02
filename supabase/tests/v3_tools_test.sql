@@ -20,7 +20,7 @@ begin
   if (select material from public.tools where user_id = a and class_id = 'agricultor') <> 'iron' then raise exception 'FALHA 3: desceu'; end if;
   set local role authenticated;
   begin perform public.upgrade_tool('agricultor'); raise exception 'FALHA 4: Forja ainda vende';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
 
   -- 2. Vara de Pescar: gasta 2,5 por ciclo; abaixo de 30 rende a metade; conserto com ouro

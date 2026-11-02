@@ -157,7 +157,7 @@ begin
   -- 10. (v3) a Garagem não vende: o Carro libera sozinho no nível 6; a carta de Veículo Incomum dá +10% de carga; comboio com 1 minigame
   set local role authenticated;
   begin perform public.buy_vehicle('carro'); raise exception 'FALHA 42: a Garagem vendeu';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
   update public.farms set level = greatest(level, 6) where user_id = a;
   set local role authenticated; s := public.get_farm(); reset role;
@@ -181,9 +181,9 @@ begin
   -- 11. (v3) reforma, Kits e itens de funcionário acabaram; o achado da viagem é carta
   set local role authenticated;
   begin perform public.refurbish_vehicle('carroca'); raise exception 'FALHA 45: reforma ainda existe';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   begin perform public.equip_item('agricultor', 'cloth', 'cloth_hat:rare'); raise exception 'FALHA 46: item de funcionário ainda existe';
-  exception when check_violation then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   mg := public.start_minigame('feira', 1, false, false);
   s := public.launch_expedition((mg ->> 'id')::uuid, '[]', array['carroca'], 'feira', '{"batata":10}', false, false, false);
   reset role;

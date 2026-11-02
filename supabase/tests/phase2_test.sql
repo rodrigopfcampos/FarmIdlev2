@@ -137,7 +137,7 @@ begin
     raise exception 'FALHA 25: ferramenta % trabalho %', s -> 'tools' ->> 'agricultor', s ->> 'labor_per_hour';
   end if;
   begin perform public.admin_grant_item(b, 'deed', 1, 'auto-presente'); raise exception 'FALHA 26: jogador deu Escritura a si mesmo';
-  exception when insufficient_privilege then null; end;
+  exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
 
   -- 10. ledger continua batendo com a carteira

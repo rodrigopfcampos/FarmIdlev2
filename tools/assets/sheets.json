@@ -3078,6 +3078,42 @@
         2
       ],
       "count": 5
+    },
+    {
+      "id": "v3_cat",
+      "file": "v3/cat_walk.png",
+      "native": true,
+      "key": "pet_walk_gato",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_cat_idle",
+      "file": "v3/cat_idle.png",
+      "native": true,
+      "key": "pet_idle_gato",
+      "dir": "animals",
+      "grid": [
+        1,
+        1
+      ],
+      "count": 1
+    },
+    {
+      "id": "v3_parrot_idle",
+      "file": "v3/parrot_idle.png",
+      "native": true,
+      "key": "pet_idle_papagaio",
+      "dir": "animals",
+      "grid": [
+        1,
+        1
+      ],
+      "count": 1
     }
   ],
   "default_kernel": "nearest",

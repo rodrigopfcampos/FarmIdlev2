@@ -348,17 +348,19 @@
       },
       "papagaio": {
         "walk": "pet_walk_papagaio",
-        "idle_frame": 2,
+        "idle": "pet_idle_papagaio",
         "scale": 0.7,
         "walk_fps": 8
       },
       "gato": {
-        "old_idle": true,
-        "scale": 1
+        "walk": "pet_walk_gato",
+        "idle": "pet_idle_gato",
+        "scale": 0.7,
+        "walk_fps": 8
       }
     },
-    "sprites_note": "arte nova (32×32, 5 quadros de andar, olha para a esquerda); o Gato usa a arte antiga parada até chegar a dele",
-    "personal_space_px": 14,
+    "sprites_note": "arte nova do dono (32×32, 5 quadros de andar em grade 3×2 e 1 quadro parado, olham para a esquerda)",
+    "personal_space_px": 22,
     "max_step_slope": 0.4,
     "step_px": [
       16,

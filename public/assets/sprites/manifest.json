@@ -6733,6 +6733,44 @@
         32,
         32
       ]
+    },
+    "pet_walk_gato": {
+      "file": "sprites/animals/pet_walk_gato.png",
+      "size": [
+        160,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        32,
+        32
+      ]
+    },
+    "pet_idle_gato": {
+      "file": "sprites/animals/pet_idle_gato.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_idle_papagaio": {
+      "file": "sprites/animals/pet_idle_papagaio.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
     }
   }
 }

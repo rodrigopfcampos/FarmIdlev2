@@ -143,7 +143,7 @@ export class PetLayer {
       // parado um pouco; depois um passo quase de lado que não sai do pátio nem entra no espaço de outro pet
       if (!w.to && time >= w.until && !this.calm) {
         for (let k = 0; k < 16 && !w.to; k++) {
-          const len = between(P.step_px ?? [16, 44]), side = rnd() < 0.5 ? -1 : 1;
+          const len = between(P.step_px ?? [16, 44]) * (k < 8 ? 1 : 0.5), side = rnd() < 0.5 ? -1 : 1; // sem lugar: passo mais curto
           const p: Pt = [Math.round(w.at[0] + side * len), Math.round(w.at[1] + (rnd() * 2 - 1) * len * P.max_step_slope)];
           if (clearPath(w.at, p, this.area, [], 2) && !this.crowded(p, w.r, w)) w.to = p;
         }

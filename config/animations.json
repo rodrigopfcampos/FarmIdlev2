@@ -272,7 +272,19 @@
     "loot_coins": 8,
     "loot_ms": 900,
     "note_v3": "01/11: saída curta pela frente da Garagem (sem passar pelos canteiros), some rápido; na volta aparece ali e estaciona; moedas ao estacionar; veículos 18% menores",
-    "scale": 0.82
+    "scale": 0.82,
+    "horse_idle_frames": [
+      1,
+      2,
+      1,
+      0
+    ],
+    "horse_idle_frame_ms": 150,
+    "horse_idle_every_ms": [
+      2500,
+      5500
+    ],
+    "horse_idle_note": "carroça parada: o cavalo troca as patas de vez em quando (quadros 2-3-2-1 da tira, 150 ms cada)"
   },
   "orchard": {
     "sprites": {
@@ -325,8 +337,8 @@
       16
     ],
     "idle_ms": [
-      1500,
-      4000
+      1200,
+      3200
     ],
     "frame_ms": 320,
     "hop_px": 1,
@@ -348,7 +360,7 @@
       },
       "papagaio": {
         "walk": "pet_walk_papagaio",
-        "idle": "pet_idle_papagaio",
+        "idle_frame": 2,
         "scale": 0.7,
         "walk_fps": 8
       },
@@ -359,7 +371,7 @@
         "walk_fps": 8
       }
     },
-    "sprites_note": "arte nova do dono (32×32, 5 quadros de andar em grade 3×2 e 1 quadro parado, olham para a esquerda)",
+    "sprites_note": "arte nova do dono (32×32, 5 quadros de andar em grade 3×2, olham para a esquerda); parado: quadro próprio do Cachorro e do Gato; o Papagaio parado usa o quadro 3 da animação (asas fechadas)",
     "personal_space_px": 22,
     "max_step_slope": 0.4,
     "step_px": [

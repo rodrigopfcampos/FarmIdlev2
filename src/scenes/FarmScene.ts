@@ -62,6 +62,7 @@ export class FarmScene extends Phaser.Scene {
   private vehShown = '';                    // veículo que está na vaga
   private vehHome: Set<string> | null = null; // veículos em casa no segundo anterior          // situação anterior do veículo (para animar só a mudança vista ao vivo)
   private vehMotor = false;
+  private horseNext = 0;           // próxima troca de patas do cavalo parado
   private vehLook = 'carroca';  // cara do veículo (Carroça, Compacto, Off-Road, 4x4, Caminhão)     // veículo a motor (balança, fumaça) ou carroça com cavalo
   private fxAt = 0;             // último fumacinha/poeira
   private dustAt = 0;
@@ -329,6 +330,12 @@ export class FarmScene extends Phaser.Scene {
         const back = this.veh.flipX ? 1 : -1;
         this.puff(this.veh.x + back * this.veh.displayWidth * 0.42, this.veh.y - 8, V.exhaust_color, V.exhaust_ms, -10);
       }
+    }
+    // carroça parada: de tempos em tempos o cavalo troca o apoio das patas (2 quadros rápidos) para não parecer congelado
+    if (!this.vehMotor && !this.vehDrive && this.vehKey && time >= this.horseNext) {
+      const seq = V.horse_idle_frames as number[];
+      this.horseNext = time + V.horse_idle_every_ms[0] + Math.random() * (V.horse_idle_every_ms[1] - V.horse_idle_every_ms[0]);
+      seq.forEach((f, i) => this.time.delayedCall(i * V.horse_idle_frame_ms, () => { if (!this.vehDrive && this.veh) this.veh.setFrame(f); }));
     }
     if (this.vehDrive && time - this.dustAt > V.dust_every_ms) {
       this.dustAt = time;

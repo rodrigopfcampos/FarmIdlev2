@@ -179,7 +179,7 @@ export class LifeLayer {
       // passo quase de lado (a arte olha para a frente-esquerda; subir reto parece andar de costas),
       // sem atravessar prédio, cerca ou o espaço de outro bicho
       for (let k = 0; k < 16 && !w.to; k++) {
-        const len = between(W.step_px), side = rnd() < 0.5 ? -1 : 1;
+        const len = between(W.step_px) * (k < 8 ? 1 : 0.45), side = rnd() < 0.5 ? -1 : 1; // sem lugar: passo mais curto
         const p: Pt = [Math.round(w.at[0] + side * len), Math.round(w.at[1] + (rnd() * 2 - 1) * len * W.max_step_slope)];
         if (clearPath(w.at, p, w.area.poly, w.area.avoid, W.edge_margin_px) && !crowded(p, w.r, w.mates, w) && !pathCrowded(w.at, p, w)) w.to = p;
       }

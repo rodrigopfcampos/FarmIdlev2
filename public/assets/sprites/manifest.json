@@ -6690,6 +6690,49 @@
         0.5,
         1
       ]
+    },
+    "pet_walk_cachorro": {
+      "file": "sprites/animals/pet_walk_cachorro.png",
+      "size": [
+        160,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        32,
+        32
+      ]
+    },
+    "pet_idle_cachorro": {
+      "file": "sprites/animals/pet_idle_cachorro.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "pet_walk_papagaio": {
+      "file": "sprites/animals/pet_walk_papagaio.png",
+      "size": [
+        160,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 5,
+      "frame_size": [
+        32,
+        32
+      ]
     }
   }
 }

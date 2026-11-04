@@ -109,11 +109,6 @@
       3,
       4
     ],
-    "idle_frames": [
-      0,
-      3
-    ],
-    "idle_fps": 4,
     "walk_fps": 6,
     "scale": 1,
     "scale_by_sprite": {
@@ -162,9 +157,16 @@
       "ganso": "goose",
       "coelho": "rabbit"
     },
-    "faces": "esquerda (espelha ao andar para a direita)",
+    "faces": "esquerda (espelha ao andar para a direita); passo sempre quase horizontal",
     "priority": "fundo",
-    "reduced_motion": "parados no 1º quadro"
+    "reduced_motion": "parados no quadro fixo",
+    "idle_frame": 0,
+    "idle_note": "parado = 1 quadro fixo (as pernas não mexem); só anda com o quadro de andar",
+    "max_step_slope": 0.4,
+    "slope_note": "a arte olha para a frente-esquerda: o passo é quase de lado (sobe ou desce no máximo 0,4 px por px de lado), assim o bicho nunca anda \"de costas\"",
+    "personal_space_px": 20,
+    "personal_note": "espaço de cada bicho = personal_space_px × tamanho; distância medida com o vertical × personal_space_dy_weight (a arte é alta: quem está atrás fica bem acima); ninguém nasce, para ou passa dentro do espaço de outro",
+    "personal_space_dy_weight": 1.3
   },
   "lake_fish": {
     "trigger": "Lago da fazenda comprado (pedido do dono em 01/11: sem sprites de peixe; sombras submersas e ondulações)",
@@ -336,6 +338,32 @@
       "cachorro": "result_chest",
       "gato": "energy",
       "papagaio": "ui_coin"
-    }
+    },
+    "sprites": {
+      "cachorro": {
+        "walk": "pet_walk_cachorro",
+        "idle": "pet_idle_cachorro",
+        "scale": 0.75,
+        "walk_fps": 8
+      },
+      "papagaio": {
+        "walk": "pet_walk_papagaio",
+        "idle_frame": 2,
+        "scale": 0.7,
+        "walk_fps": 8
+      },
+      "gato": {
+        "old_idle": true,
+        "scale": 1
+      }
+    },
+    "sprites_note": "arte nova (32×32, 5 quadros de andar, olha para a esquerda); o Gato usa a arte antiga parada até chegar a dele",
+    "personal_space_px": 14,
+    "max_step_slope": 0.4,
+    "step_px": [
+      16,
+      44
+    ],
+    "personal_space_dy_weight": 1.3
   }
 }

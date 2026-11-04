@@ -1,4 +1,5 @@
-// Vida no mapa v3: animais andando nos pastos (parado 4 FPS, andando 6 FPS, espelha para a direita, ordem pelo Y)
+// Vida no mapa v3: animais andando nos pastos (parado num quadro fixo, andando 6 FPS, passo quase de lado para nunca
+// andar de costas, espelha para a direita, cada um com seu espaço para não se amontoar, ordem pelo Y)
 // e o Lago com sombras de peixe submersas (rumo que gira suave), ondulações na superfície e o "beliscão" quando a rede
 // tem peixe para recolher (a sombra para, pisca e solta 3 anéis). Só visual.
 import Phaser from 'phaser';
@@ -11,10 +12,35 @@ import { store } from '../farm/store';
 const W = ANIM.animals_wander, F = ANIM.lake_fish;
 const depthOf = (y: number) => 1 + y / 10000;
 type Area = { poly: Pt[]; avoid: Rect[] };
-type Walker = { spr: Phaser.GameObjects.Sprite; key: string; area: Area; at: Pt; to: Pt | null; speed: number; until: number; frame0: number };
+type Walker = { spr: Phaser.GameObjects.Sprite; key: string; area: Area; at: Pt; to: Pt | null; speed: number; until: number; r: number; mates: Walker[] };
 type Fish = { at: Pt; to: Pt; ang: number; speed: number; len: number; nextRipple: number; blink: number };
 
 const rnd = () => Math.random();
+
+/** o ponto p invade o espaço de algum outro bicho? (elipse: um pouco mais larga que alta; o bicho de trás
+ *  precisa ficar bem mais acima para não sumir atrás do da frente, porque a arte é alta)
+ *  aheadOnly: só conta quem está na frente do movimento, para quem já está perto conseguir se afastar */
+function crowded(p: Pt, r: number, mates: Walker[], self: Walker | null, aheadOnly = false): boolean {
+  for (const o of mates) {
+    if (o === self) continue;
+    const gap = r + o.r;
+    for (const q of o.to ? [o.at, o.to] : [o.at]) {
+      const dx = p[0] - q[0], dy = (p[1] - q[1]) * W.personal_space_dy_weight;
+      if (dx * dx + dy * dy >= gap * gap) continue;
+      if (!aheadOnly || !self) return true;
+      // anda para longe de q? então deixa
+      const mx = p[0] - self.at[0], my = p[1] - self.at[1];
+      if (mx * (q[0] - self.at[0]) + my * (q[1] - self.at[1]) > 0) return true;
+    }
+  }
+  return false;
+}
+
+/** o caminho de a até b passa por dentro do espaço de outro bicho? */
+function pathCrowded(a: Pt, b: Pt, self: Walker): boolean {
+  for (let t = 0.25; t < 1; t += 0.25) if (crowded([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], self.r, self.mates, self)) return true;
+  return false;
+}
 const between = ([a, b]: number[]) => a + rnd() * (b - a);
 
 export class LifeLayer {
@@ -32,7 +58,6 @@ export class LifeLayer {
       const tex = `animal_walk_${k}`;
       if (!scene.textures.exists(tex)) continue;
       scene.anims.create({ key: `${tex}_walk`, frames: scene.anims.generateFrameNumbers(tex, { frames: W.walk_frames }), frameRate: W.walk_fps, repeat: -1 });
-      scene.anims.create({ key: `${tex}_idle`, frames: scene.anims.generateFrameNumbers(tex, { frames: W.idle_frames }), frameRate: W.idle_fps, repeat: -1 });
     }
     // sombras embaixo, anéis por cima da água (os dois abaixo do píer e das margens desenhadas no fundo)
     this.shadows = scene.add.graphics().setDepth(depthOf(this.lake?.center[1] ?? 0) - 0.002);
@@ -50,19 +75,26 @@ export class LifeLayer {
       const have = this.walkers.get(lot.id) ?? [];
       if (have.map((w) => w.key).join() === want.join()) continue;
       have.forEach((w) => w.spr.destroy());
-      this.walkers.set(lot.id, want.map((key) => this.makeWalker(key, { poly: area.polygon, avoid: area.avoid })));
+      // um de cada vez: cada novo bicho nasce fora do espaço dos que já estão no pasto
+      const list: Walker[] = [];
+      for (const key of want) this.makeWalker(key, { poly: area.polygon, avoid: area.avoid }, list);
+      this.walkers.set(lot.id, list);
     }
     this.applyFish(s);
   }
 
-  private makeWalker(key: string, area: Area): Walker {
-    const at = randomFreePoint(area.poly, area.avoid, rnd, W.edge_margin_px);
+  private makeWalker(key: string, area: Area, mates: Walker[]): Walker {
     const kind = key.replace('animal_walk_', '') as keyof typeof W.speed_px_s;
     // tamanho de cada bicho em relação à vaca (galinha, pato e coelho bem menores)
     const size = W.scale * ((W.scale_by_sprite as Record<string, number>)[kind] ?? 1);
-    const spr = this.scene.add.sprite(at[0], at[1], key, 0).setOrigin(0.5, 1).setScale(size).setDepth(depthOf(at[1]));
-    if (!this.calm) spr.play({ key: `${key}_idle`, startFrame: Math.floor(rnd() * W.idle_frames.length) });
-    return { spr, key, area, at, to: null, speed: W.speed_px_s[kind] ?? 12, until: performance.now() + between(W.idle_ms), frame0: 0 };
+    const r = W.personal_space_px * size;
+    let at = randomFreePoint(area.poly, area.avoid, rnd, W.edge_margin_px);
+    for (let k = 0; k < 40 && crowded(at, r, mates, null); k++) at = randomFreePoint(area.poly, area.avoid, rnd, W.edge_margin_px);
+    const spr = this.scene.add.sprite(at[0], at[1], key, W.idle_frame).setOrigin(0.5, 1).setScale(size).setDepth(depthOf(at[1]))
+      .setFlipX(rnd() < 0.5);
+    const w: Walker = { spr, key, area, at, to: null, speed: W.speed_px_s[kind] ?? 12, until: performance.now() + between(W.idle_ms), r, mates };
+    mates.push(w);
+    return w;
   }
 
   private applyFish(s: FarmState): void {
@@ -134,14 +166,22 @@ export class LifeLayer {
     });
   }
 
+  /** parado: quadro fixo, sem mexer as pernas */
+  private halt(w: Walker, now: number): void {
+    w.to = null;
+    w.until = now + between(W.idle_ms);
+    w.spr.stop().setFrame(W.idle_frame);
+  }
+
   private stepWalker(w: Walker, now: number, dt: number): void {
     if (!w.to) {
       if (now < w.until) return;
-      // escolhe um passo curto que não atravesse prédio nem cerca
-      for (let k = 0; k < 12 && !w.to; k++) {
-        const ang = rnd() * Math.PI * 2, len = between(W.step_px);
-        const p: Pt = [Math.round(w.at[0] + Math.cos(ang) * len), Math.round(w.at[1] + Math.sin(ang) * len * 0.5)];
-        if (clearPath(w.at, p, w.area.poly, w.area.avoid, W.edge_margin_px)) w.to = p;
+      // passo quase de lado (a arte olha para a frente-esquerda; subir reto parece andar de costas),
+      // sem atravessar prédio, cerca ou o espaço de outro bicho
+      for (let k = 0; k < 16 && !w.to; k++) {
+        const len = between(W.step_px), side = rnd() < 0.5 ? -1 : 1;
+        const p: Pt = [Math.round(w.at[0] + side * len), Math.round(w.at[1] + (rnd() * 2 - 1) * len * W.max_step_slope)];
+        if (clearPath(w.at, p, w.area.poly, w.area.avoid, W.edge_margin_px) && !crowded(p, w.r, w.mates, w) && !pathCrowded(w.at, p, w)) w.to = p;
       }
       if (!w.to) { w.until = now + between(W.idle_ms); return; }
       w.spr.setFlipX(w.to[0] > w.at[0]); // a arte olha para a esquerda
@@ -151,10 +191,13 @@ export class LifeLayer {
     const dx = w.to[0] - w.at[0], dy = w.to[1] - w.at[1], d = Math.hypot(dx, dy);
     const step = (w.speed * dt) / 1000;
     if (d <= step) {
-      w.at = w.to; w.to = null; w.until = now + between(W.idle_ms);
-      w.spr.play(`${w.key}_idle`, true);
+      w.at = w.to;
+      this.halt(w, now);
     } else {
-      w.at = [w.at[0] + (dx / d) * step, w.at[1] + (dy / d) * step];
+      const next: Pt = [w.at[0] + (dx / d) * step, w.at[1] + (dy / d) * step];
+      // outro bicho entrou no caminho: para antes de encostar
+      if (crowded(next, w.r, w.mates, w, true)) this.halt(w, now);
+      else w.at = next;
     }
     w.spr.setPosition(Math.round(w.at[0]), Math.round(w.at[1])).setDepth(depthOf(w.at[1]));
   }

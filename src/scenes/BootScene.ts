@@ -9,7 +9,7 @@ import { store } from '../farm/store';
 import { bus } from '../core/bus';
 
 const MAP_PREFIXES = ['crop_', 'tree_', 'debris_', 'building_', 'char_agricultor_', 'icon_', 'pet_', 'vehicle_', 'animal_', 'fish_', 'orchard_'];
-const MAP_KEYS = ['ui_coin', 'lot_sign'];
+const MAP_KEYS = ['ui_coin', 'lot_sign', 'result_chest']; // result_chest: baú do achado do Cachorro no balão
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('boot'); }

@@ -638,3 +638,12 @@ strong { font-weight: 800; }
   .gcard-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) { .find-dot { animation: none; } .gcard, .gcard:hover { transform: none; } }
+
+/* pets com arte nova no card: parado num quadro; com o mouse em cima do card, anda (5 quadros, 8 FPS) */
+.pet-new { position: relative; display: inline-grid; place-items: center; }
+.pet-new .pet-walk { display: none; }
+.gcard:hover .pet-new .pet-still { display: none; }
+.gcard:hover .pet-new .pet-walk { display: block; animation: pxwalk 625ms steps(var(--n)) infinite; }
+@keyframes pxwalk { from { background-position: 0 0; } to { background-position: calc(var(--w) * var(--n) * -1) 0; } }
+@media (prefers-reduced-motion: reduce) { .gcard:hover .pet-new .pet-walk { display: none; } .gcard:hover .pet-new .pet-still { display: block; } }
+.gcard-art .pet-new .px { transform: none; }

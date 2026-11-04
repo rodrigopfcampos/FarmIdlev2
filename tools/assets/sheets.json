@@ -3042,6 +3042,42 @@
           ]
         }
       ]
+    },
+    {
+      "id": "v3_dog",
+      "file": "v3/dog_walk.png",
+      "native": true,
+      "key": "pet_walk_cachorro",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
+    },
+    {
+      "id": "v3_dog_idle",
+      "file": "v3/dog_idle.png",
+      "native": true,
+      "key": "pet_idle_cachorro",
+      "dir": "animals",
+      "grid": [
+        1,
+        1
+      ],
+      "count": 1
+    },
+    {
+      "id": "v3_parrot",
+      "file": "v3/parrot_walk.png",
+      "native": true,
+      "key": "pet_walk_papagaio",
+      "dir": "animals",
+      "grid": [
+        3,
+        2
+      ],
+      "count": 5
     }
   ],
   "default_kernel": "nearest",

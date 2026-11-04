@@ -1,6 +1,6 @@
 // Base dos painéis (UI 16-bit): abrir/fechar, aviso, ação no servidor, [?] de ajuda, seletor de madeira e
 // ajudas de desenho (sprites, retratos, ícones) que todas as telas usam.
-import { ANIMAL_EMOJI, CLASS_TOOLS, itemInfo, STALL_RATIO, TOOL_MATERIALS, TOOLS_CFG } from '../data';
+import { ANIM, ANIMAL_EMOJI, CLASS_TOOLS, itemInfo, STALL_RATIO, TOOL_MATERIALS, TOOLS_CFG } from '../data';
 import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
 import { classDef } from '../farm/rules';
 import { applyState, store } from '../farm/store';
@@ -24,11 +24,14 @@ export const nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 
 export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
-export function sprite(key: string | null, scale = 2, cls = '', filter = ''): string {
+export function sprite(key: string | null, scale = 2, cls = '', filter = '', frame = 0): string {
   const m = key ? store.manifest[key] : null;
   if (!m) return '';
   const [w, h] = m.frame_size ?? m.size;
-  return `<span class="px ${cls}" style="width:${w * scale}px;height:${h * scale}px;background-image:url(assets/${m.file});background-size:${m.size[0] * scale}px ${m.size[1] * scale}px${filter ? `;filter:${filter}` : ''}"></span>`;
+  // tira de quadros: mostra o quadro pedido; --w e --n servem para a animação em CSS (.px-anim)
+  const pos = frame ? `;background-position:${-frame * w * scale}px 0` : '';
+  const anim = m.frames ? `;--w:${w * scale}px;--n:${m.frames}` : '';
+  return `<span class="px ${cls}" style="width:${w * scale}px;height:${h * scale}px;background-image:url(assets/${m.file});background-size:${m.size[0] * scale}px ${m.size[1] * scale}px${pos}${anim}${filter ? `;filter:${filter}` : ''}"></span>`;
 }
 
 /** ícone de um item do Silo: arte (com a variação de cor, se houver) ou emoji provisório */
@@ -45,8 +48,13 @@ export function animalFace(id: string): string {
   return store.manifest[key] ? `<span class="pet-face" aria-hidden="true">${sprite(key, 1.25)}</span>` : `<span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[id] ?? '🐾'}</span>`;
 }
 
-/** rosto do pet nas listas: arte ou emoji provisório */
+/** pet nas listas: arte nova parada (e andando quando o mouse passa no card), arte antiga ou emoji provisório */
 export function petFace(id: string): string {
+  const art = (ANIM.pets_map.sprites as Record<string, { walk?: string; idle?: string; idle_frame?: number }>)[id];
+  if (art?.walk && store.manifest[art.walk]) {
+    const still = art.idle && store.manifest[art.idle] ? sprite(art.idle, 2, 'pet-still') : sprite(art.walk, 2, 'pet-still', '', art.idle_frame ?? 0);
+    return `<span class="pet-face pet-new" aria-hidden="true">${still}${sprite(art.walk, 2, 'pet-walk px-anim')}</span>`;
+  }
   const key = petSprite(store.manifest, id);
   return key ? `<span class="pet-face" aria-hidden="true">${sprite(key, 1.5)}</span>` : `<span class="pet-face" aria-hidden="true">${PET_EMOJI[id]}</span>`;
 }

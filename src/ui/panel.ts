@@ -1,6 +1,6 @@
 // Base dos painéis (UI 16-bit): abrir/fechar, aviso, ação no servidor, [?] de ajuda, seletor de madeira e
 // ajudas de desenho (sprites, retratos, ícones) que todas as telas usam.
-import { ANIM, ANIMAL_EMOJI, CLASS_TOOLS, itemInfo, STALL_RATIO, TOOL_MATERIALS, TOOLS_CFG } from '../data';
+import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CLASS_TOOLS, itemInfo, PRODUCT_ART, STALL_RATIO, TOOL_MATERIALS, TOOLS_CFG } from '../data';
 import { ICON_VARIANTS, iconSprite, petSprite } from '../farm/art';
 import { classDef } from '../farm/rules';
 import { applyState, store } from '../farm/store';
@@ -38,12 +38,16 @@ export function sprite(key: string | null, scale = 2, cls = '', filter = '', fra
 export function itemIcon(id: string): string {
   const key = iconSprite(store.manifest, id);
   if (key) return sprite(key, 1, '', ICON_VARIANTS[id]?.filter ?? '');
+  const art = PRODUCT_ART[id];
+  if (art && store.manifest[art]) return sprite(art, 1); // peixe do Lago
   const e = itemInfo(id).emoji;
   return e ? `<span class="pet-face small" aria-hidden="true">${e}</span>` : '';
 }
 
 /** animal nas listas: arte ou emoji provisório */
 export function animalFace(id: string): string {
+  const fish = ANIMAL_BY_ID[id]?.is_fish ? ANIMAL_BY_ID[id].product.art : '';
+  if (fish && store.manifest[fish]) return `<span class="pet-face" aria-hidden="true">${sprite(fish, 1.25)}</span>`;
   const key = `animal_${id}_f1`;
   return store.manifest[key] ? `<span class="pet-face" aria-hidden="true">${sprite(key, 1.25)}</span>` : `<span class="pet-face" aria-hidden="true">${ANIMAL_EMOJI[id] ?? '🐾'}</span>`;
 }
@@ -63,6 +67,8 @@ export function petFace(id: string): string {
 const CLASS_HUE: Record<string, number> = { agricultor: 0, rancheira: 150, ferreiro: 200, comerciante: 280, gerente: 40, botanica: 100 };
 
 export function charSprite(cls: string, scale = 2): string {
+  // sem a arte de corpo inteiro (Pescador): o retrato reduzido na altura do boneco (48 px)
+  if (!store.manifest[`char_${cls}_idle`] && store.manifest[`char_${cls}_portrait`]) return sprite(`char_${cls}_portrait`, scale * 48 / 180);
   const key = store.manifest[`char_${cls}_idle`] ? `char_${cls}_idle` : 'char_agricultor_idle';
   const html = sprite(key, scale);
   return key === 'char_agricultor_idle' && CLASS_HUE[cls] ? html.replace('style="', `style="filter:hue-rotate(${CLASS_HUE[cls]}deg);`) : html;

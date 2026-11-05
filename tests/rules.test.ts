@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CROPS, LEVELS, PURCHASES, itemInfo } from '../src/data';
 import {
   animalLook, cleanupMinutes, collectUnits, feedPerCycle, hireCost, hoursToNext, isNeighbor, lotOffer, orchardFruits, petFactor, petLevel, petNextIn, petFindLeft, plotCrops, plotLook,
-  rareSeeds, accountEffect, accountPoints, passiveState, fishCycles, fishSpecies, tendCount, treeLook, xpProgress,
+  rareSeeds, accountEffect, accountPoints, passiveState, tendCount, treeLook, xpProgress,
 } from '../src/farm/rules';
 
 describe('compra de lotes', () => {
@@ -129,12 +129,9 @@ describe('personagens (fase 3)', () => {
     expect(passiveState('contrabando', { labia: 5, logistica: 5, rotas: 5 }, 5).state).toBe('available');
     expect(passiveState('contrabando', { labia: 5, logistica: 5, rotas: 5 }, 4).state).toBe('locked');
   });
-  it('pesca: espécie por nível e rede de até 4 ciclos de 2 h', () => {
-    expect(fishSpecies(15).id).toBe('fish_truta');
-    expect(fishSpecies(45).id).toBe('fish_esturjao');
-    expect(fishCycles(0, 3 * 7200 + 10)).toBe(3);
-    expect(fishCycles(0, 30 * 7200)).toBe(4);
-    expect(fishCycles(null, 99999)).toBe(0);
+  it('peixe do Lago no Silo tem nome e preço do próprio peixe', () => {
+    expect(itemInfo('fish_truta').name_pt).toBe('Truta Arco-Íris');
+    expect(itemInfo('fish_truta').price).toBeGreaterThan(0);
   });
   it('limpeza: com o Ferreiro em campo 3× mais rápida; nó Limpeza reduz', () => {
     expect(cleanupMinutes(1, true)).toBe(24);

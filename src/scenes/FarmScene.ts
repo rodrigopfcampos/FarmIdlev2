@@ -5,7 +5,7 @@
 import Phaser from 'phaser';
 import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
-import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, FISHING, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, MAP, PETS, ZONES, type Lot, type Pt } from '../data';
+import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, MAP, PETS, ZONES, type Lot, type Pt } from '../data';
 import { orchardLook } from '../farm/life';
 import { vehicleLook } from '../farm/cards';
 import { LifeLayer } from './lifeLayer';
@@ -15,7 +15,7 @@ import { vehicleStatus } from '../farm/expeditions';
 import { cameraBounds, pointInPolygon, stageFor } from '../farm/geometry';
 import { bakeSway } from '../anim/bake';
 import { frameAt, phaseOf, reducedMotion, tableAt } from '../anim/frames';
-import { animalLook, fishCycles, lotOffer, petFindLeft, plotLook } from '../farm/rules';
+import { animalLook, lotOffer, petFindLeft, plotLook } from '../farm/rules';
 import { store } from '../farm/store';
 import type { FarmState } from '../net/farmApi';
 import { duration, formatGold } from '../ui/format';
@@ -41,7 +41,7 @@ export class FarmScene extends Phaser.Scene {
   private calm = reducedMotion();
   private trees: TreeView[] = [];
   private decor: LotDecor[] = [];
-  private fishBadge?: Phaser.GameObjects.Text; // pesca (R3): rede com peixe no píer
+  private fishBadge?: Phaser.GameObjects.Text; // Lago: peixes prontos (aviso no píer)
   private fishIcon?: Phaser.GameObjects.Image;
   private hover!: Phaser.GameObjects.Graphics;
   private label!: Phaser.GameObjects.Text;
@@ -112,7 +112,7 @@ export class FarmScene extends Phaser.Scene {
       const badgeIcon = badge ? this.add.image(lot.building_anchor![0] - 14, lot.building_anchor![1] - 46, '__DEFAULT').setOrigin(1, 1).setDepth(21).setVisible(false) : undefined;
       if (badge) this.tweens.add({ targets: [badge, badgeIcon], y: badge.y - 3, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
       this.decor.push({ lot, sign, overlay, overlayW: polyW, overlayOn: null, timer, building, badge, badgeIcon });
-      // píer do Lago: peixe pulando com quantos ciclos a rede tem (clique no Lago recolhe)
+      // píer do Lago: peixe pulando com quantos peixes estão prontos (clique no Lago coleta)
       const pier = (lot as Lot & { pier_anchor?: Pt }).pier_anchor;
       if (lot.type === 'pasto_lago' && pier) {
         this.fishBadge = this.add.text(pier[0] + 6, pier[1] - 34, '', { fontFamily: 'system-ui, sans-serif', fontSize: '12px', fontStyle: 'bold', backgroundColor: '#000000aa', padding: { x: 3, y: 1 } })
@@ -374,14 +374,17 @@ export class FarmScene extends Phaser.Scene {
   /** placa só nos lotes à venda; entulho até o fim da limpeza; prédio do pasto depois dela */
   private refreshDecor(): void {
     const now = store.clock.farmNow();
-    const f = store.state?.fishing;
-    const cyc = f && !store.visit ? fishCycles(f.fish_t, now) : 0;
     if (this.fishBadge && this.fishIcon) {
-      const sp = f ? FISHING.species.find((x) => x.id === f.species) : undefined;
-      const key = sp && this.textures.exists(sp.sprite) ? sp.sprite : '';
-      this.fishBadge.setText(cyc ? `${cyc}/${FISHING.max_cycles}${cyc >= FISHING.max_cycles ? ' cheia!' : ''}` : '').setVisible(cyc > 0);
+      // Lago (04/11): peixes nas vagas, igual aos animais
+      const fish = (store.state?.animals ?? []).filter((a) => a.house_id === 'lago');
+      const ready = store.visit ? [] : fish.filter((a) => animalLook(a, now) === 'ready');
+      const hungry = !store.visit && fish.some((a) => a.state === 'hungry');
+      const art = ready[0] ? ANIMAL_BY_ID[ready[0].animal_id]?.product.art ?? '' : '';
+      const key = art && this.textures.exists(art) ? art : '';
+      const txt = ready.length ? `${ready.length} pronto${ready.length > 1 ? 's' : ''}` : hungry ? 'Sem ração!' : '';
+      this.fishBadge.setText(txt).setVisible(!!txt);
       if (key) this.fishIcon.setTexture(key, 0);
-      this.fishIcon.setVisible(cyc > 0 && !!key);
+      this.fishIcon.setVisible(!!ready.length && !!key);
     }
     for (const d of this.decor) {
       const mine = this.owned.has(d.lot.id);
@@ -669,14 +672,8 @@ export class FarmScene extends Phaser.Scene {
         if (ready) return `${HOUSE_NAMES[house]} · ${ready} pronto${ready > 1 ? 's' : ''}: clique para coletar`;
         const hungry = mine.filter((a) => a.state === 'hungry').length;
         if (hungry) return `${HOUSE_NAMES[house]} · ${hungry} com fome (falta ouro para a ração)`;
+        if (house === 'lago') return `Lago · ${mine.length ? `${mine.length} peixe${mine.length === 1 ? '' : 's'} (${ANIMAL_BY_ID[mine[0].animal_id].name_pt}…)` : 'clique para comprar peixes'}`;
         return `${HOUSE_NAMES[house]} · ${mine.length} animal${mine.length === 1 ? '' : 'is'}${mine[0] ? ` (${ANIMAL_BY_ID[mine[0].animal_id].name_pt}…)` : ''}`;
-      }
-      // Lago: rede de pesca
-      const f = s.fishing;
-      if (f) {
-        const cyc = fishCycles(f.fish_t, now);
-        const sp = FISHING.species.find((x) => x.id === f.species)?.name_pt ?? 'peixe';
-        return cyc ? `Lago · rede com ${cyc}/${FISHING.max_cycles} ciclos de ${sp}: clique para recolher` : `Lago · a rede está enchendo (${sp})`;
       }
     }
     if (hit.kind === 'orchard') {

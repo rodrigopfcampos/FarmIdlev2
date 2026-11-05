@@ -14,7 +14,6 @@ import animationsCfg from '../config/animations.json';
 import weatherCfg from '../config/weather.json';
 import cardsCfg from '../config/cards.json';
 import missionsCfg from '../config/missions.json';
-import fishingCfg from '../config/fishing.json';
 import socialCfg from '../config/social.json';
 import villageCfg from '../config/village.json';
 import anticheatCfg from '../config/anticheat.json';
@@ -53,8 +52,6 @@ export type AccountBranch = { id: string; name_pt: string; color_hex: string; no
 export const ACCOUNT_TREE = charactersCfg.account_tree as unknown as { name_pt: string; points_per_level: number; from_level: number; free_resets_per_week: number;
   extra_reset_cost_R_ratio: number; canvas: [number, number]; root: { id: string; name_pt: string; icon: string; pos: [number, number] }; branches: AccountBranch[] };
 // R3: pesca no Lago
-export const FISHING = fishingCfg as unknown as { cycle_minutes: number; max_cycles: number; value_share_of_R: number; cycles_per_day_reference: number; team: { efficiency: number }; rod: { wear_per_cycle: number; low_threshold: number; low_multiplier: number };
-  species: { id: string; name_pt: string; unlock_level: number; fair_price_per_unit: number; sprite: string }[] };
 export const PETS = charactersCfg.pets;
 export const SNACKS = toolsCfg.snack_cards;
 export const CLASS_TOOLS = toolsCfg.class_tool_cards;
@@ -78,17 +75,19 @@ export const LOT_TYPE_NAMES: Record<string, string> = {
 };
 
 // ---------- animais (fase 4) ----------
-export type Animal = (typeof animalsCfg.animals)[number];
+export type Animal = (typeof animalsCfg.animals)[number] & { is_fish?: boolean };
 export const ANIMALS = animalsCfg.animals as Animal[];
 export const ANIMAL_BY_ID: Record<string, Animal> = Object.fromEntries(ANIMALS.map((a) => [a.id, a]));
 export const ANIMAL_RULES = animalsCfg.rules;
 export const HOUSES = animalsCfg.houses as Record<string, { lot_type: string; slots: { slots: number; min_level: number | null; cost: number }[] }>;
-export const HOUSE_NAMES: Record<string, string> = { galinheiro: 'Galinheiro', celeiro: 'Celeiro' };
+export const HOUSE_NAMES: Record<string, string> = { galinheiro: 'Galinheiro', celeiro: 'Celeiro', lago: 'Lago' };
 // emojis provisórios até as artes dos animais e dos produtos chegarem
-export const ANIMAL_EMOJI: Record<string, string> = { galinha: '🐔', coelho: '🐰', vaca: '🐄', pato: '🦆', ovelha: '🐑', porco: '🐖', cabra: '🐐', ganso: '🪿', peru: '🦃', alpaca: '🦙' };
+export const ANIMAL_EMOJI: Record<string, string> = { galinha: '🐔', coelho: '🐰', vaca: '🐄', pato: '🦆', ovelha: '🐑', porco: '🐖', cabra: '🐐', ganso: '🪿', peru: '🦃', alpaca: '🦙', tilapia: '🐟', truta: '🐟', bagre: '🐟', koi: '🐠', esturjao: '🐟' };
 const PRODUCT_EMOJI: Record<string, string> = { ovo: '🥚', pelo_de_coelho: '🧶', leite: '🥛', ovo_de_pata: '🥚', la: '🧶', trufa: '🍄', leite_de_cabra: '🥛', ovo_de_ganso: '🥚', pena_de_peru: '🪶', la_de_alpaca: '🧶' };
 const PRODUCTS: Record<string, { name_pt: string; price: number; emoji: string }> = Object.fromEntries(
-  ANIMALS.map((a) => [a.product.id, { name_pt: a.product.name_pt, price: a.product.fair_price_per_unit, emoji: PRODUCT_EMOJI[a.product.id] ?? '📦' }]));
+  ANIMALS.map((a) => [a.product.id, { name_pt: a.product.name_pt, price: a.product.fair_price_per_unit, emoji: PRODUCT_EMOJI[a.product.id] ?? (a.is_fish ? '🐟' : '📦') }]));
+/** arte do produto (os peixes do Lago usam a arte do próprio peixe) */
+export const PRODUCT_ART: Record<string, string> = Object.fromEntries(ANIMALS.map((a) => [a.product.id, a.product.art]));
 
 /** nome, preço da Feira e (se for produto animal) emoji de um item do Silo */
 export function itemInfo(id: string): { name_pt: string; price: number; emoji: string | null } {
@@ -96,8 +95,7 @@ export function itemInfo(id: string): { name_pt: string; price: number; emoji: s
   if (c) return { name_pt: c.name_pt, price: c.fair_price_per_unit, emoji: null };
   const p = PRODUCTS[id];
   if (p) return { name_pt: p.name_pt, price: p.price, emoji: p.emoji };
-  const f = FISHING.species.find((x) => x.id === id);
-  return f ? { name_pt: f.name_pt, price: f.fair_price_per_unit, emoji: '🐟' } : { name_pt: id, price: 0, emoji: null };
+  return { name_pt: id, price: 0, emoji: null };
 }
 
 // ---------- expedições (fase 5) ----------

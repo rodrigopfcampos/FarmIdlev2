@@ -1,6 +1,6 @@
 // Regras da progressão como o cliente mostra (o servidor confere tudo de novo).
 // Tudo sai da config: preço e nível por nº da compra, piso de nível por tipo, vizinhança e limpeza.
-import { CHARS, CLASSES, CROP_LIST, CROPS, FARM, LEVELS, LOT_RULES, MAP_RULES, PETS, PURCHASES, ACCOUNT_TREE, FISHING, type Crop } from '../data';
+import { CHARS, CLASSES, CROP_LIST, CROPS, FARM, LEVELS, LOT_RULES, MAP_RULES, PETS, PURCHASES, ACCOUNT_TREE, type Crop } from '../data';
 
 export type LotOffer = {
   lot: string; type: string; n: number; cost: number; needLevel: number;
@@ -158,14 +158,6 @@ export function passiveState(id: string, skills: Record<string, number>, free: n
   return { state: lv ? 'bought' : 'locked', open, why };
 }
 
-/** pesca (R3): espécie mais alta liberada no nível e ciclos prontos na rede */
-export function fishSpecies(level: number) {
-  return [...FISHING.species].filter((x) => x.unlock_level <= level).sort((a, b) => b.unlock_level - a.unlock_level)[0];
-}
-export function fishCycles(fishT: number | null | undefined, now: number): number {
-  if (fishT == null) return 0;
-  return Math.min(FISHING.max_cycles, Math.floor(Math.max(0, now - fishT) / (FISHING.cycle_minutes * 60)));
-}
 
 /** nível do pet pela afinidade acumulada (1 carinho por dia) e o fator do efeito (40% → 100%) */
 export function petLevel(affinity: number): number {

@@ -45,17 +45,6 @@ export function walkSpriteFor(animalId: string): string {
   return `animal_walk_${m[animalId] ?? 'chicken'}`;
 }
 
-/** espécies do lago liberadas no nível (1 nova a cada 10 níveis) */
-export function unlockedFish(level: number): string[] {
-  return ANIM.lake_fish.species.filter((s) => level >= s.level).map((s) => s.sprite);
-}
-
-/** quantas sombras de peixe nadam: de 3 (só a primeira espécie) até 6 (todas) */
-export function fishCount(level: number): number {
-  const f = ANIM.lake_fish, total = f.species.length, have = Math.max(1, unlockedFish(level).length);
-  return Math.round(f.count_min + ((f.count_max - f.count_min) * (have - 1)) / Math.max(1, total - 1));
-}
-
 export type OrchardLook = 'empty' | 'pit' | 'sprout' | 'young' | 'adult' | 'fruit';
 
 /** visual de uma vaga do pomar: cova (lote seu, sem árvore), broto, jovem, adulta e adulta com fruta */

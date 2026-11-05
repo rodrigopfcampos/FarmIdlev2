@@ -1,10 +1,16 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "GDD v2 seção 6 (tabela do dono, 20/10/2026) · fase 4: coleta e ração (decisões do dono, 24/10/2026)",
   "rules": {
     "collector_efficiency": {
-      "rancheira": 1.0,
-      "other_class": 0.6
+      "specialist": 1.0,
+      "other_class": 0.6,
+      "specialist_by_house": {
+        "galinheiro": "rancheira",
+        "celeiro": "rancheira",
+        "lago": "pescador"
+      },
+      "note": "fora do jogo a equipe coleta a 100% com o especialista da casa em campo (Rancheira no Galinheiro e no Celeiro, Pescador no Lago) e a 60% sem ele"
     },
     "no_feed_gold": "para de produzir; nunca morre",
     "lake_bonus": {
@@ -60,6 +66,27 @@
           "cost": 960000
         }
       ]
+    },
+    "lago": {
+      "lot_type": "pasto_lago",
+      "slots": [
+        {
+          "slots": 4,
+          "min_level": null,
+          "cost": 0
+        },
+        {
+          "slots": 8,
+          "min_level": 20,
+          "cost": 450000
+        },
+        {
+          "slots": 12,
+          "min_level": 30,
+          "cost": 2200000
+        }
+      ],
+      "note": "04/11: o Lago funciona igual ao Galinheiro e ao Celeiro: vagas, peixe escolhido entre os liberados pelo nível, raridade sorteada na compra, produz sozinho e amplia para 8 e 12 vagas"
     }
   },
   "animals": [
@@ -232,6 +259,96 @@
       "feed_cost_per_day": 6500,
       "buy_cost": 65000,
       "xp_per_collect": 1400
+    },
+    {
+      "id": "tilapia",
+      "name_pt": "Tilápia",
+      "unlock_level": 11,
+      "house": "lago",
+      "is_bird": false,
+      "is_fish": true,
+      "product": {
+        "id": "fish_tilapia",
+        "name_pt": "Tilápia",
+        "fair_price_per_unit": 710,
+        "art": "fish_1"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 1280,
+      "buy_cost": 12800,
+      "xp_per_collect": 86
+    },
+    {
+      "id": "truta",
+      "name_pt": "Truta Arco-Íris",
+      "unlock_level": 20,
+      "house": "lago",
+      "is_bird": false,
+      "is_fish": true,
+      "product": {
+        "id": "fish_truta",
+        "name_pt": "Truta Arco-Íris",
+        "fair_price_per_unit": 1300,
+        "art": "fish_2"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 2340,
+      "buy_cost": 23400,
+      "xp_per_collect": 130
+    },
+    {
+      "id": "bagre",
+      "name_pt": "Bagre do Rio",
+      "unlock_level": 30,
+      "house": "lago",
+      "is_bird": false,
+      "is_fish": true,
+      "product": {
+        "id": "fish_bagre",
+        "name_pt": "Bagre do Rio",
+        "fair_price_per_unit": 2560,
+        "art": "fish_3"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 4610,
+      "buy_cost": 46100,
+      "xp_per_collect": 192
+    },
+    {
+      "id": "koi",
+      "name_pt": "Carpa Koi",
+      "unlock_level": 40,
+      "house": "lago",
+      "is_bird": false,
+      "is_fish": true,
+      "product": {
+        "id": "fish_koi",
+        "name_pt": "Carpa Koi",
+        "fair_price_per_unit": 5040,
+        "art": "fish_4"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 9070,
+      "buy_cost": 90700,
+      "xp_per_collect": 260
+    },
+    {
+      "id": "esturjao",
+      "name_pt": "Esturjão",
+      "unlock_level": 45,
+      "house": "lago",
+      "is_bird": false,
+      "is_fish": true,
+      "product": {
+        "id": "fish_esturjao",
+        "name_pt": "Esturjão",
+        "fair_price_per_unit": 7070,
+        "art": "fish_5"
+      },
+      "produce_every_minutes": 120,
+      "feed_cost_per_day": 12730,
+      "buy_cost": 127300,
+      "xp_per_collect": 300
     }
   ]
 }

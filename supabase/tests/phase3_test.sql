@@ -108,12 +108,15 @@ begin
     then raise exception 'FALHA 20: limpeza com Ferreiro fora da tabela (3× mais rápida)'; end if;
   reset role;
 
-  -- 6. rodízio com 4: quem chega a 10 sai do campo e entra quem tem 60 ou mais
-  update public.farms set level = 10 where user_id = a;
+  -- 6. rodízio com 5 (04/11: 4 vagas de campo): quem chega a 10 sai do campo e entra quem tem 60 ou mais
+  update public.farms set level = 14 where user_id = a;
   set local role authenticated;
+  s := public.hire('gerente');
+  if (select slot from public.characters where user_id = a and class_id = 'gerente') <> 'field' then raise exception 'FALHA 21a: 4º personagem não foi para o campo'; end if;
   s := public.hire('comerciante');
-  if (select slot from public.characters where user_id = a and class_id = 'comerciante') <> 'bench' then raise exception 'FALHA 21: 4º personagem não foi para o banco'; end if;
+  if (select slot from public.characters where user_id = a and class_id = 'comerciante') <> 'bench' then raise exception 'FALHA 21: 5º personagem não foi para o banco'; end if;
   reset role;
+  update public.farms set level = 10 where user_id = a;  -- o resto do teste usa os preços do nível 10
   update public.characters set energy = 5 where user_id = a and class_id = 'ferreiro';
   update public.characters set energy = 100 where user_id = a and class_id = 'comerciante';
   update public.farms set synced_at = synced_at - interval '10 minutes' where user_id = a;
@@ -121,8 +124,8 @@ begin
   s := public.get_farm();
   if (select slot from public.characters where user_id = a and class_id = 'ferreiro') <> 'bench'
      or (select slot from public.characters where user_id = a and class_id = 'comerciante') <> 'field' then raise exception 'FALHA 22: rodízio não trocou'; end if;
-  -- campo cheio: não entra um 4º
-  begin perform public.set_slot('ferreiro', 'field'); raise exception 'FALHA 23: 4 no campo';
+  -- campo cheio: não entra um 5º
+  begin perform public.set_slot('ferreiro', 'field'); raise exception 'FALHA 23: 5 no campo';
   exception when check_violation then null; end;
 
   -- 7. Comerciante em campo: Barraca a 71% (Madeira) e venda automática dos itens marcados
@@ -225,7 +228,7 @@ begin
   perform public.ledger_post(a, 1000000, 'test_grant');
   set local role authenticated;
   s := public.set_slot('comerciante', 'bench');
-  s := public.hire('gerente');
+  if (select slot from public.characters where user_id = a and class_id = 'gerente') <> 'field' then s := public.set_slot('gerente', 'field'); end if;  -- já contratado no rodízio
   reset role;
   update public.characters set debt = 50, unpaid_days = 1 where user_id = a and class_id = 'rancheira';
   update public.farms set synced_at = synced_at - interval '10 minutes' where user_id = a;

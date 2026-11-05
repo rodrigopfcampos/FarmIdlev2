@@ -6819,6 +6819,72 @@
         64,
         64
       ]
+    },
+    "char_pescador_portrait": {
+      "file": "sprites/characters/char_pescador_portrait.png",
+      "size": [
+        176,
+        180
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tool_rod_wood": {
+      "file": "sprites/items/tool_rod_wood.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tool_rod_copper": {
+      "file": "sprites/items/tool_rod_copper.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tool_rod_iron": {
+      "file": "sprites/items/tool_rod_iron.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tool_rod_gold": {
+      "file": "sprites/items/tool_rod_gold.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
+    },
+    "tool_rod_crystal": {
+      "file": "sprites/items/tool_rod_crystal.png",
+      "size": [
+        32,
+        32
+      ],
+      "anchor": [
+        0.5,
+        1
+      ]
     }
   }
 }

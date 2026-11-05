@@ -1,7 +1,7 @@
 {
-  "version": 11,
+  "version": 12,
   "source": "GDD v2 seção 7 · fase 8a: ajuda de vizinhos ligada (Ferreiro, Obras B); o ramo Mercado liga na 8c",
-  "field_slots": 3,
+  "field_slots": 4,
   "bench_slots": 3,
   "energy": {
     "max": 100,
@@ -91,6 +91,13 @@
       "tool": "tool_magnifying_glass",
       "role": "research_growth",
       "unlock_level": 20
+    },
+    {
+      "id": "pescador",
+      "name_pt": "Pescador",
+      "tool": "tool_rod",
+      "role": "fishing",
+      "unlock_level": 30
     }
   ],
   "pets": {
@@ -155,7 +162,7 @@
     "crops": 1.0,
     "animals_orchard": 1.0,
     "other": 0.6,
-    "note": "trabalho da fila única (lavoura e pomar): Agricultor e Rancheira a 100%, os outros a 60% (igual ao simulador)"
+    "note": "trabalho da fila única (lavoura e pomar): Agricultor e Rancheira a 100%, os outros a 60% (igual ao simulador); o Pescador (04/11) é especialista do Lago e trabalha a 60% na fila da lavoura e do pomar"
   },
   "field_effects": {
     "note": "valem com o personagem num Slot de Campo; \"por material\" = Madeira 1 … Cristal 5",

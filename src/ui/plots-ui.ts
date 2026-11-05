@@ -1,6 +1,6 @@
 // Lavoura: colher/plantar com clique, painel do lote (cultivo e sementes raras) e compra de lote.
 import { bus } from '../core/bus';
-import { ANIMAL_BY_ID, ANIMAL_RULES, type Crop, CROPS, FISHING, HOUSES, itemInfo, LOT_BY_ID, LOT_TYPE_NAMES, PURCHASES, RARITY_BY_ID, WORK } from '../data';
+import { ANIMAL_BY_ID, ANIMAL_RULES, type Crop, CROPS, HOUSES, itemInfo, LOT_BY_ID, LOT_TYPE_NAMES, PURCHASES, RARITY_BY_ID, WORK } from '../data';
 import { iconSprite } from '../farm/art';
 import { animalLook, lotOffer, plotCrops, plotLook, rareSeeds } from '../farm/rules';
 import { applyState, store } from '../farm/store';
@@ -157,7 +157,7 @@ export function openLot(id: string): void {
     if (!o) return '<p>Este lote já é seu.</p>';
     if (o.problems.includes('fim')) return `<p>${PROBLEM_TEXT.fim(o)}</p>`;
     const what = def.type === 'lavoura' ? `${def.plots?.length ?? 0} canteiros` : def.type === 'pomar' ? `${(def as { tree_slots?: unknown[] }).tree_slots?.length ?? 0} vagas de árvore`
-      : def.type === 'pasto_lago' ? `Lago: pesca sozinho (rede de ${FISHING.cycle_minutes * FISHING.max_cycles / 60} h, peixe no Silo) e +${ANIMAL_RULES.lake_bonus.extra_galinheiro_slots} vagas de ave no Galinheiro`
+      : def.type === 'pasto_lago' ? `Lago: ${HOUSES.lago.slots[0].slots} vagas de peixe (até ${HOUSES.lago.slots[HOUSES.lago.slots.length - 1].slots}), peixe no Silo, e +${ANIMAL_RULES.lake_bonus.extra_galinheiro_slots} vagas de ave no Galinheiro`
       : `${def.type === 'pasto_galinheiro' ? 'Galinheiro' : 'Celeiro'} com ${HOUSES[def.type === 'pasto_galinheiro' ? 'galinheiro' : 'celeiro'].slots[0].slots} vagas para animais`;
     return `<dl class="facts">
         <dt>Compra</dt><dd>${o.n}ª de ${PURCHASES.length}</dd>

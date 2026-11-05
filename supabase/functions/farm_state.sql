@@ -69,7 +69,6 @@ begin
         'slots', public.house_slots(p_user, h.key), 'bird_slots', public.house_bird_slots(p_user, h.key, f.farm_time), 'lot', public.house_lot(h.key)))
       from jsonb_each(public.config_get('animals') -> 'houses') h),
     'lake', public.lake_ready(p_user, f.farm_time),
-    'fishing', public.fish_state(p_user),
     'account_tree', public.account_tree_state(p_user),
     'pets', (select coalesce(jsonb_agg(jsonb_build_object('pet_id', p.pet_id, 'affinity', p.affinity, 'last_care', p.last_care,
         'level', public.pet_level(p_user, p.pet_id), 'find_t', p.find_t) order by p.adopted_at), '[]') from public.pets p where p.user_id = p_user),
@@ -81,7 +80,7 @@ begin
         'growth_crop', fx -> 'growth_crop', 'growth_orchard', fx -> 'growth_orchard', 'tree_initial', fx -> 'tree_initial', 'cleanup', fx -> 'cleanup',
         'tool_cost', fx -> 'tool_cost', 'harvest_xp', fx -> 'harvest_xp', 'golden', fx -> 'golden',
         'feed_discount', fx -> 'feed_discount', 'animal_production', fx -> 'animal_production', 'animal_cap', fx -> 'animal_cap',
-        'animal_double', fx -> 'animal_double', 'expansion_cost', fx -> 'expansion_cost', 'rancheira', fx -> 'rancheira',
+        'animal_double', fx -> 'animal_double', 'expansion_cost', fx -> 'expansion_cost', 'rancheira', fx -> 'rancheira', 'pescador', fx -> 'pescador',
         'exp_success', fx -> 'exp_success', 'exp_duration', fx -> 'exp_duration', 'vehicle_wear', fx -> 'vehicle_wear', 'dog_recover', fx -> 'dog_recover',
         'char_xp', fx -> 'char_xp', 'account_xp', fx -> 'account_xp')
   ) into base

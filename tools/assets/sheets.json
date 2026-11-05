@@ -3150,6 +3150,48 @@
         3
       ],
       "count": 9
+    },
+    {
+      "id": "v3_pescador_portrait",
+      "file": "v3/pescador_portrait.png",
+      "native": true,
+      "key": "char_pescador_portrait",
+      "dir": "characters"
+    },
+    {
+      "id": "v3_tool_rod_wood",
+      "file": "v3/tools/rod_wood.png",
+      "native": true,
+      "key": "tool_rod_wood",
+      "dir": "items"
+    },
+    {
+      "id": "v3_tool_rod_copper",
+      "file": "v3/tools/rod_copper.png",
+      "native": true,
+      "key": "tool_rod_copper",
+      "dir": "items"
+    },
+    {
+      "id": "v3_tool_rod_iron",
+      "file": "v3/tools/rod_iron.png",
+      "native": true,
+      "key": "tool_rod_iron",
+      "dir": "items"
+    },
+    {
+      "id": "v3_tool_rod_gold",
+      "file": "v3/tools/rod_gold.png",
+      "native": true,
+      "key": "tool_rod_gold",
+      "dir": "items"
+    },
+    {
+      "id": "v3_tool_rod_crystal",
+      "file": "v3/tools/rod_crystal.png",
+      "native": true,
+      "key": "tool_rod_crystal",
+      "dir": "items"
     }
   ],
   "default_kernel": "nearest",

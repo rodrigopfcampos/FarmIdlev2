@@ -1,4 +1,4 @@
--- Testes do ajuste das ferramentas (v3): ferramenta sobe sozinha com o nível, Vara de Pescar gasta e conserta,
+-- Testes do ajuste das ferramentas (v3): ferramenta sobe sozinha com o nível, Vara de Pescar é do Pescador,
 -- limpeza 3× mais rápida com o Ferreiro em campo. Esperado: erro "TESTES_OK" (tudo é desfeito).
 select set_config('vif.weather', 'off', false);
 select set_config('vif.missions', 'off', false);
@@ -23,28 +23,15 @@ begin
   exception when undefined_function then null; end; -- v3: a função foi removida
   reset role;
 
-  -- 2. Vara de Pescar: gasta 2,5 por ciclo; abaixo de 30 rende a metade; conserto com ouro
-  update public.farms set level = 15 where user_id = a;
-  insert into public.owned_lots (user_id, lot_id, ready_at, purchase_n) values (a, 'L', 0, 9);
-  perform public.advance_farm(a);
-  select farm_time into t from public.farms where user_id = a;
-  update public.farms set fish_t = t - 4 * 7200 where user_id = a;
-  perform public.fish_collect(a, t, public.team_fx(a), false);
-  if abs((select rod_durability from public.farms where user_id = a) - 90) > 0.01 then raise exception 'FALHA 5: vara gastou %', (select rod_durability from public.farms where user_id = a); end if;
-  delete from public.silo where user_id = a;
-  update public.farms set fish_t = t - 4 * 7200, rod_durability = 20 where user_id = a;
-  perform public.fish_collect(a, t, public.team_fx(a), false);
-  q := (select qty from public.silo where user_id = a and item_id = 'fish_truta');
-  if abs(q - public.ref_income(15) * 0.08 / 12 * 4 * 0.5 / 390) > 1 then raise exception 'FALHA 6: vara gasta não rendeu a metade (%)', q; end if;
-  update public.wallets set gold = 1e9 where user_id = a;
-  select gold into v_gold from public.wallets where user_id = a;
+  -- 2. (04/11) a Vara de Pescar é a ferramenta do Pescador: a rede e a vara da fazenda saíram
   set local role authenticated;
-  s := public.repair_rod();
-  begin perform public.repair_rod(); raise exception 'FALHA 7: consertou vara inteira';
-  exception when check_violation then null; end;
+  begin perform public.repair_rod(); raise exception 'FALHA 5: vara da fazenda ainda existe';
+  exception when undefined_function then null; end;
+  begin perform public.collect_fish(); raise exception 'FALHA 6: rede de pesca ainda existe';
+  exception when undefined_function then null; end;
   reset role;
-  if (select rod_durability from public.farms where user_id = a) <> 100 or (select gold from public.wallets where user_id = a) >= v_gold then raise exception 'FALHA 8: conserto da vara'; end if;
-  if (s -> 'fishing' ->> 'rod')::numeric <> 100 then raise exception 'FALHA 9: estado da vara'; end if;
+  if not exists (select 1 from jsonb_array_elements(public.config_get('tools_and_items') -> 'class_tool_cards') x where x ->> 'class_id' = 'pescador' and x ->> 'id' = 'tool_rod') then
+    raise exception 'FALHA 7: Vara de Pescar não é do Pescador'; end if;
 
   -- 3. limpeza: sem Ferreiro 60 + 12 n; com ele em campo, 3× mais rápida
   if (c ->> 'base_minutes')::numeric * (c ->> 'other_class_multiplier')::numeric <> 60

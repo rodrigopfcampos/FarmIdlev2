@@ -61,6 +61,8 @@ const state: FarmState = {
     { house_id: 'galinheiro', slot: 2, animal_id: 'galinha', rarity: 'rare', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'galinheiro', slot: 3, animal_id: 'coelho', rarity: 'mythic', state: 'hungry', cycle_start: T - 100, ready_at: null },
     { house_id: 'galinheiro', slot: 4, animal_id: 'pato', rarity: 'common', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
+    { house_id: 'lago', slot: 1, animal_id: 'tilapia', rarity: 'rare', state: 'growing', cycle_start: T - 7300, ready_at: T - 60 },
+    { house_id: 'lago', slot: 2, animal_id: 'tilapia', rarity: 'common', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'celeiro', slot: 1, animal_id: 'vaca', rarity: 'common', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'celeiro', slot: 2, animal_id: 'vaca', rarity: 'uncommon', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'celeiro', slot: 3, animal_id: 'ovelha', rarity: 'uncommon', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
@@ -70,9 +72,8 @@ const state: FarmState = {
     { house_id: 'galinheiro', slot: 5, animal_id: 'peru', rarity: 'uncommon', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
     { house_id: 'galinheiro', slot: 6, animal_id: 'ganso', rarity: 'uncommon', state: 'growing', cycle_start: T - 3000, ready_at: T + 4200 },
   ],
-  houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' } },
+  houses: { galinheiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C2' }, celeiro: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'C1' }, lago: { owned: true, tier: 0, slots: 4, bird_slots: 0, lot: 'L' } },
   lake: true,
-  fishing: { cycles: 2, max: 4, fish_t: T - 2.4 * 7200, cycle_s: 7200, species: 'fish_truta', rod: 24, rod_repair: 990 },
   account_tree: { skills: { labia: 5, logistica: 3, manutencao: 1, mao_verde: 1 }, points: 12, spent: 10, free_reset: true, reset_cost: 43500 },
   vehicles: [{ vehicle_id: 'carroca', rarity: 'common', durability: 88, active: true, refurb_rarity: null, refurb_until: null },
     { vehicle_id: 'carro', rarity: 'uncommon', durability: 100, active: false, refurb_rarity: null, refurb_until: null }],
@@ -257,8 +258,6 @@ export const mockFarm = {
     if (fn === 'hire') { state.characters.push(char(args.p_class as string, { slot: state.characters.filter((c) => c.slot === 'field').length < CHARS.field_slots ? 'field' : 'bench' })); state.tools[args.p_class as string] = 'wood'; }
     if (fn === 'set_slot') ch(args.p_class)!.slot = args.p_slot as 'field' | 'bench';
     if (fn === 'pay_salaries') for (const c of state.characters) { state.gold -= c.debt; c.debt = 0; c.unpaid_days = 0; }
-    if (fn === 'repair_rod' && state.fishing) { state.gold -= state.fishing.rod_repair; state.fishing.rod = 100; state.fishing.rod_repair = 0; }
-    if (fn === 'collect_fish' && state.fishing) { state.silo.fish_truta = (state.silo.fish_truta ?? 0) + 7; state.fishing.fish_t = t; }
     if (fn === 'account_skill_add' && state.account_tree) { const k = args.p_node as string; state.account_tree.skills[k] = (state.account_tree.skills[k] ?? 0) + 1; state.account_tree.spent++; }
     if (fn === 'account_skill_reset' && state.account_tree) { state.account_tree.skills = {}; state.account_tree.spent = 0; state.account_tree.free_reset = false; }
     if (fn === 'buy_snack') state.inventory[args.p_snack as string] = (state.inventory[args.p_snack as string] ?? 0) + (args.p_qty as number);

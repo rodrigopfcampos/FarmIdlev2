@@ -34,12 +34,6 @@ begin
   update public.profiles set timezone = tz_pending, tz_pending = null, tz_pending_at = null
     where id = p_user and tz_pending is not null and tz_pending_at <= f.synced_at;
 
-  -- pesca: a rede começa a encher quando o Lago fica pronto
-  update public.farms fa set fish_t = (select min(ol.ready_at) from public.owned_lots ol
-      join lateral (select x from jsonb_array_elements(public.config_get('map_rules') -> 'lots') x where x ->> 'id' = ol.lot_id) d on true
-      where ol.user_id = p_user and d.x ->> 'type' = 'pasto_lago')
-    where fa.user_id = p_user and fa.fish_t is null and public.lake_ready(p_user, t1);
-
   perform public.tools_autotier(p_user);
   while seg0 < t1 loop
     -- relógio real do passo: o clima e o evento valem pela hora local do jogador
@@ -131,11 +125,6 @@ begin
           from public.animals a
           where a.user_id = p_user and a.state = 'growing' and a.ready_at <= seg1
         union all
-        select 'fish', 'lago', 0, fa.fish_t + (fc ->> 'max_cycles')::double precision * (fc ->> 'cycle_minutes')::double precision * 60, v_harvest_cost
-          from public.farms fa, (select public.config_get('fishing') fc) q2
-          where fa.user_id = p_user and fa.fish_t is not null and coalesce((fc -> 'team' ->> 'collects_when_full')::boolean, false)
-            and fa.fish_t + (fc ->> 'max_cycles')::double precision * (fc ->> 'cycle_minutes')::double precision * 60 <= seg1
-        union all
         select 'plant', pl.plot_id, 0, greatest(coalesce(pl.free_since, t0), ol.ready_at), v_plant_cost * (1 - coalesce((fx ->> 'crop_work_cut')::double precision, 0))
           from public.plots pl join public.owned_lots ol on ol.user_id = pl.user_id and ol.lot_id = split_part(pl.plot_id, '-', 1)
           where pl.user_id = p_user and pl.state = 'empty' and pl.crop_id is not null and pl.stalled_reason is null
@@ -162,8 +151,6 @@ begin
         v_plantings := v_plantings + 1;
       elsif e.kind = 'harvest' then
         v_refund := v_refund + public.harvest_plot(p_user, e.key, te, fx);
-      elsif e.kind = 'fish' then
-        perform public.fish_collect(p_user, te, fx, true);
       elsif e.kind = 'collect' then
         perform public.animal_collect(p_user, e.key, e.slot, te, fx, true);
         v_f := public.animal_start(p_user, e.key, e.slot, te, fx, v_gold - v_seed_spent - v_feed);

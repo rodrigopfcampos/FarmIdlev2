@@ -3,7 +3,6 @@
 import { TOOL_MATERIALS } from '../data';
 import { store } from '../farm/store';
 import { repairTool } from '../net/farmApi';
-import { bindRod, rodCard } from './animals-ui';
 import { formatGold } from './format';
 import { act, className, DUR, esc, nf1, pct, rerender, show, toolArt, toolCard } from './panel';
 
@@ -33,8 +32,7 @@ export function openForge(): void {
       <button type="button" class="primary big-action" data-repair="${c.class_id}" ${c.durability >= 100 || s.gold < repair ? 'disabled' : ''}>${c.durability >= 100 ? 'Inteira' : `Consertar · ${formatGold(repair)}`}</button>
       <div class="tier-row" aria-label="Níveis da ferramenta">${row}</div>
       <p class="hint">${next ? `A ${esc(tc.name_pt)} sobe sozinha para o nível ${i + 2} (×${nf1.format(next.work_capacity_multiplier)} de trabalho) quando a fazenda chegar ao nível ${next.unlock_level}, de graça.` : `${esc(tc.name_pt)} no nível máximo.`}</p>
-      <p class="hint">A ferramenta perde ${nf1.format(DUR.loss_per_work_hour)} de durabilidade por hora de trabalho; abaixo de ${DUR.low_durability_threshold} trabalha a ${pct(DUR.low_durability_capacity_penalty_multiplier)} até o conserto. ${esc(className(c.class_id))}: ${nf1.format(c.rate)} de trabalho por hora.</p>
-      ${s.fishing ? `<h3>Lago</h3>${rodCard(s)}` : ''}`;
+      <p class="hint">A ferramenta perde ${nf1.format(DUR.loss_per_work_hour)} de durabilidade por hora de trabalho; abaixo de ${DUR.low_durability_threshold} trabalha a ${pct(DUR.low_durability_capacity_penalty_multiplier)} até o conserto. ${esc(className(c.class_id))}: ${nf1.format(c.rate)} de trabalho por hora.</p>`;
   }, (el) => {
     el.querySelectorAll<HTMLButtonElement>('[data-forge-step]').forEach((b) => b.addEventListener('click', () => {
       const list = store.state!.characters;
@@ -43,6 +41,5 @@ export function openForge(): void {
       rerender();
     }));
     el.querySelectorAll<HTMLButtonElement>('[data-repair]').forEach((b) => b.addEventListener('click', () => { b.disabled = true; void act(() => repairTool(b.dataset.repair!), 'Ferramenta consertada.'); }));
-    bindRod(el);
   });
 }

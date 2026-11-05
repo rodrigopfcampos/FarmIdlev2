@@ -12,7 +12,7 @@ const cfg = (name: string) => JSON.parse(readFileSync(join(root, 'config', `${na
 export const CFG = {
   levels: cfg('levels'), crops: cfg('crops'), animals: cfg('animals'), lots: cfg('lots'), chars: cfg('characters'),
   exp: cfg('expeditions'), missions: cfg('missions'), weather: cfg('weather'), cards: cfg('cards'),
-  tools: cfg('tools_and_items'), rarity: cfg('rarity'), fishing: cfg('fishing'),
+  tools: cfg('tools_and_items'), rarity: cfg('rarity'),
 };
 export const SIM = JSON.parse(readFileSync(join(root, 'tools', 'sim', 'profiles.json'), 'utf8'));
 
@@ -111,6 +111,7 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const houses: Record<string, { owned: boolean; slots: number; tier: number; animal: any | null; count: number }> = {
     galinheiro: { owned: false, slots: 0, tier: 0, animal: null, count: 0 },
     celeiro: { owned: false, slots: 0, tier: 0, animal: null, count: 0 },
+    lago: { owned: false, slots: 0, tier: 0, animal: null, count: 0 }, // 04/11: o Lago é uma casa de peixes (igual ao Galinheiro)
   };
   let lake = false;
   const orchards: { fruit: any | null; readyAt: number }[] = [];
@@ -202,25 +203,6 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   const nextSessionAfter = (t: number) => { for (const s of sessionList) if (s > t) return s; return t + 24; };
 
   // ----- decisões numa sessão -----
-  // R3: pesca — o Lago enche a rede (ciclos de 2 h, até 4); o clique recolhe; a rede cheia a equipe recolhe com 60%
-  let fishT = -1;
-  function fishing(t: number) {
-    if (!lake) return;
-    if (fishT < 0) { fishT = t; return; }
-    const F = CFG.fishing, cyc = F.cycle_minutes / 60, per = (R(level) * F.value_share_of_R) / F.cycles_per_day_reference;
-    // o jogo só anda até 8 h depois da última sessão (limite offline)
-    const total = (Math.min(t, lastSession + SIM.offline_cap_hours) - fishT) / cyc;
-    const player = Math.min(F.max_cycles, Math.floor(total));
-    const team = total > F.max_cycles ? Math.floor(total - F.max_cycles) * F.team.efficiency : 0;
-    const got = (player + team) * per * incomeMult(t);
-    gold += got; income += got; dayIncome += got; incomeByLevel[level] += got;
-    fishT = total > F.max_cycles ? t : fishT + player * cyc;
-    // Vara de Pescar: gasta por ciclo e o jogador conserta (preço da ferramenta do nível)
-    const tier = [...mats].reverse().find((m: any) => m.unlock_level <= level) ?? mats[0];
-    const rodCost = (player + (total > F.max_cycles ? Math.floor(total - F.max_cycles) : 0)) * F.rod.wear_per_cycle / 100 * tier.repair_cost_gold;
-    gold -= rodCost; toolRepairs += rodCost;
-  }
-
   // pets v3: na sessão o jogador recolhe o achado pronto de cada pet (só 1 espera; a contagem recomeça no clique)
   function petFinds(t: number) {
     for (const pt of PETS) {
@@ -233,7 +215,6 @@ export function simulate(profileId: string, p: SimParams): SimResult {
   }
 
   function session(t: number) {
-    fishing(t);
     petFinds(t);
     const day = Math.floor(t / 24);
     // consertar ferramentas abaixo de 50% (até a próxima sessão não cai abaixo de 30%)
@@ -425,8 +406,11 @@ export function simulate(profileId: string, p: SimParams): SimResult {
       if (f.at > t) return true;
       if (f.type === 'lavoura') plots += 8;
       else if (f.type === 'pomar') orchards.push({ fruit: null, readyAt: Infinity });
-      else if (f.type === 'pasto_lago') lake = true;
-      else { const h = houses[f.type === 'pasto_galinheiro' ? 'galinheiro' : 'celeiro']; h.owned = true; h.slots = CFG.animals.houses[f.type === 'pasto_galinheiro' ? 'galinheiro' : 'celeiro'].slots[0].slots; }
+      else {
+        if (f.type === 'pasto_lago') lake = true;
+        const hid = Object.keys(CFG.animals.houses).find((k) => CFG.animals.houses[k].lot_type === f.type)!;
+        houses[hid].owned = true; houses[hid].slots = CFG.animals.houses[hid].slots[0].slots;
+      }
       return false;
     });
     if (sessions.has(t)) session(t);
@@ -447,14 +431,14 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     let labor = cap.total + freePerHour;
     let value = 0, units = 0, gainXp = 0;
     // fase 4: animais primeiro na fila (cada coleta gasta 0,5 de trabalho; a ração é cobrada por ciclo)
-    const rancheira = has('rancheira');
+    const CE = CFG.animals.rules.collector_efficiency;
     for (const [hid, h] of Object.entries(houses)) if (h.animal && h.count > 0) {
       const a = h.animal;
       const per = h.count / (a.produce_every_minutes / 60); // coletas por hora
       const need = per * WU.harvest;
       const f = Math.min(1, labor / need); labor -= need * f;
       const perH = (a.product.fair_price_per_unit / (a.produce_every_minutes / 60)) * ANIMAL_AVG
-        * (rancheira ? CFG.animals.rules.collector_efficiency.rancheira : CFG.animals.rules.collector_efficiency.other_class)
+        * (has(CE.specialist_by_house[hid]) ? CE.specialist : CE.other_class)
         * (lake && hid === 'galinheiro' && a.is_bird ? 1 + CFG.animals.rules.lake_bonus.bird_production : 1);
       value += h.count * perH * f; units += per * f;
       gainXp += h.count * a.xp_per_collect / (a.produce_every_minutes / 60) * f;

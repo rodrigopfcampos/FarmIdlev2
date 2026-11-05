@@ -18,7 +18,7 @@ declare
     'weather_effect_pct', 'weather_forecast_hours', 'night_event_pct'];
   caps jsonb := coalesce(public.config_get('cards') -> 'bonus_caps', '{}'::jsonb);
   cap_seed double precision := coalesce((caps -> 'seed_sapling_feed_cost_reduction_pct' ->> 'permanent')::double precision, 40) / 100;
-  ranch boolean := false;
+  ranch boolean := false; fisher boolean := false;
   s jsonb := '{}'::jsonb;
   e text; c record; v double precision;
   com int := -1; ger int := -1; bot boolean := false; bot_choice text;
@@ -43,6 +43,7 @@ begin
     if c.class_id = 'gerente' then ger := public.material_idx(c.material); end if;
     if c.class_id = 'botanica' then bot := true; bot_choice := c.skill_choice; end if;
     if c.class_id = 'rancheira' then ranch := true; end if;
+    if c.class_id = 'pescador' then fisher := true; end if;
   end loop;
   -- árvore da conta (R3): soma por cima do que vem dos personagens
   foreach e in array v_effects loop
@@ -84,6 +85,7 @@ begin
     'animal_double', (s ->> 'animal_double_pct')::double precision / 100,
     'expansion_cost', (s ->> 'expansion_cost_pct')::double precision / 100,
     'rancheira', ranch,
+    'pescador', fisher,
     'stall_ratio', least((fe -> 'comerciante' ->> 'stall_price_cap')::double precision,
                    base_stall + ((s ->> 'stall_price_pts')::double precision
                      + case when com >= 0 then (fe -> 'comerciante' ->> 'stall_price_pts_per_material')::double precision * (com + 1) else 0 end) / 100),

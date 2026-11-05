@@ -4,9 +4,9 @@
 // tem peixe para recolher (a sombra para, pisca e solta 3 anéis). Só visual.
 import Phaser from 'phaser';
 import { ANIM, LOTS, type Lot, type Pt } from '../data';
-import { clearPath, fishCount, randomFreePoint, unlockedFish, walkSpriteFor, type Rect } from '../farm/life';
+import { clearPath, randomFreePoint, walkSpriteFor, type Rect } from '../farm/life';
 import type { FarmState } from '../net/farmApi';
-import { fishCycles } from '../farm/rules';
+import { animalLook } from '../farm/rules';
 import { store } from '../farm/store';
 
 const W = ANIM.animals_wander, F = ANIM.lake_fish;
@@ -99,7 +99,8 @@ export class LifeLayer {
 
   private applyFish(s: FarmState): void {
     const water = this.lake?.water;
-    const n = s.lake && water ? fishCount(s.level) : 0;
+    // sombras: uma por peixe nas vagas do Lago (até o máximo da animação)
+    const n = s.lake && water ? Math.min(F.count_max, s.animals.filter((a) => a.house_id === 'lago').length) : 0;
     const key = String(n);
     if (key === this.fishKey) return;
     this.fishKey = key;
@@ -128,8 +129,9 @@ export class LifeLayer {
     const now = performance.now();
     for (const list of this.walkers.values()) for (const w of list) this.stepWalker(w, now, dt);
     // rede com peixe: a 1ª sombra para e pisca; de tempos em tempos, beliscão (3 anéis)
-    const f = store.state?.fishing;
-    const bite = !!f && !store.visit && fishCycles(f.fish_t, store.clock.farmNow()) > 0 && this.fish.length > 0;
+    // peixe pronto no Lago: a primeira sombra belisca a boia
+    const now0 = store.clock.farmNow();
+    const bite = !store.visit && this.fish.length > 0 && (store.state?.animals ?? []).some((a) => a.house_id === 'lago' && animalLook(a, now0) === 'ready');
     this.fish.forEach((x, i) => this.stepFish(x, now, dt, bite && i === 0));
     if (bite && now >= this.nextBite) {
       const b = this.fish[0];

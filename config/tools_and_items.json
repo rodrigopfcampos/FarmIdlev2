@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "source": "GDD v2 seção 7 (ferramentas, roupas, amuletos, lanches) · desgaste reduzido pela metade (decisão do dono)",
   "tool_durability_rules": {
     "max_durability": 100,
@@ -105,6 +105,14 @@
       "class_name_pt": "Botânica",
       "primary_role_pt": "Pesquisa e bônus de crescimento",
       "card_id": "lupa"
+    },
+    {
+      "id": "tool_rod",
+      "name_pt": "Vara de Pescar",
+      "class_id": "pescador",
+      "class_name_pt": "Pescador",
+      "primary_role_pt": "Pesca no Lago (100% eficiência)",
+      "card_id": "pesca"
     }
   ],
   "snack_cards": [

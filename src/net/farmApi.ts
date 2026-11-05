@@ -51,7 +51,6 @@ export type FarmState = {
   auto_sell: string[]; characters: CharacterState[]; pets: PetState[]; pet: { level: number; count: number } | null;
   snack_prices: Record<string, number>; fx: TeamFx;
   animals: AnimalState[]; houses: Record<string, HouseState>; lake: boolean;
-  fishing?: { cycles: number; max: number; fish_t: number; cycle_s: number; species: string; rod: number; rod_repair: number } | null;
   account_tree?: { skills: Record<string, number>; points: number; spent: number; free_reset: boolean; reset_cost: number };
   vehicles: VehicleState[]; expeditions: ExpeditionState[]; exp_fail_streak: number; lead: LeadInfo | null;
   demand: Record<string, string[]>; demand_tomorrow: Record<string, string[]> | null;
@@ -266,8 +265,6 @@ export const buySnack = (snack: string, qty: number) => rpc('buy_snack', { p_sna
 export const equipSnack = (cls: string, snack: string | null) => rpc('equip_snack', { p_class: cls, p_snack: snack });
 export const accountSkillAdd = (node: string) => rpc('account_skill_add', { p_node: node });
 export const accountSkillReset = () => rpc('account_skill_reset');
-export const collectFish = () => rpc('collect_fish');
-export const repairRod = () => rpc('repair_rod');
 export const buyAnimal = (house: string, slot: number, animal: string) => rpc('buy_animal', { p_house: house, p_slot: slot, p_animal: animal });
 export const removeAnimal = (house: string, slot: number) => rpc('remove_animal', { p_house: house, p_slot: slot });
 export const upgradeHouse = (house: string) => rpc('upgrade_house', { p_house: house });

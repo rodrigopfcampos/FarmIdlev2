@@ -1,7 +1,7 @@
 // Vida no mapa v3 (só visual): pontos livres nos pastos e no lago, peixes por nível, pomar e cor da fruta.
 import { describe, expect, it } from 'vitest';
-import { ANIM, LOTS, type Pt } from '../src/data';
-import { clearPath, fishCount, isFree, isFruitPixel, orchardLook, randomFreePoint, recolor, unlockedFish, walkSpriteFor } from '../src/farm/life';
+import { ANIM, ANIMAL_RULES, ANIMALS, LOTS, type Pt } from '../src/data';
+import { clearPath, isFree, isFruitPixel, orchardLook, randomFreePoint, recolor, walkSpriteFor } from '../src/farm/life';
 
 const seq = (() => { let s = 7; return () => ((s = (s * 16807) % 2147483647) / 2147483647); })();
 
@@ -27,12 +27,11 @@ describe('mapa v3', () => {
     const [x0, y0, x1, y1] = w.avoid[0];
     expect(clearPath([x0 - 20, (y0 + y1) / 2], [x1 + 20, (y0 + y1) / 2], w.polygon, w.avoid)).toBe(false);
   });
-  it('1 espécie nova a cada 10 níveis; de 6 a 12 peixes', () => {
-    expect(unlockedFish(1)).toEqual(['fish_1']);
-    expect(unlockedFish(10)).toHaveLength(2);
-    expect(unlockedFish(50)).toHaveLength(5);
-    expect(fishCount(1)).toBe(ANIM.lake_fish.count_min);
-    expect(fishCount(45)).toBe(ANIM.lake_fish.count_max);
+  it('peixes do Lago (04/11): 5 espécies com arte e o Pescador como especialista', () => {
+    const fish = ANIMALS.filter((a) => a.house === 'lago');
+    expect(fish).toHaveLength(5);
+    expect(fish.every((f) => (f as { is_fish?: boolean }).is_fish && /^fish_\d$/.test(f.product.art))).toBe(true);
+    expect(ANIMAL_RULES.collector_efficiency.specialist_by_house.lago).toBe('pescador');
   });
   it('os 10 animais têm cada um a sua arte andando', () => {
     expect(walkSpriteFor('vaca')).toBe('animal_walk_cow');

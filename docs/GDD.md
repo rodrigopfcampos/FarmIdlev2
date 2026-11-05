@@ -235,8 +235,8 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 7 | P1 | Pomar | 11 | 61.000 | Não | 0 h 48 | 2,3 |
 | 8 | A7 | Lavoura | 13 | 120.000 | Não | 0 h 52 | 4,5 |
 | 9 | A8 | Lavoura | 14 | 200.000 | Não | 0 h 56 | 5,5 |
-| 10 | P2 | Pomar | 16 | 420.000 | Não | 1 h 00 | 8,3 |
-| 11 | A5 | Lavoura | 17 | 570.000 | Não | 1 h 04 | 9,3 |
+| 10 | P2 | Pomar | 16 | 430.000 | Não | 1 h 00 | 8,3 |
+| 11 | A5 | Lavoura | 17 | 590.000 | Não | 1 h 04 | 9,3 |
 | 12 | A10 | Lavoura | 19 | 840.000 | Não | 1 h 08 | 11,3 |
 | 13 | P3 | Pomar | 20 | 1.000.000 | Não | 1 h 12 | 12,5 |
 | 14 | A11 | Lavoura | 22 | 1.800.000 | Não | 1 h 16 | 16,5 |
@@ -245,15 +245,15 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 17 | A13 | Lavoura | 27 | 5.300.000 | Não | 1 h 28 | 25,3 |
 | 18 | A20 | Lavoura | 28 | 6.500.000 | Não | 1 h 32 | 27,8 |
 | 19 | L | Lago | 30 | 9.700.000 | Não | 1 h 36 | 33,3 |
-| 20 | P5 | Pomar | 31 | 13.000.000 | Não | 1 h 40 | 35,9 |
-| 21 | A14 | Lavoura | 33 | 19.000.000 | Não | 1 h 44 | 41,5 |
-| 22 | A15 | Lavoura | 34 | 22.000.000 | Não | 1 h 48 | 44,3 |
+| 20 | P5 | Pomar | 31 | 13.000.000 | Não | 1 h 40 | 35,8 |
+| 21 | A14 | Lavoura | 33 | 19.000.000 | Não | 1 h 44 | 41,3 |
+| 22 | A15 | Lavoura | 34 | 21.000.000 | Não | 1 h 48 | 43,9 |
 | 23 | P6 | Pomar | 36 | 30.000.000 | Não | 1 h 52 | 50,3 |
-| 24 | A16 | Lavoura | 37 | 39.000.000 | Não | 1 h 56 | 53,5 |
-| 25 | A17 | Lavoura | 39 | 56.000.000 | Não | 2 h 00 | 60,8 |
-| 26 | A18 | Lavoura | 40 | 66.000.000 | Não | 2 h 04 | 64,5 |
-| 27 | A19 | Lavoura | 42 | 81.000.000 | Não | 2 h 08 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 100.000.000 | Não | 2 h 12 | 77,3 |
+| 24 | A16 | Lavoura | 37 | 39.000.000 | Não | 1 h 56 | 53,3 |
+| 25 | A17 | Lavoura | 39 | 53.000.000 | Não | 2 h 00 | 60,5 |
+| 26 | A18 | Lavoura | 40 | 62.000.000 | Não | 2 h 04 | 64,3 |
+| 27 | A19 | Lavoura | 42 | 77.000.000 | Não | 2 h 08 | 72,5 |
+| 28 | A21 | Lavoura | 43 | 99.000.000 | Não | 2 h 12 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 180 | 2.000 | 9.000 | 22.000 | 52.000 | 110.000 | 200.000 | 360.000 | 540.000 | 660.000 |
+| Salário base/dia (ouro) | 180 | 2.000 | 9.000 | 22.000 | 52.000 | 110.000 | 200.000 | 340.000 | 540.000 | 640.000 |
 
 ### Nível do personagem
 
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 881.100 | 3.200.000 |
-| 2 | 50 | 2.500 | | 27 | 1.014.600 | 3.700.000 |
-| 3 | 65 | 4.000 | | 28 | 1.188.150 | 4.100.000 |
-| 4 | 90 | 6.000 | | 29 | 1.335.000 | 4.600.000 |
-| 5 | 900 | 8.900 | | 30 | 1.335.000 | 5.500.000 |
-| 6 | 1.320 | 13.000 | | 31 | 1.381.900 | 6.600.000 |
-| 7 | 2.110 | 20.000 | | 32 | 1.594.500 | 7.600.000 |
-| 8 | 3.250 | 30.000 | | 33 | 1.700.800 | 8.500.000 |
-| 9 | 5.480 | 60.000 | | 34 | 1.913.400 | 9.300.000 |
-| 10 | 20.030 | 99.000 | | 35 | 2.232.300 | 10.000.000 |
-| 11 | 33.380 | 120.000 | | 36 | 2.551.200 | 11.000.000 |
-| 12 | 48.060 | 140.000 | | 37 | 2.870.100 | 13.000.000 |
-| 13 | 69.420 | 210.000 | | 38 | 3.295.300 | 15.000.000 |
-| 14 | 88.110 | 320.000 | | 39 | 3.720.500 | 17.000.000 |
-| 15 | 113.480 | 450.000 | | 40 | 4.145.700 | 18.000.000 |
-| 16 | 146.850 | 610.000 | | 41 | 4.570.900 | 18.000.000 |
-| 17 | 173.550 | 750.000 | | 42 | 4.996.100 | 20.000.000 |
-| 18 | 213.600 | 880.000 | | 43 | 5.633.900 | 23.000.000 |
-| 19 | 267.000 | 990.000 | | 44 | 6.165.400 | 26.000.000 |
-| 20 | 320.400 | 1.100.000 | | 45 | 6.803.200 | 27.000.000 |
-| 21 | 373.800 | 1.400.000 | | 46 | 7.334.700 | 29.000.000 |
-| 22 | 440.550 | 1.700.000 | | 47 | 7.759.900 | 30.000.000 |
-| 23 | 534.000 | 1.900.000 | | 48 | 8.185.100 | 31.000.000 |
-| 24 | 640.800 | 2.200.000 | | 49 | 8.397.700 | 33.000.000 |
-| 25 | 760.950 | 2.600.000 | | 50 | — | 33.000.000 |
+| 1 | 40 | 1.900 | | 26 | 883.080 | 3.200.000 |
+| 2 | 50 | 2.500 | | 27 | 1.016.880 | 3.700.000 |
+| 3 | 65 | 4.000 | | 28 | 1.190.820 | 4.100.000 |
+| 4 | 90 | 6.000 | | 29 | 1.338.000 | 4.500.000 |
+| 5 | 900 | 8.900 | | 30 | 1.338.000 | 5.500.000 |
+| 6 | 1.320 | 13.000 | | 31 | 1.444.300 | 6.600.000 |
+| 7 | 2.110 | 20.000 | | 32 | 1.666.500 | 7.700.000 |
+| 8 | 3.250 | 30.000 | | 33 | 1.777.600 | 8.500.000 |
+| 9 | 5.480 | 60.000 | | 34 | 1.999.800 | 8.800.000 |
+| 10 | 20.070 | 99.000 | | 35 | 2.333.100 | 9.900.000 |
+| 11 | 33.450 | 120.000 | | 36 | 2.666.400 | 11.000.000 |
+| 12 | 48.170 | 140.000 | | 37 | 2.999.700 | 13.000.000 |
+| 13 | 69.580 | 210.000 | | 38 | 3.444.100 | 14.000.000 |
+| 14 | 88.310 | 320.000 | | 39 | 3.888.500 | 16.000.000 |
+| 15 | 113.730 | 450.000 | | 40 | 4.332.900 | 17.000.000 |
+| 16 | 147.180 | 620.000 | | 41 | 4.777.300 | 17.000.000 |
+| 17 | 173.940 | 770.000 | | 42 | 5.221.700 | 19.000.000 |
+| 18 | 214.080 | 890.000 | | 43 | 5.888.300 | 22.000.000 |
+| 19 | 267.600 | 990.000 | | 44 | 6.443.800 | 25.000.000 |
+| 20 | 321.120 | 1.100.000 | | 45 | 7.110.400 | 27.000.000 |
+| 21 | 374.640 | 1.400.000 | | 46 | 7.665.900 | 28.000.000 |
+| 22 | 441.540 | 1.700.000 | | 47 | 8.110.300 | 29.000.000 |
+| 23 | 535.200 | 1.900.000 | | 48 | 8.554.700 | 30.000.000 |
+| 24 | 642.240 | 2.200.000 | | 49 | 8.776.900 | 31.000.000 |
+| 25 | 762.660 | 2.600.000 | | 50 | — | 32.000.000 |
 
 ### Raridade global 🆕
 
@@ -678,7 +678,12 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - **Vara de Pescar** (ferramenta do Lago): vem com o Lago, gasta 2,5 por ciclo recolhido (rede cheia = 10), conserta no painel do Lago pelo preço do conserto da ferramenta do nível; abaixo de 30 a pesca rende a metade. Nó Ferramentas, nó Consertos e a carta Martelo valem para ela.
 - **Limpeza:** sem Ferreiro em campo 60 + 12 min por compra (1h12 a 6h36); com o Ferreiro em campo 3× mais rápida (24 min a 2h12). R recalibrado.
 
-### Reformulação v3 🆕 (01/11/2026) — parte R3 (pesca e árvore da conta)
+### 🆕 (04/11/2026, pedido do dono) — Lago igual ao Galinheiro e Pescador
+- **Lago = casa de peixes** (`config/animals.json` → `houses.lago`): substitui a rede de 2 h. Começa com **4 vagas**, amplia para **8** (nível 20, 450.000) e **12** (nível 30, 2.200.000). Em cada vaga o jogador escolhe o peixe entre os liberados pelo nível; a **raridade é sorteada na compra** (mesmas chances dos animais). Cada peixe produz sozinho a cada 2 h, come ração (≈15%) e custa 10 dias de ração, como os animais: **Tilápia** nv 11 · **Truta Arco-Íris** nv 20 · **Bagre do Rio** nv 30 · **Carpa Koi** nv 40 · **Esturjão** nv 45 (cada um ≈ 3 canteiros do seu nível). O clique coleta a 100%; fora do jogo a equipe coleta pela fila.
+- **Pescador** (novo personagem, nível 30): especialista do Lago. Com ele em campo a equipe coleta o Lago a 100% (sem ele, 60%), como a Rancheira no Galinheiro e no Celeiro. A **Vara de Pescar** passa a ser a ferramenta dele (sobe de nível sozinha, gasta e conserta como as outras). A carta **Pesca** soma no peixe; o Rebanho não. O Mestre Pescador (árvore da conta) dá a chance de peixe em dobro.
+- **Slots de Campo: 4** (eram 3); Banco continua com 3. R recalibrado.
+
+### Reformulação v3 🆕 (01/11/2026) — parte R3 (pesca e árvore da conta) — *a rede de pesca abaixo foi trocada pelo Lago com vagas em 04/11*
 - **Pesca** (`config/fishing.json`): o Lago comprado pesca sozinho em ciclos de **2 h**; a rede guarda até **4 ciclos (8 h)** e, cheia, para. Clique no Lago/píer recolhe (ícone do peixe com "n/4" no píer). Fora do jogo a equipe recolhe a rede cheia com **60%** (gasta o trabalho de uma colheita).
 - Valor de cada ciclo = **8% da renda do nível (R) ÷ 12**; vem na espécie mais alta liberada (Tilápia nv 1 · 17, Truta nv 10 · 390, Bagre nv 20 · 2.700, Koi nv 30 · 11.000, Esturjão nv 40 · 28.000 de ouro cada). XP: 0,3% do XP do nível por ciclo. Peixe vai para o Silo (Barraca ou expedição).
 - **Vara de Pescar** (+6% a +20%) multiplica o valor da pesca. O Lago continua dando +2 vagas de ave; o +10% das aves virou o nó Aves.

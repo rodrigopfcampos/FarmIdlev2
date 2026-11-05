@@ -29,3 +29,6 @@ export function petSprite(m: Manifest, pet: string, frame: 1 | 2 = 1): string | 
   const k = `pet_${pet}_idle${frame}`;
   return m[k] ? k : null;
 }
+
+/** pé de cada arte de árvore do pomar (fração da altura do quadro onde o tronco toca o chão), medido ao carregar */
+export const TREE_FOOT: Record<string, number> = {};

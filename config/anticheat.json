@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "source": "GDD v2 seção 12 (painel e antitrapaça) · fase 9. Regras do mercado ficam para quando o mercado (8c) entrar.",
   "check_every_minutes": 60,
   "dedupe_hours": 24,
@@ -48,9 +48,14 @@
     "cards": {
       "name_pt": "Cartas a mais",
       "score": 80,
-      "note": "cartas recebidas (sem o painel, o presente inicial e as dos níveis 2–10) acima do máximo por semana de conta: 16 das missões + 2 da Encomenda + 2 das Estrelas",
+      "note": "cartas recebidas (sem o painel, o presente inicial e as dos níveis 2–10) acima do máximo por semana de conta: 16 das missões + 2 da Encomenda + 2 das Estrelas; as da coleta (até 4 por dia) têm limite próprio no servidor e não contam",
       "max_per_week": 20,
-      "ignore_origins": ["admin", "starter", "level_up"],
+      "ignore_origins": [
+        "admin",
+        "starter",
+        "level_up",
+        "collect"
+      ],
       "min_weeks": 1
     },
     "luck": {

@@ -94,8 +94,8 @@ export type VisitView = {
 };
 export type MissionState = { kind: 'daily' | 'weekly'; slot: number; id: string; metric: string; target: number; progress: number; done: boolean; reward: { gold?: number; xp?: number } };
 export type CardState = { serial: number; card_id: string; rarity: string; state: 'binder' | 'inbox' | 'worn' | 'hand'; inbox_until: string | null; seen: boolean; origin: string;
-  life_s?: number; full_s?: number; repairs?: number };
-export type BuffState = { card_id: string; rarity: string; serial?: number; started_at: string; ends_at: string; locked_until?: string | null; coin_value: number; full_s?: number };
+  uses?: number; full_uses?: number; repairs?: number };
+export type BuffState = { card_id: string; rarity: string; serial?: number; started_at: string; ends_at: string; locked_until?: string | null; coin_value: number; uses?: number; full_uses?: number };
 
 const ERRORS: Record<string, string> = {
   'fuso horário inválido': 'Esse fuso horário não existe.',

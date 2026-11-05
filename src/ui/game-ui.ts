@@ -174,7 +174,7 @@ let handKey = '';
 
 /** mão no rodapé: redesenha quando muda a carta ou o minuto que falta */
 function renderHandThrottled(s: FarmState): void {
-  const k = `${!!store.manifest.deck_crate}|${s.hand_slots}|${s.buffs.map((b) => `${b.card_id}:${b.serial}:${Math.floor((Date.parse(b.ends_at) - store.clock.serverNow()) / 60_000)}`).join(',')}|${s.cards.filter((c) => c.state === 'hand').map((c) => c.serial).join(',')}|${!!store.visit}`;
+  const k = `${!!store.manifest.deck_crate}|${s.hand_slots}|${s.buffs.map((b) => `${b.card_id}:${b.serial}:${b.uses}`).join(',')}|${s.cards.filter((c) => c.state === 'hand').map((c) => c.serial).join(',')}|${!!store.visit}`;
   if (k === handKey) return;
   handKey = k;
   renderHand(cardsCtx(), s);

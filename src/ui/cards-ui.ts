@@ -3,7 +3,7 @@
 import { hudIcon } from './hud-icons';
 import { CARDS, MISSIONS } from '../data';
 import {
-  armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDef, cardDuration, lifeText, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
+  armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDef, cardUses, usesOnText, usesText, missionProgress, missionText, pityLeft, RARITY_LIST, rarityInfo, rarityRank,
 } from '../farm/cards';
 import { store } from '../farm/store';
 import { binderExpand, cardsSeen, equipCard, handAdd, handRemove, repairCard, rerollMission, sellCard, unequipCard, type CardState, type FarmState } from '../net/farmApi';
@@ -34,7 +34,7 @@ export function cardHtml(ctx: CardsCtx, cardId: string, rarity: string, width = 
   return `<span class="tcard r-${rarity} ${extra}" style="--rc:${rarityInfo(rarity)?.color_hex}" title="${ctx.esc(`${d?.name_pt ?? cardId} ${rarityInfo(rarity)?.name_pt ?? ''}`)}">${art(cardArt(cardId, rarity), width)}</span>`;
 }
 
-/** barra de vida da carta (dias que sobram) */
+/** barra de vida da carta (usos que sobram) */
 function lifeBar(left: number, full: number): string {
   const pct = full > 0 ? Math.max(0, Math.min(1, left / full)) : 0;
   return `<span class="life"><span style="width:${Math.round(pct * 100)}%"></span></span>`;
@@ -95,11 +95,10 @@ let lastHand: string[] = [];
 /** cartas da mão (paradas, esperando "Usar") e buffs (cartas em uso, contando o tempo) */
 type HandItem = { serial: number; card_id: string; rarity: string; active: boolean; left: number; full: number };
 function handItems(s: FarmState): HandItem[] {
-  return s.cards.filter((c) => c.state === 'hand').map((c) => ({ serial: c.serial, card_id: c.card_id, rarity: c.rarity, active: false, left: c.life_s ?? c.full_s ?? 0, full: c.full_s ?? 0 }));
+  return s.cards.filter((c) => c.state === 'hand').map((c) => ({ serial: c.serial, card_id: c.card_id, rarity: c.rarity, active: false, left: c.uses ?? c.full_uses ?? cardUses(c.rarity), full: c.full_uses ?? cardUses(c.rarity) }));
 }
 function buffItems(s: FarmState): HandItem[] {
-  const ms = store.clock.serverNow();
-  return s.buffs.map((b) => ({ serial: b.serial ?? 0, card_id: b.card_id, rarity: b.rarity, active: true, left: (Date.parse(b.ends_at) - ms) / 1000, full: b.full_s ?? 0 }));
+  return s.buffs.map((b) => ({ serial: b.serial ?? 0, card_id: b.card_id, rarity: b.rarity, active: true, left: b.uses ?? cardUses(b.rarity), full: b.full_uses ?? cardUses(b.rarity) }));
 }
 const cardTitle = (h: HandItem) => `${cardDef(h.card_id)?.name_pt} ${rarityInfo(h.rarity)?.name_pt}: ${buffLines(h.card_id, h.rarity).join(', ')}`;
 
@@ -131,9 +130,9 @@ export function renderHand(ctx: CardsCtx, s: FarmState): void {
   dock.querySelector('[data-toggle-hand]')?.addEventListener('click', () => { handOpen = !handOpen; renderHand(ctx, store.state!); });
   dock.querySelectorAll('[data-open-binder]').forEach((b) => b.addEventListener('click', () => openCards(ctx)));
   dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, Number(b.dataset.hand))));
-  // buffs: carta pequena com o tempo que falta
+  // buffs: carta pequena com os usos que faltam
   bar.innerHTML = buffs.map((h) => `<button type="button" class="buff-card" style="--rc:${rarityInfo(h.rarity)?.color_hex}" data-buff="${h.serial}"
-      title="${ctx.esc(`Em uso · ${cardTitle(h)}`)}">${art(cardArt(h.card_id, h.rarity), 46)}<small>${lifeText(h.left)}</small></button>`).join('')
+      title="${ctx.esc(`Em uso · ${cardTitle(h)}`)}">${art(cardArt(h.card_id, h.rarity), 46)}<small>${usesText(h.left)}</small></button>`).join('')
     + (buffs.length ? `<span class="buff-count">${buffs.length}/${slots}</span>` : '');
   bar.querySelectorAll<HTMLButtonElement>('[data-buff]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, Number(b.dataset.buff))));
   // carta passou a valer: flash branco, partículas da cor da raridade e tremor no buff novo
@@ -164,20 +163,21 @@ function openHandCard(ctx: CardsCtx, serial: number): void {
     const ms = store.clock.serverNow(), r = rarityInfo(h.rarity)!;
     const b = s.buffs.find((x) => x.serial === serial);
     const locked = b?.locked_until ? Date.parse(b.locked_until) > ms : false;
+    const on = `Gasta 1 uso a cada coleta inteira de ${usesOnText(h.card_id)}`;
     const head = `<div class="card-detail">${cardHtml(ctx, h.card_id, h.rarity, 150)}
       <div class="grow"><h3 style="color:${r.color_hex}">${ctx.esc(cardDef(h.card_id)?.name_pt ?? h.card_id)} ${ctx.esc(r.name_pt)}</h3>
         <ul class="eff">${buffLines(h.card_id, h.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>`;
     if (!h.active) return `${head}
-        <p>Parada na mão: <strong>${lifeText(h.left)}</strong> guardados ${lifeBar(h.left, h.full || h.left)}</p>
+        <p>Parada na mão: <strong>${usesText(h.left)}</strong> de ${usesText(h.full)} guardados ${lifeBar(h.left, h.full || h.left)}</p>
         <div class="row"><button type="button" class="primary" data-use>Usar</button>
           <button type="button" class="secondary" data-back>Voltar ao fichário</button></div>
-        <p class="hint">Parada, a carta não vale e não gasta tempo. Ao usar, ela sai da mão e vira buff (canto de cima): o bônus liga na hora e o tempo corre online ou offline, por pelo menos 1 dia.</p>
+        <p class="hint">Parada, a carta não vale e não gasta. Ao usar, ela vira buff (canto de cima): o bônus liga na hora e vale pelas próximas coletas, online ou offline. ${on}.</p>
       </div></div>`;
     return `${head}
-        <p>Em uso · falta <strong>${lifeText(h.left)}</strong> ${lifeBar(h.left, h.full || h.left)}</p>
+        <p>Em uso · faltam <strong>${usesText(h.left)}</strong> de ${usesText(h.full)} ${lifeBar(h.left, h.full || h.left)}</p>
         ${b && b.coin_value > 0 ? `<p>${formatGold(b.coin_value)} de ouro juntado (pago quando a carta para).</p>` : ''}
         <button type="button" class="secondary" data-pause ${locked ? 'disabled' : ''}>Pausar</button>
-        <p class="hint">${locked ? `Em uso por pelo menos mais ${lifeText((Date.parse(b!.locked_until!) - ms) / 1000)}. ` : ''}Ao pausar, ela volta parada para a mão (ou para o fichário, se a mão estiver cheia) guardando o tempo que sobrou.${h.rarity === 'common' ? ' Quando acabar, a Comum fica gasta e pode ser reparada com ouro.' : ' Quando acabar, ela some (fica registrada no álbum).'}</p>
+        <p class="hint">${on} (1 uso = um lote, pomar, casa de animais ou o lago inteiro, ou 1 expedição). Ao pausar, ela volta parada para a mão (ou para o fichário, se a mão estiver cheia) guardando os usos que sobraram.${h.rarity === 'common' ? ' Quando acabar, a Comum fica gasta e pode ser reparada com ouro.' : ' Quando acabar, ela some (fica registrada no álbum).'}</p>
       </div></div>`;
   }, (el) => {
     const s = store.state!, h = [...handItems(s), ...buffItems(s)].find((x) => x.serial === serial);
@@ -219,7 +219,7 @@ function binderBody(ctx: CardsCtx, s: FarmState): string {
   const slots = s.hand_slots ?? 3;
   const list = sorted(s.cards.filter((c) => c.state !== 'hand'));
   const grid = list.length ? list.map((c) => {
-    const full = c.full_s ?? 1, life = c.life_s ?? full;
+    const full = c.full_uses ?? cardUses(c.rarity), life = c.uses ?? full;
     return `<button type="button" class="card-btn ${picked === c.serial ? 'on' : ''} ${c.state === 'worn' ? 'worn' : ''}" data-pick="${c.serial}">
       ${cardHtml(ctx, c.card_id, c.rarity, 70)}${lifeBar(life, full)}
       ${c.state === 'worn' ? '<span class="tag">gasta</span>' : c.state === 'inbox' ? '<span class="tag">caixa</span>' : ''}</button>`;
@@ -228,7 +228,7 @@ function binderBody(ctx: CardsCtx, s: FarmState): string {
   const c = list.find((x) => x.serial === picked);
   if (c) {
     const d = cardDef(c.card_id)!, r = rarityInfo(c.rarity)!;
-    const full = c.full_s ?? 1, life = c.life_s ?? full;
+    const full = c.full_uses ?? cardUses(c.rarity), life = c.uses ?? full;
     const hand = handItems(s);
     const worn = c.state === 'worn' || life <= 0;
     const whyHand = worn ? 'Carta gasta.' : hand.some((h) => h.card_id === c.card_id) ? 'Essa carta já está na mão.' : hand.length >= slots ? `A mão está cheia (${slots} cartas).` : '';
@@ -239,14 +239,14 @@ function binderBody(ctx: CardsCtx, s: FarmState): string {
       <div class="grow"><h3 style="color:${r.color_hex}">${ctx.esc(d.name_pt)} ${ctx.esc(r.name_pt)}</h3>
         <p>${ctx.esc(d.description_pt)}</p>
         <ul class="eff">${buffLines(c.card_id, c.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
-        <p>Vida: <strong>${lifeText(life)}</strong> de ${cardDuration(c.rarity)} ${lifeBar(life, full)}</p>
+        <p>Usos: <strong>${usesText(life)}</strong> de ${usesText(full)} ${lifeBar(life, full)} · gasta em ${ctx.esc(usesOnText(c.card_id))}</p>
         <div class="row">
           <button type="button" class="primary small" data-hand-add="${c.serial}" ${whyHand ? 'disabled' : ''}>Colocar na mão</button>
           <button type="button" class="secondary" data-equip="${c.serial}" ${whyUse ? 'disabled' : ''}>Usar agora</button>
-          ${repair ? `<button type="button" class="secondary" data-repair="${c.serial}">Reparar (+${CARDS.rarities.common.repair.restores_days} dias · ${formatGold(s.repair_cost ?? 0)})</button>` : ''}
+          ${repair ? `<button type="button" class="secondary" data-repair="${c.serial}">Reparar (+${usesText(CARDS.rarities.common.repair.restores_uses)} · ${formatGold(s.repair_cost ?? 0)})</button>` : ''}
           <button type="button" class="secondary" data-sell="${c.serial}">Vender (${formatGold(s.collector[c.rarity] ?? 0)})</button>
         </div>
-        <p class="hint">${why ? `${why} ` : ''}Na mão a carta fica parada e não gasta tempo; ao usar, vira buff e gasta os dias online ou offline (pelo menos 1 dia). ${c.rarity === 'common' ? 'A Comum gasta volta com reparo em ouro.' : 'Gasta, ela some (fica no álbum).'} Nº de série ${c.serial}${c.state === 'inbox' && c.inbox_until ? ` · na caixa de entrada até ${new Date(c.inbox_until).toLocaleDateString('pt-BR')}` : ''}.</p>
+        <p class="hint">${why ? `${why} ` : ''}Na mão a carta fica parada e não gasta; ao usar, vira buff e vale pelas próximas coletas (1 uso = um lote, pomar, casa de animais ou o lago inteiro, ou 1 expedição). ${c.rarity === 'common' ? 'A Comum gasta volta com reparo em ouro.' : 'Gasta, ela some (fica no álbum).'} Nº de série ${c.serial}${c.state === 'inbox' && c.inbox_until ? ` · na caixa de entrada até ${new Date(c.inbox_until).toLocaleDateString('pt-BR')}` : ''}.</p>
       </div></div>`;
   }
   const canGrow = s.binder_slots + CARDS.binder.expansion_slots <= CARDS.binder.max_slots;
@@ -271,7 +271,7 @@ function armoryBody(ctx: CardsCtx, s: FarmState): string {
 
 function oddsBody(s: FarmState): string {
   const p = pityLeft(s.pity);
-  const rates = RARITY_LIST.map((r) => `<li><span style="color:${rarityInfo(r)?.color_hex}">■</span> ${rarityInfo(r)?.name_pt}: ${pctTxt((CARDS.gacha.base_rates as Record<string, number>)[r])} <small>(com a garantia, ${pctTxt((CARDS.gacha.effective_rates_with_pity as Record<string, number>)[r])}) · vale ${cardDuration(r)} na mão</small></li>`).join('');
+  const rates = RARITY_LIST.map((r) => `<li><span style="color:${rarityInfo(r)?.color_hex}">■</span> ${rarityInfo(r)?.name_pt}: ${pctTxt((CARDS.gacha.base_rates as Record<string, number>)[r])} <small>(com a garantia, ${pctTxt((CARDS.gacha.effective_rates_with_pity as Record<string, number>)[r])}) · vale ${usesText(cardUses(r))}</small></li>`).join('');
   return `<h3>Chance de cada raridade</h3><ul class="eff">${rates}</ul>
     <p>Dentro da raridade, as ${CARD_LIST.length} cartas têm a mesma chance.</p>
     <h3>Garantia</h3>
@@ -305,7 +305,7 @@ export function maybeOpenPack(ctx: CardsCtx, s: FarmState): void {
   const ov = document.createElement('div');
   ov.className = 'pack-overlay';
   const still = calm();
-  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel', starter: 'Presente de boas-vindas', level_up: 'Prêmio de nível', encomenda: 'Prêmio da Encomenda da Vila', estrelas: 'Pacote comprado com Estrelas' };
+  const ORIGIN: Record<string, string> = { daily_pack: 'Pacote das missões do dia', weekly_3: '3 missões semanais', weekly_5: '5 missões semanais', admin: 'Presente do painel', starter: 'Presente de boas-vindas', level_up: 'Prêmio de nível', collect: 'Achada numa coleta', expedition: 'Achada numa expedição', pet: 'Achado de pet', encomenda: 'Prêmio da Encomenda da Vila', estrelas: 'Pacote comprado com Estrelas' };
   const draw = () => {
     const c = cards[i];
     const r = rarityInfo(c.rarity)!;
@@ -317,7 +317,7 @@ export function maybeOpenPack(ctx: CardsCtx, s: FarmState): void {
       </div>
       <h3 class="pack-name" style="color:${r.color_hex}">${ctx.esc(cardDef(c.card_id)?.name_pt ?? c.card_id)} · ${ctx.esc(r.name_pt)}</h3>
       <ul class="eff">${buffLines(c.card_id, c.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
-      <p class="hint">Vale ${cardDuration(c.rarity)} na mão.</p>
+      <p class="hint">Vale ${usesText(cardUses(c.rarity))} em ${ctx.esc(usesOnText(c.card_id))}.</p>
       <button type="button" class="primary small" data-next>${i + 1 < cards.length ? 'Próxima carta' : 'Guardar no fichário'}</button></div>`;
     const f = ov.querySelector('.flip')!;
     if (!still) window.setTimeout(() => f.classList.add('flipped'), 450); // o verso aparece e vira

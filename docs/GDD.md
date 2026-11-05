@@ -234,26 +234,26 @@ custo(n) = 0,27 × 1,11^(n−1) × R(⌈1,53 × n⌉)
 | 6 | A6 | Lavoura | 10 | 45.000 | Não | 0 h 44 | 1,8 |
 | 7 | P1 | Pomar | 11 | 61.000 | Não | 0 h 48 | 2,3 |
 | 8 | A7 | Lavoura | 13 | 120.000 | Não | 0 h 52 | 4,5 |
-| 9 | A8 | Lavoura | 14 | 190.000 | Não | 0 h 56 | 5,5 |
-| 10 | P2 | Pomar | 16 | 400.000 | Não | 1 h 00 | 7,8 |
-| 11 | A5 | Lavoura | 17 | 550.000 | Não | 1 h 04 | 8,8 |
-| 12 | A10 | Lavoura | 19 | 790.000 | Não | 1 h 08 | 10,8 |
-| 13 | P3 | Pomar | 20 | 940.000 | Não | 1 h 12 | 11,8 |
-| 14 | A11 | Lavoura | 22 | 1.600.000 | Não | 1 h 16 | 16,3 |
-| 15 | A12 | Lavoura | 23 | 2.000.000 | Não | 1 h 20 | 17,5 |
-| 16 | P4 | Pomar | 25 | 2.800.000 | Não | 1 h 24 | 20,5 |
-| 17 | A13 | Lavoura | 27 | 4.600.000 | Não | 1 h 28 | 25,3 |
-| 18 | A20 | Lavoura | 28 | 5.400.000 | Não | 1 h 32 | 27,5 |
-| 19 | L | Lago | 30 | 8.000.000 | Não | 1 h 36 | 33,3 |
-| 20 | P5 | Pomar | 31 | 10.000.000 | Não | 1 h 40 | 35,8 |
-| 21 | A14 | Lavoura | 33 | 15.000.000 | Não | 1 h 44 | 41,3 |
-| 22 | A15 | Lavoura | 34 | 18.000.000 | Não | 1 h 48 | 44,3 |
-| 23 | P6 | Pomar | 36 | 27.000.000 | Não | 1 h 52 | 50,3 |
-| 24 | A16 | Lavoura | 37 | 33.000.000 | Não | 1 h 56 | 53,3 |
-| 25 | A17 | Lavoura | 39 | 46.000.000 | Não | 2 h 00 | 60,5 |
-| 26 | A18 | Lavoura | 40 | 55.000.000 | Não | 2 h 04 | 64,3 |
-| 27 | A19 | Lavoura | 42 | 69.000.000 | Não | 2 h 08 | 72,8 |
-| 28 | A21 | Lavoura | 43 | 90.000.000 | Não | 2 h 12 | 77,3 |
+| 9 | A8 | Lavoura | 14 | 200.000 | Não | 0 h 56 | 5,5 |
+| 10 | P2 | Pomar | 16 | 420.000 | Não | 1 h 00 | 8,3 |
+| 11 | A5 | Lavoura | 17 | 570.000 | Não | 1 h 04 | 9,3 |
+| 12 | A10 | Lavoura | 19 | 840.000 | Não | 1 h 08 | 11,3 |
+| 13 | P3 | Pomar | 20 | 1.000.000 | Não | 1 h 12 | 12,5 |
+| 14 | A11 | Lavoura | 22 | 1.800.000 | Não | 1 h 16 | 16,5 |
+| 15 | A12 | Lavoura | 23 | 2.200.000 | Não | 1 h 20 | 17,8 |
+| 16 | P4 | Pomar | 25 | 3.400.000 | Não | 1 h 24 | 20,8 |
+| 17 | A13 | Lavoura | 27 | 5.300.000 | Não | 1 h 28 | 25,3 |
+| 18 | A20 | Lavoura | 28 | 6.500.000 | Não | 1 h 32 | 27,8 |
+| 19 | L | Lago | 30 | 9.700.000 | Não | 1 h 36 | 33,3 |
+| 20 | P5 | Pomar | 31 | 13.000.000 | Não | 1 h 40 | 35,9 |
+| 21 | A14 | Lavoura | 33 | 19.000.000 | Não | 1 h 44 | 41,5 |
+| 22 | A15 | Lavoura | 34 | 22.000.000 | Não | 1 h 48 | 44,3 |
+| 23 | P6 | Pomar | 36 | 30.000.000 | Não | 1 h 52 | 50,3 |
+| 24 | A16 | Lavoura | 37 | 39.000.000 | Não | 1 h 56 | 53,5 |
+| 25 | A17 | Lavoura | 39 | 56.000.000 | Não | 2 h 00 | 60,8 |
+| 26 | A18 | Lavoura | 40 | 66.000.000 | Não | 2 h 04 | 64,5 |
+| 27 | A19 | Lavoura | 42 | 81.000.000 | Não | 2 h 08 | 72,8 |
+| 28 | A21 | Lavoura | 43 | 100.000.000 | Não | 2 h 12 | 77,3 |
 
 O tipo de cada lote vem da posição no mapa. A ordem acima respeita a vizinhança a partir do A1; preço e nível dependem só de n. 🆕 Com o R remedido, o custo total dos 29 lotes é 313 mi (antes 185 mi), porque a renda do fim do jogo ficou maior; em dias de renda, é o mesmo ritmo. O regular faz 8 compras até o dia 7 e 19 até o dia 30. A ordem e os tipos estão em `config/lots.json` (`tools/balance/build-lots.ts`); os preços e os dias vêm do simulador (`npm run sim -- --calibrate --write`).
 
@@ -364,8 +364,8 @@ O jogador começa com o Agricultor (o dono, sem salário) e libera os outros 5 p
 | Rancheira | Regador | Animais e pomar | 3 | 6.000 |
 | Ferreiro | Martelo | Limpar lotes, ferramentas, consertar veículos | 6 | 20.000 |
 | Comerciante | Balança | Barraca e vendas (mercado, quando existir) 🆕 | 10 | 150.000 |
-| Gerente | Prancheta | Conduz expedições | 14 | 460.000 |
-| Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.500.000 |
+| Gerente | Prancheta | Conduz expedições | 14 | 480.000 |
+| Botânica | Lupa | Pesquisa e bônus de crescimento | 20 | 1.600.000 |
 
 Fora da própria função, qualquer personagem trabalha a 60%. Contratação = 1,5 × Renda de Referência do nível de liberação.
 
@@ -396,7 +396,7 @@ Salário diário de cada contratado = 2% da Renda de Referência do **nível da 
 
 | Nível da conta | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Salário base/dia (ouro) | 180 | 2.000 | 8.600 | 20.000 | 44.000 | 90.000 | 170.000 | 300.000 | 460.000 | 560.000 |
+| Salário base/dia (ouro) | 180 | 2.000 | 9.000 | 22.000 | 52.000 | 110.000 | 200.000 | 360.000 | 540.000 | 660.000 |
 
 ### Nível do personagem
 
@@ -578,31 +578,31 @@ Ouro é a moeda única; o jogador começa com 2.000. A conta vai do nível 1 ao 
 
 | Nível | XP para o próximo | R (ouro/dia) | | Nível | XP para o próximo | R (ouro/dia) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 40 | 1.900 | | 26 | 877.140 | 2.700.000 |
-| 2 | 50 | 2.500 | | 27 | 1.010.040 | 3.200.000 |
-| 3 | 65 | 4.000 | | 28 | 1.182.810 | 3.400.000 |
-| 4 | 90 | 6.000 | | 29 | 1.329.000 | 3.800.000 |
-| 5 | 900 | 8.900 | | 30 | 1.329.000 | 4.500.000 |
-| 6 | 1.320 | 13.000 | | 31 | 1.383.200 | 5.200.000 |
-| 7 | 2.110 | 20.000 | | 32 | 1.596.000 | 6.100.000 |
-| 8 | 3.250 | 30.000 | | 33 | 1.702.400 | 7.000.000 |
-| 9 | 5.480 | 60.000 | | 34 | 1.915.200 | 7.600.000 |
-| 10 | 19.940 | 99.000 | | 35 | 2.234.400 | 8.600.000 |
-| 11 | 33.230 | 120.000 | | 36 | 2.553.600 | 10.000.000 |
-| 12 | 47.840 | 140.000 | | 37 | 2.872.800 | 11.000.000 |
-| 13 | 69.110 | 210.000 | | 38 | 3.298.400 | 12.000.000 |
-| 14 | 87.710 | 310.000 | | 39 | 3.724.000 | 14.000.000 |
-| 15 | 112.970 | 430.000 | | 40 | 4.149.600 | 15.000.000 |
-| 16 | 146.190 | 580.000 | | 41 | 4.575.200 | 16.000.000 |
-| 17 | 172.770 | 720.000 | | 42 | 5.000.800 | 17.000.000 |
-| 18 | 212.640 | 830.000 | | 43 | 5.639.200 | 20.000.000 |
-| 19 | 265.800 | 930.000 | | 44 | 6.171.200 | 22.000.000 |
-| 20 | 318.960 | 1.000.000 | | 45 | 6.809.600 | 23.000.000 |
-| 21 | 372.120 | 1.200.000 | | 46 | 7.341.600 | 25.000.000 |
-| 22 | 438.570 | 1.500.000 | | 47 | 7.767.200 | 26.000.000 |
-| 23 | 531.600 | 1.700.000 | | 48 | 8.192.800 | 26.000.000 |
-| 24 | 637.920 | 1.900.000 | | 49 | 8.405.600 | 28.000.000 |
-| 25 | 757.530 | 2.200.000 | | 50 | — | 28.000.000 |
+| 1 | 40 | 1.900 | | 26 | 881.100 | 3.200.000 |
+| 2 | 50 | 2.500 | | 27 | 1.014.600 | 3.700.000 |
+| 3 | 65 | 4.000 | | 28 | 1.188.150 | 4.100.000 |
+| 4 | 90 | 6.000 | | 29 | 1.335.000 | 4.600.000 |
+| 5 | 900 | 8.900 | | 30 | 1.335.000 | 5.500.000 |
+| 6 | 1.320 | 13.000 | | 31 | 1.381.900 | 6.600.000 |
+| 7 | 2.110 | 20.000 | | 32 | 1.594.500 | 7.600.000 |
+| 8 | 3.250 | 30.000 | | 33 | 1.700.800 | 8.500.000 |
+| 9 | 5.480 | 60.000 | | 34 | 1.913.400 | 9.300.000 |
+| 10 | 20.030 | 99.000 | | 35 | 2.232.300 | 10.000.000 |
+| 11 | 33.380 | 120.000 | | 36 | 2.551.200 | 11.000.000 |
+| 12 | 48.060 | 140.000 | | 37 | 2.870.100 | 13.000.000 |
+| 13 | 69.420 | 210.000 | | 38 | 3.295.300 | 15.000.000 |
+| 14 | 88.110 | 320.000 | | 39 | 3.720.500 | 17.000.000 |
+| 15 | 113.480 | 450.000 | | 40 | 4.145.700 | 18.000.000 |
+| 16 | 146.850 | 610.000 | | 41 | 4.570.900 | 18.000.000 |
+| 17 | 173.550 | 750.000 | | 42 | 4.996.100 | 20.000.000 |
+| 18 | 213.600 | 880.000 | | 43 | 5.633.900 | 23.000.000 |
+| 19 | 267.000 | 990.000 | | 44 | 6.165.400 | 26.000.000 |
+| 20 | 320.400 | 1.100.000 | | 45 | 6.803.200 | 27.000.000 |
+| 21 | 373.800 | 1.400.000 | | 46 | 7.334.700 | 29.000.000 |
+| 22 | 440.550 | 1.700.000 | | 47 | 7.759.900 | 30.000.000 |
+| 23 | 534.000 | 1.900.000 | | 48 | 8.185.100 | 31.000.000 |
+| 24 | 640.800 | 2.200.000 | | 49 | 8.397.700 | 33.000.000 |
+| 25 | 760.950 | 2.600.000 | | 50 | — | 33.000.000 |
 
 ### Raridade global 🆕
 
@@ -689,7 +689,7 @@ Decidido antes da fase 8: o mercado negocia produtos de cultivos e animais e car
 - Simulador: a pesca entra como renda (rede de 8 h, limite offline) e a árvore como até +15% da renda com 49 pontos; R recalibrado (nível 50 do Regular no dia 113, mapa no dia ~79).
 
 ### Reformulação v3 🆕 (01/11/2026) — parte R2 (cartas)
-- 20 cartas (tabela na seção 11, "As 20 cartas"): vida em dias na mão, mão de 3 a 5, presa 1 dia, guarda o que sobra ao sair, Comum repara com ouro (2 dias por 5% da renda de 1 dia), as outras somem; álbum registra sozinho.
+- 20 cartas (tabela na seção 11, "As 20 cartas"): 🆕 (04/11) valem por **usos** (Comum 1 … Mítica 5), mão de 3 a 5, sem trava, guarda os usos ao sair, Comum repara com ouro (1 uso por 5% da renda de 1 dia), as outras somem; álbum registra sozinho; qualquer coleta pode trazer carta (até 4 por dia).
 - **Garagem não vende**: Carro, Picape e Caminhão liberam de graça nos níveis 6, 16 e 30. A carta de Veículo dá carga, lucro, tempo, roubo e jackpot às expedições que partem com ela, e o veículo aparece com a cara da carta.
 - O simulador ainda não conta as cartas; com a Garagem sem venda o R foi recalibrado (mapa completo do regular no dia ~78).
 
@@ -777,7 +777,7 @@ São **10 cartas**, cada uma em 5 raridades (50 versões). Usar uma carta liga u
 
 ### As 20 cartas (v3) 🆕
 
-A carta funciona **enquanto está na mão** e gasta os dias dela online ou offline: **Comum 2 dias, Incomum e Rara 3 dias, Lendária e Mítica 4 dias**. A mão começa com **3 cartas**, ganha a 4ª no nível 15 e a 5ª no nível 30, sem repetir a mesma carta. Depois de equipada, a carta fica **presa pelo menos 1 dia**; ao tirar, ela guarda os dias que sobraram. Quando os dias acabam, a **Comum fica gasta** e volta com **reparo em ouro** (devolve 2 dias por 5% da renda de 1 dia do nível); as outras **somem**. A fazenda, os 6 personagens e a Carroça funcionam sem cartas: elas são multiplicadores temporários.
+🆕 **(04/11, pedido do dono) Cartas por uso.** A carta em uso vale pelas **próximas coletas** da atividade que ela melhora, online ou offline: **Comum 1 uso, Incomum 2, Rara 3, Lendária 4, Mítica 5**. 1 uso = colher um lote inteiro (8 canteiros), um pomar (4 árvores), uma casa de animais ou o lago (4 vagas), ou mandar 1 expedição (cada canteiro gasta 1/8 de uso, cada árvore, animal ou peixe 1/4). Cada carta gasta só na sua atividade: Sol e Cesta na lavoura e no pomar; Enxada e Lupa na lavoura; Rebanho nos animais; Forcado nos animais e no pomar; Pesca no lago; Ferradura, Prancheta e Veículo nas expedições (gravadas na partida); as outras em qualquer coleta. A mão começa com **3 cartas**, ganha a 4ª no nível 15 e a 5ª no nível 30, sem repetir a mesma carta. Não há trava: dá para pausar quando quiser e a carta guarda os usos que sobraram. Quando os usos acabam, a **Comum fica gasta** e volta com **reparo em ouro** (devolve 1 uso por 5% da renda de 1 dia do nível); as outras **somem**. **Carta de coleta:** cada uso tem 25% de chance de trazer uma carta nova (sorteio normal, com garantia), até **4 por dia** (dia do jogador). A fazenda, os 6 personagens e a Carroça funcionam sem cartas: elas são multiplicadores temporários.
 
 Os valores são bem menores que os da v2 porque a carta fica dias na mão (e até 5 ao mesmo tempo). Tetos da seção abaixo continuam valendo.
 

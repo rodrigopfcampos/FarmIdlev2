@@ -18,7 +18,7 @@ begin
   if public.rand01() < (fx ->> 'extra_fruit')::double precision then v_qty := v_qty + 1; end if;
   insert into public.silo (user_id, item_id, qty) values (p_user, tr.fruit_id, v_qty)
     on conflict (user_id, item_id) do update set qty = public.silo.qty + excluded.qty;
-  perform public.produced(p_user, tr.fruit_id, v_qty, (c ->> 'xp_per_harvest')::numeric * rm::numeric, 'crop');
+  perform public.produced(p_user, tr.fruit_id, v_qty, (c ->> 'xp_per_harvest')::numeric * rm::numeric, 'orchard');
   perform public.add_xp(p_user, round(((c ->> 'xp_per_harvest')::numeric * rm::numeric
     * (1 + (fx ->> 'harvest_xp')::numeric) * (1 + (fx ->> 'account_xp')::numeric)), 2));
   perform public.roll_rare_seed(p_user, tr.fruit_id, fx);

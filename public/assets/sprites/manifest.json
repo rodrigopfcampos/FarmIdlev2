@@ -6771,6 +6771,54 @@
         0.5,
         1
       ]
+    },
+    "orchard_sprout_sway": {
+      "file": "sprites/trees/orchard_sprout_sway.png",
+      "size": [
+        576,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 9,
+      "frame_size": [
+        64,
+        64
+      ]
+    },
+    "orchard_young_sway": {
+      "file": "sprites/trees/orchard_young_sway.png",
+      "size": [
+        576,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 9,
+      "frame_size": [
+        64,
+        64
+      ]
+    },
+    "orchard_adult_sway": {
+      "file": "sprites/trees/orchard_adult_sway.png",
+      "size": [
+        576,
+        64
+      ],
+      "anchor": [
+        0.5,
+        1
+      ],
+      "frames": 9,
+      "frame_size": [
+        64,
+        64
+      ]
     }
   }
 }

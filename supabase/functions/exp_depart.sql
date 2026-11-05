@@ -21,6 +21,7 @@ begin
       public.exp_chance(p_user, v, p_route, p_lead, p_minigame, fx), p_t, p_t + public.exp_hours(v, p_route, p_lead, fx) * 3600, p_seq, p_repeat_left,
       coalesce(fx -> 'exp_card', '{}'));
   perform public.mission_progress(p_user, 'expeditions_sent', 1);
+  perform public.card_use(p_user, 'expedition', (public.config_get('cards') -> 'rules' -> 'uses' -> 'units' ->> 'expedition')::numeric);
   update public.vehicles set durability = greatest(0, durability - (e ->> 'wear_per_trip_pct')::double precision * (1 + coalesce((fx ->> 'vehicle_wear')::double precision, 0)))
     where user_id = p_user and vehicle_id = v.vehicle_id;
   if v_ins > 0 then

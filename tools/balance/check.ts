@@ -189,9 +189,13 @@ for (const c of cards.cards) {
   });
 }
 check(cardsOk, 'efeitos de config/cards.json batem com a tabela da seção 11 (v3)');
-check(cards.rarities.common.duration_days === 2 && cards.rarities.uncommon.duration_days === 3 && cards.rarities.rare.duration_days === 3 && cards.rarities.legendary.duration_days === 4 && cards.rarities.mythic.duration_days === 4,
-  'vida das cartas na mão: Comum 2 dias, Incomum e Rara 3, Lendária e Mítica 4');
-check(JSON.stringify(cards.rules.hand.slots_by_level) === '[[1,3],[15,4],[30,5]]' && cards.rules.hand.min_lock_hours === 24, 'mão de 3 (nível 1), 4 (15) e 5 (30); presa 1 dia');
+check(['common', 'uncommon', 'rare', 'legendary', 'mythic'].map((r) => cards.rarities[r].uses).join() === '1,2,3,4,5' && cards.rarities.common.repair.restores_uses === 1,
+  'cartas por uso (04/11): Comum 1, Incomum 2, Rara 3, Lendária 4, Mítica 5; o reparo da Comum devolve 1 uso');
+const useKinds = Object.keys(cards.rules.uses.units);
+check(cards.cards.every((c: any) => Array.isArray(c.uses_on) && c.uses_on.length && c.uses_on.every((k: string) => k === 'any' || useKinds.includes(k))),
+  'cada carta diz em que atividade gasta os usos (lavoura, pomar, animais, lago, expedição ou qualquer coleta)');
+check(cards.rules.collect_drop.max_per_day === 4 && cards.rules.collect_drop.chance_per_use > 0 && cards.rules.collect_drop.chance_per_use <= 1, 'carta de coleta: até 4 por dia');
+check(JSON.stringify(cards.rules.hand.slots_by_level) === '[[1,3],[15,4],[30,5]]' && cards.rules.hand.min_lock_hours === 0, 'mão de 3 (nível 1), 4 (15) e 5 (30); sem trava (pausa quando quiser)');
 
 // ---------- ferramentas e itens (seção 7) ----------
 const tools = read('config/tools_and_items.json');

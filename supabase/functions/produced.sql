@@ -9,6 +9,8 @@ begin
   -- Moeda da Sorte: % do valor do que foi produzido durante o buff
   update public.card_buffs set coin_value = coin_value + round(v * (public.card_def(card_id) -> 'buff_effects' -> rarity ->> 'production_gold_bonus_pct')::numeric / 100, 2)
     where user_id = p_user and started_at <= at and ends_at > at and public.card_def(card_id) -> 'buff_effects' -> rarity ? 'production_gold_bonus_pct';
+  -- cartas por uso: 1 uso = um lote, pomar, casa de animais ou lago inteiro (config cards.rules.uses.units)
+  perform public.card_use(p_user, p_kind, (public.config_get('cards') -> 'rules' -> 'uses' -> 'units' ->> p_kind)::numeric);
   perform public.mission_progress(p_user, 'xp_earned', p_xp);
   if p_kind = 'animal' then perform public.mission_progress(p_user, 'animal_products', p_qty);
   else perform public.mission_progress(p_user, 'harvest_value', v); end if;

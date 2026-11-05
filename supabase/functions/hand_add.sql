@@ -7,7 +7,7 @@ begin
   perform public.touch_farm(v_user);
   select * into c from public.cards where serial = p_serial and user_id = v_user and state in ('binder', 'inbox') for update;
   if not found then raise exception 'carta não encontrada' using errcode = 'check_violation'; end if;
-  if coalesce(c.life_seconds, public.card_full_life(c.rarity)) <= 0 then raise exception 'carta gasta' using errcode = 'check_violation'; end if;
+  if coalesce(c.uses_left, public.card_full_uses(c.rarity)) <= 0 then raise exception 'carta gasta' using errcode = 'check_violation'; end if;
   if exists (select 1 from public.cards where user_id = v_user and card_id = c.card_id and state = 'hand') then
     raise exception 'essa carta já está na mão' using errcode = 'check_violation';
   end if;

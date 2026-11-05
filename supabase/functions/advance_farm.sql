@@ -49,7 +49,7 @@ begin
     v_cut := extract(epoch from ((v_w ->> 'next')::timestamptz - v_real));
     -- cartas: buffs que acabaram pagam a Moeda da Sorte; o passo também corta no fim do próximo buff
     perform public.buffs_expire(p_user, v_real);
-    v_cut := least(v_cut, (select extract(epoch from min(ends_at) - v_real) from public.card_buffs where user_id = p_user and ends_at > v_real));
+    v_cut := least(v_cut, (select extract(epoch from min(ends_at) - v_real) from public.card_buffs where user_id = p_user and ends_at > v_real and ends_at < 'infinity'));
     -- ajuda de vizinho: +10% de crescimento no lote enquanto durar (o passo corta no fim)
     v_cut := least(v_cut, (select extract(epoch from min(ends_at) - v_real) from public.lot_helps where owner = p_user and kind = 'growth' and ends_at > v_real));
     v_help := (select coalesce(jsonb_object_agg(lot_id, g), '{}') from (select lot_id, sum(pct) / 100 g from public.lot_helps

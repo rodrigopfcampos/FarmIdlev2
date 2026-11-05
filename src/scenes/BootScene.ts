@@ -3,6 +3,7 @@
 import Phaser from 'phaser';
 import { ANIM, CROP_LIST, FARM } from '../data';
 import { isFruitPixel, recolor } from '../farm/life';
+import { TREE_FOOT } from '../farm/art';
 import { SIGN_SHADOW, SIGN_SHADOW_ALPHA, signPixels } from '../farm/signs';
 import type { Manifest } from '../farm/art';
 import { store } from '../farm/store';
@@ -52,29 +53,49 @@ export class BootScene extends Phaser.Scene {
     g.destroy();
   }
 
-  /** pomar v3: "orchard_adult_leaf" (sem fruta) e "orchard_adult_<fruta>" (fruta na cor dela) */
+  /** pomar v3: "orchard_adult_leaf" (sem fruta) e "orchard_adult_<fruta>" (fruta na cor dela), parada e com balanço
+   *  ("orchard_adult_sway_leaf", "orchard_adult_sway_<fruta>", 9 quadros); também mede onde fica o pé de cada arte */
   private makeOrchardTextures(): void {
-    const src = 'orchard_adult';
-    if (!this.textures.exists(src)) return;
-    const img = this.textures.get(src).getSourceImage() as HTMLImageElement;
-    const make = (key: string, base: [number, number, number]) => {
-      const c = document.createElement('canvas');
-      c.width = img.width; c.height = img.height;
-      const ctx = c.getContext('2d')!;
-      ctx.drawImage(img, 0, 0);
-      const d = ctx.getImageData(0, 0, c.width, c.height);
-      for (let i = 0; i < d.data.length; i += 4) {
-        if (!d.data[i + 3] || !isFruitPixel(d.data[i], d.data[i + 1], d.data[i + 2])) continue;
-        const [r, g, b] = recolor(d.data[i], base);
-        d.data[i] = r; d.data[i + 1] = g; d.data[i + 2] = b;
-      }
-      ctx.putImageData(d, 0, 0);
-      this.textures.addCanvas(key, c);
-    };
     const rgb = (hex: string) => { const c = Phaser.Display.Color.HexStringToColor(hex); return [c.red, c.green, c.blue] as [number, number, number]; };
-    make('orchard_adult_leaf', rgb(ANIM.orchard.leaf_hex));
     const colors = FARM.visual.fruit_hex as Record<string, string>;
-    for (const c of CROP_LIST) if (c.kind === 'orchard') make(`orchard_adult_${c.id}`, rgb(colors[c.id] ?? '#c6191c'));
+    const tints: [string, [number, number, number]][] = [['leaf', rgb(ANIM.orchard.leaf_hex)],
+      ...CROP_LIST.filter((c) => c.kind === 'orchard').map((c) => [c.id, rgb(colors[c.id] ?? '#c6191c')] as [string, [number, number, number]])];
+    const make = (src: string, prefix: string) => {
+      if (!this.textures.exists(src)) return;
+      const img = this.textures.get(src).getSourceImage() as HTMLImageElement;
+      const frames = (store.manifest[src]?.frames ?? 1) as number;
+      const fw = img.width / frames, fh = img.height;
+      for (const [id, base] of tints) {
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(0, 0, c.width, c.height);
+        for (let i = 0; i < d.data.length; i += 4) {
+          if (!d.data[i + 3] || !isFruitPixel(d.data[i], d.data[i + 1], d.data[i + 2])) continue;
+          const [r, g, b] = recolor(d.data[i], base);
+          d.data[i] = r; d.data[i + 1] = g; d.data[i + 2] = b;
+        }
+        ctx.putImageData(d, 0, 0);
+        const key = `${prefix}_${id}`;
+        const tex = this.textures.addCanvas(key, c)!;
+        if (frames > 1) for (let f = 0; f < frames; f++) tex.add(f, 0, f * fw, 0, fw, fh);
+      }
+    };
+    make('orchard_adult', 'orchard_adult');
+    make('orchard_adult_sway', 'orchard_adult_sway');
+    // pé de cada arte de árvore: última linha com pixel no 1º quadro (a vaga fica no pé do tronco)
+    for (const k of ['orchard_sprout', 'orchard_young', 'orchard_adult', 'orchard_sprout_sway', 'orchard_young_sway', 'orchard_adult_sway']) {
+      if (!this.textures.exists(k)) continue;
+      const img = this.textures.get(k).getSourceImage() as HTMLImageElement;
+      const fw = img.width / ((store.manifest[k]?.frames ?? 1) as number), fh = img.height;
+      const c = document.createElement('canvas'); c.width = fw; c.height = fh;
+      const ctx = c.getContext('2d')!; ctx.drawImage(img, 0, 0, fw, fh, 0, 0, fw, fh);
+      const d = ctx.getImageData(0, 0, fw, fh).data;
+      let foot = fh - 1;
+      for (let y = fh - 1; y >= 0; y--) { let any = false; for (let x = 0; x < fw; x++) if (d[(y * fw + x) * 4 + 3]) { any = true; break; } if (any) { foot = y; break; } }
+      TREE_FOOT[k] = (foot + 1) / fh;
+    }
   }
 
   /** frutas 4×4 (base, brilho e sombra) por cima da árvore adulta: uma textura por fruta */

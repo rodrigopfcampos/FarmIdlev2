@@ -7,7 +7,7 @@ export type CardDef = (typeof CARDS.cards)[number];
 
 export const CARD_LIST = CARDS.cards as CardDef[];
 export const cardDef = (id: string): CardDef | undefined => CARD_LIST.find((c) => c.id === id);
-export const rarityInfo = (r: string) => (CARDS.rarities as Record<string, { name_pt: string; color_hex: string; duration_days: number; repairable: boolean }>)[r];
+export const rarityInfo = (r: string) => (CARDS.rarities as Record<string, { name_pt: string; color_hex: string; uses: number; repairable: boolean }>)[r];
 export const rarityRank = (r: string) => RARITY_LIST.indexOf(r as Rarity);
 
 const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(v);
@@ -59,19 +59,20 @@ export function buffLines(cardId: string, rarity: string): string[] {
   return effectLines((cardDef(cardId)?.buff_effects as Record<string, Record<string, number>> | undefined)?.[rarity]);
 }
 
-/** quantos dias a carta vale na mão */
-export function cardDuration(rarity: string): string {
-  const d = rarityInfo(rarity)?.duration_days ?? 0;
-  return `${d} dia${d === 1 ? '' : 's'}`;
+/** quantos usos a carta inteira vale (Comum 1 … Mítica 5) */
+export const cardUses = (rarity: string) => rarityInfo(rarity)?.uses ?? 0;
+
+/** usos em texto: "3 usos", "1 uso", "0,6 uso" (1 uso = um lote, pomar, casa de animais ou lago inteiro, ou 1 expedição) */
+export function usesText(n: number): string {
+  const v = n > 0 ? Math.max(0.1, Math.round(n * 10) / 10) : 0;
+  return `${v.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} uso${v >= 2 ? 's' : ''}`;
 }
 
-/** tempo em texto curto: "1 d 4 h", "3 h 20", "12 min" */
-export function lifeText(seconds: number): string {
-  const m = Math.max(0, Math.round(seconds / 60));
-  const d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
-  if (d) return `${d} d${h ? ` ${h} h` : ''}`;
-  if (h) return `${h} h${mm ? ` ${String(mm).padStart(2, '0')}` : ''}`;
-  return `${mm} min`;
+const USE_ON: Record<string, string> = { crop: 'lavoura', orchard: 'pomar', animal: 'animais', fish: 'lago', expedition: 'expedições', any: 'qualquer coleta' };
+/** em que atividade a carta gasta os usos ("lavoura e pomar", "qualquer coleta") */
+export function usesOnText(cardId: string): string {
+  const on = ((cardDef(cardId) as { uses_on?: string[] } | undefined)?.uses_on ?? ['any']).map((k) => USE_ON[k] ?? k);
+  return on.length > 1 ? `${on.slice(0, -1).join(', ')} e ${on[on.length - 1]}` : on[0];
 }
 
 /** cartas que cabem na mão no nível (3, 4 no 15, 5 no 30) */

@@ -59,7 +59,7 @@ begin
   reset role;
   fx := public.team_fx(a);
   if (fx -> 'exp_card' ->> 'cargo')::numeric <> 35 or (fx -> 'exp_card' ->> 'profit')::numeric <> 35 or (fx -> 'exp_card' ->> 'crit_pts')::numeric <> 5 then raise exception 'FALHA 15: bônus do Veículo %', fx -> 'exp_card'; end if;
-  update public.card_buffs set ends_at = now() - interval '1 second' where user_id = a and card_id = 'veiculo';
+  perform public.card_use(a, 'expedition', 5);  -- 5 expedições gastam a Mítica
   perform public.buffs_expire(a, now());
   if (select state from public.cards where serial = n) <> 'used' then raise exception 'FALHA 18: Veículo Mítico gasto não sumiu'; end if;
   if (select count(*) from public.vehicles where user_id = a) <> 5 then raise exception 'FALHA 19: veículos sumiram com a carta'; end if;

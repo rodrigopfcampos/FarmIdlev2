@@ -101,19 +101,33 @@ begin
   fx := public.team_fx(a);
   if abs((fx ->> 'account_xp')::numeric - 0.06) > 0.001 then raise exception 'FALHA 21: Coruja Comum deu % de XP', fx ->> 'account_xp'; end if;
   if abs((fx ->> 'card_use_cut')::numeric - 0.18) > 0.001 then raise exception 'FALHA 22: Cantil Mítico corta %', fx ->> 'card_use_cut'; end if;
-  -- trava de 1 dia: não sai antes; depois sai guardando a vida que sobrou
-  set local role authenticated;
-  begin perform public.unequip_card('coruja'); raise exception 'FALHA 22b: saiu antes da trava';
-  exception when check_violation then null; end;
-  reset role;
-  update public.card_buffs set locked_until = now() - interval '1 second', ends_at = now() + interval '1 day' where user_id = a and card_id in ('coruja', 'cantil');
+  -- por uso: colher 1 canteiro (1/8 de lote) gasta 1/8 de uso das cartas da lavoura e das de qualquer coleta
+  if (select uses_left from public.card_buffs where user_id = a and card_id = 'sol') <> 5
+     or (select uses_left from public.card_buffs where user_id = a and card_id = 'coruja') <> 1 then raise exception 'FALHA 22a: usos ao entrar'; end if;
+  update public.farms set collect_cards_day = public.user_day(a, now()), collect_cards_n = 4 where user_id = a;  -- sem carta de coleta aqui
+  perform public.produced(a, 'batata', 1, 0, 'crop');
+  perform public.produced(a, 'ovo', 1, 0, 'animal');
+  if (select uses_left from public.card_buffs where user_id = a and card_id = 'sol') <> 4.875
+     or (select uses_left from public.card_buffs where user_id = a and card_id = 'coruja') <> 0.625
+     or (select uses_left from public.card_buffs where user_id = a and card_id = 'cantil') <> 4.625 then
+    raise exception 'FALHA 22b: usos gastos (sol %, coruja %)', (select uses_left from public.card_buffs where user_id = a and card_id = 'sol'), (select uses_left from public.card_buffs where user_id = a and card_id = 'coruja'); end if;
+  -- sem trava: sai na hora guardando os usos que sobraram
   set local role authenticated;
   perform public.unequip_card('coruja');
   perform public.unequip_card('cantil');
   reset role;
   if (select state from public.cards where user_id = a and card_id = 'coruja') <> 'hand'
-     or abs((select life_seconds from public.cards where user_id = a and card_id = 'coruja') - 86400) > 60 then
-    raise exception 'FALHA 22c: ao sair não guardou a vida (%, %)', (select state from public.cards where user_id = a and card_id = 'coruja'), (select life_seconds from public.cards where user_id = a and card_id = 'coruja'); end if;
+     or (select uses_left from public.cards where user_id = a and card_id = 'coruja') <> 0.625 then
+    raise exception 'FALHA 22c: ao sair não guardou os usos (%, %)', (select state from public.cards where user_id = a and card_id = 'coruja'), (select uses_left from public.cards where user_id = a and card_id = 'coruja'); end if;
+  -- carta da coleta: até 4 por dia
+  n := (select count(*) from public.cards where user_id = a and origin = 'collect');
+  perform public.card_use(a, 'animal', 4);
+  if (select count(*) from public.cards where user_id = a and origin = 'collect') <> n then raise exception 'FALHA 22d: passou de 4 cartas de coleta no dia'; end if;
+  update public.farms set collect_cards_n = 0 where user_id = a;
+  perform public.card_use(a, 'animal', 4);  -- 4 usos × 25% = carta certa
+  if (select count(*) from public.cards where user_id = a and origin = 'collect') <> n + 1 or (select collect_cards_n from public.farms where user_id = a) <> 1 then
+    raise exception 'FALHA 22e: coleta não trouxe carta'; end if;
+  update public.farms set collect_cards_n = 4 where user_id = a;
   -- paradas na mão ainda ocupam vaga: voltam ao fichário
   set local role authenticated;
   perform public.hand_remove((select serial from public.cards where user_id = a and card_id = 'coruja'));
@@ -129,7 +143,7 @@ begin
   if abs((select coin_value from public.card_buffs where user_id = a and card_id = 'moeda') - round(100 * public.item_price('batata') * 0.03, 2)) > 0.02 then
     raise exception 'FALHA 23: Moeda juntou %', (select coin_value from public.card_buffs where user_id = a and card_id = 'moeda'); end if;
   select gold into v_gold from public.wallets where user_id = a;
-  update public.card_buffs set ends_at = now() - interval '1 second', started_at = now() - interval '2 days' where user_id = a and card_id = 'moeda';
+  perform public.card_use(a, 'fish', 1);  -- Moeda vale em qualquer coleta: o último uso acaba com ela
   perform public.buffs_expire(a, now());
   if (select gold from public.wallets where user_id = a) <= v_gold then raise exception 'FALHA 24: Moeda não pagou no fim'; end if;
   if (select state from public.cards where user_id = a and card_id = 'moeda') <> 'worn' then raise exception 'FALHA 24b: Comum gasta não ficou "gasta"'; end if;
@@ -137,10 +151,13 @@ begin
   set local role authenticated;
   perform public.repair_card((select serial from public.cards where user_id = a and card_id = 'moeda'));
   reset role;
-  if (select state from public.cards where user_id = a and card_id = 'moeda') <> 'binder' or (select life_seconds from public.cards where user_id = a and card_id = 'moeda') <> 2 * 86400
+  if (select state from public.cards where user_id = a and card_id = 'moeda') <> 'binder' or (select uses_left from public.cards where user_id = a and card_id = 'moeda') <> 1
      or abs(v_gold - (select gold from public.wallets where user_id = a) - public.card_repair_cost(a)) > 0.01 then raise exception 'FALHA 24c: reparo da Comum'; end if;
   -- a Mítica gasta some (não tem reparo)
-  update public.card_buffs set ends_at = now() - interval '1 second' where user_id = a and card_id = 'sol';
+  v_gold := (select uses_left from public.card_buffs where user_id = a and card_id = 'sol');
+  perform public.card_use(a, 'fish', 9);  -- a pesca não gasta o Sol
+  if (select uses_left from public.card_buffs where user_id = a and card_id = 'sol') <> v_gold then raise exception 'FALHA 24f: pesca gastou o Sol'; end if;
+  perform public.card_use(a, 'orchard', 5);
   perform public.buffs_expire(a, now());
   if (select state from public.cards where user_id = a and card_id = 'sol' and rarity = 'mythic') <> 'used' then raise exception 'FALHA 24d: Mítica gasta não sumiu'; end if;
   set local role authenticated;

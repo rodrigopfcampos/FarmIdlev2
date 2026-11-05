@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardDuration, handSlots, lifeText, missionProgress, missionText, pityLeft, vehicleLook } from '../src/farm/cards';
+import { armoryLines, armoryStatus, buffLines, CARD_LIST, cardArt, cardUses, handSlots, usesOnText, usesText, missionProgress, missionText, pityLeft, vehicleLook } from '../src/farm/cards';
 import manifest from '../public/assets/sprites/manifest.json';
 import { CARDS, MISSIONS } from '../src/data';
 
@@ -17,13 +17,16 @@ describe('cartas no cliente', () => {
       for (const l of [...armoryLines(c.id, 'partial'), ...armoryLines(c.id, 'complete')]) expect(l).not.toMatch(/_pct|_pts/);
     }
   });
-  it('vida na mão por raridade e tempo em texto', () => {
-    expect(cardDuration('common')).toBe('2 dias');
-    expect(cardDuration('rare')).toBe('3 dias');
-    expect(cardDuration('mythic')).toBe('4 dias');
-    expect(lifeText(86400 + 4 * 3600)).toBe('1 d 4 h');
-    expect(lifeText(3 * 3600 + 20 * 60)).toBe('3 h 20');
-    expect(lifeText(12 * 60)).toBe('12 min');
+  it('usos por raridade (Comum 1 … Mítica 5), em texto e onde gasta', () => {
+    expect(['common', 'uncommon', 'rare', 'legendary', 'mythic'].map(cardUses)).toEqual([1, 2, 3, 4, 5]);
+    expect(usesText(1)).toBe('1 uso');
+    expect(usesText(3)).toBe('3 usos');
+    expect(usesText(0.875)).toBe('0,9 uso');
+    expect(usesText(0.01)).toBe('0,1 uso');
+    expect(usesText(0)).toBe('0 uso');
+    expect(usesOnText('sol')).toBe('lavoura e pomar');
+    expect(usesOnText('prancheta')).toBe('expedições');
+    expect(usesOnText('coruja')).toBe('qualquer coleta');
   });
   it('mão de 3, 4 no nível 15 e 5 no 30; veículo da carta por raridade', () => {
     expect([handSlots(1), handSlots(14), handSlots(15), handSlots(29), handSlots(30), handSlots(50)]).toEqual([3, 3, 4, 4, 5, 5]);

@@ -12,12 +12,12 @@ returns jsonb language sql stable security definer set search_path = '' as $$
     'pack_today', (select f.daily_pack_day is not distinct from d.d from f, d),
     'cards', (select coalesce(jsonb_agg(jsonb_build_object('serial', c.serial, 'card_id', c.card_id, 'rarity', c.rarity, 'state', c.state,
         'inbox_until', c.inbox_until, 'seen', c.seen, 'origin', c.origin,
-        'life_s', round(coalesce(c.life_seconds, public.card_full_life(c.rarity))::numeric), 'full_s', public.card_full_life(c.rarity), 'repairs', c.repairs) order by c.serial), '[]')
+        'uses', coalesce(c.uses_left, public.card_full_uses(c.rarity)), 'full_uses', public.card_full_uses(c.rarity), 'repairs', c.repairs) order by c.serial), '[]')
       from public.cards c where c.user_id = p_user and c.state in ('binder', 'inbox', 'worn', 'hand')),
     'new_cards', (select coalesce(jsonb_agg(jsonb_build_object('serial', c.serial, 'card_id', c.card_id, 'rarity', c.rarity, 'origin', c.origin) order by c.serial), '[]')
       from public.cards c where c.user_id = p_user and not c.seen),
     'buffs', (select coalesce(jsonb_agg(jsonb_build_object('card_id', b.card_id, 'rarity', b.rarity, 'serial', b.serial, 'started_at', b.started_at, 'ends_at', b.ends_at,
-        'locked_until', b.locked_until, 'coin_value', b.coin_value, 'full_s', public.card_full_life(b.rarity)) order by b.started_at), '[]') from public.card_buffs b where b.user_id = p_user and b.ends_at > now()),
+        'locked_until', b.locked_until, 'coin_value', b.coin_value, 'uses', b.uses_left, 'full_uses', public.card_full_uses(b.rarity)) order by b.started_at), '[]') from public.card_buffs b where b.user_id = p_user and b.ends_at > now()),
     'hand_slots', (select public.hand_slots(f.level) from f),
     'repair_cost', public.card_repair_cost(p_user),
     'armory', (select coalesce(jsonb_agg(jsonb_build_object('card_id', a.card_id, 'rarity', a.rarity)), '[]') from public.armory a where a.user_id = p_user),

@@ -3114,6 +3114,42 @@
         1
       ],
       "count": 1
+    },
+    {
+      "id": "v3_orchard_sprout_sway",
+      "file": "v3/orchard_sprout_sway.png",
+      "native": true,
+      "key": "orchard_sprout_sway",
+      "dir": "trees",
+      "grid": [
+        3,
+        3
+      ],
+      "count": 9
+    },
+    {
+      "id": "v3_orchard_young_sway",
+      "file": "v3/orchard_young_sway.png",
+      "native": true,
+      "key": "orchard_young_sway",
+      "dir": "trees",
+      "grid": [
+        3,
+        3
+      ],
+      "count": 9
+    },
+    {
+      "id": "v3_orchard_adult_sway",
+      "file": "v3/orchard_adult_sway.png",
+      "native": true,
+      "key": "orchard_adult_sway",
+      "dir": "trees",
+      "grid": [
+        3,
+        3
+      ],
+      "count": 9
     }
   ],
   "default_kernel": "nearest",

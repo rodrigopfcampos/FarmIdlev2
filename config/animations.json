@@ -295,7 +295,15 @@
     "sprout_until": 0.25,
     "fruit_ref_red": 182,
     "leaf_hex": "#497d33",
-    "note": "a fruta vermelha da arte adulta é pintada na cor de cada fruta (farm.json visual.fruit_hex); sem fruta, vira folha; vaga vazia não mostra nada (sem cova)"
+    "note": "arte do dono (04/11): muda, jovem e adulta com balanço (9 quadros em grade 3×3, 6 FPS, cada árvore começa num quadro diferente); a adulta teve o quadrado de terra do pé removido (tools/assets/strip_tree_base.py). A fruta vermelha é pintada na cor de cada fruta; sem fruta, vira folha; vaga vazia não mostra nada",
+    "sway": {
+      "sprout": "orchard_sprout_sway",
+      "young": "orchard_young_sway",
+      "adult": "orchard_adult_sway",
+      "frames": 9,
+      "fps": 6
+    },
+    "foot_above_slot_px": 4
   },
   "map_marks": {
     "locked_shade": false,

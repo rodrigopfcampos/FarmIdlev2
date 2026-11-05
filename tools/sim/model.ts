@@ -324,6 +324,8 @@ export function simulate(profileId: string, p: SimParams): SimResult {
     const g = n * CFG.missions.daily.gold_hours_of_income * hourlyIncomeEMA;
     gold += g; income += g; incomeByLevel[level] += g; dayIncome += g;
     addXp(n * CFG.missions.daily.xp_hours_of_production * hourlyXpEMA, t);
+    // cartas de coleta (04/11): a equipe colhe lotes, pomares e animais o dia todo, então o limite do dia chega
+    for (let k = 0; k < CFG.cards.rules.collect_drop.max_per_day; k++) drawCard();
     if (done && weekMissions < CFG.missions.daily.max_packs_per_week) { weekMissions++; for (let k = packCards(level); k > 0; k--) drawCard(); }
     if (day % 7 === 6) { // fim da semana
       if (rand() < prof.weekly_3_prob) drawCard();

@@ -61,17 +61,13 @@ begin
   perform public.hand_remove((select serial from public.cards where user_id = a and card_id = 'coruja' and origin = 'starter'));
   reset role;
   if (select state from public.cards where user_id = a and card_id = 'coruja' and origin = 'starter') <> 'binder' then raise exception 'FALHA 17: voltar ao fichário'; end if;
-  -- em uso não para antes de 1 dia; depois pausa e volta parada para a mão (com vaga) guardando o tempo
-  set local role authenticated;
-  begin perform public.unequip_card('sol'); raise exception 'FALHA 18: pausou antes de 1 dia';
-  exception when check_violation then null; end;
-  reset role;
-  update public.card_buffs set locked_until = now() - interval '1 second', ends_at = now() + interval '20 hours' where user_id = a and card_id in ('sol', 'moeda');
+  -- em uso pausa quando quiser (sem trava) e volta parada para a mão (com vaga) guardando os usos
+  update public.card_buffs set uses_left = 0.5 where user_id = a and card_id = 'sol';
   set local role authenticated;
   perform public.unequip_card('sol');
   reset role;
   if (select state from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') <> 'hand'
-     or abs((select life_seconds from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') - 72000) > 60 then raise exception 'FALHA 19: pausar'; end if;
+     or (select uses_left from public.cards where user_id = a and card_id = 'sol' and origin = 'starter') <> 0.5 then raise exception 'FALHA 19: pausar'; end if;
   -- mão cheia: a pausada vai para o fichário
   set local role authenticated;
   perform public.unequip_card('moeda');

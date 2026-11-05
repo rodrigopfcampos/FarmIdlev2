@@ -647,3 +647,27 @@ strong { font-weight: 800; }
 @keyframes pxwalk { from { background-position: 0 0; } to { background-position: calc(var(--w) * var(--n) * -1) 0; } }
 @media (prefers-reduced-motion: reduce) { .gcard:hover .pet-new .pet-walk { display: none; } .gcard:hover .pet-new .pet-still { display: block; } }
 .gcard-art .pet-new .px { transform: none; }
+
+/* cards dos trabalhadores (Casa → Operadores): retrato, cabeçalho com selo, barra de energia com número e dados em linhas */
+.wcard { align-items: flex-start; }
+.wcard-face .px.portrait { --w: 72px !important; width: 72px !important; height: 72px !important; background-size: cover !important; }
+.wcard-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wcard-head strong { font-size: 15px; }
+.wcard-head .lvl { font-size: 12px; color: #f2c230; font-weight: 700; }
+.wcard-head .btns { margin: 0 0 0 auto !important; }
+.cbadge { white-space: nowrap; background: none; font-size: 11px; font-weight: 700; padding: 1px 6px; border: 1px solid currentColor; line-height: 16px; }
+.cbadge.cb-ok { color: #7bd37b; } .cbadge.cb-rest { color: #8ec5ff; } .cbadge.cb-warn { color: #f2c230; } .cbadge.cb-bad { color: #ff7b6b; }
+.ebar-row { display: flex; align-items: center; gap: 8px; margin: 6px 0 4px; }
+.ebar-label { font-size: 12px; color: #d8c8a8; font-weight: 700; min-width: 54px; }
+.ebar-row .energy { flex: 1; max-width: none; height: 12px; margin: 0; }
+.energy.mid > span { background: #e0b030; }
+.energy.low > span { background: var(--danger); }
+.ebar-num { font-size: 12px; font-weight: 700; color: #fff3d6; min-width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+.wstats { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 2px 0 0; font-size: 13px; }
+.wstats dt { color: #b8a47e; font-weight: 700; }
+.wstats dd { margin: 0; color: #fff3d6; }
+.xpline { display: inline-flex; align-items: center; gap: 6px; }
+.xpline .xpbar { display: inline-block; width: 70px; height: 6px; }
+.xpline .xpbar > span { display: block; height: 100%; background: #8ec5ff; }
+.wnote { margin: 4px 0 0; font-size: 12px; }
+@media (max-width: 520px) { .wcard-face .px.portrait { --w: 56px !important; width: 56px !important; height: 56px !important; } }

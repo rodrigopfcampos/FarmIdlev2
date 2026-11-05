@@ -10,7 +10,7 @@ import { orchardLook } from '../farm/life';
 import { vehicleLook } from '../farm/cards';
 import { LifeLayer } from './lifeLayer';
 import { PetLayer } from './petLayer';
-import { stageSprite } from '../farm/art';
+import { stageSprite, TREE_FOOT } from '../farm/art';
 import { vehicleStatus } from '../farm/expeditions';
 import { cameraBounds, pointInPolygon, stageFor } from '../farm/geometry';
 import { bakeSway } from '../anim/bake';
@@ -31,7 +31,7 @@ const depthOf = (y: number) => 1 + y / 10000;
 type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string;
   phase: number[]; tex: string; growAt: number };
 type Grain = { img: Phaser.GameObjects.Image; x: number; y: number; dx: number; born: number };
-type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Image; look: string };
+type TreeView = { lot: string; slot: number; tree: Phaser.GameObjects.Sprite; look: string; y: number };
 type LotDecor = { lot: Lot; sign?: Phaser.GameObjects.Image; overlay?: Phaser.GameObjects.Graphics; overlayW: number; overlayOn: boolean | null; timer: Phaser.GameObjects.Text; building?: Phaser.GameObjects.Image; badge?: Phaser.GameObjects.Text; badgeIcon?: Phaser.GameObjects.Image };
 type Hit = { kind: 'zone' | 'plot' | 'locked' | 'orchard' | 'pasture' | 'pet'; id: string; poly?: Pt[]; rect?: number[] };
 
@@ -88,9 +88,9 @@ export class FarmScene extends Phaser.Scene {
       }
       // vagas de árvore do pomar
       (lot.tree_slots ?? []).forEach(([x, y], i) => {
-        // arte 64×64 com a base de terra: o pé da base (y 51–60 da arte) fica na vaga
-        const tree = this.add.image(x, y, 'orchard_pit').setOrigin(0.5, 0.9).setVisible(false).setDepth(depthOf(y));
-        this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '' });
+        // arte 64×64 sem base de terra: o pé do tronco fica um pouco acima do ponto da vaga (ver updateTrees)
+        const tree = this.add.sprite(x, y, 'orchard_pit').setOrigin(0.5, 0.9).setVisible(false).setDepth(depthOf(y));
+        this.trees.push({ lot: lot.id, slot: i + 1, tree, look: '', y });
       });
       // placa, mato (1 arte no centro cobrindo 85% do lote), contador da limpeza e aviso dos animais
       const hasOverlay = lot.type === 'lavoura' && ANIM.map_marks.locked_shade;
@@ -525,11 +525,25 @@ export class FarmScene extends Phaser.Scene {
       const look = ready ? orchardLook(tr, now, true) : 'empty';
       const key = `${look}:${tr?.fruit_id ?? ''}`;
       if (key === v.look) continue;
-      const O = ANIM.orchard.sprites;
-      const tex = look === 'pit' ? '' : look === 'sprout' ? O.sprout : look === 'young' ? O.young
+      const O = ANIM.orchard.sprites, SW = ANIM.orchard.sway;
+      // com balanço (9 quadros) quando a arte existe; senão a parada
+      const sway = this.calm ? '' : look === 'sprout' ? SW.sprout : look === 'young' ? SW.young
+        : look === 'adult' ? `${SW.adult}_leaf` : look === 'fruit' ? `${SW.adult}_${tr!.fruit_id}` : '';
+      const still = look === 'pit' ? '' : look === 'sprout' ? O.sprout : look === 'young' ? O.young
         : look === 'adult' ? 'orchard_adult_leaf' : look === 'fruit' ? `orchard_adult_${tr!.fruit_id}` : '';
+      const tex = sway && this.textures.exists(sway) ? sway : still;
       v.tree.setVisible(!!tex && this.textures.exists(tex));
-      if (tex && this.textures.exists(tex)) v.tree.setTexture(tex);
+      if (tex && this.textures.exists(tex)) {
+        v.tree.stop().setTexture(tex, 0);
+        const footKey = tex.startsWith(SW.adult) ? SW.adult : tex.startsWith('orchard_adult') ? 'orchard_adult' : tex;
+        v.tree.setOrigin(0.5, TREE_FOOT[footKey] ?? 0.9).setY(v.y - ANIM.orchard.foot_above_slot_px);
+        if (tex === sway) {
+          if (!this.anims.exists(`${tex}_sway`)) {
+            this.anims.create({ key: `${tex}_sway`, frames: this.anims.generateFrameNumbers(tex, { start: 0, end: SW.frames - 1 }), frameRate: SW.fps, repeat: -1 });
+          }
+          v.tree.play({ key: `${tex}_sway`, startFrame: Math.floor(Math.random() * SW.frames) });
+        }
+      }
       if (v.look !== '' && look !== 'empty' && look !== 'pit' && !this.calm) { // pulinho quando a árvore muda
         v.tree.setScale(1, 0.85);
         this.tweens.add({ targets: v.tree, scaleY: 1, duration: 260, ease: 'Back.Out' });

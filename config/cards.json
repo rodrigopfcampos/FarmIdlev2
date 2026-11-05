@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "source": "Reformulação v3 (Especificação master v3.0, bloco 4) · valores aprovados pelo dono em 31/10/2026 (ajustáveis pelo simulador)",
   "dimensions": {
     "card_full": [
@@ -26,9 +26,9 @@
         ]
       ],
       "distinct_cards": true,
-      "min_lock_hours": 24,
+      "min_lock_hours": 0,
       "unequip_keeps_remaining": true,
-      "note": "a carta gasta os dias enquanto está na mão (online ou offline); presa pelo menos 1 dia; ao tirar, guarda o que sobrou"
+      "note": "a carta na mão vale pelas próximas coletas (1 a 5 usos pela raridade), online ou offline; dá para tirar quando quiser e ela guarda os usos que sobraram"
     },
     "album": {
       "records_on_first_equip": true,
@@ -60,6 +60,21 @@
         "cards_per_level": 1
       },
       "note": "aprovado pelo dono em 01/11: 3 Comuns na mão ao criar a conta e 1 carta por nível do 2 ao 10; a mão de 3 gasta ~8 cartas por semana (duração média 2,6 dias)"
+    },
+    "uses": {
+      "units": {
+        "crop": 0.125,
+        "orchard": 0.25,
+        "animal": 0.25,
+        "fish": 0.25,
+        "expedition": 1
+      },
+      "note": "1 uso = colher um lote inteiro (8 canteiros), um pomar (4 árvores), uma casa de animais ou o lago (4 vagas) ou mandar 1 expedição; cada carta gasta só na atividade que melhora (\"any\" = qualquer coleta)"
+    },
+    "collect_drop": {
+      "chance_per_use": 0.25,
+      "max_per_day": 4,
+      "note": "aprovado pelo dono em 04/11: qualquer coleta pode trazer carta, até 4 por dia"
     }
   },
   "binder": {
@@ -100,12 +115,12 @@
       "color_hex": "#9E9E9E",
       "collector_sell_reference_income_ratio": 0.002,
       "frame_style": "simple_gray",
-      "duration_days": 2,
+      "uses": 1,
       "repairable": true,
       "repair": {
-        "restores_days": 2,
+        "restores_uses": 1,
         "cost_reference_income_ratio": 0.05,
-        "note": "cerca da metade do que a carta Comum rende em 2 dias"
+        "note": "o reparo devolve 1 uso à Comum gasta"
       }
     },
     "uncommon": {
@@ -113,7 +128,7 @@
       "color_hex": "#4CAF50",
       "collector_sell_reference_income_ratio": 0.004,
       "frame_style": "green_branches",
-      "duration_days": 3,
+      "uses": 2,
       "repairable": false
     },
     "rare": {
@@ -121,7 +136,7 @@
       "color_hex": "#2F7BE5",
       "collector_sell_reference_income_ratio": 0.008,
       "frame_style": "blue_stars",
-      "duration_days": 3,
+      "uses": 3,
       "repairable": false
     },
     "legendary": {
@@ -129,7 +144,7 @@
       "color_hex": "#F2C230",
       "collector_sell_reference_income_ratio": 0.013,
       "frame_style": "gold_animated_shine",
-      "duration_days": 4,
+      "uses": 4,
       "repairable": false
     },
     "mythic": {
@@ -137,7 +152,7 @@
       "color_hex": "#E5383B",
       "collector_sell_reference_income_ratio": 0.023,
       "frame_style": "red_animated_aura_holographic",
-      "duration_days": 4,
+      "uses": 5,
       "repairable": false
     }
   },
@@ -172,7 +187,11 @@
           "crop_and_orchard_growth_speed_pct": 2.5
         }
       },
-      "art_key": "card_full_sol"
+      "art_key": "card_full_sol",
+      "uses_on": [
+        "crop",
+        "orchard"
+      ]
     },
     {
       "id": "ampulheta",
@@ -204,7 +223,10 @@
           "crop_orchard_animal_speed_pct": 1.2
         }
       },
-      "art_key": "card_full_ampulheta"
+      "art_key": "card_full_ampulheta",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "cesta",
@@ -236,7 +258,11 @@
           "harvest_yield_pct": 2
         }
       },
-      "art_key": "card_full_cesta"
+      "art_key": "card_full_cesta",
+      "uses_on": [
+        "crop",
+        "orchard"
+      ]
     },
     {
       "id": "rebanho",
@@ -268,7 +294,10 @@
           "animal_production_pct": 3
         }
       },
-      "art_key": "card_full_rebanho"
+      "art_key": "card_full_rebanho",
+      "uses_on": [
+        "animal"
+      ]
     },
     {
       "id": "moeda",
@@ -301,7 +330,10 @@
         }
       },
       "art_key": "card_full_moeda",
-      "payout_rule": "on_unequip_or_end_based_on_production_fair_value"
+      "payout_rule": "on_unequip_or_end_based_on_production_fair_value",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "coruja",
@@ -334,7 +366,10 @@
         }
       },
       "art_key": "card_full_coruja",
-      "post_level_50_rule": "converts_account_xp_bonus_to_village_stars"
+      "post_level_50_rule": "converts_account_xp_bonus_to_village_stars",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "tempestade",
@@ -366,7 +401,10 @@
           "weather_and_night_event_boost_pct": 10
         }
       },
-      "art_key": "card_full_tempestade"
+      "art_key": "card_full_tempestade",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "ferradura",
@@ -409,7 +447,10 @@
         }
       },
       "art_key": "card_full_ferradura",
-      "applies_on": "expedition_departure"
+      "applies_on": "expedition_departure",
+      "uses_on": [
+        "expedition"
+      ]
     },
     {
       "id": "engrenagem",
@@ -446,7 +487,10 @@
           "team_auto_capacity_pct": 2
         }
       },
-      "art_key": "card_full_engrenagem"
+      "art_key": "card_full_engrenagem",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "luvas",
@@ -478,7 +522,10 @@
           "team_capacity_pct": 2
         }
       },
-      "art_key": "card_full_luvas"
+      "art_key": "card_full_luvas",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "cantil",
@@ -510,7 +557,10 @@
           "energy_cost_reduction_pct": 3
         }
       },
-      "art_key": "card_full_cantil"
+      "art_key": "card_full_cantil",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "cafe",
@@ -542,7 +592,10 @@
           "energy_recovery_boost_pct": 4
         }
       },
-      "art_key": "card_full_cafe"
+      "art_key": "card_full_cafe",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "pesca",
@@ -574,7 +627,10 @@
           "fishing_profit_pct": 3
         }
       },
-      "art_key": "card_full_pesca"
+      "art_key": "card_full_pesca",
+      "uses_on": [
+        "fish"
+      ]
     },
     {
       "id": "forcado",
@@ -606,7 +662,11 @@
           "animal_orchard_work_pct": 2
         }
       },
-      "art_key": "card_full_forcado"
+      "art_key": "card_full_forcado",
+      "uses_on": [
+        "animal",
+        "orchard"
+      ]
     },
     {
       "id": "enxada",
@@ -638,7 +698,10 @@
           "crop_work_pct": 2
         }
       },
-      "art_key": "card_full_enxada"
+      "art_key": "card_full_enxada",
+      "uses_on": [
+        "crop"
+      ]
     },
     {
       "id": "martelo",
@@ -670,7 +733,10 @@
           "cleanup_tool_vehicle_pct": 4
         }
       },
-      "art_key": "card_full_martelo"
+      "art_key": "card_full_martelo",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "balanca",
@@ -702,7 +768,10 @@
           "sales_gold_pct": 1.5
         }
       },
-      "art_key": "card_full_balanca"
+      "art_key": "card_full_balanca",
+      "uses_on": [
+        "any"
+      ]
     },
     {
       "id": "lupa",
@@ -734,7 +803,10 @@
           "rare_seed_chance_pct": 4
         }
       },
-      "art_key": "card_full_lupa"
+      "art_key": "card_full_lupa",
+      "uses_on": [
+        "crop"
+      ]
     },
     {
       "id": "prancheta",
@@ -772,7 +844,10 @@
         }
       },
       "art_key": "card_full_prancheta",
-      "applies_on": "expedition_departure"
+      "applies_on": "expedition_departure",
+      "uses_on": [
+        "expedition"
+      ]
     },
     {
       "id": "veiculo",
@@ -826,7 +901,10 @@
         "rare": "picape",
         "legendary": "jipe",
         "mythic": "caminhao"
-      }
+      },
+      "uses_on": [
+        "expedition"
+      ]
     }
   ],
   "bonus_caps": {

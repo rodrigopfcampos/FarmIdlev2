@@ -52,24 +52,52 @@ export function charStatus(c: CharacterState): string {
   return parts.join(' · ');
 }
 
+/** barra de energia com o número; cor pelo rodízio: vermelha abaixo de onde sai do campo, amarela até poder voltar */
 export function energyBar(c: CharacterState): string {
-  const p = Math.round((c.energy / c.energy_max) * 100);
-  return `<span class="energy" role="progressbar" aria-label="Energia" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" title="Energia ${nf1.format(c.energy)} de ${nf1.format(c.energy_max)}"><span style="width:${p}%"></span></span>`;
+  const p = Math.max(0, Math.min(100, Math.round((c.energy / c.energy_max) * 100)));
+  const tone = c.parked || c.energy <= CHARS.energy.leave_field_at ? 'low' : c.energy < CHARS.energy.enter_field_at ? 'mid' : 'ok';
+  return `<span class="ebar-row"><span class="ebar-label">Energia</span>
+    <span class="energy ${tone}" role="progressbar" aria-label="Energia" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></span>
+    <span class="ebar-num">${Math.round(c.energy)}/${Math.round(c.energy_max)}</span></span>`;
+}
+
+/** situação curta para o selo do card (cor pela gravidade) */
+function charBadge(c: CharacterState): string {
+  if (!c.active && c.unpaid_days > 0) return '<span class="cbadge cb-bad">Parado</span>';
+  if (c.slot === 'bench') return `<span class="cbadge cb-rest">${c.energy >= c.energy_max ? 'Descansado' : 'Descansando'}</span>`;
+  if (c.parked) return '<span class="cbadge cb-warn">Sem energia</span>';
+  return '<span class="cbadge cb-ok">Trabalhando</span>';
 }
 
 export function charCard(c: CharacterState, s: FarmState): string {
   const full = s.characters.filter((x) => x.slot === 'field').length >= CHARS.field_slots;
-  const role = toolCard(c.class_id).primary_role_pt;
+  // a função sem o "(100% eficiência)" do fim, que vira linha própria
+  const roleFull = toolCard(c.class_id).primary_role_pt;
+  const role = roleFull.replace(/\s*\([^)]*\)\s*$/, '');
   const next = hoursToNext(c.level);
   const move = c.slot === 'field'
-    ? `<button type="button" class="secondary" data-slot="${c.class_id}" data-to="bench">Para o banco</button>`
-    : `<button type="button" class="secondary" data-slot="${c.class_id}" data-to="field" ${full ? 'disabled title="Campo cheio"' : ''}>Para o campo</button>`;
-  return `<div class="char-card ${c.slot}">${charPortrait(c.class_id)}<div class="grow">
-    <strong>${esc(className(c.class_id))} · Nv ${c.level}</strong>${energyBar(c)}
-    <small>${charStatus(c)}</small>
-    <small>${esc(role)} · ${nf1.format(c.rate)} de trabalho/h · gasta ${nf1.format(c.energy_use)} de energia/h, recupera ${nf1.format(c.energy_rest)}/h</small>
-    <small>${c.class_id === 'agricultor' ? 'Dono da fazenda · sem salário' : `Salário ${formatGold(c.salary)}/dia`}${next ? ` · próximo nível em ${nf1.format(next - c.work_hours)} h de trabalho` : ' · nível máximo'}</small>
-    <span class="btns">${move}</span></div></div>`;
+    ? `<button type="button" class="secondary small" data-slot="${c.class_id}" data-to="bench">Para o banco</button>`
+    : `<button type="button" class="secondary small" data-slot="${c.class_id}" data-to="field" ${full ? 'disabled title="Campo cheio"' : ''}>Para o campo</button>`;
+  const xp = next ? Math.max(0, Math.min(100, Math.round((c.work_hours / next) * 100))) : 100;
+  const row = (k: string, v: string) => `<dt>${k}</dt><dd>${v}</dd>`;
+  const notes: string[] = [];
+  if (!c.active && c.unpaid_days > 0) notes.push(`${c.unpaid_days} dias sem salário: não trabalha até receber`);
+  else if (c.parked && c.slot === 'field') notes.push(`Descansa até ${CHARS.energy.parked_until} de energia`);
+  if (c.debt > 0) notes.push(`Desmotivado (−${pct(1 - CHARS.salary.unpaid_efficiency)}): deve ${formatGold(c.debt)}`);
+  return `<div class="char-card wcard ${c.slot}">
+    <div class="wcard-face">${charPortrait(c.class_id)}</div>
+    <div class="grow">
+      <div class="wcard-head"><strong>${esc(className(c.class_id))}</strong><span class="lvl">Nv ${c.level}</span>${charBadge(c)}<span class="btns">${move}</span></div>
+      ${energyBar(c)}
+      <dl class="wstats">
+        ${row('Função', esc(role))}
+        ${row('Trabalho', `${nf1.format(c.rate)}/h`)}
+        ${row('Consumo', `−${nf1.format(c.energy_use)}/h no campo · +${nf1.format(c.energy_rest)}/h no banco`)}
+        ${row('Salário', c.class_id === 'agricultor' ? 'Dono da fazenda, sem salário' : `${formatGold(c.salary)}/dia`)}
+        ${row('Próx. nível', next ? `<span class="xpline"><span class="xpbar"><span style="width:${xp}%"></span></span>${nf1.format(Math.max(0, next - c.work_hours))} h de trabalho</span>` : 'Nível máximo')}
+      </dl>
+      ${notes.length ? `<p class="wnote bad">${notes.join(' · ')}</p>` : ''}
+    </div></div>`;
 }
 
 export function operatorsTab(s: FarmState): string {

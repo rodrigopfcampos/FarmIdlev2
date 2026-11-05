@@ -127,6 +127,7 @@ begin
   perform public.card_use(a, 'animal', 4);  -- 4 usos × 25% = carta certa
   if (select count(*) from public.cards where user_id = a and origin = 'collect') <> n + 1 or (select collect_cards_n from public.farms where user_id = a) <> 1 then
     raise exception 'FALHA 22e: coleta não trouxe carta'; end if;
+  delete from public.cards where user_id = a and origin = 'collect';  -- a sorteada pode repetir as cartas que o teste usa
   update public.farms set collect_cards_n = 4 where user_id = a;
   -- paradas na mão ainda ocupam vaga: voltam ao fichário
   set local role authenticated;

@@ -54,6 +54,8 @@ describe('mapa v3', () => {
     expect(isFruitPixel(244, 98, 100)).toBe(true);
     expect(isFruitPixel(135, 61, 41)).toBe(false); // tronco
     expect(isFruitPixel(73, 125, 51)).toBe(false); // folha
+    expect(isFruitPixel(200, 40, 40)).toBe(true); // maçã da arte nova
+    expect(isFruitPixel(160, 90, 60)).toBe(false); // tronco da arte nova
     expect(recolor(ANIM.orchard.fruit_ref_red, [10, 20, 30])).toEqual([10, 20, 30]);
   });
 });

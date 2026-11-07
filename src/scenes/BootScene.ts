@@ -84,6 +84,9 @@ export class BootScene extends Phaser.Scene {
     };
     make('orchard_adult', 'orchard_adult');
     make('orchard_adult_sway', 'orchard_adult_sway');
+    // a árvore jovem também tem fruta na arte nova: fica na cor da fruta plantada
+    make('orchard_young', 'orchard_young');
+    make('orchard_young_sway', 'orchard_young_sway');
     // pé de cada arte de árvore: última linha com pixel no 1º quadro (a vaga fica no pé do tronco)
     for (const k of ['orchard_sprout', 'orchard_young', 'orchard_adult', 'orchard_sprout_sway', 'orchard_young_sway', 'orchard_adult_sway']) {
       if (!this.textures.exists(k)) continue;

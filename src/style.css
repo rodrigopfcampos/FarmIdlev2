@@ -671,3 +671,26 @@ strong { font-weight: 800; }
 .xpline .xpbar > span { display: block; height: 100%; background: #8ec5ff; }
 .wnote { margin: 4px 0 0; font-size: 12px; }
 @media (max-width: 520px) { .wcard-face .px.portrait { --w: 56px !important; width: 56px !important; height: 56px !important; } }
+
+/* painel Tempos: uma linha por coisa correndo, com ícone, tempo que falta e barra (06/11) */
+.timers { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.trow { display: flex; gap: 10px; align-items: center; padding: 8px 10px; background: rgba(0, 0, 0, 0.18); border: 2px solid var(--panel-border); cursor: default; }
+.trow[data-go] { cursor: pointer; }
+.trow[data-go]:hover, .trow[data-go]:focus-visible { border-color: #f2c230; outline: none; }
+.trow .ticon { flex: 0 0 40px; height: 40px; display: grid; place-items: center; overflow: hidden; }
+.trow .tmain { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.trow .ttop { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.trow .ttop strong { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trow .tleft { font-size: 13px; color: #fff3d6; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.trow small { font-size: 12px; color: #b8a47e; }
+.tbar { display: block; height: 10px; background: #1a120c; border: 2px solid #000; box-shadow: inset 0 0 0 1px #4a3626; }
+.tbar > span { display: block; height: 100%; background: #6fb3e0; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.25); transition: width 0.9s linear; }
+.trow.ready { border-color: #4caf50; }
+.trow.ready .tbar > span { background: #4caf50; }
+.trow.ready .tleft { color: #7bd37b; }
+.trow.stuck .tleft { color: #ff7b6b; }
+.trow.stuck .tbar > span { background: #8a3a30; }
+.timers-tabs .tcount { display: inline-block; min-width: 16px; margin-left: 4px; padding: 0 4px; font-size: 11px; line-height: 16px; background: #1a120c; color: #d8c8a8; }
+.timers-tabs .tcount.on { background: #2e7d32; color: #fff; }
+.timers-slot { display: contents; }
+@media (max-width: 520px) { .trow .ttop { flex-direction: column; gap: 2px; } }

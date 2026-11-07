@@ -247,8 +247,6 @@
     "reduced_motion": "sombras paradas, sem ondulações"
   },
   "vehicles": {
-    "motor_bob_px": 1,
-    "motor_bob_ms": 120,
     "exhaust_every_ms": 260,
     "exhaust_ms": 900,
     "exhaust_color": "#9a9a9a",
@@ -284,7 +282,56 @@
       2500,
       5500
     ],
-    "horse_idle_note": "carroça parada: o cavalo troca as patas de vez em quando (quadros 2-3-2-1 da tira, 150 ms cada)"
+    "horse_idle_note": "carroça parada: o cavalo troca as patas de vez em quando (quadros 2-3-2-1 da tira, 150 ms cada)",
+    "idle_rock": {
+      "cut": {
+        "carro": 0.45,
+        "jipe": 0.52,
+        "picape": 0.46,
+        "caminhao": 0.5
+      },
+      "down_ms": 110,
+      "up_ms": [
+        230,
+        290
+      ],
+      "rev_every_ms": [
+        5000,
+        9000
+      ],
+      "rev_chugs": 3,
+      "rev_down_ms": 70,
+      "rev_up_ms": 90,
+      "note": "06/11: motor ligado parado = a cabine afunda 1 px (rodas e chassi ficam no chão) num ritmo de marcha lenta, com uma fumacinha a cada batida; de vez em quando acelera (3 batidas rápidas). Corte = fração da altura acima das rodas"
+    },
+    "exhaust": {
+      "steps_px": [
+        2,
+        3,
+        4
+      ],
+      "alpha": [
+        0.85,
+        0.6,
+        0.35
+      ],
+      "rise_px": [
+        9,
+        13
+      ],
+      "drift_px": [
+        5,
+        9
+      ],
+      "ms": 900,
+      "rev_ms": 1100,
+      "colors": [
+        "#c9c4bb",
+        "#a9a49b",
+        "#8f8b84"
+      ],
+      "note": "fumaça em pixel: quadradinho que cresce em degraus (2→3→4 px), sobe e vai para trás, e some"
+    }
   },
   "orchard": {
     "sprites": {
@@ -301,7 +348,7 @@
       "young": "orchard_young_sway",
       "adult": "orchard_adult_sway",
       "frames": 9,
-      "fps": 6
+      "fps": 5
     },
     "foot_above_slot_px": 4
   },

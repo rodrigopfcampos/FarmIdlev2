@@ -20,6 +20,7 @@ import { act, charSprite, close, esc, initPanel, itemIcon, nf1, pct, rerender, s
 import { hudPassives, openPassives } from './passives-ui';
 import { petName, takeFind } from './pets-ui';
 import { onPlotClick, openLot, tend } from './plots-ui';
+import { hudTimers, openTimers, setTimersGarage } from './timers-ui';
 import { bindVisitHud, hudSocial, openHelp, openSocial, type SocialCtx, visitHud } from './social-ui';
 import { hudVillage, openVillage } from './village-ui';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
@@ -36,7 +37,7 @@ export function mountGameUi(el: HTMLElement): void {
   root = el;
   lastLevel = 0;
   window.clearInterval(ticker);
-  ticker = window.setInterval(() => { refreshTendButton(); refreshWeather(); placeBanner(); refreshCards(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
+  ticker = window.setInterval(() => { refreshTimersButton(); refreshTendButton(); refreshWeather(); placeBanner(); refreshCards(); }, 1000); // maduros, clima e evento mudam com o tempo, sem esperar o servidor
   root.innerHTML = `<div class="hud" id="hud"></div><div class="wx-banner" id="wxbanner" role="status" tabindex="0" hidden></div><div class="modal" id="modal" hidden></div><div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   hud = root.querySelector('#hud')!;
   panel = root.querySelector('#modal')!;
@@ -117,6 +118,7 @@ function onState(s: FarmState): void {
       <span class="wx-slot"></span>
       ${laborMeter(s)}
       <button type="button" class="icon-btn tend" data-tend hidden></button>
+      <span class="timers-slot">${hudTimers()}</span>
       <span class="cards-slot"></span>
       ${hudSocial()}
       ${hudVillage()}
@@ -127,6 +129,7 @@ function onState(s: FarmState): void {
   hud.querySelector('[data-open]')!.addEventListener('click', () => openZone('casa_principal', 'silo'));
   hud.querySelector('[data-tend]')!.addEventListener('click', () => void tend(null));
   hud.querySelector('[data-team]')?.addEventListener('click', () => openZone('casa_principal', 'operadores'));
+  bindTimers();
   hud.querySelector('[data-social]')?.addEventListener('click', () => void openSocial(socialCtx()));
   hud.querySelector('[data-village]')?.addEventListener('click', () => void openVillage({ show, toast, esc, itemIcon }));
   hud.querySelector('.stars')?.addEventListener('click', () => void openVillage({ show, toast, esc, itemIcon }, 'stars'));
@@ -274,4 +277,22 @@ export function openZone(id: string, tab = 'silo'): void {
   if (id === 'barraca_comerciante') openStall();
   if (id === 'oficina_ferreiro') openForge();
   if (id === 'garagem_expedicao') openGarage(garageCtx());
+}
+
+/** botão Tempos: liga o clique e redesenha só quando o número de prontos muda */
+let timersKey = '';
+function bindTimers(): void {
+  setTimersGarage(() => openGarage(garageCtx()));
+  document.querySelector('.timers-slot [data-timers]')?.addEventListener('click', () => openTimers());
+  timersKey = '';
+  refreshTimersButton();
+}
+function refreshTimersButton(): void {
+  const slot = document.querySelector<HTMLElement>('.timers-slot');
+  if (!slot || store.visit || !store.state) return;
+  const html = hudTimers();
+  if (html === timersKey) return;
+  timersKey = html;
+  slot.innerHTML = html;
+  slot.querySelector('[data-timers]')?.addEventListener('click', () => openTimers());
 }

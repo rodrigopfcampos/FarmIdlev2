@@ -168,6 +168,25 @@ const ICONS: Record<string, string[]> = {
     '................',
     '................',
   ],
+  // Tempos: ampulheta de madeira com areia dourada
+  clock: [
+    '................',
+    '..kkkkkkkkkkkk..',
+    '..kWwwwwwwwwWk..',
+    '..kkkkkkkkkkkk..',
+    '...kpggggggpk...',
+    '....kpggggpk....',
+    '.....kpggpk.....',
+    '......kggk......',
+    '......kpgk......',
+    '.....kppgpk.....',
+    '....kppgggpk....',
+    '...kpgggggGpk...',
+    '..kkkkkkkkkkkk..',
+    '..kWwwwwwwwwWk..',
+    '..kkkkkkkkkkkk..',
+    '................',
+  ],
   // Estrela da Vila
   star: [
     '................',

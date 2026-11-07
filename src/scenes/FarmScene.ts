@@ -26,6 +26,7 @@ const MAP_H = 940;
 const ZONE_NAMES: Record<string, string> = {
   casa_principal: 'Casa', oficina_ferreiro: 'Forja', barraca_comerciante: 'Barraca', garagem_expedicao: 'Garagem',
 };
+const between = ([a, b]: number[]) => a + Math.random() * (b - a);
 const depthOf = (y: number) => 1 + y / 10000;
 
 type PlotView = { id: string; polygon: Pt[]; center: Pt; sprites: Phaser.GameObjects.Image[]; base: Pt[]; stage: number; crop: string | null; marker: Phaser.GameObjects.Image; markerKey: string;
@@ -66,6 +67,9 @@ export class FarmScene extends Phaser.Scene {
   private vehLook = 'carroca';  // cara do veículo (Carroça, Compacto, Off-Road, 4x4, Caminhão)     // veículo a motor (balança, fumaça) ou carroça com cavalo
   private fxAt = 0;             // último fumacinha/poeira
   private dustAt = 0;
+  private rockNext = 0;          // próxima batida do motor parado
+  private revLeft = 0;           // batidas rápidas que faltam da acelerada
+  private revNext = 0;           // próxima acelerada
 
   constructor() { super('farm'); }
 
@@ -214,6 +218,7 @@ export class FarmScene extends Phaser.Scene {
       this.vehKey = key; this.vehLook = look;
       this.vehMotor = look !== 'carroca';
       this.veh.stop().setTexture(key, 0).setFlipX(false);
+      if (this.vehMotor) this.makeRock(key, look);
     }
     // chegou agora (não estava em casa no segundo anterior): vem pela estrada
     if (parked && last && !last.has(v.vehicle_id) && !this.calm) this.drive(false);
@@ -286,11 +291,9 @@ export class FarmScene extends Phaser.Scene {
         let d = obj.t * total, k = 0;
         while (k < lens.length - 1 && d > lens[k]) { d -= lens[k]; k++; }
         const a = path[k], b = path[k + 1], f = lens[k] ? Math.min(1, d / lens[k]) : 1;
-        // motor: balança 1 px enquanto anda (peso)
-        const bob = this.vehMotor ? Math.floor(this.time.now / V.motor_bob_ms) % 2 : 0;
         const x = Math.round(a[0] + (b[0] - a[0]) * f), y = Math.round(a[1] + (b[1] - a[1]) * f);
         const p = out ? obj.t : 1 - obj.t, f0 = V.edge_fade_from;
-        this.veh!.setPosition(x, y - bob).setDepth(depthOf(y)).setFlipX(this.faceFor(b[0] > a[0]))
+        this.veh!.setPosition(x, y).setDepth(depthOf(y)).setFlipX(this.faceFor(b[0] > a[0]))
           .setAlpha(p <= f0 ? 1 : Math.max(0, 1 - (p - f0) / (1 - f0)));
       },
       onComplete: () => {
@@ -321,14 +324,22 @@ export class FarmScene extends Phaser.Scene {
     if (!this.veh?.visible || this.calm) return;
     const V = ANIM.vehicles, anchor = (ZONES.find((x) => x.id === 'garagem_expedicao')?.parked_vehicle_anchor ?? [0, 0]) as Pt;
     const baseY = this.vehDrive ? this.veh.y : anchor[1];
-    if (this.vehMotor) {
-      const up = Math.floor(time / V.motor_bob_ms) % 2;
-      if (!this.vehDrive) this.veh.setY(baseY - up);
-      if (time - this.fxAt > V.exhaust_every_ms) {
-        this.fxAt = time;
-        // escapamento atrás: a arte dos motorizados olha para a direita (espelhada, olha para a esquerda)
-        const back = this.veh.flipX ? 1 : -1;
-        this.puff(this.veh.x + back * this.veh.displayWidth * 0.42, this.veh.y - 8, V.exhaust_color, V.exhaust_ms, -10);
+    if (this.vehMotor && this.vehDrive) {
+      // andando: fumaça contínua do escapamento
+      if (time - this.fxAt > V.exhaust_every_ms) { this.fxAt = time; this.exhaust(false); }
+    } else if (this.vehMotor) {
+      // parado com o motor ligado: as rodas ficam no chão e a cabine afunda 1 px no ritmo da marcha lenta,
+      // com uma fumacinha a cada batida; de vez em quando acelera (batidas rápidas, fumaça maior)
+      const R = V.idle_rock, rock = `${this.vehKey}_rock`;
+      this.veh.setY(baseY);
+      if (time >= this.revNext && !this.revLeft) { this.revLeft = R.rev_chugs; this.revNext = time + between(R.rev_every_ms); }
+      if (time >= this.rockNext && this.textures.exists(rock)) {
+        const rev = this.revLeft > 0;
+        if (rev) this.revLeft--;
+        this.veh.setTexture(rock, 1);
+        this.exhaust(rev);
+        this.time.delayedCall(rev ? R.rev_down_ms : R.down_ms, () => { if (!this.vehDrive && this.veh?.texture.key === rock) this.veh.setTexture(rock, 0); });
+        this.rockNext = time + (rev ? R.rev_down_ms + R.rev_up_ms : R.down_ms + between(R.up_ms));
       }
     }
     // carroça parada: de tempos em tempos o cavalo troca o apoio das patas (2 quadros rápidos) para não parecer congelado
@@ -343,6 +354,44 @@ export class FarmScene extends Phaser.Scene {
       const back = this.veh.flipX ? 1 : -1;
       this.puff(this.veh.x + back * this.veh.displayWidth * (0.15 + Math.random() * 0.25), this.veh.y - 1, Math.random() < 0.6 ? V.dust_color : V.dust_color2, V.dust_ms, -5);
     }
+  }
+
+  /** cabine do veículo a motor afundada 1 px (quadro 1) sobre as rodas paradas; quadro 0 = a arte como é */
+  private makeRock(key: string, look: string): void {
+    const rock = `${key}_rock`, cut = (ANIM.vehicles.idle_rock.cut as Record<string, number>)[look];
+    if (this.textures.exists(rock) || !cut) return;
+    const img = this.textures.get(key).getSourceImage() as HTMLImageElement;
+    const fw = this.textures.get(key).get(0).width, fh = img.height, y0 = Math.round(fh * cut);
+    const c = document.createElement('canvas');
+    c.width = fw * 2; c.height = fh;
+    const g = c.getContext('2d')!;
+    g.drawImage(img, 0, 0, fw, fh, 0, 0, fw, fh);
+    // quadro 1: embaixo do corte igual; em cima, a cabine 1 px mais baixa (cobre a linha do corte)
+    g.drawImage(img, 0, y0, fw, fh - y0, fw, y0, fw, fh - y0);
+    g.drawImage(img, 0, 0, fw, y0, fw, 1, fw, y0);
+    const tex = this.textures.addCanvas(rock, c)!;
+    tex.add(0, 0, 0, 0, fw, fh); tex.add(1, 0, fw, 0, fw, fh);
+  }
+
+  /** fumaça do escapamento em pixel: quadradinho que cresce em degraus, sobe, vai para trás e some */
+  private exhaust(big: boolean): void {
+    if (!this.veh) return;
+    const E = ANIM.vehicles.exhaust;
+    // a arte dos motorizados olha para a direita: o escapamento fica atrás, embaixo
+    const back = this.veh.flipX ? 1 : -1;
+    const x0 = Math.round(this.veh.x + back * this.veh.displayWidth * 0.42), y0 = Math.round(this.veh.y - 8);
+    const rise = between(E.rise_px) * (big ? 1.4 : 1), drift = back * between(E.drift_px), ms = big ? E.rev_ms : E.ms;
+    const steps = E.steps_px as number[], alphas = E.alpha as number[], colors = E.colors as string[];
+    const r = this.add.rectangle(x0, y0, steps[0], steps[0], Phaser.Display.Color.HexStringToColor(colors[0]).color, alphas[0]).setDepth(depthOf(y0) + 0.0001);
+    const o = { t: 0 };
+    this.tweens.add({ targets: o, t: 1, duration: ms, ease: 'Linear',
+      onUpdate: () => {
+        const k = Math.min(steps.length - 1, Math.floor(o.t * steps.length)), e = 1 - (1 - o.t) * (1 - o.t);
+        const sz = steps[k] + (big ? 1 : 0);
+        r.setSize(sz, sz).setDisplaySize(sz, sz).setFillStyle(Phaser.Display.Color.HexStringToColor(colors[k]).color, alphas[k] * (o.t > 0.8 ? (1 - o.t) / 0.2 : 1))
+          .setPosition(Math.round(x0 + drift * e), Math.round(y0 - rise * e));
+      },
+      onComplete: () => r.destroy() });
   }
 
   private puff(x: number, y: number, hex: string, ms: number, rise: number): void {
@@ -530,15 +579,16 @@ export class FarmScene extends Phaser.Scene {
       if (key === v.look) continue;
       const O = ANIM.orchard.sprites, SW = ANIM.orchard.sway;
       // com balanço (9 quadros) quando a arte existe; senão a parada
-      const sway = this.calm ? '' : look === 'sprout' ? SW.sprout : look === 'young' ? SW.young
+      const sway = this.calm ? '' : look === 'sprout' ? SW.sprout : look === 'young' ? `${SW.young}_${tr!.fruit_id}`
         : look === 'adult' ? `${SW.adult}_leaf` : look === 'fruit' ? `${SW.adult}_${tr!.fruit_id}` : '';
-      const still = look === 'pit' ? '' : look === 'sprout' ? O.sprout : look === 'young' ? O.young
+      const still = look === 'pit' ? '' : look === 'sprout' ? O.sprout : look === 'young' ? `${O.young}_${tr!.fruit_id}`
         : look === 'adult' ? 'orchard_adult_leaf' : look === 'fruit' ? `orchard_adult_${tr!.fruit_id}` : '';
       const tex = sway && this.textures.exists(sway) ? sway : still;
       v.tree.setVisible(!!tex && this.textures.exists(tex));
       if (tex && this.textures.exists(tex)) {
         v.tree.stop().setTexture(tex, 0);
-        const footKey = tex.startsWith(SW.adult) ? SW.adult : tex.startsWith('orchard_adult') ? 'orchard_adult' : tex;
+        // pé medido na arte original (as cópias coloridas têm o mesmo desenho)
+        const footKey = [SW.adult, SW.young, 'orchard_adult', O.young].find((k) => tex.startsWith(k)) ?? tex;
         v.tree.setOrigin(0.5, TREE_FOOT[footKey] ?? 0.9).setY(v.y - ANIM.orchard.foot_above_slot_px);
         if (tex === sway) {
           if (!this.anims.exists(`${tex}_sway`)) {

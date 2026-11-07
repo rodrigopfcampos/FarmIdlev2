@@ -64,7 +64,9 @@ export function orchardLook(t: TreeState | undefined, now: number, owned: boolea
 export function isFruitPixel(r: number, g: number, b: number): boolean {
   if (r < 60) return false;
   if (g / r < 0.33 && b > g) return true;
-  return r > 200 && g / r < 0.45 && b >= g * 0.95;
+  if (r > 200 && g / r < 0.45 && b >= g * 0.95) return true;
+  // maçã da arte do pomar de 06/11 (vermelho com pouco verde e pouco azul); o tronco tem verde acima de 40% do vermelho
+  return r >= 95 && g < r * 0.4 && b < r * 0.65;
 }
 
 /** cor nova de um pixel da fruta: a cor-base escurecida/clareada na mesma proporção do vermelho original */

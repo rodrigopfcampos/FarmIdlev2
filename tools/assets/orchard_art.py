@@ -1,7 +1,7 @@
 # Arte do pomar (06/11): monta as 3 fases (muda, jovem, adulta) em quadros de 64×64 a partir das imagens grandes do dono.
 #  - muda: usa os 9 quadros da animação do dono (tira o brilho solto do canto), base fixa;
 #  - jovem e adulta: as folhas da animação do dono quase não mexem (só o 1º quadro muda), então o balanço é feito aqui:
-#    a copa inclina de leve (até 2 px no alto, 0 no tronco), em onda suave de 9 quadros; o tronco e o chão não se mexem.
+#    16 quadros de uma onda de vento que sobe pela copa (até 2 px no alto, 0 no tronco); o tronco e o chão não se mexem.
 # Uso: python3 -I tools/assets/orchard_art.py <pasta do dono> <pasta de saída (assets/raw/v3)>
 import math
 import os
@@ -13,8 +13,10 @@ from scipy import ndimage
 
 FRAME = 64          # quadro do jogo
 FOOT = 61           # linha do pé (o resto do quadro fica para a copa)
-FRAMES = 9          # quadros do balanço
-SWAY_PX = 2         # quanto o alto da copa vai para cada lado
+FRAMES = 16         # quadros do balanço (jovem e adulta)
+LAG = 2.2           # atraso da onda do pé ao alto da copa (radianos)
+GUST = 0.3          # rajada: mistura uma 2ª onda mais rápida
+SWAY_PX = 2         # quanto o alto da copa vai para cada lado (px)
 
 
 def cells(path, cols=3, rows=3):
@@ -67,26 +69,34 @@ def crown_bottom(im):
 
 
 def sway(base):
-    """balanço da copa: cada linha anda inteira (sem buraco), mais no alto, nada do tronco para baixo"""
+    """balanço da copa como vento de verdade: uma onda que sobe do tronco para o alto (cada linha atrasa um pouco
+    em relação à de baixo), mais forte no alto e nada no tronco; com a onda, poucas linhas mudam de um quadro para o
+    outro, então o movimento corre suave em vez de a copa inteira pular junto"""
     a = np.array(base)
     rows = np.nonzero(a[:, :, 3].any(1))[0]
     top, cb = int(rows.min()), crown_bottom(base)
     out = []
     for k in range(FRAMES):
-        t = math.sin(2 * math.pi * k / FRAMES)
         b = np.zeros_like(a)
         for y in range(FRAME):
-            w = min(1.0, max(0.0, (cb - y) / max(1, cb - top))) ** 1.3
-            dx = int(round(SWAY_PX * w * t))
+            h = min(1.0, max(0.0, (cb - y) / max(1, cb - top)))      # 0 no pé da copa, 1 no alto
+            w = h ** 1.2
+            ph = 2 * math.pi * k / FRAMES - LAG * h                   # o alto vem depois (a onda sobe)
+            t = math.sin(ph) + GUST * math.sin(2 * ph + 0.8)          # rajada: ida mais lenta que a volta
+            # arredonda com um limiar diferente por linha (proporção áurea): as linhas viram de lugar em momentos
+            # diferentes, então a copa "escorre" de 1 em 1 px em vez de pular em bloco
+            dx = int(math.floor(SWAY_PX * w * t / (1 + GUST) + ((y * 0.618034) % 1)))
             b[y] = np.roll(a[y], dx, axis=0)
         out.append(Image.fromarray(b))
     return out
 
 
 def sheet(frames):
-    sh = Image.new('RGBA', (FRAME * 3, FRAME * 3), (0, 0, 0, 0))
+    """tira em grade quadrada (3×3 para 9 quadros, 4×4 para 16)"""
+    n = math.ceil(math.sqrt(len(frames)))
+    sh = Image.new('RGBA', (FRAME * n, FRAME * n), (0, 0, 0, 0))
     for k, f in enumerate(frames):
-        sh.alpha_composite(f, ((k % 3) * FRAME, (k // 3) * FRAME))
+        sh.alpha_composite(f, ((k % n) * FRAME, (k // n) * FRAME))
     return sh
 
 

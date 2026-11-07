@@ -591,10 +591,11 @@ export class FarmScene extends Phaser.Scene {
         const footKey = [SW.adult, SW.young, 'orchard_adult', O.young].find((k) => tex.startsWith(k)) ?? tex;
         v.tree.setOrigin(0.5, TREE_FOOT[footKey] ?? 0.9).setY(v.y - ANIM.orchard.foot_above_slot_px);
         if (tex === sway) {
+          const stage = look === 'sprout' ? 'sprout' : look === 'young' ? 'young' : 'adult'; // quadros e velocidade de cada fase
           if (!this.anims.exists(`${tex}_sway`)) {
-            this.anims.create({ key: `${tex}_sway`, frames: this.anims.generateFrameNumbers(tex, { start: 0, end: SW.frames - 1 }), frameRate: SW.fps, repeat: -1 });
+            this.anims.create({ key: `${tex}_sway`, frames: this.anims.generateFrameNumbers(tex, { start: 0, end: SW.frames[stage] - 1 }), frameRate: SW.fps[stage], repeat: -1 });
           }
-          v.tree.play({ key: `${tex}_sway`, startFrame: Math.floor(Math.random() * SW.frames) });
+          v.tree.play({ key: `${tex}_sway`, startFrame: Math.floor(Math.random() * SW.frames[stage]) });
         }
       }
       if (v.look !== '' && look !== 'empty' && look !== 'pit' && !this.calm) { // pulinho quando a árvore muda

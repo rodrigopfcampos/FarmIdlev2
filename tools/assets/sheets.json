@@ -3134,10 +3134,10 @@
       "key": "orchard_young_sway",
       "dir": "trees",
       "grid": [
-        3,
-        3
+        4,
+        4
       ],
-      "count": 9
+      "count": 16
     },
     {
       "id": "v3_orchard_adult_sway",
@@ -3146,10 +3146,10 @@
       "key": "orchard_adult_sway",
       "dir": "trees",
       "grid": [
-        3,
-        3
+        4,
+        4
       ],
-      "count": 9
+      "count": 16
     },
     {
       "id": "v3_pescador_portrait",

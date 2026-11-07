@@ -347,10 +347,19 @@
       "sprout": "orchard_sprout_sway",
       "young": "orchard_young_sway",
       "adult": "orchard_adult_sway",
-      "frames": 9,
-      "fps": 5
+      "frames": {
+        "sprout": 9,
+        "young": 16,
+        "adult": 16
+      },
+      "fps": {
+        "sprout": 6,
+        "young": 8,
+        "adult": 8
+      }
     },
-    "foot_above_slot_px": 4
+    "foot_above_slot_px": 4,
+    "note_sway": "06/11: jovem e adulta com onda de vento de 16 quadros (2 s) que sobe pela copa; muda com os 9 quadros do dono"
   },
   "map_marks": {
     "locked_shade": false,

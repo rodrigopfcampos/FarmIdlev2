@@ -6791,14 +6791,14 @@
     "orchard_young_sway": {
       "file": "sprites/trees/orchard_young_sway.png",
       "size": [
-        576,
+        1024,
         64
       ],
       "anchor": [
         0.5,
         1
       ],
-      "frames": 9,
+      "frames": 16,
       "frame_size": [
         64,
         64
@@ -6807,14 +6807,14 @@
     "orchard_adult_sway": {
       "file": "sprites/trees/orchard_adult_sway.png",
       "size": [
-        576,
+        1024,
         64
       ],
       "anchor": [
         0.5,
         1
       ],
-      "frames": 9,
+      "frames": 16,
       "frame_size": [
         64,
         64

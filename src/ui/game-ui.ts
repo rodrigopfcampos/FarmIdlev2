@@ -21,6 +21,7 @@ import { hudPassives, openPassives } from './passives-ui';
 import { petName, takeFind } from './pets-ui';
 import { onPlotClick, openLot, tend } from './plots-ui';
 import { hudTimers, openTimers, setTimersGarage } from './timers-ui';
+import { mountGuide } from './guide-ui';
 import { bindVisitHud, hudSocial, openHelp, openSocial, type SocialCtx, visitHud } from './social-ui';
 import { hudVillage, openVillage } from './village-ui';
 import { weatherBanner, weatherChip, weatherPanel } from './weather-ui';
@@ -93,6 +94,7 @@ function socialCtx(): SocialCtx {
 
 /** topo da visita: troca a barra inteira; o resto do jogo fica parado até voltar */
 function onVisitState(): void {
+  mountGuide(cardsCtx().root); // na visita a abinha some
   const v = store.visit!;
   close();
   hud.innerHTML = visitHud(socialCtx(), v);
@@ -164,6 +166,7 @@ function refreshCards(): void {
   const slot = hud?.querySelector<HTMLElement>('.cards-slot');
   if (!s || !slot) return;
   renderHandThrottled(s);
+  mountGuide(cardsCtx().root);
   const html = hudCards(cardsCtx(), s) + hudPassives(s);
   if (html === cardsKey) return;
   cardsKey = html;

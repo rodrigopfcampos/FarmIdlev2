@@ -7,7 +7,6 @@ import { bus } from '../core/bus';
 import { mapView } from '../core/mapView';
 import { ANIM, ANIMAL_BY_ID, ANIMAL_EMOJI, CROPS, FARM, HOUSE_NAMES, LOT_TYPE_NAMES, LOTS, MAP, PETS, ZONES, type Lot, type Pt } from '../data';
 import { orchardLook } from '../farm/life';
-import { vehicleLook } from '../farm/cards';
 import { LifeLayer } from './lifeLayer';
 import { PetLayer } from './petLayer';
 import { stageSprite, TREE_FOOT } from '../farm/art';
@@ -210,9 +209,9 @@ export class FarmScene extends Phaser.Scene {
     const v = home.find((x) => x.active) ?? home[0] ?? active;
     const parked = homeIds.has(v.vehicle_id);
     const V = ANIM.vehicles;
-    // carta de Veículo na mão: o veículo aparece com a cara da carta (Carroça, Compacto, Off-Road, 4x4, Caminhão)
-    const vc = s.buffs?.find((b) => b.card_id === 'veiculo');
-    const look = vc ? vehicleLook(vc.rarity) ?? v.vehicle_id : v.vehicle_id;
+    // 08/11: a vaga mostra o veículo de verdade que está em casa (a cara da carta de Veículo confundia: o Compacto
+    // aparecia parado enquanto viajava)
+    const look = v.vehicle_id;
     const key = `${V.sprite_prefix}${look}`;
     if (key !== this.vehKey && this.textures.exists(key)) {
       this.vehKey = key; this.vehLook = look;

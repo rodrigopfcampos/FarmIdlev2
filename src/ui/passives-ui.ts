@@ -3,7 +3,7 @@
 // Estados: bloqueado (cinza, linha pontilhada), disponível (pulsa, linha acesa), comprado/máximo (borda dourada, faíscas).
 // Ao comprar: a linha se enche de luz, o nó treme e toca um "pling" gerado pelo navegador (sem arquivo; dá para silenciar).
 import { hudIcon } from './hud-icons';
-import { ACCOUNT_TREE, CHARS, LEVELS, type AccountBranch, type AccountNode } from '../data';
+import { ACCOUNT_TREE, MAX_LEVEL, CHARS, LEVELS, type AccountBranch, type AccountNode } from '../data';
 import { accountPoints, passiveState } from '../farm/rules';
 import { store } from '../farm/store';
 import { accountSkillAdd, accountSkillReset, type FarmState } from '../net/farmApi';
@@ -147,7 +147,7 @@ export function openPassives(ctx: PassivesCtx): void {
         <span class="btns"><button type="button" class="secondary small" data-mute title="${muted ? 'Ligar som' : 'Silenciar'}">${muted ? '🔇' : '🔊'}</button>
         <button type="button" class="secondary small" data-preset ${pts.spent ? '' : 'disabled'}>${at.free_reset ? 'Resetar (grátis esta semana)' : `Resetar · ${formatGold(resetCost)}`}</button></span></div>
       ${treeSvg(s)}<div class="ptip" hidden></div>
-      <p class="hint">1 ponto por nível da fazenda. Cada caminho tem 4 passivas de até 5 pontos e uma Ultimate (5 pontos, pede 15 no caminho). Passe o mouse num nó para ver; clique para comprar.</p></div>`;
+      <p class="hint">1 ponto por nível da fazenda. Cada caminho tem 4 passivas de até 5 pontos e uma Ultimate (5 pontos, pede 15 no caminho). No nível ${MAX_LEVEL} são ${(MAX_LEVEL - ACCOUNT_TREE.from_level + 1) * ACCOUNT_TREE.points_per_level} pontos: não dá para fechar dois caminhos inteiros, escolha bem (1 reset grátis por semana). Passe o mouse num nó para ver; clique para comprar.</p></div>`;
   }, (el) => {
     el.querySelector('.game-panel')?.classList.add('tree-panel');
     const s = store.state!, tip = el.querySelector<HTMLElement>('.ptip')!, wrap = el.querySelector<HTMLElement>('.ptree-wrap')!;

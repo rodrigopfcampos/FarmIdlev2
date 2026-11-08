@@ -102,43 +102,250 @@ function buffItems(s: FarmState): HandItem[] {
 }
 const cardTitle = (h: HandItem) => `${cardDef(h.card_id)?.name_pt} ${rarityInfo(h.rarity)?.name_pt}: ${buffLines(h.card_id, h.rarity).join(', ')}`;
 
+// ---------- mão e buffs (06/11: sem painel; arrastar ou clicar e usar, com efeitos) ----------
+// Mão (canto inferior direito): arraste a carta para o mapa para usar, ou clique nela para ver o efeito em cima do
+// leque com os botões Usar e Fichário. A carta voa até a barra de buffs (canto superior esquerdo) e acende.
+// Buff: clique mostra um balão com os usos que faltam e o botão Pausar (a carta volta voando para a mão).
+// Cada coleta que gasta um uso pisca o número do buff; a carta que acaba se desfaz em faíscas.
+let inspect: number | null = null;              // carta da mão aberta em cima do leque
+let pop: number | null = null;                  // buff com o balão aberto
+let busyCard = false;                           // uma carta voando por vez
+const lastUses = new Map<number, number>();     // usos de cada buff no último desenho (para piscar)
+const lastBuffRects = new Map<number, { r: DOMRect; c: string }>(); // onde cada buff estava (para desfazer)
+const paused = new Set<number>();               // pausadas pelo jogador (essas não se desfazem)
+
+const rc = (rarity: string) => rarityInfo(rarity)?.color_hex ?? '#fff';
+
 /** mão em leque no canto inferior direito do mapa (só cartas paradas) e buffs no canto superior esquerdo */
 export function renderHand(ctx: CardsCtx, s: FarmState): void {
   let dock = ctx.root.querySelector<HTMLElement>('.hand-dock');
   if (!dock) { dock = document.createElement('div'); dock.className = 'hand-dock'; ctx.root.appendChild(dock); }
   let bar = ctx.root.querySelector<HTMLElement>('.buff-bar');
   if (!bar) { bar = document.createElement('div'); bar.className = 'buff-bar'; ctx.root.appendChild(bar); }
+  bindOutside(ctx);
   if (!s.missions || store.visit) { dock.hidden = true; bar.hidden = true; return; }
   dock.hidden = false; bar.hidden = false;
   const slots = s.hand_slots ?? 3;
   const hand = handItems(s), buffs = buffItems(s);
+  if (inspect !== null && !hand.some((h) => h.serial === inspect)) inspect = null;
+  if (pop !== null && !buffs.some((h) => h.serial === pop)) pop = null;
   const n = Math.max(slots, hand.length);
   const mid = (n - 1) / 2;
   const items = Array.from({ length: n }, (_, i) => {
     const h = hand[i];
     const rot = (i - mid) * 7, lift = Math.abs(i - mid) * 6;
     const style = `--rot:${rot}deg;--lift:${lift}px;--i:${i}`;
-    if (!h) return `<button type="button" class="hand-card empty" style="${style}" data-open-binder title="Vaga livre: escolher carta">+</button>`;
-    return `<button type="button" class="hand-card" style="${style};--rc:${rarityInfo(h.rarity)?.color_hex}" data-hand="${h.serial}"
-        title="${ctx.esc(`Clique para usar · ${cardTitle(h)}`)}">${art(cardArt(h.card_id, h.rarity), 84)}<small>Usar</small></button>`;
+    if (!h) return `<button type="button" class="hand-card empty" style="${style}" data-open-binder title="Vaga livre: escolher carta no Fichário">+</button>`;
+    return `<button type="button" class="hand-card ${inspect === h.serial ? 'picked' : ''}" style="${style};--rc:${rc(h.rarity)}" data-hand="${h.serial}"
+        title="${ctx.esc(`Arraste para o mapa ou clique · ${cardTitle(h)}`)}" aria-label="${ctx.esc(cardTitle(h))}">${art(cardArt(h.card_id, h.rarity), 84)}<small>${usesText(h.left)}</small></button>`;
   }).join('');
+  const hi = inspect !== null ? hand.find((h) => h.serial === inspect) : undefined;
+  const info = hi ? `<div class="hand-inspect" style="--rc:${rc(hi.rarity)}" role="dialog" aria-label="${ctx.esc(cardTitle(hi))}">
+      <div class="hi-card">${art(cardArt(hi.card_id, hi.rarity), 132)}</div>
+      <div class="hi-info"><strong style="color:${rc(hi.rarity)}">${ctx.esc(cardDef(hi.card_id)?.name_pt ?? hi.card_id)} ${ctx.esc(rarityInfo(hi.rarity)?.name_pt ?? '')}</strong>
+        <ul>${buffLines(hi.card_id, hi.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
+        <p>${usesText(hi.left)} · gasta em ${ctx.esc(usesOnText(hi.card_id))}</p>
+        <div class="hi-btns"><button type="button" class="primary" data-use-card>Usar</button>
+          <button type="button" class="secondary small" data-back-card title="Voltar ao Fichário">Fichário</button></div></div></div>` : '';
   dock.className = `hand-dock ${handOpen ? '' : 'closed'}`;
   dock.innerHTML = `<div class="hand-tab">
       <button type="button" class="hand-binder" data-open-binder title="Fichário: todas as suas cartas">Fichário</button>
       <button type="button" class="hand-toggle" data-toggle-hand title="${handOpen ? 'Recolher a mão' : 'Abrir a mão'}">${art('deck_toggle', 22)}</button>
-    </div><div class="hand-fan">${items}</div>`;
-  dock.querySelector('[data-toggle-hand]')?.addEventListener('click', () => { handOpen = !handOpen; renderHand(ctx, store.state!); });
+    </div>${info}<div class="hand-fan">${items}</div>${hand.length ? '<span class="hand-hint">Arraste para o mapa ou clique para usar</span>' : ''}`;
+  dock.querySelector('[data-toggle-hand]')?.addEventListener('click', () => { handOpen = !handOpen; inspect = null; renderHand(ctx, store.state!); });
   dock.querySelectorAll('[data-open-binder]').forEach((b) => b.addEventListener('click', () => openCards(ctx)));
-  dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, Number(b.dataset.hand))));
-  // buffs: carta pequena com os usos que faltam
-  bar.innerHTML = buffs.map((h) => `<button type="button" class="buff-card" style="--rc:${rarityInfo(h.rarity)?.color_hex}" data-buff="${h.serial}"
-      title="${ctx.esc(`Em uso · ${cardTitle(h)}`)}">${art(cardArt(h.card_id, h.rarity), 46)}<small>${usesText(h.left)}</small></button>`).join('')
-    + (buffs.length ? `<span class="buff-count">${buffs.length}/${slots}</span>` : '');
-  bar.querySelectorAll<HTMLButtonElement>('[data-buff]').forEach((b) => b.addEventListener('click', () => openHandCard(ctx, Number(b.dataset.buff))));
-  // carta passou a valer: flash branco, partículas da cor da raridade e tremor no buff novo
-  const now = buffs.map((h) => String(h.serial));
-  if (!calm()) buffs.forEach((h, i) => { if (lastHand.length && !lastHand.includes(String(h.serial))) snapFx(bar!.querySelectorAll<HTMLElement>('.buff-card')[i], rarityInfo(h.rarity)?.color_hex ?? '#fff'); });
-  lastHand = now.length ? now : ['-'];
+  dock.querySelectorAll<HTMLButtonElement>('[data-hand]').forEach((b) => bindHandCard(ctx, b));
+  dock.querySelector('[data-use-card]')?.addEventListener('click', () => {
+    const el = dock!.querySelector<HTMLElement>('.hi-card') ?? dock!.querySelector<HTMLElement>(`[data-hand="${inspect}"]`);
+    if (inspect !== null && el) void useCard(ctx, inspect, el.getBoundingClientRect());
+  });
+  dock.querySelector('[data-back-card]')?.addEventListener('click', () => { const n = inspect!; inspect = null; void ctx.act(() => handRemove(n), 'Carta de volta ao fichário.'); });
+
+  // buffs: carta pequena com os usos que faltam; o número pisca quando uma coleta gasta um uso
+  const bp = pop !== null ? buffs.find((h) => h.serial === pop) : undefined;
+  bar.innerHTML = buffs.map((h) => `<button type="button" class="buff-card ${pop === h.serial ? 'on' : ''}" style="--rc:${rc(h.rarity)}" data-buff="${h.serial}"
+      title="${ctx.esc(`Em uso · ${cardTitle(h)}`)}">${art(cardArt(h.card_id, h.rarity), 46)}<small>${usesText(h.left)}</small><i class="ubar"><i style="width:${Math.round((h.left / (h.full || 1)) * 100)}%"></i></i></button>`).join('')
+    + (buffs.length ? `<span class="buff-count">${buffs.length}/${slots}</span>` : '')
+    + (bp ? buffPop(ctx, s, bp) : '');
+  bar.querySelectorAll<HTMLButtonElement>('[data-buff]').forEach((b) => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const n = Number(b.dataset.buff); pop = pop === n ? null : n; renderHand(ctx, store.state!);
+  }));
+  bar.querySelector('[data-pause]')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const h = buffs.find((x) => x.serial === pop);
+    if (h) void pauseCard(ctx, h, bar!.querySelector<HTMLElement>(`[data-buff="${h.serial}"]`)!.getBoundingClientRect());
+  });
+
+  // efeitos: carta nova acende; usos gastos piscam; carta que acabou se desfaz em faíscas
+  const els = [...bar.querySelectorAll<HTMLElement>('.buff-card')];
+  if (!calm()) {
+    buffs.forEach((h, i) => {
+      if (lastHand.length && !lastHand.includes(String(h.serial))) snapFx(els[i], rc(h.rarity));
+      const was = lastUses.get(h.serial);
+      if (was !== undefined && h.left < was - 1e-9) usedFx(els[i], was - h.left);
+    });
+    for (const [serial, old] of lastBuffRects) if (!buffs.some((h) => h.serial === serial) && !paused.has(serial)) shatterFx(old.r, old.c);
+  }
+  paused.clear();
+  lastUses.clear(); lastBuffRects.clear();
+  buffs.forEach((h, i) => { lastUses.set(h.serial, h.left); if (els[i]) lastBuffRects.set(h.serial, { r: els[i].getBoundingClientRect(), c: rc(h.rarity) }); });
+  lastHand = buffs.length ? buffs.map((h) => String(h.serial)) : ['-'];
+}
+
+/** balão do buff: efeito, usos e Pausar */
+function buffPop(ctx: CardsCtx, s: FarmState, h: HandItem): string {
+  const b = s.buffs.find((x) => x.serial === h.serial);
+  return `<div class="buff-pop" style="--rc:${rc(h.rarity)}" role="dialog">
+    <strong style="color:${rc(h.rarity)}">${ctx.esc(cardDef(h.card_id)?.name_pt ?? h.card_id)} ${ctx.esc(rarityInfo(h.rarity)?.name_pt ?? '')}</strong>
+    <ul>${buffLines(h.card_id, h.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>
+    <p>Faltam <strong>${usesText(h.left)}</strong> de ${usesText(h.full)} ${lifeBar(h.left, h.full || h.left)}</p>
+    <p class="hint">Gasta em ${ctx.esc(usesOnText(h.card_id))}.${b && b.coin_value > 0 ? ` ${formatGold(b.coin_value)} de ouro juntado (pago quando parar).` : ''}</p>
+    <button type="button" class="secondary small" data-pause>Pausar (volta para a mão)</button></div>`;
+}
+
+/** carta da mão: clique abre em cima do leque; arrastar para cima do mapa usa */
+function bindHandCard(ctx: CardsCtx, b: HTMLButtonElement): void {
+  const serial = Number(b.dataset.hand);
+  let start: { x: number; y: number } | null = null, ghost: HTMLElement | null = null, moved = false;
+  const zone = () => ctx.root.querySelector<HTMLElement>('.hand-dock')!.getBoundingClientRect().top - 20;
+  b.addEventListener('pointerdown', (e) => {
+    if (busyCard || e.button !== 0) return;
+    start = { x: e.clientX, y: e.clientY }; moved = false;
+    b.setPointerCapture(e.pointerId);
+  });
+  b.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    if (!moved && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8) return;
+    if (!moved) {
+      moved = true;
+      const r = b.getBoundingClientRect();
+      ghost = document.createElement('div');
+      ghost.className = 'card-ghost';
+      ghost.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;--rc:${b.style.getPropertyValue('--rc')}`;
+      ghost.innerHTML = b.querySelector('img')?.outerHTML ?? '';
+      document.body.appendChild(ghost);
+      b.classList.add('dragging');
+      ctx.root.classList.add('card-drop');
+    }
+    const r = b.getBoundingClientRect(), over = e.clientY < zone();
+    ghost!.style.transform = `translate(${e.clientX - start.x}px, ${e.clientY - start.y}px) rotate(${Math.max(-12, Math.min(12, (e.clientX - start.x) / 12))}deg) scale(${over ? 1.12 : 1})`;
+    ghost!.classList.toggle('ready', over);
+    void r;
+  });
+  const end = (e: PointerEvent) => {
+    if (!start) return;
+    const wasDrag = moved, g = ghost;
+    start = null; moved = false; ghost = null;
+    ctx.root.classList.remove('card-drop');
+    if (!wasDrag) { inspect = inspect === serial ? null : serial; pop = null; renderHand(ctx, store.state!); return; }
+    const used = e.type === 'pointerup' && e.clientY < zone();
+    if (used && g) { const r = g.getBoundingClientRect(); g.remove(); void useCard(ctx, serial, r); return; }
+    // volta para a mão
+    b.classList.remove('dragging');
+    if (g) { g.style.transition = 'transform 0.2s ease-out'; g.style.transform = 'translate(0,0)'; window.setTimeout(() => g.remove(), 210); }
+  };
+  b.addEventListener('pointerup', end);
+  b.addEventListener('pointercancel', end);
+}
+
+/** carta voando de um retângulo a outro (cópia por cima de tudo), em arco, girando e encolhendo */
+function fly(html: string, from: DOMRect, to: { x: number; y: number; w: number }, color: string, ms: number, back = false): Promise<void> {
+  if (calm()) return Promise.resolve();
+  const el = document.createElement('div');
+  el.className = 'card-fly';
+  el.style.cssText = `left:${from.left}px;top:${from.top}px;width:${from.width}px;--rc:${color}`;
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  const dx = to.x - from.left, dy = to.y - from.top, k = to.w / from.width;
+  const anim = el.animate([
+    { transform: 'translate(0,0) rotate(0deg) scale(1)', filter: `drop-shadow(0 0 6px ${color})` },
+    { transform: `translate(${dx * 0.45}px, ${dy * 0.45 - (back ? 40 : 90)}px) rotate(${back ? -8 : 10}deg) scale(${(1 + k) / 2 + 0.15})`, filter: `drop-shadow(0 0 18px ${color}) brightness(1.4)`, offset: 0.5 },
+    { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(${k})`, filter: `drop-shadow(0 0 4px ${color})` },
+  ], { duration: ms, easing: 'cubic-bezier(.45,.05,.35,1)', fill: 'forwards' });
+  return anim.finished.then(() => { el.remove(); }, () => { el.remove(); });
+}
+
+/** usar: a carta voa até a vaga nova da barra de buffs; o servidor responde enquanto ela voa */
+async function useCard(ctx: CardsCtx, serial: number, from: DOMRect): Promise<void> {
+  if (busyCard) return;
+  const s = store.state!, h = handItems(s).find((x) => x.serial === serial);
+  if (!h) return;
+  busyCard = true; inspect = null;
+  ctx.root.querySelector<HTMLElement>(`[data-hand="${serial}"]`)?.classList.add('gone');
+  ctx.root.querySelector('.hand-inspect')?.remove();
+  const bar = ctx.root.querySelector<HTMLElement>('.buff-bar')!.getBoundingClientRect();
+  const to = { x: bar.left + buffItems(s).length * 52, y: bar.top, w: 46 };
+  const flight = fly(art(cardArt(h.card_id, h.rarity), 132), from, to, rc(h.rarity), 650);
+  await ctx.act(async () => { const [st] = await Promise.all([equipCard(serial), flight]); return st; });
+  busyCard = false;
+  renderHand(ctx, store.state!);
+  // o que a carta faz sobe da barra; Lendária e Mítica fazem uma onda de luz na tela
+  const slot = ctx.root.querySelector<HTMLElement>(`[data-buff="${serial}"]`);
+  if (slot && !calm()) {
+    floatText(slot, `${cardDef(h.card_id)?.name_pt ?? ''}: ${buffLines(h.card_id, h.rarity)[0] ?? ''}`, rc(h.rarity));
+    if (rarityRank(h.rarity) >= rarityRank('legendary')) screenPulse(ctx.root, rc(h.rarity));
+  }
+}
+
+/** pausar: o buff volta voando para a mão */
+async function pauseCard(ctx: CardsCtx, h: HandItem, from: DOMRect): Promise<void> {
+  if (busyCard) return;
+  busyCard = true; pop = null; paused.add(h.serial);
+  ctx.root.querySelector<HTMLElement>(`[data-buff="${h.serial}"]`)?.classList.add('gone');
+  ctx.root.querySelector('.buff-pop')?.remove();
+  const fan = ctx.root.querySelector<HTMLElement>('.hand-fan')!.getBoundingClientRect();
+  const flight = fly(art(cardArt(h.card_id, h.rarity), 46), from, { x: fan.right - 90, y: fan.top + 10, w: 84 }, rc(h.rarity), 500, true);
+  await ctx.act(async () => { const [st] = await Promise.all([unequipCard(h.card_id), flight]); return st; }, 'Carta pausada: voltou para a mão.');
+  busyCard = false;
+  renderHand(ctx, store.state!);
+}
+
+/** número que sobe e some em cima de um elemento */
+function floatText(at: HTMLElement, text: string, color: string): void {
+  const r = at.getBoundingClientRect();
+  const t = document.createElement('div');
+  t.className = 'card-float';
+  t.style.cssText = `left:${r.left + r.width / 2}px;top:${r.bottom + 30}px;--rc:${color}`;
+  t.textContent = text;
+  document.body.appendChild(t);
+  window.setTimeout(() => t.remove(), 2200);
+}
+
+/** brilho da cor da raridade nas bordas da tela */
+function screenPulse(root: HTMLElement, color: string): void {
+  const v = document.createElement('div');
+  v.className = 'card-pulse';
+  v.style.setProperty('--rc', color);
+  root.appendChild(v);
+  window.setTimeout(() => v.remove(), 900);
+}
+
+/** um uso gasto: o buff dá um pulinho e mostra quanto saiu */
+function usedFx(el: HTMLElement | undefined, spent: number): void {
+  if (!el) return;
+  el.classList.remove('used'); void el.offsetWidth; el.classList.add('used');
+  const t = document.createElement('b');
+  t.className = 'use-minus';
+  t.textContent = `−${usesText(spent).replace(/ usos?$/, '')}`;
+  el.appendChild(t);
+  window.setTimeout(() => { t.remove(); el.classList.remove('used'); }, 900);
+}
+
+/** carta que acabou: se desfaz em faíscas onde estava */
+function shatterFx(r: DOMRect, color: string): void {
+  const box = document.createElement('div');
+  box.className = 'card-shatter';
+  box.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+  for (let k = 0; k < 16; k++) {
+    const p = document.createElement('i');
+    p.className = 'spark';
+    const a = Math.random() * Math.PI * 2, d = 20 + Math.random() * 30;
+    p.style.cssText = `--dx:${Math.round(Math.cos(a) * d)}px;--dy:${Math.round(Math.sin(a) * d + 20)}px;background:${k % 3 ? color : '#fff'}`;
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  window.setTimeout(() => box.remove(), 700);
 }
 
 function snapFx(slot: HTMLElement | undefined, color: string): void {
@@ -155,39 +362,18 @@ function snapFx(slot: HTMLElement | undefined, color: string): void {
   }
 }
 
-/** carta da mão: parada (Usar · Voltar ao fichário) ou em uso (quanto falta · Pausar depois de 1 dia) */
-function openHandCard(ctx: CardsCtx, serial: number): void {
-  ctx.show('Carta na mão', () => {
-    const s = store.state!, h = [...handItems(s), ...buffItems(s)].find((x) => x.serial === serial);
-    if (!h) return '<p>Essa carta saiu da mão.</p>';
-    const ms = store.clock.serverNow(), r = rarityInfo(h.rarity)!;
-    const b = s.buffs.find((x) => x.serial === serial);
-    const locked = b?.locked_until ? Date.parse(b.locked_until) > ms : false;
-    const on = `Gasta 1 uso a cada coleta inteira de ${usesOnText(h.card_id)}`;
-    const head = `<div class="card-detail">${cardHtml(ctx, h.card_id, h.rarity, 150)}
-      <div class="grow"><h3 style="color:${r.color_hex}">${ctx.esc(cardDef(h.card_id)?.name_pt ?? h.card_id)} ${ctx.esc(r.name_pt)}</h3>
-        <ul class="eff">${buffLines(h.card_id, h.rarity).map((l) => `<li>${ctx.esc(l)}</li>`).join('')}</ul>`;
-    if (!h.active) return `${head}
-        <p>Parada na mão: <strong>${usesText(h.left)}</strong> de ${usesText(h.full)} guardados ${lifeBar(h.left, h.full || h.left)}</p>
-        <div class="row"><button type="button" class="primary" data-use>Usar</button>
-          <button type="button" class="secondary" data-back>Voltar ao fichário</button></div>
-        <p class="hint">Parada, a carta não vale e não gasta. Ao usar, ela vira buff (canto de cima): o bônus liga na hora e vale pelas próximas coletas, online ou offline. ${on}.</p>
-      </div></div>`;
-    return `${head}
-        <p>Em uso · faltam <strong>${usesText(h.left)}</strong> de ${usesText(h.full)} ${lifeBar(h.left, h.full || h.left)}</p>
-        ${b && b.coin_value > 0 ? `<p>${formatGold(b.coin_value)} de ouro juntado (pago quando a carta para).</p>` : ''}
-        <button type="button" class="secondary" data-pause ${locked ? 'disabled' : ''}>Pausar</button>
-        <p class="hint">${on} (1 uso = um lote, pomar, casa de animais ou o lago inteiro, ou 1 expedição). Ao pausar, ela volta parada para a mão (ou para o fichário, se a mão estiver cheia) guardando os usos que sobraram.${h.rarity === 'common' ? ' Quando acabar, a Comum fica gasta e pode ser reparada com ouro.' : ' Quando acabar, ela some (fica registrada no álbum).'}</p>
-      </div></div>`;
-  }, (el) => {
-    const s = store.state!, h = [...handItems(s), ...buffItems(s)].find((x) => x.serial === serial);
-    const go = (sel: string, fn: () => Promise<FarmState>, ok: string) => el.querySelector(sel)?.addEventListener('click', (e) => {
-      (e.currentTarget as HTMLButtonElement).disabled = true;
-      void ctx.act(fn, ok);
-    });
-    go('[data-use]', () => equipCard(serial), 'Carta em uso!');
-    go('[data-back]', () => handRemove(serial), 'Carta de volta ao fichário.');
-    if (h) go('[data-pause]', () => unequipCard(h.card_id), 'Carta pausada na mão.');
+/** fecha o leque aberto e o balão do buff ao clicar fora */
+let outsideBound = false;
+function bindOutside(ctx: CardsCtx): void {
+  if (outsideBound) return;
+  outsideBound = true;
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target as HTMLElement;
+    if ((inspect !== null && !t.closest('.hand-dock')) || (pop !== null && !t.closest('.buff-bar'))) {
+      if (!t.closest('.hand-dock')) inspect = null;
+      if (!t.closest('.buff-bar')) pop = null;
+      if (store.state) renderHand(ctx, store.state);
+    }
   });
 }
 
